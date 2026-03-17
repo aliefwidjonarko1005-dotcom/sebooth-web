@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold: #D4AF37;
+  /* Keeping for subtle accents if needed */
+  --color-gold-hover: #E5C158;
+  --color-charcoal: #1A1A1A;
+  /* Primary Text */
+  --color-offwhite: #F9F9F9;
+  /* Background */
+  --color-accent: #0F3D2E;
+  /* Deep Green CTA */
+  --color-accent-hover: #195240;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  /* ... existing theme ... */
+  --font-sebooth: var(--font-sebooth);
+}
+
+.font-sebooth {
+  font-family: var(--font-sebooth), sans-serif;
+}
+
+:root {
+  --background: #F9F9F9;
+  --foreground: #1A1A1A;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
