@@ -65,8 +65,19 @@ export default function RegisterPage() {
           <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
             <UserPlus className="h-6 w-6" />
           </div>
-          <h1 className="mt-4 text-2xl font-black text-gray-900">Buat Akun Sebooth</h1>
-          <p className="mt-2 text-gray-600">Mulai simpan kenanganmu selamanya.</p>
+          <h1 className="mt-4 text-2xl font-black text-gray-900">
+            {claimId ? 'Daftar & Klaim Foto' : 'Buat Akun Sebooth'}
+          </h1>
+          <p className="mt-2 text-gray-600">
+            {claimId 
+              ? 'Daftar sekarang dan foto ini jadi milikmu selamanya.' 
+              : 'Mulai simpan kenanganmu selamanya.'}
+          </p>
+          {claimId && (
+            <div className="mt-4 rounded-xl bg-blue-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-blue-600 ring-1 ring-blue-100">
+              🌟 Klaim Fotomu Sekarang
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleRegister} className="mt-10 space-y-6">

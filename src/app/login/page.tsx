@@ -64,8 +64,19 @@ export default function LoginPage() {
           <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
             <LogIn className="h-6 w-6" />
           </div>
-          <h1 className="mt-4 text-2xl font-black text-gray-900">Masuk ke Sebooth</h1>
-          <p className="mt-2 text-gray-600">Akses semua galeri fotomu di sini.</p>
+          <h1 className="mt-4 text-2xl font-black text-gray-900">
+            {claimId ? 'Masuk untuk Klaim' : 'Masuk ke Sebooth'}
+          </h1>
+          <p className="mt-2 text-gray-600">
+            {claimId 
+              ? 'Satu langkah lagi untuk menyimpan sesi fotomu.' 
+              : 'Akses semua galeri fotomu di sini.'}
+          </p>
+          {claimId && (
+            <div className="mt-4 rounded-xl bg-blue-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-blue-600 ring-1 ring-blue-100">
+              ⚡ Mode Klaim Aktif
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleLogin} className="mt-10 space-y-6">

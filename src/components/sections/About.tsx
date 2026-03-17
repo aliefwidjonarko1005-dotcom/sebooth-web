@@ -39,8 +39,8 @@ export function About() {
 
                     {/* Right: Visual - 4:5 Aspect Ratio */}
                     <motion.div
-                        initial={{ opacity: 0, opacity: 0 }}
-                        whileInView={{ opacity: 1, opacity: 1 }}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="relative h-[500px] w-full bg-[#E5E5E5] flex items-center justify-center overflow-hidden"
