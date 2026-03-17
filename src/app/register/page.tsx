@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { UserPlus, Mail, Lock, Loader2, ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 
-export default function RegisterPage() {
+function RegisterContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const claimId = searchParams.get('claim')
@@ -142,5 +142,17 @@ export default function RegisterPage() {
         </p>
       </motion.div>
     </div>
+  )
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
+      </div>
+    }>
+      <RegisterContent />
+    </Suspense>
   )
 }

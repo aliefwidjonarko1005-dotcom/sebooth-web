@@ -15,7 +15,7 @@ export default function PartnershipPage() {
                     className="max-w-4xl"
                 >
                     <span className="text-[#0F3D2E] font-bold text-sm tracking-widest uppercase mb-4 block">For Event Professionals</span>
-                    <h1 className="text-5xl md:text-7xl font-bold font-sebooth text-[#1A1A1A] mb-8 tracking-tighter loading-none">
+                    <h1 className="text-5xl md:text-7xl font-bold font-sebooth text-[#1A1A1A] mb-8 tracking-tighter leading-none">
                         The Best Friend of <br /> EOs & WOs.
                     </h1>
                     <p className="text-xl text-[#1A1A1A]/70 mb-12 max-w-2xl leading-relaxed">
