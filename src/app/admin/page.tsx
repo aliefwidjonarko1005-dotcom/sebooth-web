@@ -47,25 +47,27 @@ export default function AdminPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
 
-      console.log('Admin check for:', user.email)
+      const userEmail = user.email || ''
+      console.log('Admin check for:', userEmail)
 
-      // Check admin status - use maybeSingle to avoid error when no rows
-      const { data: adminData, error: adminError } = await supabase
+      // Primary check: env var (always works, no RLS issues)
+      const envAdmins = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase())
+      const isEnvAdmin = envAdmins.includes(userEmail.toLowerCase())
+
+      // Secondary check: DB table (may fail due to RLS)
+      const { data: adminData } = await supabase
         .from('admins')
         .select('*')
-        .eq('email', user.email!)
+        .eq('email', userEmail)
         .maybeSingle()
 
-      console.log('Admin query result:', adminData, 'Error:', adminError)
+      console.log('Env admin:', isEnvAdmin, 'DB admin:', adminData)
 
-      if (!adminData) {
-        setLoading(false)
-        return  // Will show "Access Denied" UI
+      if (isEnvAdmin || adminData) {
+        setIsAdmin(true)
+        setIsSuper(isEnvAdmin || (adminData?.is_super ?? false))
+        await loadAll()
       }
-
-      setIsAdmin(true)
-      setIsSuper(adminData.is_super)
-      await loadAll()
       setLoading(false)
     }
     init()
