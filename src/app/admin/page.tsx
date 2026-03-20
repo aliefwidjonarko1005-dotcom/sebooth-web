@@ -100,7 +100,12 @@ export default function AdminPage() {
   }
 
   async function addContent(section: string, key: string) {
-    await supabase.from('site_content').insert({ section, key, value: '' })
+    const { error } = await supabase.from('site_content').insert({ section, key, value: '' })
+    if (error) {
+      console.error('Insert error:', error)
+      flash(`Error: ${error.message}`)
+      return
+    }
     await loadAll()
     flash('Added')
   }
