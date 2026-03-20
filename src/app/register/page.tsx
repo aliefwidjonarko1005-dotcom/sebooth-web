@@ -46,7 +46,7 @@ function RegisterContent() {
         }
       }
 
-      router.push('/dashboard')
+      router.push('/profile')
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Gagal mendaftar. Silakan coba lagi.'
       setError(message)

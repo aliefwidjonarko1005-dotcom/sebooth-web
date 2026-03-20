@@ -12,10 +12,12 @@ import {
   Download, 
   ExternalLink,
   Loader2,
-  Trash2
+  Trash2,
+  Palette
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 import { SessionData, MediaItem } from '@/types/database'
+import { FrameEditorModal } from '@/components/features/FrameEditorModal'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -24,6 +26,7 @@ export default function DashboardPage() {
   const [sessions, setSessions] = useState<SessionData[]>([])
   const [loading, setLoading] = useState(true)
   const [userName, setUserName] = useState<string | null>(null)
+  const [editingPhotos, setEditingPhotos] = useState<MediaItem[] | null>(null)
 
   useEffect(() => {
     async function checkUser() {
@@ -107,14 +110,24 @@ export default function DashboardPage() {
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-gray-200 pb-6 mb-8">
                   <div>
                     <div className="flex items-center gap-2 text-blue-600 font-black text-sm uppercase tracking-widest mb-2">
-                      <Calendar className="h-4 w-4" />
-                      {new Date(session.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                       <Calendar className="h-4 w-4" />
+                       {new Date(session.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </div>
                     <h2 className="text-3xl font-black text-gray-900">{session.event_name || 'Sebooth Studio Session'}</h2>
                   </div>
-                  <button className="flex items-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105 active:scale-95">
-                    <Download className="h-4 w-4" /> Download Semua
-                  </button>
+                  <div className="flex gap-3">
+                    {(session.media?.filter(m => m.type === 'photo' && !(m.metadata as Record<string, unknown>)?.is_strip) || []).length >= 3 && (
+                        <button 
+                          onClick={() => setEditingPhotos(session.media?.filter(m => m.type === 'photo' && !(m.metadata as any)?.is_strip) || [])}
+                          className="flex items-center gap-2 rounded-xl bg-white border border-gray-200 px-6 py-3 text-sm font-bold text-gray-900 shadow-sm transition-transform hover:scale-105 active:scale-95"
+                        >
+                          <Palette className="h-4 w-4" /> Edit Frame
+                        </button>
+                    )}
+                    <button className="flex items-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105 active:scale-95">
+                      <Download className="h-4 w-4" /> Download Semua
+                    </button>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -170,7 +183,13 @@ export default function DashboardPage() {
             </div>
             <p className="text-sm text-gray-400 font-medium italic italic">Teruslah menabung kenangan bersama Sebooth.</p>
         </div>
-      </footer>
+    </footer>
+
+      <FrameEditorModal 
+        isOpen={!!editingPhotos}
+        onClose={() => setEditingPhotos(null)}
+        rawPhotos={editingPhotos || []}
+      />
     </div>
   )
 }

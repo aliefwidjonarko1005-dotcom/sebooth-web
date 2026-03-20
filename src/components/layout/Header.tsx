@@ -14,6 +14,7 @@ const navItems = [
     { name: "Gallery", href: "/#gallery" },
     { name: "Partnership", href: "/partnership" },
     { name: "Location", href: "/#location" },
+    { name: "My Photos", href: "/profile" },
 ];
 
 export function Header() {

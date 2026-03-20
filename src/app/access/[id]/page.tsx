@@ -69,7 +69,7 @@ export default function AccessSessionPage() {
 
       if (error) throw error
       setClaimSuccess(true)
-      setTimeout(() => router.push('/dashboard'), 1500)
+      setTimeout(() => router.push('/profile'), 1500)
     } catch (err) {
       console.error('Auto-claim error:', err)
       setError('Gagal mengklaim sesi. Silakan coba lagi.')
@@ -170,7 +170,7 @@ export default function AccessSessionPage() {
                     Kamu sudah mengklaim sesi ini. Ingin melihat semua koleksi fotomu?
                 </p>
                 <button 
-                onClick={() => router.push('/dashboard')}
+                onClick={() => router.push('/profile')}
                 className="rounded-2xl bg-white px-10 py-4 text-lg font-black text-blue-600 shadow-xl transition-all hover:scale-105 active:scale-95"
                 >
                     Lihat Koleksi Saya

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1620" viewBox="0 0 1080 1620">
+    <!-- Frame background with 3 cutouts for 960x420 photos -->
+    <path fill="#F9F6F0" fill-rule="evenodd" d="
+        M0,0 h1080 v1620 h-1080 Z
+        M60,60 h960 v420 h-960 Z
+        M60,520 h960 v420 h-960 Z
+        M60,980 h960 v420 h-960 Z
+    "/>
+    
+    <!-- Gold borders around photos -->
+    <rect x="56" y="56" width="968" height="428" fill="none" stroke="#D4AF37" stroke-width="8"/>
+    <rect x="56" y="516" width="968" height="428" fill="none" stroke="#D4AF37" stroke-width="8"/>
+    <rect x="56" y="976" width="968" height="428" fill="none" stroke="#D4AF37" stroke-width="8"/>
+    
+    <!-- Branding Text -->
+    <text x="540" y="1500" font-family="Georgia, serif" font-size="72" font-style="italic" fill="#0F3D2E" text-anchor="middle" letter-spacing="4">Sebooth</text>
+    <text x="540" y="1560" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#D4AF37" text-anchor="middle" letter-spacing="8">WEDDING COLLECTION</text>
+</svg>

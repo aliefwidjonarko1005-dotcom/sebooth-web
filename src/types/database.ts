@@ -2,7 +2,8 @@ export interface MediaItem {
   id: string
   session_id: string
   url: string
-  type: 'image' | 'video' | 'gif'
+  type: 'image' | 'video' | 'gif' | 'photo' | 'live'
+  metadata?: Record<string, unknown>
   created_at: string
 }
 

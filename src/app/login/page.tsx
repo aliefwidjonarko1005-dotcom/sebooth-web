@@ -45,7 +45,7 @@ function LoginContent() {
         }
       }
 
-      router.push('/dashboard')
+      router.push('/profile')
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Gagal masuk. Periksa kembali email dan password Anda.'
       setError(message)
