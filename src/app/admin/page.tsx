@@ -47,11 +47,20 @@ export default function AdminPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
 
-      // Check admin status
-      const { data: adminData } = await supabase.from('admins').select('*').eq('email', user.email).single()
+      console.log('Admin check for:', user.email)
+
+      // Check admin status - use maybeSingle to avoid error when no rows
+      const { data: adminData, error: adminError } = await supabase
+        .from('admins')
+        .select('*')
+        .eq('email', user.email!)
+        .maybeSingle()
+
+      console.log('Admin query result:', adminData, 'Error:', adminError)
+
       if (!adminData) {
-        router.push('/profile')
-        return
+        setLoading(false)
+        return  // Will show "Access Denied" UI
       }
 
       setIsAdmin(true)
@@ -153,7 +162,20 @@ export default function AdminPage() {
     )
   }
 
-  if (!isAdmin) return null
+  if (!isAdmin) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#F9F9F9] p-6 text-center">
+        <ShieldCheck className="h-16 w-16 text-red-300 mb-4" />
+        <h1 className="text-2xl font-bold text-[#1A1A1A]">Access Denied</h1>
+        <p className="mt-2 text-[#1A1A1A]/50 text-sm">Akun Anda tidak terdaftar sebagai admin.</p>
+        <p className="mt-1 text-[#1A1A1A]/30 text-xs">Hubungi super admin untuk mendapatkan akses.</p>
+        <div className="mt-6 flex gap-3">
+          <Link href="/profile" className="px-6 py-3 rounded-xl bg-[#0F3D2E] text-white font-bold text-sm hover:bg-[#195240] transition-all">My Photos</Link>
+          <Link href="/" className="px-6 py-3 rounded-xl bg-[#1A1A1A]/5 text-[#1A1A1A] font-bold text-sm hover:bg-[#1A1A1A]/10 transition-all">Beranda</Link>
+        </div>
+      </div>
+    )
+  }
 
   const sections = [...new Set(content.map(c => c.section))]
 
