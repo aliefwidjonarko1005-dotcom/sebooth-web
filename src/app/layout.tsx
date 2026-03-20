@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { FloatingCTA } from "@/components/ui/FloatingCTA";
+import { LayoutShell } from "@/components/layout/LayoutShell";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const seboothFont = localFont({
@@ -25,10 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} ${seboothFont.variable} antialiased selection:bg-[#D4AF37] selection:text-black`}>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-        <FloatingCTA />
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   );

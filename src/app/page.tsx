@@ -6,6 +6,7 @@ import { Gallery } from "@/components/sections/Gallery";
 import { Location } from "@/components/sections/Location";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { FAQ } from "@/components/sections/FAQ";
+import { InstagramFeed } from "@/components/sections/InstagramFeed";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <Pricing />
       <Testimonials />
       <Gallery />
+      <InstagramFeed />
       <FAQ />
       <Location />
     </div>
