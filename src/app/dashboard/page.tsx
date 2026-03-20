@@ -15,12 +15,13 @@ import {
   Trash2
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
+import { SessionData, MediaItem } from '@/types/database'
 
 export default function DashboardPage() {
   const router = useRouter()
   const supabase = createClient()
   
-  const [sessions, setSessions] = useState<any[]>([])
+  const [sessions, setSessions] = useState<SessionData[]>([])
   const [loading, setLoading] = useState(true)
   const [userName, setUserName] = useState<string | null>(null)
 
@@ -118,7 +119,7 @@ export default function DashboardPage() {
 
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                   <AnimatePresence>
-                    {session.media?.map((item: any) => (
+                    {session.media?.map((item: MediaItem) => (
                       <motion.div
                         key={item.id}
                         layout
@@ -129,7 +130,7 @@ export default function DashboardPage() {
                         {item.type === 'video' ? (
                           <video src={item.url} muted loop autoPlay className="h-full w-full object-cover" />
                         ) : (
-                          <img src={item.url} alt="Media" className="h-full w-full object-cover" />
+                          <img src={item.url} alt={`Sebooth ${item.type}`} className="h-full w-full object-cover" />
                         )}
                         <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center gap-3">
                             <button className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-gray-900 shadow-xl hover:scale-110 transition-transform">

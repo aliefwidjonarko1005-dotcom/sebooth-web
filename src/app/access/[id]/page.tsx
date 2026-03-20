@@ -5,14 +5,16 @@ import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Camera, Download, LayoutGrid, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
+import { SessionData, MediaItem } from '@/types/database'
+import { User } from '@supabase/supabase-js'
 
 export default function AccessSessionPage() {
   const { id } = useParams()
   const router = useRouter()
   const supabase = createClient()
   
-  const [user, setUser] = useState<any>(null)
-  const [session, setSession] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<SessionData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isClaiming, setIsClaiming] = useState(false)
@@ -118,7 +120,7 @@ export default function AccessSessionPage() {
 
         {/* Preview Grid */}
         <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {session.media?.map((item: any, idx: number) => (
+          {session.media?.map((item: MediaItem, idx: number) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -129,7 +131,7 @@ export default function AccessSessionPage() {
               {item.type === 'video' ? (
                 <video src={item.url} muted loop autoPlay playsInline className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
               ) : (
-                <img src={item.url} alt="Sebooth Photo" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <img src={item.url} alt={`Sebooth ${item.type}`} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
               )}
               <div className="absolute inset-x-4 bottom-4 flex items-center justify-between opacity-0 transition-all translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
                 <span className="rounded-xl bg-black/50 px-3 py-1.5 text-[10px] font-black text-white backdrop-blur-md uppercase tracking-widest">

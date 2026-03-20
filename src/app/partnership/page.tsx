@@ -20,7 +20,7 @@ export default function PartnershipPage() {
                     </h1>
                     <p className="text-xl text-[#1A1A1A]/70 mb-12 max-w-2xl leading-relaxed">
                         We understand that for an organizer, <strong>reliability is everything.</strong>
-                        Sebooth provides a "zero-worry" photobooth experience that fits seamlessly into your premium decor, backed by industrial-grade stability.
+                        Sebooth provides a &quot;zero-worry&quot; photobooth experience that fits seamlessly into your premium decor, backed by industrial-grade stability.
                     </p>
                 </motion.div>
 
@@ -48,7 +48,7 @@ export default function PartnershipPage() {
                                 <div>
                                     <h4 className="font-bold text-[#0F3D2E] text-lg">Whitelabel Option</h4>
                                     <p className="text-[#1A1A1A]/70 leading-relaxed mt-1">
-                                        Your brand, not ours. For premium events, we offer a fully unbranded "Ghost Mode" where the booth appears as your in-house service.
+                                        Your brand, not ours. For premium events, we offer a fully unbranded &quot;Ghost Mode&quot; where the booth appears as your in-house service.
                                     </p>
                                 </div>
                             </li>

@@ -20,7 +20,7 @@ export default function AboutPage() {
                     </h1>
                     <div className="space-y-8 text-xl md:text-2xl text-[#1A1A1A]/80 leading-relaxed font-medium">
                         <p>
-                            Sebooth lahir dari sebuah pertanyaan sederhana: <span className="text-[#1A1A1A]">"Bagaimana kita bisa membuat momen singkat menjadi abadi?"</span>
+                            Sebooth lahir dari sebuah pertanyaan sederhana: <span className="text-[#1A1A1A]">&quot;Bagaimana kita bisa membuat momen singkat menjadi abadi?&quot;</span>
                         </p>
                         <p>
                             Bermula dari garasi kecil di Semarang, kami menggabungkan presisi teknik dengan seni fotografi. Kami percaya bahwa photobooth bukan sekadar mesin, melainkan jembatan interaksi antar manusia yang seringkali terlupakan di era digital.
@@ -83,7 +83,7 @@ export default function AboutPage() {
             {/* Footer Quote */}
             <section className="py-32 container mx-auto px-6 text-center">
                 <h2 className="text-2xl md:text-4xl font-serif italic text-[#1A1A1A]/60">
-                    "Every picture tells a story. Let us help you write yours."
+                    &quot;Every picture tells a story. Let us help you write yours.&quot;
                 </h2>
             </section>
 

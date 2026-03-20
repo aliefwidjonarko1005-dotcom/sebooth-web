@@ -48,7 +48,7 @@ export function About() {
                         {/* Abstract Image or "Zero-Lag System" illustration placeholder */}
                         <div className="text-[#1A1A1A]/20 font-bold text-center p-8 border border-[#1A1A1A]/10 w-[80%] h-[80%] flex items-center justify-center flex-col gap-4">
                             <span>[Image: Technical Illustration]</span>
-                            <span className="text-sm font-normal">"Zero-Lag System"</span>
+                            <span className="text-sm font-normal">&quot;Zero-Lag System&quot;</span>
                         </div>
                     </motion.div>
                 </div>

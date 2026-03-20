@@ -42,7 +42,7 @@ export function Testimonials() {
                             className="flex flex-col justify-between"
                         >
                             <blockquote className="text-xl md:text-2xl font-serif italic text-[#1A1A1A]/80 mb-8 leading-relaxed">
-                                "{t.quote}"
+                                &quot;{t.quote}&quot;
                             </blockquote>
                             <div>
                                 <cite className="not-italic font-bold text-[#1A1A1A] block">{t.author}</cite>
