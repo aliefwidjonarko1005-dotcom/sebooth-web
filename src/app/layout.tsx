@@ -21,7 +21,7 @@ const seboothFont = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "sebooth. | Graphic Brutalism Photobooth",
+  title: "Sebooth | The Most Favorite Photobooth in Semarang",
   description: "Capture Every Moment, Create Infinite Memories with sebooth.",
 };
 
