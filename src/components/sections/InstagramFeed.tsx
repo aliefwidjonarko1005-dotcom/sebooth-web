@@ -1,75 +1,122 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { createClient } from "@/lib/supabase";
+import { useEffect, useRef, useCallback } from "react";
+import { EditableText } from "@/components/admin/EditableText";
 
 interface IGPost {
     id: string;
     instagram_url: string;
 }
 
-export function InstagramFeed() {
-    const [posts, setPosts] = useState<IGPost[]>([]);
+declare global {
+    interface Window {
+        instgrm?: { Embeds: { process: () => void } };
+    }
+}
 
-    useEffect(() => {
-        async function load() {
-            const supabase = createClient();
-            const { data } = await supabase
-                .from("instagram_posts")
-                .select("*")
-                .order("display_order");
-            if (data) setPosts(data);
+const sectionTitle = "LIVE FROM INSTAGRAM";
+const sectionTag = "Tag Us!";
+
+interface InstagramFeedProps {
+    initialPosts?: IGPost[];
+}
+
+export function InstagramFeed({ initialPosts = [] }: InstagramFeedProps) {
+    const scriptLoaded = useRef(false);
+
+    // Load Instagram embed script
+    const loadInstagramScript = useCallback(() => {
+        if (scriptLoaded.current) {
+            // Script already loaded, just re-process
+            window.instgrm?.Embeds.process();
+            return;
         }
-        load();
+
+        // Remove existing script to force re-process
+        const existingScript = document.querySelector(
+            'script[src*="instagram.com/embed.js"]'
+        );
+        if (existingScript) {
+            existingScript.remove();
+        }
+
+        const script = document.createElement("script");
+        script.src = "//www.instagram.com/embed.js";
+        script.async = true;
+        script.onload = () => {
+            scriptLoaded.current = true;
+            window.instgrm?.Embeds.process();
+        };
+        document.body.appendChild(script);
     }, []);
 
-    if (posts.length === 0) return null;
+    // When posts are available, load/process Instagram embeds
+    useEffect(() => {
+        if (initialPosts.length > 0) {
+            // Small delay to allow DOM to render blockquotes first
+            const timer = setTimeout(() => {
+                loadInstagramScript();
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [initialPosts, loadInstagramScript]);
+
+    if (initialPosts.length === 0) return null;
+
+    // Normalize URL to ensure it ends with /
+    function normalizeUrl(url: string) {
+        // Remove any query params and ensure trailing slash
+        const cleanUrl = url.split("?")[0];
+        return cleanUrl.endsWith("/") ? cleanUrl : cleanUrl + "/";
+    }
 
     return (
-        <section className="py-32 bg-white border-t border-[#1A1A1A]/10">
-            <div className="container mx-auto px-6">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="mb-16 max-w-2xl"
-                >
-                    <span className="text-[#0F3D2E] font-bold text-sm tracking-widest uppercase mb-4 block">
-                        Social
-                    </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
-                        Follow Us on Instagram.
-                    </h2>
-                    <p className="mt-4 text-[#1A1A1A]/60 text-lg">
-                        See the latest moments captured with Sebooth.
-                    </p>
-                </motion.div>
+        <section className="py-24 px-6 md:px-20 bg-white paper-texture border-t-8 border-black">
+            {/* Section Header */}
+            <div className="mb-12 flex items-center gap-6">
+                <EditableText section="instagram" fieldKey="section_title" defaultValue={sectionTitle} as="h2" className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-text-dark">
+                    {sectionTitle}
+                </EditableText>
+                <EditableText section="instagram" fieldKey="section_tag" defaultValue={sectionTag} as="span" className="marker-font text-secondary text-3xl rotate-[-5deg] inline-block" style={{ textShadow: "none" }}>
+                    {sectionTag}
+                </EditableText>
+            </div>
 
-                <div className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide" 
-                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                    {posts.map((post, idx) => (
-                        <motion.div
-                            key={post.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: idx * 0.1 }}
-                            className="snap-center flex-shrink-0 w-[320px] md:w-[350px]"
+            {/* Horizontal Scroll Carousel with Real Embeds */}
+            <div className="flex overflow-x-auto gap-8 pb-12 no-scrollbar px-2 items-start">
+                {initialPosts.map((post) => (
+                    <div
+                        key={post.id}
+                        className="flex-none w-[340px] min-w-[340px]"
+                    >
+                        <blockquote
+                            className="instagram-media"
+                            data-instgrm-captioned
+                            data-instgrm-permalink={normalizeUrl(post.instagram_url)}
+                            data-instgrm-version="14"
+                            style={{
+                                background: "#FFF",
+                                border: "0",
+                                borderRadius: "0",
+                                boxShadow: "none",
+                                margin: "0",
+                                maxWidth: "340px",
+                                minWidth: "280px",
+                                padding: "0",
+                                width: "100%",
+                            }}
                         >
-                            <div className="bg-white rounded-2xl border border-[#1A1A1A]/10 shadow-sm overflow-hidden hover:shadow-xl transition-shadow duration-500">
-                                <iframe
-                                    src={`${post.instagram_url}embed/`}
-                                    className="w-full border-0"
-                                    style={{ minHeight: '480px' }}
-                                    loading="lazy"
-                                    allowTransparency
-                                    scrolling="no"
-                                />
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
+                            <a
+                                href={normalizeUrl(post.instagram_url)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block p-4 text-center text-sm text-primary/60 font-bold uppercase"
+                            >
+                                Loading Instagram Post...
+                            </a>
+                        </blockquote>
+                    </div>
+                ))}
             </div>
         </section>
     );

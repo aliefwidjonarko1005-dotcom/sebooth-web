@@ -1,56 +1,99 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { parseJsonContent } from "@/lib/useSiteContent";
+import { EditableText } from "@/components/admin/EditableText";
 
-const testimonials = [
+const shadowCycle = ["hard-shadow-black", "hard-shadow-blue", "hard-shadow-orange"];
+const avatarColors = ["bg-primary", "bg-secondary", "bg-primary"];
+
+interface TestimonialItem {
+    quote: string;
+    author: string;
+    initials: string;
+    role: string;
+    offsetClass: string;
+}
+
+const defaultTestimonials: TestimonialItem[] = [
     {
-        quote: "The print quality is unmatched. It feels like a studio session but instant.",
-        author: "Sarah & Dimas",
-        role: "Wedding Clients"
+        quote: "SEBOOTH MADE OUR WEDDING LEGENDARY. THE QUALITY OF THE PRINTS IS JUST NEXT LEVEL.",
+        author: "Amanda & Michael",
+        initials: "AM",
+        role: "Wedding Client",
+        offsetClass: "",
     },
     {
-        quote: "Sebooth brought a whole new energy to our corporate gala. Very professional team.",
-        author: "TechCorp Indonesia",
-        role: "Corporate Partner"
+        quote: "THE ZERO-LAG SYSTEM IS NOT A JOKE. WE GOT OUR PHOTOS ON OUR PHONES BEFORE WE EVEN LEFT THE BOOTH.",
+        author: "Rian Kusuma",
+        initials: "RK",
+        role: "Tech Conference",
+        offsetClass: "mt-8 md:mt-16",
     },
     {
-        quote: "Simple, fast, and aesthetic. Exactly what we needed for our brand launch.",
-        author: "Local Coffee Shop",
-        role: "Brand Activation"
+        quote: "SOPHISTICATED HARDWARE, BUT SO EASY TO USE. OUR BOSS LOVED THE GLAMOUR FILTER!",
+        author: "Sarah Teo",
+        initials: "ST",
+        role: "HR at TechCorp",
+        offsetClass: "",
     },
 ];
 
-export function Testimonials() {
-    return (
-        <section className="py-32 bg-[#F9F9F9] border-t border-[#1A1A1A]/10">
-            <div className="container mx-auto px-6">
-                <div className="mb-20">
-                    <span className="text-[#0F3D2E] font-bold text-sm tracking-widest uppercase mb-4 block">Testimonials</span>
-                    <h2 className="text-4xl md:text-5xl font-bold font-sebooth text-[#1A1A1A] tracking-tight">
-                        Trusted by Many.
-                    </h2>
-                </div>
+const defaultContent = {
+    section_title: "TRUSTED BY MANY",
+    section_badge: "REAL FEEDBACK",
+    items: "",
+};
 
-                <div className="grid md:grid-cols-3 gap-12">
-                    {testimonials.map((t, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: i * 0.1 }}
-                            className="flex flex-col justify-between"
-                        >
-                            <blockquote className="text-xl md:text-2xl font-serif italic text-[#1A1A1A]/80 mb-8 leading-relaxed">
-                                &quot;{t.quote}&quot;
-                            </blockquote>
-                            <div>
-                                <cite className="not-italic font-bold text-[#1A1A1A] block">{t.author}</cite>
-                                <span className="text-sm text-[#1A1A1A]/50 uppercase tracking-wider">{t.role}</span>
-                            </div>
-                        </motion.div>
-                    ))}
+interface TestimonialsProps {
+    initialData?: Record<string, string>;
+}
+
+export function Testimonials({ initialData = {} }: TestimonialsProps) {
+    const content = { ...defaultContent, ...initialData };
+    const testimonials = parseJsonContent<TestimonialItem[]>(content.items, defaultTestimonials);
+
+    return (
+        <section className="py-24 px-6 md:px-20 bg-white paper-texture overflow-hidden border-t-8 border-black">
+            {/* Section Header */}
+            <div className="text-center mb-16">
+                <div className="inline-block relative">
+                    <EditableText section="testimonials" fieldKey="section_title" defaultValue={content.section_title} as="h2" className="text-5xl md:text-8xl font-black uppercase tracking-tighter text-text-dark">
+                        {content.section_title}
+                    </EditableText>
+                    <div className="absolute -right-16 -top-12 rotate-12 bg-secondary text-white px-6 py-2 text-xl marker-font border-2 border-black hard-shadow-black" style={{ textShadow: "none" }}>
+                        <EditableText section="testimonials" fieldKey="section_badge" defaultValue={content.section_badge} as="span" className="text-white text-xl marker-font">
+                            {content.section_badge}
+                        </EditableText>
+                    </div>
                 </div>
+            </div>
+
+            {/* Testimonial Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {testimonials.map((t, i) => (
+                    <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1 }}
+                        className={`bg-white p-8 border-2 border-black relative group ${shadowCycle[i % shadowCycle.length]} ${t.offsetClass || ""}`}
+                    >
+                        <div className="text-text-dark mb-6 italic font-black text-xl leading-tight">
+                            &quot;{t.quote}&quot;
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className={`w-12 h-12 ${avatarColors[i % avatarColors.length]} flex items-center justify-center text-white font-black border border-black`}>
+                                {t.initials}
+                            </div>
+                            <div>
+                                <div className="font-black uppercase text-sm text-text-dark">{t.author}</div>
+                                <div className="text-xs font-bold text-primary/60 uppercase">{t.role}</div>
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
             </div>
         </section>
     );

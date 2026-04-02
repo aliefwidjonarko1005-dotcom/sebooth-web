@@ -2,19 +2,15 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const navItems = [
-    { name: "About Us", href: "/about" },
-    { name: "Our Product", href: "/#product" },
-    { name: "Pricing", href: "/#pricing" },
-    { name: "Gallery", href: "/#gallery" },
-    { name: "Partnership", href: "/partnership" },
-    { name: "Location", href: "/#location" },
-    { name: "My Photos", href: "/profile" },
+    { name: "ABOUT", href: "/about" },
+    { name: "PRODUCT", href: "/#product" },
+    { name: "PRICING", href: "/#pricing" },
+    { name: "GALLERY", href: "/#gallery" },
+    { name: "PARTNERSHIP", href: "/partnership" },
 ];
 
 export function Header() {
@@ -32,53 +28,55 @@ export function Header() {
 
     return (
         <header
-            className={cn(
-                "fixed top-0 left-0 right-0 z-50 transition-colors duration-300",
-                isScrolled
-                    ? "bg-white border-b border-black/5 py-3"
-                    : "bg-transparent py-6"
-            )}
+            className={`sticky top-0 left-0 right-0 z-50 bg-white border-b-4 border-black transition-none ${
+                isScrolled ? "py-3" : "py-4"
+            }`}
         >
-            <div className="container mx-auto px-6 flex items-center justify-between">
+            <div className="w-full px-6 flex items-center justify-between">
+                {/* Text Logo */}
                 <Link
                     href="/"
-                    className="relative w-32 h-8"
+                    className="text-2xl font-black text-primary uppercase tracking-tighter"
                 >
-                    <Image
-                        src="/logo-text-black.png"
-                        alt="Sebooth"
-                        fill
-                        className="object-contain object-left"
-                        priority
-                    />
+                    sebooth.
                 </Link>
 
                 {/* Desktop Navigation */}
-                <nav className="hidden md:flex items-center gap-10">
+                <nav className="hidden md:flex gap-6 items-center">
                     {navItems.map((item) => (
                         <Link
                             key={item.name}
                             href={item.href}
-                            className="text-sm font-medium text-[#1A1A1A]/80 hover:text-black transition-colors"
+                            className="font-bold uppercase tracking-tight text-primary hover:bg-secondary hover:text-white transition-none px-2 py-1"
                         >
                             {item.name}
                         </Link>
                     ))}
                     <Link
-                        href="#contact"
-                        className="px-6 py-2.5 bg-[#0F3D2E] hover:bg-[#195240] text-white font-medium text-sm rounded-none transition-colors"
+                        href="/profile"
+                        className="font-black uppercase tracking-tight text-primary border-l-2 border-black pl-6 ml-2"
                     >
-                        Book Now
+                        MY PHOTOS
                     </Link>
                 </nav>
 
-                {/* Mobile Menu Toggle */}
-                <button
-                    className="md:hidden text-[#1A1A1A]"
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                >
-                    {isMobileMenuOpen ? <X /> : <Menu />}
-                </button>
+                {/* Desktop CTA + Mobile Toggle */}
+                <div className="flex items-center gap-4">
+                    <Link
+                        href="#contact"
+                        className="hidden md:inline-block font-bold uppercase tracking-tight bg-secondary text-white px-6 py-2 border-2 border-black active:translate-x-[2px] active:translate-y-[2px] transition-none hard-shadow-black"
+                    >
+                        BOOK NOW
+                    </Link>
+
+                    {/* Mobile Menu Toggle */}
+                    <button
+                        className="md:hidden text-primary"
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    >
+                        {isMobileMenuOpen ? <X /> : <Menu />}
+                    </button>
+                </div>
             </div>
 
             {/* Mobile Navigation */}
@@ -88,25 +86,32 @@ export function Header() {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="absolute top-full left-0 right-0 bg-white border-b border-black/5 p-6 md:hidden"
+                        className="absolute top-full left-0 right-0 bg-white border-b-4 border-black p-6 md:hidden"
                     >
-                        <nav className="flex flex-col gap-6">
+                        <nav className="flex flex-col gap-4">
                             {navItems.map((item) => (
                                 <Link
                                     key={item.name}
                                     href={item.href}
-                                    className="text-xl font-medium text-[#1A1A1A] hover:text-[#0F3D2E] transition-colors"
+                                    className="text-xl font-black uppercase tracking-tight text-primary hover:bg-secondary hover:text-white transition-none px-2 py-2"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     {item.name}
                                 </Link>
                             ))}
                             <Link
-                                href="#contact"
-                                className="px-6 py-3 bg-[#0F3D2E] hover:bg-[#195240] text-white font-bold text-center rounded-none transition-colors"
+                                href="/profile"
+                                className="text-xl font-black uppercase tracking-tight text-primary border-t-2 border-black pt-4 mt-2"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
-                                Book Now
+                                MY PHOTOS
+                            </Link>
+                            <Link
+                                href="#contact"
+                                className="font-bold uppercase bg-secondary text-white text-center py-3 border-2 border-black hard-shadow-black transition-none mt-2"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                BOOK NOW
                             </Link>
                         </nav>
                     </motion.div>

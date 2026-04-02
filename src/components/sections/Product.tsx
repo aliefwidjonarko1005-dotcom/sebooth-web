@@ -1,133 +1,161 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Check, ArrowRight } from "lucide-react";
+import { Check } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { parseJsonContent } from "@/lib/useSiteContent";
+import { EditableText } from "@/components/admin/EditableText";
 
-const products = [
+interface ProductItem {
+    id: string;
+    name: string;
+    tagline: string;
+    description: string;
+    specs: string[];
+    colSpan: string;
+    shadow: string;
+    badge?: string;
+}
+
+const defaultProducts: ProductItem[] = [
     {
         id: "standard",
-        name: "Standard Booth",
+        name: "Standard",
         tagline: "Digital-First Experience",
-        description: "Perfect for fast-paced events. Instant sharing, zero waste philosophy.",
+        description: "Basic high-quality digital setup for small intimate gatherings.",
         specs: ["Unlimited Digital Shots", "Basic Props Kit", "Instant QR Download", "Online Gallery Access"],
-        imagePlaceholder: "Standard Booth Setup"
+        colSpan: "md:col-span-4",
+        shadow: "hard-shadow-black",
     },
     {
         id: "deluxe",
-        name: "Deluxe Booth",
+        name: "Deluxe",
         tagline: "The Professional Choice",
-        description: "High-speed printing meets premium backdrop selection.",
+        description: "Full professional lighting, custom backdrops, and physical printouts for your guests.",
         specs: ["Unlimited Physical Prints", "Premium Backdrop Selection", "DNP RX1 HS High-Speed Printing", "On-site Technical Assistant"],
-        imagePlaceholder: "Deluxe Printing Station"
+        colSpan: "md:col-span-8",
+        shadow: "hard-shadow-blue",
     },
     {
         id: "glamour",
-        name: "Glamour Booth",
+        name: "Glamour",
         tagline: "Studio Elegance",
-        description: "The Kardashian-style experience. Black & white filter with beauty lighting.",
+        description: "Kardashian-style skin softening filters and black & white editorial finish.",
         specs: ["Black & White Signature", "High-End Studio Lighting", "Beauty Filter Integration", "Luxury Visuals"],
-        imagePlaceholder: "Glamour Studio Lighting"
+        colSpan: "md:col-span-7",
+        shadow: "hard-shadow-orange",
+        badge: "POPULAR",
+    },
+    {
+        id: "zero-lag",
+        name: "Zero-Lag",
+        tagline: "Instant Delivery",
+        description: "Instant digital delivery via QR. No queues, no waiting, just pure fun.",
+        specs: ["Instant QR Gallery", "Zero Wait Time", "Real-Time Cloud Upload", "Guest Self-Service"],
+        colSpan: "md:col-span-5",
+        shadow: "hard-shadow-black",
     },
 ];
 
-export function Product() {
-    const [activeProduct, setActiveProduct] = useState(products[0]);
+const defaultContent = {
+    section_title: "OUR SERVICES",
+    section_tag: "[ 01 — EQUIPMENT & PACKAGES ]",
+    items: "",
+    pro_title: "Pro Hardware",
+    pro_description: "We use DSLR cameras, studio-grade strobes, and industrial dye-sublimation printers. No webcams allowed.",
+};
+
+interface ProductProps {
+    initialData?: Record<string, string>;
+}
+
+export function Product({ initialData = {} }: ProductProps) {
+    const [expandedId, setExpandedId] = useState<string | null>(null);
+    const content = { ...defaultContent, ...initialData };
+    
+    const products = parseJsonContent<ProductItem[]>(content.items, defaultProducts);
+
+    const toggleProduct = (id: string) => {
+        setExpandedId(expandedId === id ? null : id);
+    };
 
     return (
-        <section id="product" className="bg-[#F9F9F9] border-t border-[#1A1A1A]/10">
-            <div className="grid md:grid-cols-2 min-h-[800px]">
+        <section id="product" className="py-24 px-6 md:px-20 bg-white paper-texture">
+            {/* Section Header */}
+            <div className="mb-16 flex flex-col md:flex-row justify-between items-end border-b-8 border-black pb-4">
+                <EditableText section="product" fieldKey="section_title" defaultValue={content.section_title} as="h2" className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-text-dark">
+                    {content.section_title}
+                </EditableText>
+                <EditableText section="product" fieldKey="section_tag" defaultValue={content.section_tag} as="p" className="text-lg font-bold uppercase text-primary mb-2">
+                    {content.section_tag}
+                </EditableText>
+            </div>
 
-                {/* Left: Dynamic Image Display */}
-                <div className="relative h-[400px] md:h-auto bg-[#E5E5E5] overflow-hidden border-b md:border-b-0 md:border-r border-[#1A1A1A]/10">
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={activeProduct.id}
-                            initial={{ opacity: 0, scale: 1.05 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.5 }}
-                            className="absolute inset-0 flex items-center justify-center p-12"
-                        >
-                            {/* Placeholder for Product Image */}
-                            <div className="text-center space-y-4">
-                                <div className="text-6xl md:text-8xl opacity-10 font-bold tracking-tighter">
-                                    {activeProduct.id.toUpperCase()}
-                                </div>
-                                <div className="text-[#1A1A1A]/40 font-medium border border-[#1A1A1A]/20 px-6 py-3 inline-block">
-                                    [Image: {activeProduct.imagePlaceholder}]
-                                </div>
+            {/* Product Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                {products.map((product) => (
+                    <div
+                        key={product.id}
+                        className={cn(
+                            "bg-white p-8 border-2 border-black cursor-pointer group hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 ease-out",
+                            product.colSpan,
+                            product.shadow
+                        )}
+                        onClick={() => toggleProduct(product.id)}
+                    >
+                        {/* Card Header */}
+                        <div className="mb-4 flex justify-between items-start">
+                            <div>
+                                <h3 className="text-3xl font-black uppercase mb-1 text-text-dark">
+                                    {product.name}
+                                </h3>
+                                <p className="text-sm font-bold uppercase tracking-wide text-primary">
+                                    {product.tagline}
+                                </p>
                             </div>
-                        </motion.div>
-                    </AnimatePresence>
+                            {product.badge && (
+                                <span className="bg-secondary text-white text-xs px-2 py-1 font-bold border border-black">
+                                    {product.badge}
+                                </span>
+                            )}
+                        </div>
 
-                    {/* Mobile Label overlay */}
-                    <div className="absolute bottom-6 left-6 md:hidden">
-                        <span className="bg-[#1A1A1A] text-white px-3 py-1 text-xs font-bold uppercase tracking-wider">
-                            Viewing: {activeProduct.name}
-                        </span>
-                    </div>
-                </div>
+                        <p className="font-bold uppercase text-text-dark mb-4">
+                            {product.description}
+                        </p>
 
-                {/* Right: Interactive Product List */}
-                <div className="flex flex-col">
-                    {/* Section Header */}
-                    <div className="p-12 md:p-16 border-b border-[#1A1A1A]/10">
-                        <span className="text-[#0F3D2E] font-bold text-sm tracking-widest uppercase mb-4 block">Our Services</span>
-                        <h2 className="text-4xl md:text-5xl font-bold font-sebooth text-[#1A1A1A] tracking-tighter leading-none">
-                            Curated <br /> Experiences.
-                        </h2>
-                    </div>
-
-                    {/* Product Menu */}
-                    <div className="flex-1 flex flex-col">
-                        {products.map((product) => (
-                            <button
-                                key={product.id}
-                                onClick={() => setActiveProduct(product)}
-                                className={cn(
-                                    "group text-left p-8 md:p-10 border-b border-[#1A1A1A]/10 transition-all duration-300 hover:bg-[#EAEAEA] relative overflow-hidden",
-                                    activeProduct.id === product.id ? "bg-[#1A1A1A] text-white hover:bg-[#1A1A1A]" : "text-[#1A1A1A]"
-                                )}
-                            >
-                                <div className="flex justify-between items-start mb-4 relative z-10">
-                                    <div>
-                                        <h3 className={cn("text-2xl font-bold mb-1", activeProduct.id === product.id ? "text-white" : "text-[#1A1A1A]")}>
-                                            {product.name}
-                                        </h3>
-                                        <p className={cn("text-sm font-medium uppercase tracking-wide", activeProduct.id === product.id ? "text-[#D4AF37]" : "text-[#0F3D2E]")}>
-                                            {product.tagline}
-                                        </p>
-                                    </div>
-                                    <ArrowRight className={cn(
-                                        "w-6 h-6 transition-transform duration-300",
-                                        activeProduct.id === product.id ? "text-white rotate-0" : "text-[#1A1A1A]/20 -rotate-45 group-hover:rotate-0 group-hover:text-[#1A1A1A]"
-                                    )} />
-                                </div>
-
-                                {/* Expandable Content for Desktop (always visible if active) */}
-                                <div
-                                    className={cn(
-                                        "space-y-6 overflow-hidden transition-all duration-500 ease-in-out relative z-10",
-                                        activeProduct.id === product.id ? "max-h-[500px] opacity-100 mt-6" : "max-h-0 opacity-0 md:max-h-0 md:opacity-0"
-                                    )}
-                                >
-                                    <p className={cn("leading-relaxed", activeProduct.id === product.id ? "text-white/80" : "text-[#1A1A1A]/70")}>
-                                        {product.description}
-                                    </p>
-
-                                    <div className="grid grid-cols-2 gap-y-2">
+                        {/* Expandable Specs — CSS grid transition */}
+                        <div className={expandedId === product.id ? "grid-expand" : "grid-collapse"}>
+                            <div className="grid-inner">
+                                <div className="border-t-2 border-black pt-6 mt-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3">
                                         {product.specs.map((spec, i) => (
-                                            <div key={i} className="flex items-start gap-3">
-                                                <Check className={cn("w-4 h-4 mt-0.5 shrink-0", activeProduct.id === product.id ? "text-[#D4AF37]" : "text-[#0F3D2E]")} />
-                                                <span className={cn("text-sm font-medium", activeProduct.id === product.id ? "text-white/80" : "text-[#1A1A1A]/70")}>{spec}</span>
+                                            <div key={i} className="flex items-center gap-3">
+                                                <Check className="w-4 h-4 shrink-0 text-secondary" />
+                                                <span className="text-sm font-bold uppercase text-text-dark">
+                                                    {spec}
+                                                </span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
-                            </button>
-                        ))}
+                            </div>
+                        </div>
+                    </div>
+                ))}
+
+                {/* Pro Hardware Banner */}
+                <div className="md:col-span-12 bg-primary text-white p-12 border-2 border-black flex flex-col md:flex-row justify-between items-center gap-8 hard-shadow-orange">
+                    <div className="max-w-xl">
+                        <EditableText section="product" fieldKey="pro_title" defaultValue={content.pro_title} as="h3" className="text-4xl md:text-5xl font-black uppercase mb-4 leading-none text-white">
+                            {content.pro_title}
+                        </EditableText>
+                        <EditableText section="product" fieldKey="pro_description" defaultValue={content.pro_description} as="p" className="text-lg font-bold uppercase text-white">
+                            {content.pro_description}
+                        </EditableText>
+                    </div>
+                    <div className="w-full md:w-64 h-48 bg-white/10 border-4 border-white flex items-center justify-center">
+                        <span className="text-white/40 font-bold uppercase text-sm">[Equipment Photo]</span>
                     </div>
                 </div>
             </div>

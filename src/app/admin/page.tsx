@@ -8,15 +8,20 @@ import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
 import { 
   Loader2, Home, LogOut, ShieldCheck, Users, Type, DollarSign, 
-  Instagram, Newspaper, Plus, Trash2, Save, X
+  Instagram, Newspaper, Plus, Trash2, Save, X, Image, PenTool,
+  ChevronDown, ChevronUp
 } from 'lucide-react'
 
-type TabKey = 'content' | 'pricing' | 'instagram' | 'news' | 'admins'
+type TabKey = 'editor' | 'content' | 'pricing' | 'instagram' | 'news' | 'admins'
 
 interface ContentItem { id: string; section: string; key: string; value: string; }
 interface IGPost { id: string; instagram_url: string; display_order: number; }
 interface NewsItem { id: string; title: string; body: string; image_url: string; published: boolean; created_at: string; }
 interface AdminItem { id: string; email: string; is_super: boolean; }
+interface GalleryImage { name: string; url: string; }
+
+// ─── Editor Section Collapse State ───
+type EditorSection = 'hero' | 'about' | 'product' | 'pricing' | 'testimonials' | 'gallery' | 'faq' | 'location'
 
 export default function AdminPage() {
   const router = useRouter()
@@ -25,7 +30,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
   const [isSuper, setIsSuper] = useState(false)
-  const [tab, setTab] = useState<TabKey>('content')
+  const [tab, setTab] = useState<TabKey>('editor')
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
 
@@ -42,26 +47,77 @@ export default function AdminPage() {
   const [newNewsBody, setNewNewsBody] = useState('')
   const [newNewsImage, setNewNewsImage] = useState('')
 
+  // Editor fields — Hero
+  const [heroTitle, setHeroTitle] = useState('Capture Every Moment, Create')
+  const [heroAccent, setHeroAccent] = useState('Infinite Memories.')
+  const [heroSubtitle, setHeroSubtitle] = useState('Premium Photobooth Experience for Weddings, Corporate, and Private Parties. Powered by Zero-Lag System.')
+  const [heroCta, setHeroCta] = useState('Pesan Sekarang')
+
+  // Editor fields — About
+  const [aboutTag, setAboutTag] = useState('[ 00 — ORIGIN STORY ]')
+  const [aboutTitle, setAboutTitle] = useState('FROM\nENGINEERING\nTO AESTHETICS.')
+  const [aboutDesc, setAboutDesc] = useState('Berawal dari proyek passion kecil, sebooth. berevolusi menjadi layanan photobooth terdepan di Semarang.')
+  const [aboutCta, setAboutCta] = useState('READ OUR FULL STORY →')
+
+  // Editor fields — Product
+  const [prodTitle, setProdTitle] = useState('OUR SERVICES')
+  const [prodTag, setProdTag] = useState('[ 01 — EQUIPMENT & PACKAGES ]')
+  const [prodProTitle, setProdProTitle] = useState('Pro Hardware')
+  const [prodProDesc, setProdProDesc] = useState('We use DSLR cameras, studio-grade strobes, and industrial dye-sublimation printers. No webcams allowed.')
+
+  // Editor fields — Pricing
+  const [pricingTitle, setPricingTitle] = useState('PRICING PLANS')
+  const [pricingSubtitle, setPricingSubtitle] = useState('NO HIDDEN FEES. RAW HONESTY.')
+
+  // Editor fields — Testimonials
+  const [testiTitle, setTestiTitle] = useState('TRUSTED BY MANY')
+  const [testiBadge, setTestiBadge] = useState('REAL FEEDBACK')
+
+  // Editor fields — Gallery
+  const [galleryTitle, setGalleryTitle] = useState('VISUAL ARCHIVE')
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
+  const [uploadingGallery, setUploadingGallery] = useState(false)
+
+  // Editor fields — FAQ
+  const [faqTitle, setFaqTitle] = useState('COMMON QUESTIONS')
+  const [faqItems, setFaqItems] = useState<{question: string; answer: string}[]>([
+    { question: 'Travel outside Semarang?', answer: 'Yes, we cover events across Central Java and can travel nationwide for special requests. Additional transport fees may apply.' },
+    { question: 'Space needed?', answer: 'Our standard setup requires a 3x3 meter space to ensure the best experience for your guests and optimal lighting conditions.' },
+    { question: 'Custom frame design?', answer: 'Absolutely. All our packages include a custom frame design tailored to your event theme or brand identity.' },
+    { question: 'Digital copies?', answer: 'Yes! Guests can download photos instantly via QR code, and we provide a full online gallery link after the event.' },
+  ])
+
+  // Editor fields — Location
+  const [locTitle, setLocTitle] = useState('Visit Our Studio')
+  const [locName, setLocName] = useState('Sebooth HQ')
+  const [locAddress, setLocAddress] = useState('Jl. Photobooth Premium No. 12\nSemarang Selatan, Jawa Tengah 50241')
+  const [locMaps, setLocMaps] = useState('https://maps.google.com')
+
+  // Collapsible sections
+  const [openSections, setOpenSections] = useState<Set<EditorSection>>(new Set(['hero']))
+
+  const toggleSection = (s: EditorSection) => {
+    setOpenSections(prev => {
+      const next = new Set(prev)
+      if (next.has(s)) next.delete(s); else next.add(s)
+      return next
+    })
+  }
+
   useEffect(() => {
     async function init() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
 
       const userEmail = user.email || ''
-      console.log('Admin check for:', userEmail)
-
-      // Primary check: env var (always works, no RLS issues)
       const envAdmins = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase())
       const isEnvAdmin = envAdmins.includes(userEmail.toLowerCase())
 
-      // Secondary check: DB table (may fail due to RLS)
       const { data: adminData } = await supabase
         .from('admins')
         .select('*')
         .eq('email', userEmail)
         .maybeSingle()
-
-      console.log('Env admin:', isEnvAdmin, 'DB admin:', adminData)
 
       if (isEnvAdmin || adminData) {
         setIsAdmin(true)
@@ -85,6 +141,132 @@ export default function AdminPage() {
     setIgPosts(ig.data || [])
     setNews(n.data || [])
     setAdmins(a.data || [])
+
+    const items = c.data || []
+
+    // Load hero fields
+    loadFieldsFromContent(items, 'hero', {
+      title: setHeroTitle, accent: setHeroAccent, subtitle: setHeroSubtitle, cta_text: setHeroCta,
+    })
+    // Load about fields
+    loadFieldsFromContent(items, 'about', {
+      tag: setAboutTag, title: setAboutTitle, description: setAboutDesc, cta_text: setAboutCta,
+    })
+    // Load product fields
+    loadFieldsFromContent(items, 'product', {
+      section_title: setProdTitle, section_tag: setProdTag, pro_title: setProdProTitle, pro_description: setProdProDesc,
+    })
+    // Load pricing fields
+    loadFieldsFromContent(items, 'pricing', {
+      section_title: setPricingTitle, section_subtitle: setPricingSubtitle,
+    })
+    // Load testimonials fields
+    loadFieldsFromContent(items, 'testimonials', {
+      section_title: setTestiTitle, section_badge: setTestiBadge,
+    })
+    // Load gallery fields
+    loadFieldsFromContent(items, 'gallery', {
+      section_title: setGalleryTitle,
+    })
+    // Load FAQ fields
+    const faqTitleItem = items.find(i => i.section === 'faq' && i.key === 'section_title')
+    if (faqTitleItem?.value) setFaqTitle(faqTitleItem.value)
+    const faqItemsItem = items.find(i => i.section === 'faq' && i.key === 'items')
+    if (faqItemsItem?.value) {
+      try { setFaqItems(JSON.parse(faqItemsItem.value)) } catch {}
+    }
+    // Load location fields
+    loadFieldsFromContent(items, 'location', {
+      title: setLocTitle, name: setLocName, address: setLocAddress, maps_url: setLocMaps,
+    })
+
+    await loadGalleryImages()
+  }
+
+  function loadFieldsFromContent(
+    items: ContentItem[],
+    section: string,
+    setters: Record<string, (v: string) => void>
+  ) {
+    const filtered = items.filter(i => i.section === section)
+    filtered.forEach(item => {
+      if (item.value && setters[item.key]) {
+        setters[item.key](item.value)
+      }
+    })
+  }
+
+  async function loadGalleryImages() {
+    const { data } = await supabase.storage.from('gallery').list('', { limit: 100, sortBy: { column: 'created_at', order: 'desc' } })
+    if (data) {
+      const images = data
+        .filter(f => !f.name.startsWith('.'))
+        .map(f => ({
+          name: f.name,
+          url: supabase.storage.from('gallery').getPublicUrl(f.name).data.publicUrl
+        }))
+      setGalleryImages(images)
+    }
+  }
+
+  async function uploadGalleryImage(file: File) {
+    setUploadingGallery(true)
+    const ext = file.name.split('.').pop()
+    const fileName = `gallery_${Date.now()}.${ext}`
+    const { error } = await supabase.storage.from('gallery').upload(fileName, file)
+    if (error) {
+      flash(`Upload error: ${error.message}`)
+    } else {
+      await loadGalleryImages()
+      flash('Image uploaded!')
+    }
+    setUploadingGallery(false)
+  }
+
+  async function deleteGalleryImage(name: string) {
+    await supabase.storage.from('gallery').remove([name])
+    await loadGalleryImages()
+    flash('Image deleted')
+  }
+
+  // ─── Generic save field to site_content ───
+  async function saveField(section: string, key: string, value: string) {
+    setSaving(true)
+    const { data: existing } = await supabase
+      .from('site_content')
+      .select('id')
+      .eq('section', section)
+      .eq('key', key)
+      .maybeSingle()
+    
+    if (existing) {
+      await supabase.from('site_content').update({ value, updated_at: new Date().toISOString() }).eq('id', existing.id)
+    } else {
+      await supabase.from('site_content').insert({ section, key, value })
+    }
+    flash('Saved!')
+    setSaving(false)
+  }
+
+  // ─── Save multiple fields at once ───
+  async function saveMultipleFields(section: string, fields: Record<string, string>) {
+    setSaving(true)
+    for (const [key, value] of Object.entries(fields)) {
+      const { data: existing } = await supabase
+        .from('site_content')
+        .select('id')
+        .eq('section', section)
+        .eq('key', key)
+        .maybeSingle()
+      
+      if (existing) {
+        await supabase.from('site_content').update({ value, updated_at: new Date().toISOString() }).eq('id', existing.id)
+      } else {
+        await supabase.from('site_content').insert({ section, key, value })
+      }
+    }
+    flash('All changes saved!')
+    setSaving(false)
   }
 
   function flash(m: string) { setMsg(m); setTimeout(() => setMsg(''), 3000) }
@@ -101,11 +283,7 @@ export default function AdminPage() {
 
   async function addContent(section: string, key: string) {
     const { error } = await supabase.from('site_content').insert({ section, key, value: '' })
-    if (error) {
-      console.error('Insert error:', error)
-      flash(`Error: ${error.message}`)
-      return
-    }
+    if (error) { flash(`Error: ${error.message}`); return }
     await loadAll()
     flash('Added')
   }
@@ -161,6 +339,17 @@ export default function AdminPage() {
     flash('Admin removed')
   }
 
+  // ─── FAQ item CRUD ───
+  function addFaqItem() {
+    setFaqItems([...faqItems, { question: '', answer: '' }])
+  }
+  function removeFaqItem(idx: number) {
+    setFaqItems(faqItems.filter((_, i) => i !== idx))
+  }
+  function updateFaqItem(idx: number, field: 'question' | 'answer', val: string) {
+    setFaqItems(faqItems.map((item, i) => i === idx ? { ...item, [field]: val } : item))
+  }
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#F9F9F9]">
@@ -187,12 +376,55 @@ export default function AdminPage() {
   const sections = [...new Set(content.map(c => c.section))]
 
   const tabItems: { key: TabKey; label: string; icon: React.ReactNode }[] = [
+    { key: 'editor', label: 'Page Editor', icon: <PenTool className="w-4 h-4" /> },
     { key: 'content', label: 'Content', icon: <Type className="w-4 h-4" /> },
     { key: 'pricing', label: 'Pricing', icon: <DollarSign className="w-4 h-4" /> },
     { key: 'instagram', label: 'Instagram', icon: <Instagram className="w-4 h-4" /> },
     { key: 'news', label: 'News', icon: <Newspaper className="w-4 h-4" /> },
     ...(isSuper ? [{ key: 'admins' as const, label: 'Admins', icon: <Users className="w-4 h-4" /> }] : []),
   ]
+
+  // ─── Section Header Component ───
+  function SectionHeader({ id, title }: { id: EditorSection; title: string }) {
+    const isOpen = openSections.has(id)
+    return (
+      <button
+        onClick={() => toggleSection(id)}
+        className="w-full flex items-center justify-between py-3 px-1 text-left group"
+      >
+        <h2 className="text-lg font-bold text-[#1A1A1A] group-hover:text-[#0F3D2E] transition-colors">{title}</h2>
+        {isOpen ? <ChevronUp className="w-5 h-5 text-[#1A1A1A]/40" /> : <ChevronDown className="w-5 h-5 text-[#1A1A1A]/40" />}
+      </button>
+    )
+  }
+
+  // ─── Small Save Button ───
+  function SaveBtn({ onClick, label = 'Save' }: { onClick: () => void; label?: string }) {
+    return (
+      <button onClick={onClick} disabled={saving}
+        className="px-4 py-2 rounded-xl bg-[#0F3D2E] text-white text-xs font-bold hover:bg-[#195240] transition-all disabled:opacity-50 flex items-center gap-1">
+        <Save className="w-3 h-3" /> {label}
+      </button>
+    )
+  }
+
+  // ─── Input Field ───
+  function Field({ label, value, onChange, multiline = false, rows = 2 }: {
+    label: string; value: string; onChange: (v: string) => void; multiline?: boolean; rows?: number;
+  }) {
+    return (
+      <div>
+        <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-1 block">{label}</label>
+        {multiline ? (
+          <textarea value={value} onChange={e => onChange(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/10 text-sm resize-none" rows={rows} />
+        ) : (
+          <input value={value} onChange={e => onChange(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/10 text-sm font-bold" />
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[#F9F9F9]">
@@ -232,13 +464,206 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* CONTENT TAB */}
+        {/* ═══════════════════ EDITOR TAB ═══════════════════ */}
+        {tab === 'editor' && (
+          <div className="space-y-2">
+
+            {/* ── HERO ── */}
+            <div className="bg-white rounded-2xl border border-[#1A1A1A]/5 overflow-hidden">
+              <SectionHeader id="hero" title="🎬 Hero Section" />
+              {openSections.has('hero') && (
+                <div className="p-6 pt-0 space-y-4">
+                  <Field label="Title (Line utama)" value={heroTitle} onChange={setHeroTitle} />
+                  <Field label="Accent Text (teks marker)" value={heroAccent} onChange={setHeroAccent} />
+                  <Field label="Subtitle" value={heroSubtitle} onChange={setHeroSubtitle} multiline rows={3} />
+                  <Field label="CTA Button Text" value={heroCta} onChange={setHeroCta} />
+                  <SaveBtn onClick={() => saveMultipleFields('hero', {
+                    title: heroTitle, accent: heroAccent, subtitle: heroSubtitle, cta_text: heroCta
+                  })} label="Save Hero" />
+                  {/* Preview */}
+                  <div className="mt-4">
+                    <p className="text-[10px] font-bold uppercase text-[#1A1A1A]/30 mb-2">Live Preview</p>
+                    <div className="bg-[#0A1628] p-6 rounded-2xl border border-[#1A1A1A]/10">
+                      <h1 className="text-xl md:text-3xl font-black text-white leading-tight tracking-tighter uppercase mb-3">
+                        {heroTitle} <br/><span className="text-[#FF6B35] italic">{heroAccent}</span>
+                      </h1>
+                      <p className="text-xs text-white/70 font-medium uppercase mb-4 max-w-lg">{heroSubtitle}</p>
+                      <span className="inline-block bg-[#FF6B35] text-white text-xs font-black uppercase px-4 py-2 border-2 border-black">{heroCta}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ── ABOUT ── */}
+            <div className="bg-white rounded-2xl border border-[#1A1A1A]/5 overflow-hidden">
+              <SectionHeader id="about" title="📖 About Section" />
+              {openSections.has('about') && (
+                <div className="p-6 pt-0 space-y-4">
+                  <Field label="Tag (e.g. [ 00 — ORIGIN STORY ])" value={aboutTag} onChange={setAboutTag} />
+                  <Field label="Title (gunakan Enter untuk baris baru)" value={aboutTitle} onChange={setAboutTitle} multiline rows={3} />
+                  <Field label="Description" value={aboutDesc} onChange={setAboutDesc} multiline rows={3} />
+                  <Field label="CTA Button Text" value={aboutCta} onChange={setAboutCta} />
+                  <SaveBtn onClick={() => saveMultipleFields('about', {
+                    tag: aboutTag, title: aboutTitle, description: aboutDesc, cta_text: aboutCta,
+                  })} label="Save About" />
+                </div>
+              )}
+            </div>
+
+            {/* ── PRODUCT ── */}
+            <div className="bg-white rounded-2xl border border-[#1A1A1A]/5 overflow-hidden">
+              <SectionHeader id="product" title="📦 Product / Services Section" />
+              {openSections.has('product') && (
+                <div className="p-6 pt-0 space-y-4">
+                  <Field label="Section Title" value={prodTitle} onChange={setProdTitle} />
+                  <Field label="Section Tag" value={prodTag} onChange={setProdTag} />
+                  <Field label="Pro Hardware Title" value={prodProTitle} onChange={setProdProTitle} />
+                  <Field label="Pro Hardware Description" value={prodProDesc} onChange={setProdProDesc} multiline rows={2} />
+                  <SaveBtn onClick={() => saveMultipleFields('product', {
+                    section_title: prodTitle, section_tag: prodTag, pro_title: prodProTitle, pro_description: prodProDesc,
+                  })} label="Save Product" />
+                  <p className="text-[10px] text-[#1A1A1A]/40">Untuk edit item produk individual, gunakan tab Content → section &quot;product&quot; → key &quot;items&quot; (format JSON).</p>
+                </div>
+              )}
+            </div>
+
+            {/* ── PRICING ── */}
+            <div className="bg-white rounded-2xl border border-[#1A1A1A]/5 overflow-hidden">
+              <SectionHeader id="pricing" title="💰 Pricing Section" />
+              {openSections.has('pricing') && (
+                <div className="p-6 pt-0 space-y-4">
+                  <Field label="Section Title" value={pricingTitle} onChange={setPricingTitle} />
+                  <Field label="Section Subtitle" value={pricingSubtitle} onChange={setPricingSubtitle} />
+                  <SaveBtn onClick={() => saveMultipleFields('pricing', {
+                    section_title: pricingTitle, section_subtitle: pricingSubtitle,
+                  })} label="Save Pricing" />
+                  <p className="text-[10px] text-[#1A1A1A]/40">Untuk edit fitur & harga paket, gunakan tab Content → section &quot;pricing&quot; dengan key seperti &quot;unlimited_features&quot;, &quot;unlimited_packages&quot;, &quot;quota_features&quot;, &quot;quota_packages&quot; (format JSON array).</p>
+                </div>
+              )}
+            </div>
+
+            {/* ── TESTIMONIALS ── */}
+            <div className="bg-white rounded-2xl border border-[#1A1A1A]/5 overflow-hidden">
+              <SectionHeader id="testimonials" title="⭐ Testimonials Section" />
+              {openSections.has('testimonials') && (
+                <div className="p-6 pt-0 space-y-4">
+                  <Field label="Section Title" value={testiTitle} onChange={setTestiTitle} />
+                  <Field label="Badge Text" value={testiBadge} onChange={setTestiBadge} />
+                  <SaveBtn onClick={() => saveMultipleFields('testimonials', {
+                    section_title: testiTitle, section_badge: testiBadge,
+                  })} label="Save Testimonials" />
+                  <p className="text-[10px] text-[#1A1A1A]/40">Untuk edit testimonial items, gunakan tab Content → section &quot;testimonials&quot; → key &quot;items&quot; (format JSON array).</p>
+                </div>
+              )}
+            </div>
+
+            {/* ── GALLERY ── */}
+            <div className="bg-white rounded-2xl border border-[#1A1A1A]/5 overflow-hidden">
+              <SectionHeader id="gallery" title="🖼️ Gallery Section" />
+              {openSections.has('gallery') && (
+                <div className="p-6 pt-0 space-y-4">
+                  <Field label="Section Title" value={galleryTitle} onChange={setGalleryTitle} />
+                  <SaveBtn onClick={() => saveField('gallery', 'section_title', galleryTitle)} label="Save Title" />
+
+                  {/* Upload */}
+                  <div className="border-t border-[#1A1A1A]/10 pt-4 mt-4">
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2 block flex items-center gap-2">
+                      <Image className="w-4 h-4" /> Upload Image to Gallery
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={e => { if (e.target.files?.[0]) uploadGalleryImage(e.target.files[0]) }}
+                      className="text-sm"
+                      disabled={uploadingGallery}
+                    />
+                    {uploadingGallery && <p className="text-xs text-[#0F3D2E] mt-2 font-bold">Uploading...</p>}
+                    <p className="text-[10px] text-[#1A1A1A]/40 mt-1">Pastikan sudah membuat bucket &quot;gallery&quot; (public) di Supabase Storage dan set RLS policies.</p>
+                  </div>
+
+                  {/* Image Grid */}
+                  {galleryImages.length === 0 && (
+                    <p className="text-[#1A1A1A]/40 text-sm text-center py-4">Belum ada gambar. Upload gambar pertamamu.</p>
+                  )}
+                  <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                    {galleryImages.map(img => (
+                      <div key={img.name} className="relative group">
+                        <img src={img.url} alt={img.name} className="w-full h-24 object-cover rounded-xl border border-[#1A1A1A]/10" />
+                        <button
+                          onClick={() => deleteGalleryImage(img.name)}
+                          className="absolute top-1 right-1 p-1 rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ── FAQ ── */}
+            <div className="bg-white rounded-2xl border border-[#1A1A1A]/5 overflow-hidden">
+              <SectionHeader id="faq" title="❓ FAQ Section" />
+              {openSections.has('faq') && (
+                <div className="p-6 pt-0 space-y-4">
+                  <Field label="Section Title" value={faqTitle} onChange={setFaqTitle} />
+
+                  <div className="border-t border-[#1A1A1A]/10 pt-4 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60">FAQ Items</label>
+                      <button onClick={addFaqItem} className="text-xs font-bold text-[#0F3D2E] hover:text-[#195240] flex items-center gap-1">
+                        <Plus className="w-3 h-3" /> Tambah FAQ
+                      </button>
+                    </div>
+                    {faqItems.map((item, idx) => (
+                      <div key={idx} className="bg-[#F9F9F9] rounded-xl p-4 space-y-2 relative">
+                        <button onClick={() => removeFaqItem(idx)}
+                          className="absolute top-2 right-2 p-1 rounded-full bg-red-50 text-red-500 hover:bg-red-100">
+                          <X className="w-3 h-3" />
+                        </button>
+                        <input value={item.question} onChange={e => updateFaqItem(idx, 'question', e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl bg-white border border-[#1A1A1A]/10 text-sm font-bold" placeholder="Pertanyaan" />
+                        <textarea value={item.answer} onChange={e => updateFaqItem(idx, 'answer', e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl bg-white border border-[#1A1A1A]/10 text-sm resize-none" rows={2} placeholder="Jawaban" />
+                      </div>
+                    ))}
+                  </div>
+
+                  <SaveBtn onClick={() => saveMultipleFields('faq', {
+                    section_title: faqTitle, items: JSON.stringify(faqItems),
+                  })} label="Save FAQ" />
+                </div>
+              )}
+            </div>
+
+            {/* ── LOCATION ── */}
+            <div className="bg-white rounded-2xl border border-[#1A1A1A]/5 overflow-hidden">
+              <SectionHeader id="location" title="📍 Location Section" />
+              {openSections.has('location') && (
+                <div className="p-6 pt-0 space-y-4">
+                  <Field label="Title" value={locTitle} onChange={setLocTitle} />
+                  <Field label="Place Name" value={locName} onChange={setLocName} />
+                  <Field label="Address (gunakan Enter untuk baris baru)" value={locAddress} onChange={setLocAddress} multiline rows={3} />
+                  <Field label="Google Maps URL" value={locMaps} onChange={setLocMaps} />
+                  <SaveBtn onClick={() => saveMultipleFields('location', {
+                    title: locTitle, name: locName, address: locAddress, maps_url: locMaps,
+                  })} label="Save Location" />
+                </div>
+              )}
+            </div>
+
+          </div>
+        )}
+
+        {/* ═══════════════════ CONTENT TAB ═══════════════════ */}
         {tab === 'content' && (
           <div className="space-y-8">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-[#1A1A1A]">Site Content</h2>
-              <div className="flex gap-2">
-                {['hero', 'about', 'product', 'gallery', 'faq', 'location', 'testimonials'].map(s => (
+              <div className="flex gap-2 flex-wrap">
+                {['hero', 'about', 'product', 'gallery', 'faq', 'location', 'testimonials', 'pricing'].map(s => (
                   <button key={s} onClick={() => addContent(s, `new_${Date.now()}`)}
                     className="text-[10px] font-bold uppercase px-3 py-1 rounded-full bg-[#1A1A1A]/5 text-[#1A1A1A]/50 hover:bg-[#0F3D2E]/10 hover:text-[#0F3D2E] transition-all">
                     + {s}
@@ -277,7 +702,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* PRICING TAB */}
+        {/* ═══════════════════ PRICING TAB ═══════════════════ */}
         {tab === 'pricing' && (
           <div className="space-y-6">
             <h2 className="text-xl font-bold text-[#1A1A1A]">Pricing Management</h2>
@@ -304,10 +729,11 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* INSTAGRAM TAB */}
+        {/* ═══════════════════ INSTAGRAM TAB ═══════════════════ */}
         {tab === 'instagram' && (
           <div className="space-y-6">
             <h2 className="text-xl font-bold text-[#1A1A1A]">Instagram Posts</h2>
+            <p className="text-sm text-[#1A1A1A]/50">Paste URL Instagram post. Post akan ter-embed otomatis di homepage.</p>
             <div className="flex gap-3">
               <input value={newIgUrl} onChange={e => setNewIgUrl(e.target.value)}
                 className="flex-1 px-4 py-3 rounded-xl bg-white border border-[#1A1A1A]/10 text-sm" placeholder="https://www.instagram.com/p/XXXXX/" />
@@ -331,12 +757,11 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* NEWS TAB */}
+        {/* ═══════════════════ NEWS TAB ═══════════════════ */}
         {tab === 'news' && (
           <div className="space-y-6">
             <h2 className="text-xl font-bold text-[#1A1A1A]">News & Announcements</h2>
             
-            {/* Add Form */}
             <div className="bg-white rounded-2xl p-6 border border-[#1A1A1A]/5 space-y-4">
               <input value={newNewsTitle} onChange={e => setNewNewsTitle(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/10 text-sm font-bold" placeholder="Judul berita" />
@@ -349,7 +774,6 @@ export default function AdminPage() {
               </button>
             </div>
 
-            {/* News List */}
             <div className="space-y-3">
               {news.map(n => (
                 <div key={n.id} className="flex items-start gap-4 bg-white rounded-xl p-4 border border-[#1A1A1A]/5">
@@ -368,7 +792,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* ADMINS TAB */}
+        {/* ═══════════════════ ADMINS TAB ═══════════════════ */}
         {tab === 'admins' && isSuper && (
           <div className="space-y-6">
             <h2 className="text-xl font-bold text-[#1A1A1A]">Admin Management</h2>

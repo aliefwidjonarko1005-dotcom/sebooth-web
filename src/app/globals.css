@@ -1,29 +1,44 @@
 @import "tailwindcss";
 
+/* ════════════════════════════════════════════════════
+   GRAPHIC BRUTALISM DESIGN SYSTEM
+   ════════════════════════════════════════════════════ */
+
 @theme {
+  /* ─── Brutalism Palette ─── */
+  --color-primary: #002366;
+  --color-secondary: #ff4500;
+  --color-surface: #ffffff;
+  --color-text-dark: #00113a;
+  --color-on-primary: #ffffff;
+  --color-on-secondary: #ffffff;
+
+  /* ─── Legacy Tokens (used in /profile, /admin pages) ─── */
   --color-gold: #D4AF37;
-  /* Keeping for subtle accents if needed */
   --color-gold-hover: #E5C158;
   --color-charcoal: #1A1A1A;
-  /* Primary Text */
   --color-offwhite: #F9F9F9;
-  /* Background */
   --color-accent: #0F3D2E;
-  /* Deep Green CTA */
   --color-accent-hover: #195240;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* ... existing theme ... */
+
+  /* ─── Font Tokens ─── */
+  --font-headline: var(--font-headline);
+  --font-marker: var(--font-marker);
   --font-sebooth: var(--font-sebooth);
 }
 
+/* ─── Brand font helper ─── */
 .font-sebooth {
   font-family: var(--font-sebooth), sans-serif;
 }
 
+/* ─── Root Variables ─── */
 :root {
-  --background: #F9F9F9;
-  --foreground: #1A1A1A;
+  --background: #ffffff;
+  --foreground: #00113a;
 }
 
 html {
@@ -33,6 +48,137 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-headline), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ════════════════════════════════════════════════════
+   BRUTALISM: ZERO ROUNDED CORNERS
+   ════════════════════════════════════════════════════ */
+* {
+  border-radius: 0 !important;
+}
+
+/* ════════════════════════════════════════════════════
+   CUSTOM UTILITY CLASSES
+   ════════════════════════════════════════════════════ */
+@layer utilities {
+
+  /* ─── Paper Texture Overlay ─── */
+  .paper-texture {
+    position: relative;
+  }
+  .paper-texture::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  /* ─── Marker / Handwriting Font ─── */
+  .marker-font {
+    font-family: var(--font-marker), 'Permanent Marker', cursive;
+    text-shadow:
+      -1px -1px 0 #002366,
+       1px -1px 0 #002366,
+      -1px  1px 0 #002366,
+       1px  1px 0 #002366;
+  }
+
+  /* ─── Scribble Underline ─── */
+  .scribble-underline {
+    background-image: url("data:image/svg+xml,%3Csvg width='300' height='20' viewBox='0 0 300 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 15C50 12 150 18 295 10' stroke='%23ff4500' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: bottom;
+    padding-bottom: 8px;
+  }
+
+  /* ─── Scribble Arrow ─── */
+  .scribble-arrow {
+    position: absolute;
+    width: 120px;
+    height: 80px;
+    background-image: url("data:image/svg+xml,%3Csvg width='120' height='80' viewBox='0 0 120 80' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10C30 40 80 10 100 60M100 60L85 55M100 60L110 45' stroke='%23ff4500' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+  }
+
+  /* ─── Brutalist Hard Shadows ─── */
+  .hard-shadow-black {
+    box-shadow: 4px 4px 0px 0px #000000;
+  }
+  .hard-shadow-blue {
+    box-shadow: 4px 4px 0px 0px #002366;
+  }
+  .hard-shadow-orange {
+    box-shadow: 4px 4px 0px 0px #ff4500;
+  }
+  .hard-shadow-white {
+    box-shadow: 4px 4px 0px 0px #ffffff;
+  }
+
+  /* ─── Brutalist Borders ─── */
+  .brutalist-border {
+    border: 2px solid #000000;
+  }
+  .brutalist-border-thick {
+    border: 4px solid #000000;
+  }
+
+  /* ─── Smooth Expand / Collapse (GPU-accelerated) ─── */
+  .grid-expand {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.25s ease-in-out;
+  }
+  .grid-collapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease-in-out;
+  }
+  .grid-expand > .grid-inner,
+  .grid-collapse > .grid-inner {
+    overflow: hidden;
+  }
+
+  /* ─── Hide Scrollbar (carousel) ─── */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* ─── Inline Editing Visual Cues ─── */
+  .editable-field {
+    position: relative;
+    cursor: pointer;
+  }
+  .editable-hover {
+    transition: outline 0.15s ease, box-shadow 0.15s ease;
+    outline: 2px dashed transparent;
+  }
+  .editable-hover:hover {
+    outline: 2px dashed #3B82F6;
+    outline-offset: 4px;
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
+  }
+  .editable-active {
+    outline: 2px solid #3B82F6 !important;
+    outline-offset: 4px;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
+    cursor: text !important;
+  }
+}
+
+/* ─── Keyframes (outside @layer) ─── */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
 }

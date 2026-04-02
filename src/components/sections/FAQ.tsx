@@ -1,74 +1,95 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { parseJsonContent } from "@/lib/useSiteContent";
+import { EditableText } from "@/components/admin/EditableText";
 
-const faqs = [
+const shadowCycle = ["hard-shadow-black", "hard-shadow-blue", "hard-shadow-orange", "hard-shadow-black"];
+
+interface FaqItem {
+    question: string;
+    answer: string;
+}
+
+const defaultFaqs: FaqItem[] = [
     {
-        question: "Do you travel outside of Semarang?",
-        answer: "Yes, we cover events across Central Java and can travel nationwide for special requests. Additional transport fees may apply."
+        question: "Travel outside Semarang?",
+        answer: "Yes, we cover events across Central Java and can travel nationwide for special requests. Additional transport fees may apply.",
     },
     {
-        question: "How much space do you need?",
-        answer: "Our standard setup requires a 3x3 meter space to ensure the best experience for your guests and optimal lighting conditions."
+        question: "Space needed?",
+        answer: "Our standard setup requires a 3x3 meter space to ensure the best experience for your guests and optimal lighting conditions.",
     },
     {
-        question: "Can we customize the photo frame design?",
-        answer: "Absolutely. All our packages include a custom frame design tailored to your event theme or brand identity."
+        question: "Custom frame design?",
+        answer: "Absolutely. All our packages include a custom frame design tailored to your event theme or brand identity.",
     },
     {
-        question: "Do you provide digital copies?",
-        answer: "Yes! Guests can download photos instantly via QR code, and we provide a full online gallery link after the event."
+        question: "Digital copies?",
+        answer: "Yes! Guests can download photos instantly via QR code, and we provide a full online gallery link after the event.",
     },
 ];
 
-export function FAQ() {
+const defaultContent = {
+    section_title: "COMMON QUESTIONS",
+    items: "",
+};
+
+interface FAQProps {
+    initialData?: Record<string, string>;
+}
+
+export function FAQ({ initialData = {} }: FAQProps) {
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
+    const content = { ...defaultContent, ...initialData };
+    const faqs = parseJsonContent<FaqItem[]>(content.items, defaultFaqs);
 
     return (
-        <section className="py-32 bg-[#F9F9F9] border-t border-[#1A1A1A]/10">
-            <div className="container mx-auto px-6 grid md:grid-cols-2 gap-20">
+        <section className="py-24 px-6 md:px-20 bg-white paper-texture border-t-8 border-black">
+            {/* Section Header */}
+            <div className="mb-16">
+                <EditableText section="faq" fieldKey="section_title" defaultValue={content.section_title} as="h2" className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-text-dark">
+                    {content.section_title}
+                </EditableText>
+            </div>
 
-                <div>
-                    <span className="text-[#0F3D2E] font-bold text-sm tracking-widest uppercase mb-4 block">FAQ</span>
-                    <h2 className="text-4xl md:text-5xl font-bold font-sebooth text-[#1A1A1A] mb-8 tracking-tight">
-                        Common Questions.
-                    </h2>
-                    <p className="text-[#1A1A1A]/60 text-lg">
-                        Everything you need to know about booking Sebooth for your next event.
-                    </p>
-                </div>
-
-                <div className="space-y-4">
-                    {faqs.map((faq, i) => (
-                        <div key={i} className="border-b border-[#1A1A1A]/10 last:border-0 pb-4">
-                            <button
-                                onClick={() => setActiveIndex(activeIndex === i ? null : i)}
-                                className="w-full flex items-center justify-between py-4 text-left group"
-                            >
-                                <span className="text-xl font-bold text-[#1A1A1A] group-hover:text-[#0F3D2E] transition-colors">{faq.question}</span>
-                                {activeIndex === i ? <Minus className="w-5 h-5 text-[#D4AF37]" /> : <Plus className="w-5 h-5 text-[#1A1A1A]/40 group-hover:text-[#1A1A1A]" />}
-                            </button>
-                            <AnimatePresence>
-                                {activeIndex === i && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: "auto", opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        className="overflow-hidden"
-                                    >
-                                        <p className="pb-8 text-[#1A1A1A]/70 leading-relaxed">
-                                            {faq.answer}
-                                        </p>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+            {/* FAQ Accordion */}
+            <div className="max-w-4xl space-y-4">
+                {faqs.map((faq, i) => (
+                    <div
+                        key={i}
+                        className={`bg-white border-2 border-black ${shadowCycle[i % shadowCycle.length]} cursor-pointer`}
+                        onClick={() => setActiveIndex(activeIndex === i ? null : i)}
+                    >
+                        {/* Question Row */}
+                        <div
+                            className={`p-6 flex justify-between items-center transition-all duration-200 ease-out ${
+                                activeIndex === i
+                                    ? "bg-primary text-white border-b-4 border-black"
+                                    : "bg-white text-text-dark hover:bg-primary hover:text-white border-b-4 border-black"
+                            }`}
+                        >
+                            <h3 className="text-xl font-black uppercase tracking-tight">
+                                {faq.question}
+                            </h3>
+                            {activeIndex === i ? (
+                                <Minus className="w-6 h-6 shrink-0" />
+                            ) : (
+                                <Plus className="w-6 h-6 shrink-0" />
+                            )}
                         </div>
-                    ))}
-                </div>
 
+                        {/* Answer — CSS grid transition */}
+                        <div className={activeIndex === i ? "grid-expand" : "grid-collapse"}>
+                            <div className="grid-inner">
+                                <p className="p-6 text-text-dark font-bold uppercase leading-relaxed">
+                                    {faq.answer}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
         </section>
     );

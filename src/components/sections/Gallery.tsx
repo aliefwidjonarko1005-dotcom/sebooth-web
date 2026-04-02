@@ -3,77 +3,114 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { parseJsonContent } from "@/lib/useSiteContent";
+import { EditableText } from "@/components/admin/EditableText";
 
-const galleryItems = [
-    { id: 1, event: "Gala Night 2024", type: "Corporate", size: "md:col-span-1 md:row-span-1" },
-    { id: 2, event: "Sarah & John", type: "Wedding", size: "md:col-span-1 md:row-span-2" }, // Tall
-    { id: 3, event: "Tech Summit", type: "Corporate", size: "md:col-span-2 md:row-span-1" }, // Wide
-    { id: 4, event: "Sweet 17: Bella", type: "Private", size: "md:col-span-1 md:row-span-1" },
-    { id: 5, event: "Product Launch", type: "Corporate", size: "md:col-span-1 md:row-span-1" },
-    { id: 6, event: "Summer Fest", type: "Cultural", size: "md:col-span-2 md:row-span-1" }, // Wide
-];
+const shadowCycle = ["hard-shadow-black", "hard-shadow-blue", "hard-shadow-orange"];
 
-const categories = ["All", "Wedding", "Corporate", "Private", "Cultural"];
+interface GalleryItem {
+    id: number;
+    name: string;
+    url: string;
+    event: string;
+    type: string;
+}
 
-export function Gallery() {
+const defaultContent = {
+    section_title: "VISUAL ARCHIVE",
+    categories: '["All", "Wedding", "Corporate", "Private", "Cultural"]',
+    items: "",
+};
+
+interface GalleryProps {
+    initialData?: Record<string, string>;
+    initialGalleryImages?: GalleryItem[];
+}
+
+export function Gallery({ initialData = {}, initialGalleryImages = [] }: GalleryProps) {
+    const content = { ...defaultContent, ...initialData };
+    const categories = parseJsonContent<string[]>(content.categories, ["All", "Wedding", "Corporate", "Private", "Cultural"]);
+
     const [activeCategory, setActiveCategory] = useState("All");
 
-    const filteredItems = activeCategory === "All"
-        ? galleryItems
-        : galleryItems.filter(item => item.type === activeCategory);
+    const heightCycle = ["h-80", "h-[500px]", "h-96", "h-[400px]", "h-72", "h-[450px]"];
+
+    const filteredItems =
+        activeCategory === "All"
+            ? initialGalleryImages
+            : initialGalleryImages.filter((item) => item.type === activeCategory);
 
     return (
-        <section id="gallery" className="py-32 bg-[#F9F9F9]">
-            <div className="container mx-auto px-6">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
-                    <div>
-                        <span className="text-[#0F3D2E] font-bold text-sm tracking-widest uppercase mb-4 block">Visual Archive</span>
-                        <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
-                            Captured Moments.
-                        </h2>
-                    </div>
+        <section id="gallery" className="py-24 px-6 md:px-20 bg-white paper-texture">
+            {/* Section Header */}
+            <div className="mb-12">
+                <EditableText section="gallery" fieldKey="section_title" defaultValue={content.section_title} as="h2" className="text-4xl md:text-7xl font-black uppercase tracking-tighter text-text-dark mb-8">
+                    {content.section_title}
+                </EditableText>
 
-                    <div className="flex flex-wrap gap-4">
-                        {categories.map((category) => (
-                            <button
-                                key={category}
-                                onClick={() => setActiveCategory(category)}
-                                className={cn(
-                                    "text-sm font-medium px-4 py-2 transition-colors border",
-                                    activeCategory === category
-                                        ? "bg-[#1A1A1A] text-white border-[#1A1A1A]"
-                                        : "bg-transparent text-[#1A1A1A]/60 border-transparent hover:border-[#1A1A1A]/20"
-                                )}
-                            >
-                                {category}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[250px] gap-2">
-                    {filteredItems.map((item, index) => (
-                        <motion.div
-                            key={item.id}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.4 }}
-                            className={cn("relative group bg-[#E5E5E5] overflow-hidden", item.size)}
+                {/* Filter Buttons */}
+                <div className="flex flex-wrap gap-4">
+                    {categories.map((category) => (
+                        <button
+                            key={category}
+                            onClick={() => setActiveCategory(category)}
+                            className={cn(
+                                "px-6 py-2 border-2 border-black font-black uppercase hard-shadow-black transition-none",
+                                activeCategory === category
+                                    ? "bg-primary text-white"
+                                    : "bg-white text-primary hover:bg-secondary hover:text-white"
+                            )}
                         >
-                            {/* Image Placeholder */}
-                            <div className="absolute inset-0 flex items-center justify-center text-[#1A1A1A]/10 text-2xl font-bold uppercase">
-                                {item.type}
-                            </div>
-
-                            {/* Minimalist Overlay */}
-                            <div className="absolute inset-0 bg-[#0F3D2E]/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                                <h3 className="text-white font-bold text-lg mb-1">{item.event}</h3>
-                                <p className="text-white/70 text-sm font-medium uppercase tracking-wide">{item.type}</p>
-                            </div>
-                        </motion.div>
+                            {category}
+                        </button>
                     ))}
                 </div>
+            </div>
+
+            {/* Masonry Grid */}
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-8">
+                {filteredItems.length === 0 && (
+                    <p className="text-text-dark/40 font-bold uppercase text-center py-16 col-span-full">
+                        Belum ada gambar di gallery. Upload melalui Admin Panel.
+                    </p>
+                )}
+                {filteredItems.map((item, index) => (
+                    <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="break-inside-avoid"
+                    >
+                        <div
+                            className={cn(
+                                "w-full border-2 border-black relative group cursor-pointer transition-all overflow-hidden",
+                                "grayscale hover:grayscale-0",
+                                heightCycle[index % heightCycle.length],
+                                shadowCycle[index % shadowCycle.length]
+                            )}
+                        >
+                            {/* Real Image */}
+                            <img
+                                src={item.url}
+                                alt={item.event}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                            />
+
+                            {/* Hover Overlay */}
+                            <div className="absolute inset-0 bg-primary/90 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
+                                <h3 className="text-white font-black text-xl uppercase mb-1">
+                                    {item.event}
+                                </h3>
+                                <p className="text-white/70 text-sm font-bold uppercase tracking-wide">
+                                    {item.type}
+                                </p>
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
             </div>
         </section>
     );
