@@ -4,6 +4,10 @@
 
 A web portal designed for Sebooth photobooth users to access, view, and download their digital assets (softfiles) via QR code redirection from the physical photobooth stations. Also serves as the company's public-facing website with product information, pricing, gallery, partnership program, and an admin CMS panel to manage all website content.
 
+## AI Agent Rules
+
+- **CRITICAL**: You (the AI Agent) MUST ALWAYS update this `agents.md` file whenever there is a new user prompt, a new feature built, or any significant code changes. This is to guarantee that `agents.md` is always up-to-date and serves as the absolute single source of truth for the project context.
+
 ## Technical Stack
 
 - **Framework**: Next.js 16 (App Router)

@@ -164,14 +164,30 @@ export default function ProfilePage() {
     ctx.fillStyle = template.bg
     ctx.fillRect(0, 0, W, H)
 
-    const loadImage = (src: string): Promise<HTMLImageElement> => {
-      return new Promise((resolve, reject) => {
-        const img = new window.Image()
-        img.crossOrigin = 'anonymous'
-        img.onload = () => resolve(img)
-        img.onerror = reject
-        img.src = src
-      })
+    const loadImage = async (src: string): Promise<HTMLImageElement> => {
+      try {
+        // Fetch to bypass browser cache opaque responses and avoid tainted canvases
+        const res = await fetch(src, { cache: 'no-store', mode: 'cors' })
+        if (!res.ok) throw new Error('Network response was not ok')
+        const blob = await res.blob()
+        const blobUrl = URL.createObjectURL(blob)
+        return new Promise((resolve, reject) => {
+          const img = new window.Image()
+          img.onload = () => { resolve(img); URL.revokeObjectURL(blobUrl) }
+          img.onerror = () => { reject(); URL.revokeObjectURL(blobUrl) }
+          img.src = blobUrl
+        })
+      } catch (e) {
+        // Fallback: If CORS fails (e.g. GCS not configured), use Next.js internal image proxy
+        const proxyUrl = `/_next/image?url=${encodeURIComponent(src)}&w=1080&q=75`
+        return new Promise((resolve, reject) => {
+          const img = new window.Image()
+          img.crossOrigin = 'anonymous'
+          img.onload = () => resolve(img)
+          img.onerror = reject
+          img.src = proxyUrl
+        })
+      }
     }
 
     for (let i = 0; i < Math.min(photos.length, 3); i++) {
