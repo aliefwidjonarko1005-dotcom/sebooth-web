@@ -26,6 +26,17 @@ export function Header() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, [isMobileMenuOpen]);
+
     return (
         <header
             className={`sticky top-0 left-0 right-0 z-50 bg-white border-b-4 border-black transition-none ${
@@ -79,42 +90,53 @@ export function Header() {
                 </div>
             </div>
 
-            {/* Mobile Navigation */}
+            {/* Mobile Navigation & Backdrop */}
             <AnimatePresence>
                 {isMobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="absolute top-full left-0 right-0 bg-white border-b-4 border-black p-6 md:hidden"
-                    >
-                        <nav className="flex flex-col gap-4">
-                            {navItems.map((item) => (
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-sm"
+                        />
+                        {/* Menu Panel */}
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="absolute top-full left-0 right-0 bg-white border-b-4 border-black p-6 md:hidden z-50 shadow-2xl"
+                        >
+                            <nav className="flex flex-col gap-4">
+                                {navItems.map((item) => (
+                                    <Link
+                                        key={item.name}
+                                        href={item.href}
+                                        className="text-xl font-black uppercase tracking-tight text-primary hover:bg-secondary hover:text-white transition-none px-2 py-2"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        {item.name}
+                                    </Link>
+                                ))}
                                 <Link
-                                    key={item.name}
-                                    href={item.href}
-                                    className="text-xl font-black uppercase tracking-tight text-primary hover:bg-secondary hover:text-white transition-none px-2 py-2"
+                                    href="/profile"
+                                    className="text-xl font-black uppercase tracking-tight text-primary border-t-2 border-black pt-4 mt-2"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
-                                    {item.name}
+                                    MY PHOTOS
                                 </Link>
-                            ))}
-                            <Link
-                                href="/profile"
-                                className="text-xl font-black uppercase tracking-tight text-primary border-t-2 border-black pt-4 mt-2"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                MY PHOTOS
-                            </Link>
-                            <Link
-                                href="#contact"
-                                className="font-bold uppercase bg-secondary text-white text-center py-3 border-2 border-black hard-shadow-black transition-none mt-2"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                BOOK NOW
-                            </Link>
-                        </nav>
-                    </motion.div>
+                                <Link
+                                    href="#contact"
+                                    className="font-bold uppercase bg-secondary text-white text-center py-3 border-2 border-black hard-shadow-black transition-none mt-2"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                    BOOK NOW
+                                </Link>
+                            </nav>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
         </header>

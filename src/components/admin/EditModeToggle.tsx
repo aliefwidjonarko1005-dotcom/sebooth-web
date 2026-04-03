@@ -40,14 +40,14 @@ export function EditModeToggle() {
                         </motion.div>
                     )}
 
-                    {/* Layout Editor Button */}
+                    {/* Layout Editor Button (Hidden on Mobile) */}
                     {editMode && (
                         <motion.button
                             initial={{ opacity: 0, x: 10 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 10 }}
                             onClick={() => setLayoutEditorOpen(true)}
-                            className="flex items-center gap-2.5 px-5 py-3 bg-blue-600 text-white font-black uppercase text-sm border-2 border-black hard-shadow-blue hover:-translate-y-0.5 transition-transform"
+                            className="hidden md:flex items-center gap-2.5 px-5 py-3 bg-blue-600 text-white font-black uppercase text-sm border-2 border-black hard-shadow-blue hover:-translate-y-0.5 transition-transform"
                         >
                             <Layout className="w-4 h-4" />
                             Layout

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Newspaper } from "lucide-react";
+import Image from "next/image";
 import { EditableText } from "@/components/admin/EditableText";
 
 interface NewsItem {
@@ -45,11 +46,13 @@ export function News({ initialNews = [] }: NewsProps) {
                     >
                         {/* Image */}
                         {item.image_url && (
-                            <div className="w-full h-48 bg-gray-100 overflow-hidden border-b-2 border-black">
-                                <img
+                            <div className="w-full h-48 bg-gray-100 overflow-hidden border-b-2 border-black relative">
+                                <Image
                                     src={item.image_url}
                                     alt={item.title}
-                                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                    className="object-cover grayscale hover:grayscale-0 transition-all duration-300"
                                 />
                             </div>
                         )}

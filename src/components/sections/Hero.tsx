@@ -15,7 +15,7 @@ export function Hero({ initialData = {} }: HeroProps) {
     const heroCta = initialData["cta_text"] || "Pesan Sekarang";
 
     return (
-        <section className="relative w-full min-h-[850px] bg-primary flex flex-col justify-center items-start px-6 md:px-20 overflow-hidden">
+        <section className="relative w-full min-h-[100svh] md:min-h-[850px] bg-primary flex flex-col justify-center items-start px-6 md:px-20 overflow-hidden">
             {/* Main Content */}
             <motion.div
                 initial={{ opacity: 0, y: 30 }}

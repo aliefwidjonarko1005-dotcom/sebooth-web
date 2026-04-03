@@ -37,8 +37,9 @@ export function AdminEditProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         async function checkAdmin() {
             const supabase = createClient();
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return;
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session || !session.user) return;
+            const user = session.user;
 
             const email = user.email || "";
             const envAdmins = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")

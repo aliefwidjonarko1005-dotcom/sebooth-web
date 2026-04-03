@@ -52,7 +52,8 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<TabKey>('strip')
   const [showSessionPicker, setShowSessionPicker] = useState(false)
   const [frameIdx, setFrameIdx] = useState(0)
-  const [generatedStrips, setGeneratedStrips] = useState<string[]>([])
+  const [totalStrips, setTotalStrips] = useState(0)
+  const [generatedStripsMap, setGeneratedStripsMap] = useState<Record<number, string>>({})
   const [isGenerating, setIsGenerating] = useState(false)
 
   useEffect(() => {
@@ -107,40 +108,54 @@ export default function ProfilePage() {
     })
   }, [activeSession, getStrip, getGif])
 
-  /* ─── Auto-generate strips for all frame templates ─── */
+  /* ─── Lazy Generate Strips ─── */
   useEffect(() => {
     if (activeTab === 'strip' && activeSession) {
-      generateAllStrips()
+      const photos = getPhotos()
+      const orig = getStrip()
+      const total = photos.length < 3 ? (orig ? 1 : 0) : (orig ? FRAME_TEMPLATES.length + 1 : FRAME_TEMPLATES.length)
+      setTotalStrips(total)
+      setGeneratedStripsMap({})
+      setFrameIdx(0)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, activeSession])
 
-  const generateAllStrips = async () => {
-    const photos = getPhotos()
-    if (photos.length < 3) {
-      const strip = getStrip()
-      if (strip) setGeneratedStrips([strip.url])
-      return
-    }
+  useEffect(() => {
+    if (activeTab !== 'strip' || totalStrips === 0) return
+    if (generatedStripsMap[frameIdx]) return
 
-    setIsGenerating(true)
-    const strips: string[] = []
-    
-    const origStrip = getStrip()
-    if (origStrip) strips.push(origStrip.url)
-
-    for (const template of FRAME_TEMPLATES) {
-      try {
-        const url = await renderStripOnCanvas(photos.slice(0, 3), template)
-        if (url) strips.push(url)
-      } catch (e) {
-        console.error('Strip generation failed for', template.id, e)
+    const generateCurrent = async () => {
+      setIsGenerating(true)
+      const photos = getPhotos()
+      const orig = getStrip()
+      
+      let newUrl = null
+      
+      if (photos.length < 3) {
+        if (orig && frameIdx === 0) newUrl = orig.url
+      } else {
+        if (orig && frameIdx === 0) {
+          newUrl = orig.url
+        } else {
+          const templateIdx = orig ? frameIdx - 1 : frameIdx
+          try {
+            newUrl = await renderStripOnCanvas(photos.slice(0, 3), FRAME_TEMPLATES[templateIdx])
+          } catch (e) {
+            console.error('Strip generation failed for', FRAME_TEMPLATES[templateIdx].id, e)
+          }
+        }
       }
+
+      if (newUrl) {
+        setGeneratedStripsMap(prev => ({ ...prev, [frameIdx]: newUrl }))
+      }
+      setIsGenerating(false)
     }
 
-    setGeneratedStrips(strips)
-    setIsGenerating(false)
-  }
+    generateCurrent()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [frameIdx, totalStrips, activeTab, generatedStripsMap])
 
   const renderStripOnCanvas = async (
     photos: MediaItem[],
@@ -341,36 +356,36 @@ export default function ProfilePage() {
             {/* STRIP TAB */}
             {activeTab === 'strip' && (
               <motion.section key="strip" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="flex flex-col items-center">
-                {isGenerating ? (
+                {isGenerating || (!generatedStripsMap[frameIdx] && totalStrips > 0) ? (
                   <div className="flex flex-col items-center py-20 text-[#1A1A1A]/40">
                     <Loader2 className="w-8 h-8 animate-spin mb-4" />
                     <p className="font-medium text-sm">Membuat template...</p>
                   </div>
-                ) : generatedStrips.length > 0 ? (
+                ) : generatedStripsMap[frameIdx] ? (
                   <>
                     <div className="relative w-full">
                       <div className="w-full rounded-3xl overflow-hidden bg-white shadow-xl ring-1 ring-[#1A1A1A]/5">
-                        <img src={generatedStrips[frameIdx % generatedStrips.length]} alt="Photo Strip" className="w-full object-contain max-h-[65vh]" />
+                        <img src={generatedStripsMap[frameIdx]} alt="Photo Strip" className="w-full object-contain max-h-[65vh]" />
                       </div>
-                      {generatedStrips.length > 1 && (
+                      {totalStrips > 1 && (
                         <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2 pointer-events-none">
-                          <button onClick={() => setFrameIdx(prev => prev === 0 ? generatedStrips.length - 1 : prev - 1)} className="pointer-events-auto w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center text-[#1A1A1A] hover:bg-white transition-all">
+                          <button onClick={() => setFrameIdx(prev => prev === 0 ? totalStrips - 1 : prev - 1)} className="pointer-events-auto w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center text-[#1A1A1A] hover:bg-white transition-all">
                             <ChevronLeft className="w-5 h-5" />
                           </button>
-                          <button onClick={() => setFrameIdx(prev => (prev + 1) % generatedStrips.length)} className="pointer-events-auto w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center text-[#1A1A1A] hover:bg-white transition-all">
+                          <button onClick={() => setFrameIdx(prev => (prev + 1) % totalStrips)} className="pointer-events-auto w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center text-[#1A1A1A] hover:bg-white transition-all">
                             <ChevronRight className="w-5 h-5" />
                           </button>
                         </div>
                       )}
                     </div>
-                    {generatedStrips.length > 1 && (
+                    {totalStrips > 1 && (
                       <div className="flex gap-2 mt-4">
-                        {generatedStrips.map((_, i) => (
-                          <button key={i} onClick={() => setFrameIdx(i)} className={`h-2 rounded-full transition-all ${i === frameIdx % generatedStrips.length ? 'bg-[#0F3D2E] w-6' : 'bg-[#1A1A1A]/15 w-2'}`} />
+                        {Array.from({ length: totalStrips }).map((_, i) => (
+                          <button key={i} onClick={() => setFrameIdx(i)} className={`h-2 rounded-full transition-all ${i === frameIdx ? 'bg-[#0F3D2E] w-6' : 'bg-[#1A1A1A]/15 w-2'}`} />
                         ))}
                       </div>
                     )}
-                    <button onClick={() => downloadFile(generatedStrips[frameIdx % generatedStrips.length], `strip_${frameIdx + 1}.jpg`)} 
+                    <button onClick={() => downloadFile(generatedStripsMap[frameIdx], `strip_${frameIdx + 1}.jpg`)} 
                       className="mt-6 w-full py-4 rounded-2xl bg-[#0F3D2E] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:bg-[#195240] active:scale-[0.98] transition-all">
                       <Download className="w-5 h-5" /> Simpan Strip
                     </button>

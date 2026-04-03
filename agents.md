@@ -36,16 +36,17 @@ sebooth-website/
 │   │   ├── globals.css              # Global CSS (Tailwind 4 imports)
 │   │   ├── page.tsx                 # Homepage (ISR, server-side data fetching)
 │   │   ├── actions.ts               # Server Actions (revalidateSiteContent, revalidateSpecificPage)
-│   │   ├── about/page.tsx           # About Us page (company story)
-│   │   ├── access/[id]/page.tsx     # QR Access Point (session viewer + claimer)
+│   │   ├── about/page.tsx           # About Us page (ISR Server Component + CMS + SEO)
+│   │   ├── access/[id]/page.tsx     # QR Access Point (Server Component + generateMetadata)
 │   │   ├── admin/page.tsx           # Admin CMS Panel (content, pricing, IG, news, admins)
 │   │   ├── login/page.tsx           # Login page (email/password + claim flow)
-│   │   ├── partnership/page.tsx     # Partnership page (EO/WO inquiry form)
+│   │   ├── partnership/page.tsx     # Partnership page (ISR Server Component + CMS + SEO)
 │   │   ├── profile/page.tsx         # User gallery (My Photos — strip, GIF, live, photos)
 │   │   └── register/page.tsx        # Registration page (signup + session claim)
 │   ├── components/
 │   │   ├── features/
-│   │   │   └── FrameEditorModal.tsx  # Canvas-based strip frame editor modal
+│   │   │   ├── FrameEditorModal.tsx  # Canvas-based strip frame editor modal
+│   │   │   └── AccessSessionClient.tsx # Client component for /access/[id] (claim UI + auth)
 │   │   ├── layout/
 │   │   │   ├── Header.tsx            # Site header (responsive nav + mobile hamburger)
 │   │   │   ├── Footer.tsx            # Site footer (4-column: brand, nav, social, office)
@@ -53,13 +54,15 @@ sebooth-website/
 │   │   ├── sections/                 # Homepage section components (all receive server-side data via props)
 │   │   │   ├── Hero.tsx              # Hero banner (cinematic fullscreen + CTA)
 │   │   │   ├── About.tsx             # About teaser section (links to /about)
+│   │   │   ├── AboutContent.tsx      # Client component for /about page (CMS-driven, Framer Motion)
 │   │   │   ├── Product.tsx           # Product showcase (Standard, Deluxe, Glamour booths)
 │   │   │   ├── Pricing.tsx           # Pricing tables (Unlimited + Quota packages)
 │   │   │   ├── Testimonials.tsx      # Customer testimonials (3-column grid)
-│   │   │   ├── Gallery.tsx           # Event gallery (server-fetched, filterable masonry grid)
+│   │   │   ├── Gallery.tsx           # Event gallery (server-fetched, next/image, masonry grid)
 │   │   │   ├── InstagramFeed.tsx     # Instagram feed (server-fetched posts, client-side embed script)
 │   │   │   ├── FAQ.tsx               # FAQ accordion (animated expand/collapse)
-│   │   │   ├── News.tsx              # Latest news grid (server-fetched, published items)
+│   │   │   ├── News.tsx              # Latest news grid (server-fetched, next/image)
+│   │   │   ├── PartnershipContent.tsx # Client component for /partnership page (CMS-driven)
 │   │   │   └── Location.tsx          # Location/map section (studio address)
 │   │   └── ui/
 │   │       └── FloatingCTA.tsx       # Floating WhatsApp button
@@ -71,7 +74,7 @@ sebooth-website/
 │   │   └── utils.ts                 # cn() utility (clsx + tailwind-merge)
 │   ├── types/
 │   │   └── database.ts              # TypeScript interfaces (SessionData, MediaItem)
-│   └── middleware.ts                # Auth middleware (protects /profile, /admin)
+│   └── middleware.ts                # Auth middleware (optimized: skips public routes)
 ├── .env.local                       # Environment variables (Supabase URL/keys, admin emails)
 ├── package.json
 ├── tsconfig.json
@@ -140,15 +143,22 @@ sebooth-website/
 
 ## Scalability Architecture
 
-- **ISR (Incremental Static Regeneration)**: Homepage revalidates every 60 seconds. Within that window, all visitors receive instant cached HTML from Vercel Edge.
+- **ISR (Incremental Static Regeneration)**: Homepage, About, and Partnership pages revalidate every 60 seconds. All visitors within that window get instant cached HTML from Vercel Edge.
 - **Server-side parallel fetching**: `page.tsx` uses `Promise.all()` to fetch `site_content`, `instagram_posts`, `news`, `gallery`, and `section_visibility` in parallel from Supabase.
+- **Server-Side Session Fetching & Claiming**: `/access/[id]` fetches session data server-side via `fetchSessionById()`. The claim mechanism is entirely handled via **Next.js Server Actions (`claimSession`)** using `@supabase/ssr` cookies. This ensures nuclear resilience by inherently batching Supabase API requests via Vercel pool, completely avoiding the 50 concurrent connection leak in Supabase Free Tier. This also features an atomic DB claim update to prevent race conditions.
+- **Lazy Authentication Fetch**: Context providers (`AdminEditProvider.tsx`) and components on public pages use `supabase.auth.getSession()` (synchronous zero-latency local check) instead of `supabase.auth.getUser()` (heavy API network check). Unauthenticated visitors trigger 0 API calls for auth.
 - **Section visibility**: Resolved server-side — hidden sections are not sent to the client at all, saving bandwidth and render time.
+- **Middleware optimization**: Auth check (`supabase.auth.getUser()`) only runs on protected routes (`/profile`, `/admin`). Public routes skip middleware entirely for zero-latency routing.
 - **Cache headers**: Static assets (fonts, images, JS/CSS bundles) served with `Cache-Control: public, max-age=31536000, immutable`.
-- **Image optimization**: `next.config.ts` whitelists Supabase Storage and Google Cloud Storage domains for `next/image`.
+- **Image optimization**: `next.config.ts` whitelists Supabase Storage and Google Cloud Storage domains for `next/image`. Gallery and News sections use `next/image` with automatic WebP/AVIF conversion.
 - **Security headers**: `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-DNS-Prefetch-Control: on`, `Permissions-Policy` locked down.
+- **SEO metadata**: All public pages export `Metadata` or `generateMetadata()` with title, description, and Open Graph tags.
 
 ## Changelog & Continuous Updates (AI Roadmap)
 
 - **April 2026 (Phase 1.5 - Desktop Mesin Kolong Integration)** ✅: The physical Photobooth application now acts as a headless "Mesin Kolong". Desktop Kiosk QR Codes redirect visitors directly to `/access/[id]` for the Photo Claim Mechanism.
 - **April 2026 (Phase 2A - Scalability)** ✅: Implemented ISR with 60s revalidation on homepage. Refactored Gallery, InstagramFeed, and News from client-side fetching to server-side props. Added `next.config.ts` with image optimization (Supabase + GCS domains), cache headers for static assets, and security headers. Expanded `revalidateSiteContent()` to cover `/`, `/about`, `/partnership`. Result: ~99% reduction in Supabase API calls (from ~1,200 per 300 visitors to ~5).
+- **April 2026 (Phase 2A+ - Scalability Continuation)** ✅: Converted `/about` and `/partnership` from `"use client"` to ISR Server Components with CMS integration (`about_page` / `partnership_page` sections in `site_content`). Converted `/access/[id]` to Server Component with server-side session fetch + `generateMetadata()` for dynamic SEO. Optimized middleware to skip `getUser()` on public routes. Migrated Gallery and News sections from `<img>` to `next/image` for automatic WebP/AVIF. Added SEO metadata exports to About, Partnership, and Access pages.
+- **April 2026 (Phase 2A++ - Enterprise Load Balancing Fix)** ✅: Refactored Session Claim function into a Next.js Server Action with an atomic SQL condition (`eq('is_claimed', false)`) to eliminate double-claim race conditions and bypass standard Supabase Free Tier limitations during a 400+ user traffic spike via pooling. Changed unused API-heavy `getUser()` checks in client contexts (like `AdminEditProvider` and `AccessSessionClient`) to `getSession()` to eliminate thousands of 4xx network calls.
 - **April 2026 (Phase 2B - Inline Visual Editor)** ✅: Implemented Wix-like live Inline Visual Editor. Super Admins click textual/image elements directly on the live site via `EditableText` / `EditableImage` overlays. Changes save immediately to Supabase `site_content` table. Includes `LayoutEditorModal` (split-panel editor with iframe preview, section visibility, gallery management, zoom 10-300%), `IframeEditBridge` (click-to-edit in iframe via postMessage), and `TextEditModal`.
+- **April 2026 (Phase 2C - Mobile UX Perfection)** [IN PROGRESS]: Perfecting UI/UX flows specifically for handheld devices. Planning to patch: Header menu lock-body overlay, Hero component viewport height responsiveness (`svh`), Profile strip canvas lazy-rendering (to preserve CPU/Ram on low-end androids), and strictly hiding the Split UI Layout Editor module for small screens.

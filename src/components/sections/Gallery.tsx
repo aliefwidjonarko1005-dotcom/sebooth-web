@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { parseJsonContent } from "@/lib/useSiteContent";
 import { EditableText } from "@/components/admin/EditableText";
@@ -92,11 +93,12 @@ export function Gallery({ initialData = {}, initialGalleryImages = [] }: Gallery
                             )}
                         >
                             {/* Real Image */}
-                            <img
+                            <Image
                                 src={item.url}
                                 alt={item.event}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
+                                fill
+                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                className="object-cover"
                             />
 
                             {/* Hover Overlay */}

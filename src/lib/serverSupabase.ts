@@ -119,3 +119,59 @@ export async function fetchSectionVisibility(): Promise<Record<string, boolean>>
     }
     return visibility;
 }
+
+/**
+ * Fetch a single photobooth session by ID, including its media.
+ * Used by /access/[id] Server Component for SSR data fetching.
+ */
+export async function fetchSessionById(id: string) {
+    const supabase = createServerContentClient();
+    const { data, error } = await supabase
+        .from("sessions")
+        .select("*, media(*)")
+        .eq("id", id)
+        .single();
+
+    if (error) return null;
+    return data;
+}
+
+/**
+ * Fetch CMS content for the About page.
+ * Returns key-value map from site_content where section = 'about_page'.
+ */
+export async function fetchAboutPageContent(): Promise<Record<string, string>> {
+    const supabase = createServerContentClient();
+    const { data } = await supabase
+        .from("site_content")
+        .select("key, value")
+        .eq("section", "about_page");
+
+    const content: Record<string, string> = {};
+    if (data) {
+        data.forEach((item: { key: string; value: string | null }) => {
+            if (item.value) content[item.key] = item.value;
+        });
+    }
+    return content;
+}
+
+/**
+ * Fetch CMS content for the Partnership page.
+ * Returns key-value map from site_content where section = 'partnership_page'.
+ */
+export async function fetchPartnershipPageContent(): Promise<Record<string, string>> {
+    const supabase = createServerContentClient();
+    const { data } = await supabase
+        .from("site_content")
+        .select("key, value")
+        .eq("section", "partnership_page");
+
+    const content: Record<string, string> = {};
+    if (data) {
+        data.forEach((item: { key: string; value: string | null }) => {
+            if (item.value) content[item.key] = item.value;
+        });
+    }
+    return content;
+}
