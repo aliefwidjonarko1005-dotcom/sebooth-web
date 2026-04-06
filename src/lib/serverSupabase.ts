@@ -40,9 +40,16 @@ export async function fetchSiteContent(): Promise<Record<string, Record<string, 
  * Fetch gallery images from Supabase storage bucket.
  * Returns array of { name, url, event, type } for the Gallery section.
  */
+const VIDEO_EXTENSIONS = [".mp4", ".webm", ".mov", ".avi", ".mkv"];
+
+function isVideoFile(filename: string): boolean {
+    const ext = filename.substring(filename.lastIndexOf(".")).toLowerCase();
+    return VIDEO_EXTENSIONS.includes(ext);
+}
+
 export async function fetchGalleryImages(
     metadataItems: { name: string; event: string; type: string }[]
-): Promise<{ id: number; name: string; url: string; event: string; type: string }[]> {
+): Promise<{ id: number; name: string; url: string; event: string; type: string; mediaType: "image" | "video" }[]> {
     const supabase = createServerContentClient();
     const { data } = await supabase.storage
         .from("gallery")
@@ -60,6 +67,7 @@ export async function fetchGalleryImages(
                 url: supabase.storage.from("gallery").getPublicUrl(f.name).data.publicUrl,
                 event: meta?.event || f.name.replace(/\.[^/.]+$/, "").replace(/_/g, " "),
                 type: meta?.type || "All",
+                mediaType: isVideoFile(f.name) ? "video" as const : "image" as const,
             };
         });
 }
@@ -174,4 +182,19 @@ export async function fetchPartnershipPageContent(): Promise<Record<string, stri
         });
     }
     return content;
+}
+
+/**
+ * Fetch a single news item by ID for the news detail page.
+ */
+export async function fetchNewsById(id: string) {
+    const supabase = createServerContentClient();
+    const { data, error } = await supabase
+        .from("news")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (error) return null;
+    return data;
 }

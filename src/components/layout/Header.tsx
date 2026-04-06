@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { EditableText } from "@/components/admin/EditableText";
 
 const navItems = [
     { name: "ABOUT", href: "/about" },
@@ -30,17 +31,17 @@ export function Header() {
         if (isMobileMenuOpen) {
             document.body.style.overflow = "hidden";
         } else {
-            document.body.style.overflow = "auto";
+            document.body.style.overflow = "";
         }
         return () => {
-            document.body.style.overflow = "auto";
+            document.body.style.overflow = "";
         };
     }, [isMobileMenuOpen]);
 
     return (
         <header
-            className={`sticky top-0 left-0 right-0 z-50 bg-white border-b-4 border-black transition-none ${
-                isScrolled ? "py-3" : "py-4"
+            className={`sticky top-0 left-0 right-0 z-50 bg-white border-b-4 border-black transition-none safe-top ${
+                isScrolled ? "py-2 md:py-3" : "py-3 md:py-4"
             }`}
         >
             <div className="w-full px-6 flex items-center justify-between">
@@ -77,7 +78,9 @@ export function Header() {
                         href="#contact"
                         className="hidden md:inline-block font-bold uppercase tracking-tight bg-secondary text-white px-6 py-2 border-2 border-black active:translate-x-[2px] active:translate-y-[2px] transition-none hard-shadow-black"
                     >
-                        BOOK NOW
+                        <EditableText section="header" fieldKey="cta_text" defaultValue="BOOK NOW" as="span" className="font-bold uppercase tracking-tight text-white">
+                            BOOK NOW
+                        </EditableText>
                     </Link>
 
                     {/* Mobile Menu Toggle */}
@@ -114,7 +117,7 @@ export function Header() {
                                     <Link
                                         key={item.name}
                                         href={item.href}
-                                        className="text-xl font-black uppercase tracking-tight text-primary hover:bg-secondary hover:text-white transition-none px-2 py-2"
+                                        className="text-xl font-black uppercase tracking-tight text-primary active:bg-secondary active:text-white transition-none px-2 py-3 min-h-[44px] flex items-center"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         {item.name}
@@ -122,14 +125,14 @@ export function Header() {
                                 ))}
                                 <Link
                                     href="/profile"
-                                    className="text-xl font-black uppercase tracking-tight text-primary border-t-2 border-black pt-4 mt-2"
+                                    className="text-xl font-black uppercase tracking-tight text-primary border-t-2 border-black pt-4 mt-2 min-h-[44px] flex items-center px-2"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     MY PHOTOS
                                 </Link>
                                 <Link
                                     href="#contact"
-                                    className="font-bold uppercase bg-secondary text-white text-center py-3 border-2 border-black hard-shadow-black transition-none mt-2"
+                                    className="font-bold uppercase bg-secondary text-white text-center py-4 border-2 border-black hard-shadow-black transition-none mt-2 min-h-[44px] flex items-center justify-center active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     BOOK NOW

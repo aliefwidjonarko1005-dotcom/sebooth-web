@@ -15,6 +15,7 @@ interface GalleryItem {
     url: string;
     event: string;
     type: string;
+    mediaType?: "image" | "video";
 }
 
 const defaultContent = {
@@ -87,26 +88,37 @@ export function Gallery({ initialData = {}, initialGalleryImages = [] }: Gallery
                         <div
                             className={cn(
                                 "w-full border-2 border-black relative group cursor-pointer transition-all overflow-hidden",
-                                "grayscale hover:grayscale-0",
+                                "md:grayscale md:hover:grayscale-0",
                                 heightCycle[index % heightCycle.length],
                                 shadowCycle[index % shadowCycle.length]
                             )}
                         >
-                            {/* Real Image */}
-                            <Image
-                                src={item.url}
-                                alt={item.event}
-                                fill
-                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                className="object-cover"
-                            />
+                            {/* Image or Video */}
+                            {item.mediaType === "video" ? (
+                                <video
+                                    src={item.url}
+                                    muted
+                                    loop
+                                    autoPlay
+                                    playsInline
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
+                            ) : (
+                                <Image
+                                    src={item.url}
+                                    alt={item.event}
+                                    fill
+                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                    className="object-cover"
+                                />
+                            )}
 
-                            {/* Hover Overlay */}
-                            <div className="absolute inset-0 bg-primary/90 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
-                                <h3 className="text-white font-black text-xl uppercase mb-1">
+                            {/* Hover/Tap Overlay — always visible on mobile, hover on desktop */}
+                            <div className="absolute inset-0 bg-primary/70 md:bg-primary/90 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4 md:p-6">
+                                <h3 className="text-white font-black text-lg md:text-xl uppercase mb-1">
                                     {item.event}
                                 </h3>
-                                <p className="text-white/70 text-sm font-bold uppercase tracking-wide">
+                                <p className="text-white/70 text-xs md:text-sm font-bold uppercase tracking-wide">
                                     {item.type}
                                 </p>
                             </div>

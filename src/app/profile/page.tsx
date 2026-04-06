@@ -40,10 +40,23 @@ async function downloadFile(url: string, filename: string) {
   }
 }
 
+/* ─── Mobile detection for canvas optimization ─── */
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+  return isMobile
+}
+
 export default function ProfilePage() {
   const router = useRouter()
   const supabase = createClient()
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const isMobile = useIsMobile()
   
   const [sessions, setSessions] = useState<SessionData[]>([])
   const [loading, setLoading] = useState(true)
@@ -166,13 +179,14 @@ export default function ProfilePage() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return null
 
-    const W = 1080
-    const H = 1920
+    // Lower resolution on mobile to save GPU/RAM on low-end Android devices
+    const W = isMobile ? 720 : 1080
+    const H = isMobile ? 1280 : 1920
     canvas.width = W
     canvas.height = H
 
-    const PADDING = 40
-    const GAP = 30
+    const PADDING = isMobile ? 24 : 40
+    const GAP = isMobile ? 20 : 30
     const SLOT_W = W - PADDING * 2
     const SLOT_H = Math.round(SLOT_W * (9 / 16))
 
@@ -237,10 +251,10 @@ export default function ProfilePage() {
     const BRANDING_H = H - (PADDING + (SLOT_H + GAP) * 3 - GAP + PADDING)
     const brandY = PADDING + 3 * (SLOT_H + GAP) + BRANDING_H / 2
     ctx.textAlign = 'center'
-    ctx.font = 'bold 56px Arial, sans-serif'
+    ctx.font = `bold ${isMobile ? 40 : 56}px Arial, sans-serif`
     ctx.fillStyle = template.textColor
     ctx.fillText('SEBOOTH', W / 2, brandY - 10)
-    ctx.font = '24px Arial, sans-serif'
+    ctx.font = `${isMobile ? 18 : 24}px Arial, sans-serif`
     ctx.fillStyle = template.subColor
     ctx.fillText(template.subText, W / 2, brandY + 30)
 
@@ -283,7 +297,7 @@ export default function ProfilePage() {
   ].filter(t => t.available)
 
   return (
-    <div className="min-h-screen bg-[#F9F9F9]">
+    <div className="min-h-[100svh] bg-[#F9F9F9]">
       <canvas ref={canvasRef} style={{ display: 'none' }} />
 
       {/* Minimal Header */}
@@ -467,7 +481,7 @@ export default function ProfilePage() {
                       <img src={p.url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                       <button 
                         onClick={() => downloadFile(p.url, `photo_${i + 1}.jpg`)}
-                        className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white shadow-lg flex items-center justify-center text-[#1A1A1A] opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all"
+                        className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white shadow-lg flex items-center justify-center text-[#1A1A1A] opacity-100 md:opacity-0 md:group-hover:opacity-100 translate-y-0 md:translate-y-2 md:group-hover:translate-y-0 transition-all"
                       >
                         <Download className="w-4 h-4" />
                       </button>
@@ -485,16 +499,16 @@ export default function ProfilePage() {
 
       {/* Bottom Nav Pill */}
       {sessions.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-[360px] z-40">
+        <div className="fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] md:w-[calc(100%-48px)] max-w-[360px] z-40 safe-bottom">
           <div className="flex p-1.5 rounded-[32px] bg-white border border-[#1A1A1A]/10 shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
             {tabs.map(tab => (
               <button 
                 key={tab.key} 
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex-1 flex flex-col items-center gap-1 py-2.5 rounded-[28px] transition-all duration-300 ${
+                className={`flex-1 flex flex-col items-center gap-1 py-3 md:py-2.5 rounded-[28px] transition-all duration-300 touch-target ${
                   activeTab === tab.key 
                     ? 'text-[#0F3D2E] bg-[#0F3D2E]/10 font-bold' 
-                    : 'text-[#1A1A1A]/35 hover:text-[#1A1A1A]/60'
+                    : 'text-[#1A1A1A]/35 active:text-[#1A1A1A]/60'
                 }`}
               >
                 {tab.icon}

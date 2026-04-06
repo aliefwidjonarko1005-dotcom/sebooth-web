@@ -1,10 +1,13 @@
 "use client";
 
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { CheckCircle } from "lucide-react";
 import { parseJsonContent } from "@/lib/useSiteContent";
 import { EditableText } from "@/components/admin/EditableText";
+import { EditableArrayItemText } from "@/components/admin/EditableArrayItemText";
+import { useAdminEdit } from "@/components/admin/AdminEditProvider";
 
 interface PkgItem { duration?: string; total?: string; price: string; }
 
@@ -57,6 +60,60 @@ const defaultContent = {
 
 interface PricingProps {
     initialData?: Record<string, string>;
+}
+
+// Inline editable feature text for string arrays
+function FeatureText({ section, arrayKey, items, index }: { section: string; arrayKey: string; items: string[]; index: number }) {
+    const { editMode, saveField } = useAdminEdit();
+    const ref = useRef<HTMLSpanElement>(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const value = items[index] || "";
+
+    const handleClick = (e: React.MouseEvent) => {
+        if (!editMode) return;
+        e.preventDefault();
+        e.stopPropagation();
+        setIsEditing(true);
+        setTimeout(() => {
+            if (ref.current) {
+                ref.current.focus();
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.selectNodeContents(ref.current);
+                range.collapse(false);
+                sel?.removeAllRanges();
+                sel?.addRange(range);
+            }
+        }, 0);
+    };
+
+    const handleBlur = async () => {
+        setIsEditing(false);
+        if (!ref.current) return;
+        const newValue = ref.current.innerText.trim();
+        if (newValue && newValue !== value) {
+            const updated = [...items];
+            updated[index] = newValue;
+            await saveField(section, arrayKey, JSON.stringify(updated));
+        }
+    };
+
+    if (!editMode) return <span className="text-white font-bold uppercase">{value}</span>;
+
+    return (
+        <span
+            ref={ref}
+            className={`text-white font-bold uppercase editable-field ${isEditing ? "editable-active" : "editable-hover"}`}
+            contentEditable={isEditing}
+            suppressContentEditableWarning
+            onClick={handleClick}
+            onBlur={handleBlur}
+            onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); ref.current?.blur(); } if (e.key === "Escape") { ref.current!.innerText = value; setIsEditing(false); } }}
+            style={{ outline: "none" }}
+        >
+            {value}
+        </span>
+    );
 }
 
 export function Pricing({ initialData = {} }: PricingProps) {
@@ -112,7 +169,7 @@ export function Pricing({ initialData = {} }: PricingProps) {
                         {unlimitedFeatures.map((feature, i) => (
                             <li key={i} className="flex items-center gap-3 text-white font-bold uppercase">
                                 <CheckCircle className="w-5 h-5 text-secondary shrink-0" />
-                                {feature}
+                                <FeatureText section="pricing" arrayKey="unlimited_features" items={unlimitedFeatures} index={i} />
                             </li>
                         ))}
                     </ul>
@@ -120,15 +177,17 @@ export function Pricing({ initialData = {} }: PricingProps) {
                     <div className="border-t-2 border-white/20 pt-6 mb-8">
                         {unlimitedPackages.map((item, index) => (
                             <div key={index} className="flex justify-between items-center py-3 border-b border-white/10">
-                                <span className="text-white font-bold uppercase">{item.duration}</span>
-                                <span className="text-white font-black text-lg">{item.price}</span>
+                                <EditableArrayItemText section="pricing" arrayKey="unlimited_packages" items={unlimitedPackages} index={index} field="duration" as="span" className="text-white font-bold uppercase" />
+                                <EditableArrayItemText section="pricing" arrayKey="unlimited_packages" items={unlimitedPackages} index={index} field="price" as="span" className="text-white font-black text-lg" />
                             </div>
                         ))}
                     </div>
 
                     <Link href={`${waBase}${encodeURIComponent(content.unlimited_wa_text)}`} target="_blank"
                         className="block w-full bg-white text-primary font-black uppercase py-4 border-2 border-black hover:bg-secondary hover:text-white transition-all duration-200 ease-out hard-shadow-black text-center">
-                        {content.unlimited_cta}
+                        <EditableText section="pricing" fieldKey="unlimited_cta" defaultValue={content.unlimited_cta} as="span" className="text-primary font-black uppercase">
+                            {content.unlimited_cta}
+                        </EditableText>
                     </Link>
                 </motion.div>
 
@@ -151,7 +210,7 @@ export function Pricing({ initialData = {} }: PricingProps) {
                         {quotaFeatures.map((feature, i) => (
                             <li key={i} className="flex items-center gap-3 text-white font-bold uppercase">
                                 <CheckCircle className="w-5 h-5 text-secondary shrink-0" />
-                                {feature}
+                                <FeatureText section="pricing" arrayKey="quota_features" items={quotaFeatures} index={i} />
                             </li>
                         ))}
                     </ul>
@@ -159,15 +218,17 @@ export function Pricing({ initialData = {} }: PricingProps) {
                     <div className="border-t-2 border-white/20 pt-6 mb-8">
                         {quotaPackages.map((item, index) => (
                             <div key={index} className="flex justify-between items-center py-3 border-b border-white/10">
-                                <span className="text-white font-bold uppercase">{item.total}</span>
-                                <span className="text-white font-black text-lg">{item.price}</span>
+                                <EditableArrayItemText section="pricing" arrayKey="quota_packages" items={quotaPackages} index={index} field="total" as="span" className="text-white font-bold uppercase" />
+                                <EditableArrayItemText section="pricing" arrayKey="quota_packages" items={quotaPackages} index={index} field="price" as="span" className="text-white font-black text-lg" />
                             </div>
                         ))}
                     </div>
 
                     <Link href={`${waBase}${encodeURIComponent(content.quota_wa_text)}`} target="_blank"
                         className="block w-full bg-transparent text-white font-black uppercase py-4 border-2 border-white hover:bg-white hover:text-primary transition-all duration-200 ease-out hard-shadow-white text-center">
-                        {content.quota_cta}
+                        <EditableText section="pricing" fieldKey="quota_cta" defaultValue={content.quota_cta} as="span" className="text-white font-black uppercase">
+                            {content.quota_cta}
+                        </EditableText>
                     </Link>
                 </motion.div>
             </div>

@@ -23,6 +23,7 @@ interface LayoutEditorModalProps {
 export function LayoutEditorModal({ isOpen, onClose }: LayoutEditorModalProps) {
     const { saveField } = useAdminEdit();
     const iframeRef = useRef<HTMLIFrameElement>(null);
+    const [isMobileScreen, setIsMobileScreen] = useState(false);
     const [sections, setSections] = useState<SectionConfig[]>([
         { id: "hero", title: "Hero Banner", visible: true },
         { id: "about", title: "About Section", visible: true },
@@ -45,6 +46,14 @@ export function LayoutEditorModal({ isOpen, onClose }: LayoutEditorModalProps) {
         section: string;
         fieldKey: string;
     } | null>(null);
+
+    // Detect mobile screen for guard message
+    useEffect(() => {
+        const check = () => setIsMobileScreen(window.innerWidth < 768);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, []);
 
     useEffect(() => {
         // Load saved section visibility from localStorage
@@ -151,7 +160,23 @@ export function LayoutEditorModal({ isOpen, onClose }: LayoutEditorModalProps) {
                         </button>
                     </div>
 
-                    {/* Main Content */}
+                    {/* Mobile Guard — show message instead of broken split-panel */}
+                    {isMobileScreen ? (
+                        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center gap-6">
+                            <div className="text-6xl">🖥️</div>
+                            <h3 className="text-2xl font-black uppercase text-text-dark">Desktop Required</h3>
+                            <p className="text-text-dark/60 font-bold uppercase text-sm max-w-xs">
+                                Layout Editor memerlukan layar yang lebih besar. Buka di desktop atau tablet untuk pengalaman editing terbaik.
+                            </p>
+                            <button
+                                onClick={onClose}
+                                className="bg-primary text-white font-black uppercase px-8 py-3 border-2 border-black hard-shadow-black active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all"
+                            >
+                                Tutup
+                            </button>
+                        </div>
+                    ) : (
+                    /* Main Content */
                     <div className="flex-1 flex overflow-hidden">
                         {/* Left Panel - Editor Controls */}
                         <div className="w-96 border-r-4 border-black bg-white flex flex-col">
@@ -428,6 +453,7 @@ export function LayoutEditorModal({ isOpen, onClose }: LayoutEditorModalProps) {
                             </div>
                         </div>
                     </div>
+                    )}
                 </motion.div>
             </motion.div>
 

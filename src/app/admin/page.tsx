@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { 
   Loader2, Home, LogOut, ShieldCheck, Users, Type, DollarSign, 
   Instagram, Newspaper, Plus, Trash2, Save, X, Image, PenTool,
-  ChevronDown, ChevronUp
+  ChevronDown, ChevronUp, Upload, Film
 } from 'lucide-react'
 
 type TabKey = 'editor' | 'content' | 'pricing' | 'instagram' | 'news' | 'admins'
@@ -19,6 +19,7 @@ interface IGPost { id: string; instagram_url: string; display_order: number; }
 interface NewsItem { id: string; title: string; body: string; image_url: string; published: boolean; created_at: string; }
 interface AdminItem { id: string; email: string; is_super: boolean; }
 interface GalleryImage { name: string; url: string; }
+interface GalleryMeta { name: string; event: string; type: string; }
 
 // ─── Editor Section Collapse State ───
 type EditorSection = 'hero' | 'about' | 'product' | 'pricing' | 'testimonials' | 'gallery' | 'faq' | 'location'
@@ -46,6 +47,8 @@ export default function AdminPage() {
   const [newNewsTitle, setNewNewsTitle] = useState('')
   const [newNewsBody, setNewNewsBody] = useState('')
   const [newNewsImage, setNewNewsImage] = useState('')
+  const [newNewsSyncGallery, setNewNewsSyncGallery] = useState(false)
+  const [uploadingNewsImage, setUploadingNewsImage] = useState(false)
 
   // Editor fields — Hero
   const [heroTitle, setHeroTitle] = useState('Capture Every Moment, Create')
@@ -77,6 +80,9 @@ export default function AdminPage() {
   const [galleryTitle, setGalleryTitle] = useState('VISUAL ARCHIVE')
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
   const [uploadingGallery, setUploadingGallery] = useState(false)
+  const [galleryMetadata, setGalleryMetadata] = useState<GalleryMeta[]>([])
+  const [galleryCategories, setGalleryCategories] = useState<string[]>(['All', 'Wedding', 'Corporate', 'Private', 'Cultural'])
+  const [newCategory, setNewCategory] = useState('')
 
   // Editor fields — FAQ
   const [faqTitle, setFaqTitle] = useState('COMMON QUESTIONS')
@@ -168,6 +174,16 @@ export default function AdminPage() {
     loadFieldsFromContent(items, 'gallery', {
       section_title: setGalleryTitle,
     })
+    // Load gallery metadata (items JSON)
+    const galleryItemsRow = items.find(i => i.section === 'gallery' && i.key === 'items')
+    if (galleryItemsRow?.value) {
+      try { setGalleryMetadata(JSON.parse(galleryItemsRow.value)) } catch {}
+    }
+    // Load gallery categories
+    const galleryCatsRow = items.find(i => i.section === 'gallery' && i.key === 'categories')
+    if (galleryCatsRow?.value) {
+      try { setGalleryCategories(JSON.parse(galleryCatsRow.value)) } catch {}
+    }
     // Load FAQ fields
     const faqTitleItem = items.find(i => i.section === 'faq' && i.key === 'section_title')
     if (faqTitleItem?.value) setFaqTitle(faqTitleItem.value)
@@ -217,10 +233,30 @@ export default function AdminPage() {
     if (error) {
       flash(`Upload error: ${error.message}`)
     } else {
+      // Auto-add metadata entry for the new file
+      const newMeta: GalleryMeta = { name: fileName, event: file.name.replace(/\.[^/.]+$/, '').replace(/_/g, ' '), type: 'All' }
+      const updatedMeta = [...galleryMetadata, newMeta]
+      setGalleryMetadata(updatedMeta)
+      await saveField('gallery', 'items', JSON.stringify(updatedMeta))
       await loadGalleryImages()
-      flash('Image uploaded!')
+      flash('Media uploaded!')
     }
     setUploadingGallery(false)
+  }
+
+  async function uploadNewsImage(file: File): Promise<string | null> {
+    setUploadingNewsImage(true)
+    const ext = file.name.split('.').pop()
+    const fileName = `news_${Date.now()}.${ext}`
+    const { error } = await supabase.storage.from('gallery').upload(fileName, file)
+    if (error) {
+      flash(`Upload error: ${error.message}`)
+      setUploadingNewsImage(false)
+      return null
+    }
+    const url = supabase.storage.from('gallery').getPublicUrl(fileName).data.publicUrl
+    setUploadingNewsImage(false)
+    return url
   }
 
   async function deleteGalleryImage(name: string) {
@@ -313,7 +349,21 @@ export default function AdminPage() {
   async function addNews() {
     if (!newNewsTitle) return
     await supabase.from('news').insert({ title: newNewsTitle, body: newNewsBody, image_url: newNewsImage })
-    setNewNewsTitle(''); setNewNewsBody(''); setNewNewsImage('')
+    // Sync to gallery if checkbox is checked and there's an image
+    if (newNewsSyncGallery && newNewsImage) {
+      const fileName = newNewsImage.split('/').pop() || ''
+      const newMeta: GalleryMeta = { name: fileName, event: newNewsTitle, type: 'News' }
+      const updatedMeta = [...galleryMetadata, newMeta]
+      setGalleryMetadata(updatedMeta)
+      await saveField('gallery', 'items', JSON.stringify(updatedMeta))
+      // Ensure 'News' category exists
+      if (!galleryCategories.includes('News')) {
+        const updatedCats = [...galleryCategories, 'News']
+        setGalleryCategories(updatedCats)
+        await saveField('gallery', 'categories', JSON.stringify(updatedCats))
+      }
+    }
+    setNewNewsTitle(''); setNewNewsBody(''); setNewNewsImage(''); setNewNewsSyncGallery(false)
     await loadAll()
     flash('News added')
   }
@@ -566,39 +616,113 @@ export default function AdminPage() {
                   <Field label="Section Title" value={galleryTitle} onChange={setGalleryTitle} />
                   <SaveBtn onClick={() => saveField('gallery', 'section_title', galleryTitle)} label="Save Title" />
 
+                  {/* Category Management */}
+                  <div className="border-t border-[#1A1A1A]/10 pt-4 mt-4">
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2 block">Kategori Gallery</label>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {galleryCategories.map((cat, idx) => (
+                        <div key={cat} className="flex items-center gap-1 bg-[#F9F9F9] border border-[#1A1A1A]/10 rounded-lg px-3 py-1.5">
+                          <span className="text-xs font-bold text-[#1A1A1A]">{cat}</span>
+                          {cat !== 'All' && (
+                            <button onClick={() => {
+                              const updated = galleryCategories.filter((_, i) => i !== idx)
+                              setGalleryCategories(updated)
+                            }} className="text-red-400 hover:text-red-600 ml-1"><X className="w-3 h-3" /></button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex gap-2">
+                      <input value={newCategory} onChange={e => setNewCategory(e.target.value)}
+                        className="flex-1 px-3 py-2 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/10 text-sm" placeholder="Tambah kategori baru..." />
+                      <button onClick={() => {
+                        if (newCategory.trim() && !galleryCategories.includes(newCategory.trim())) {
+                          setGalleryCategories([...galleryCategories, newCategory.trim()])
+                          setNewCategory('')
+                        }
+                      }} className="px-3 py-2 rounded-xl bg-[#0F3D2E] text-white text-xs font-bold"><Plus className="w-3 h-3" /></button>
+                    </div>
+                    <SaveBtn onClick={() => saveField('gallery', 'categories', JSON.stringify(galleryCategories))} label="Save Categories" />
+                  </div>
+
                   {/* Upload */}
                   <div className="border-t border-[#1A1A1A]/10 pt-4 mt-4">
                     <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2 block flex items-center gap-2">
-                      <Image className="w-4 h-4" /> Upload Image to Gallery
+                      <Upload className="w-4 h-4" /> Upload Foto / Video to Gallery
                     </label>
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/*,video/*"
                       onChange={e => { if (e.target.files?.[0]) uploadGalleryImage(e.target.files[0]) }}
                       className="text-sm"
                       disabled={uploadingGallery}
                     />
                     {uploadingGallery && <p className="text-xs text-[#0F3D2E] mt-2 font-bold">Uploading...</p>}
-                    <p className="text-[10px] text-[#1A1A1A]/40 mt-1">Pastikan sudah membuat bucket &quot;gallery&quot; (public) di Supabase Storage dan set RLS policies.</p>
                   </div>
 
-                  {/* Image Grid */}
+                  {/* Media Grid with Metadata Editor */}
                   {galleryImages.length === 0 && (
-                    <p className="text-[#1A1A1A]/40 text-sm text-center py-4">Belum ada gambar. Upload gambar pertamamu.</p>
+                    <p className="text-[#1A1A1A]/40 text-sm text-center py-4">Belum ada media. Upload media pertamamu.</p>
                   )}
-                  <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
-                    {galleryImages.map(img => (
-                      <div key={img.name} className="relative group">
-                        <img src={img.url} alt={img.name} className="w-full h-24 object-cover rounded-xl border border-[#1A1A1A]/10" />
-                        <button
-                          onClick={() => deleteGalleryImage(img.name)}
-                          className="absolute top-1 right-1 p-1 rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
+                  <div className="space-y-3">
+                    {galleryImages.map(img => {
+                      const meta = galleryMetadata.find(m => m.name === img.name)
+                      const isVideo = /\.(mp4|webm|mov|avi|mkv)$/i.test(img.name)
+                      return (
+                        <div key={img.name} className="flex gap-3 bg-[#F9F9F9] rounded-xl p-3 border border-[#1A1A1A]/10">
+                          <div className="w-20 h-20 shrink-0 rounded-lg overflow-hidden border border-[#1A1A1A]/10 relative">
+                            {isVideo ? (
+                              <div className="w-full h-full bg-black flex items-center justify-center">
+                                <Film className="w-6 h-6 text-white/60" />
+                              </div>
+                            ) : (
+                              <img src={img.url} alt={img.name} className="w-full h-full object-cover" />
+                            )}
+                          </div>
+                          <div className="flex-1 space-y-2">
+                            <input
+                              value={meta?.event || ''}
+                              onChange={e => {
+                                setGalleryMetadata(prev => {
+                                  const existing = prev.find(m => m.name === img.name)
+                                  if (existing) {
+                                    return prev.map(m => m.name === img.name ? { ...m, event: e.target.value } : m)
+                                  }
+                                  return [...prev, { name: img.name, event: e.target.value, type: 'All' }]
+                                })
+                              }}
+                              className="w-full px-3 py-1.5 rounded-lg bg-white border border-[#1A1A1A]/10 text-sm font-bold"
+                              placeholder="Nama Event (e.g. Gala Dinner 2026)"
+                            />
+                            <select
+                              value={meta?.type || 'All'}
+                              onChange={e => {
+                                setGalleryMetadata(prev => {
+                                  const existing = prev.find(m => m.name === img.name)
+                                  if (existing) {
+                                    return prev.map(m => m.name === img.name ? { ...m, type: e.target.value } : m)
+                                  }
+                                  return [...prev, { name: img.name, event: '', type: e.target.value }]
+                                })
+                              }}
+                              className="w-full px-3 py-1.5 rounded-lg bg-white border border-[#1A1A1A]/10 text-sm"
+                            >
+                              {galleryCategories.map(cat => (
+                                <option key={cat} value={cat}>{cat}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <button
+                            onClick={() => deleteGalleryImage(img.name)}
+                            className="p-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 self-start"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )
+                    })}
                   </div>
+                  <SaveBtn onClick={() => saveField('gallery', 'items', JSON.stringify(galleryMetadata))} label="Save All Gallery Metadata" />
                 </div>
               )}
             </div>
@@ -767,8 +891,46 @@ export default function AdminPage() {
                 className="w-full px-4 py-3 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/10 text-sm font-bold" placeholder="Judul berita" />
               <textarea value={newNewsBody} onChange={e => setNewNewsBody(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/10 text-sm resize-none" rows={4} placeholder="Isi berita..." />
-              <input value={newNewsImage} onChange={e => setNewNewsImage(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/10 text-sm" placeholder="URL gambar (opsional)" />
+              
+              {/* Image Upload */}
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2 block flex items-center gap-2">
+                  <Upload className="w-4 h-4" /> Upload Gambar Berita
+                </label>
+                {newNewsImage ? (
+                  <div className="flex items-center gap-3">
+                    <img src={newNewsImage} className="w-16 h-16 rounded-xl object-cover border border-[#1A1A1A]/10" alt="Preview" />
+                    <button onClick={() => setNewNewsImage('')} className="text-xs font-bold text-red-500">Hapus</button>
+                  </div>
+                ) : (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={async e => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        const url = await uploadNewsImage(file)
+                        if (url) setNewNewsImage(url)
+                      }
+                    }}
+                    className="text-sm"
+                    disabled={uploadingNewsImage}
+                  />
+                )}
+                {uploadingNewsImage && <p className="text-xs text-[#0F3D2E] mt-1 font-bold">Uploading...</p>}
+              </div>
+
+              {/* Sync to Gallery */}
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={newNewsSyncGallery}
+                  onChange={e => setNewNewsSyncGallery(e.target.checked)}
+                  className="w-4 h-4 rounded"
+                />
+                <span className="text-sm font-bold text-[#1A1A1A]/70">Tampilkan juga di Gallery (Sync to Gallery)</span>
+              </label>
+
               <button onClick={addNews} className="px-6 py-3 rounded-xl bg-[#0F3D2E] text-white font-bold text-sm hover:bg-[#195240] transition-all flex items-center gap-2">
                 <Plus className="w-4 h-4" /> Publish
               </button>

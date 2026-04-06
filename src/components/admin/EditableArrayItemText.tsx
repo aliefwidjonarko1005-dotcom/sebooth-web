@@ -3,29 +3,31 @@
 import { useRef, useState, useCallback, KeyboardEvent } from "react";
 import { useAdminEdit } from "./AdminEditProvider";
 
-interface EditableTextProps {
+interface EditableArrayItemTextProps<T> {
     section: string;
-    fieldKey: string;
-    defaultValue: string;
-    as?: "h1" | "h2" | "h3" | "h4" | "p" | "span" | "div";
+    arrayKey: string;
+    items: T[];
+    index: number;
+    field: keyof T;
+    as?: "h1" | "h2" | "h3" | "h4" | "p" | "span" | "div" | "li";
     className?: string;
     style?: React.CSSProperties;
-    children?: React.ReactNode;
 }
 
-export function EditableText({
+export function EditableArrayItemText<T extends object>({
     section,
-    fieldKey,
-    defaultValue,
+    arrayKey,
+    items,
+    index,
+    field,
     as: Tag = "span",
     className = "",
     style,
-    children,
-}: EditableTextProps) {
+}: EditableArrayItemTextProps<T>) {
     const { editMode, saveField } = useAdminEdit();
     const ref = useRef<HTMLElement>(null);
     const [isEditing, setIsEditing] = useState(false);
-    const originalValue = useRef(defaultValue);
+    const value = String(items[index]?.[field] ?? "");
 
     const handleClick = useCallback(
         (e: React.MouseEvent) => {
@@ -33,11 +35,9 @@ export function EditableText({
             e.preventDefault();
             e.stopPropagation();
             setIsEditing(true);
-            // Focus the element after render
             setTimeout(() => {
                 if (ref.current) {
                     ref.current.focus();
-                    // Place cursor at end
                     const range = document.createRange();
                     const sel = window.getSelection();
                     range.selectNodeContents(ref.current);
@@ -54,19 +54,21 @@ export function EditableText({
         setIsEditing(false);
         if (!ref.current) return;
         const newValue = ref.current.innerText.trim();
-        if (newValue && newValue !== originalValue.current) {
-            originalValue.current = newValue;
-            await saveField(section, fieldKey, newValue);
+        if (newValue && newValue !== value) {
+            const updatedItems = items.map((item, i) => {
+                if (i === index) {
+                    return { ...item, [field]: newValue };
+                }
+                return item;
+            });
+            await saveField(section, arrayKey, JSON.stringify(updatedItems));
         }
-    }, [saveField, section, fieldKey]);
+    }, [saveField, section, arrayKey, items, index, field, value]);
 
     const handleKeyDown = useCallback(
         (e: KeyboardEvent<HTMLElement>) => {
             if (e.key === "Escape") {
-                // Revert changes
-                if (ref.current) {
-                    ref.current.innerText = originalValue.current;
-                }
+                if (ref.current) ref.current.innerText = value;
                 setIsEditing(false);
                 ref.current?.blur();
             }
@@ -75,15 +77,13 @@ export function EditableText({
                 ref.current?.blur();
             }
         },
-        [Tag]
+        [Tag, value]
     );
 
-    // In normal mode (not admin or not edit mode), render children or defaultValue
     if (!editMode) {
-        return <Tag style={style} className={className}>{children || defaultValue}</Tag>;
+        return <Tag style={style} className={className}>{value}</Tag>;
     }
 
-    // Edit mode styles
     const editClasses = [
         className,
         "editable-field",
@@ -103,7 +103,7 @@ export function EditableText({
             onKeyDown={handleKeyDown}
             style={{ ...style, outline: "none" }}
         >
-            {children || defaultValue}
+            {value}
         </Tag>
     );
 }

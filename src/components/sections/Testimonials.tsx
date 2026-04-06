@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { parseJsonContent } from "@/lib/useSiteContent";
 import { EditableText } from "@/components/admin/EditableText";
+import { EditableArrayItemText } from "@/components/admin/EditableArrayItemText";
 
 const shadowCycle = ["hard-shadow-black", "hard-shadow-blue", "hard-shadow-orange"];
 const avatarColors = ["bg-primary", "bg-secondary", "bg-primary"];
@@ -61,11 +62,18 @@ export function Testimonials({ initialData = {} }: TestimonialsProps) {
                     <EditableText section="testimonials" fieldKey="section_title" defaultValue={content.section_title} as="h2" className="text-5xl md:text-8xl font-black uppercase tracking-tighter text-text-dark">
                         {content.section_title}
                     </EditableText>
-                    <div className="absolute -right-16 -top-12 rotate-12 bg-secondary text-white px-6 py-2 text-xl marker-font border-2 border-black hard-shadow-black" style={{ textShadow: "none" }}>
+                    {/* Desktop badge — absolute positioned */}
+                    <div className="absolute -right-16 -top-12 rotate-12 bg-secondary text-white px-6 py-2 text-xl marker-font border-2 border-black hard-shadow-black hidden sm:block" style={{ textShadow: "none" }}>
                         <EditableText section="testimonials" fieldKey="section_badge" defaultValue={content.section_badge} as="span" className="text-white text-xl marker-font">
                             {content.section_badge}
                         </EditableText>
                     </div>
+                </div>
+                {/* Mobile badge — inline below title */}
+                <div className="mt-4 sm:hidden">
+                    <span className="inline-block bg-secondary text-white px-4 py-1.5 text-sm marker-font border-2 border-black hard-shadow-black" style={{ textShadow: "none" }}>
+                        {content.section_badge}
+                    </span>
                 </div>
             </div>
 
@@ -81,15 +89,15 @@ export function Testimonials({ initialData = {} }: TestimonialsProps) {
                         className={`bg-white p-8 border-2 border-black relative group ${shadowCycle[i % shadowCycle.length]} ${t.offsetClass || ""}`}
                     >
                         <div className="text-text-dark mb-6 italic font-black text-xl leading-tight">
-                            &quot;{t.quote}&quot;
+                            &quot;<EditableArrayItemText section="testimonials" arrayKey="items" items={testimonials} index={i} field="quote" as="span" className="text-text-dark italic font-black text-xl leading-tight" />&quot;
                         </div>
                         <div className="flex items-center gap-4">
                             <div className={`w-12 h-12 ${avatarColors[i % avatarColors.length]} flex items-center justify-center text-white font-black border border-black`}>
                                 {t.initials}
                             </div>
                             <div>
-                                <div className="font-black uppercase text-sm text-text-dark">{t.author}</div>
-                                <div className="text-xs font-bold text-primary/60 uppercase">{t.role}</div>
+                                <EditableArrayItemText section="testimonials" arrayKey="items" items={testimonials} index={i} field="author" as="div" className="font-black uppercase text-sm text-text-dark" />
+                                <EditableArrayItemText section="testimonials" arrayKey="items" items={testimonials} index={i} field="role" as="div" className="text-xs font-bold text-primary/60 uppercase" />
                             </div>
                         </div>
                     </motion.div>

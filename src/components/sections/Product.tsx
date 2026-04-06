@@ -5,6 +5,8 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { parseJsonContent } from "@/lib/useSiteContent";
 import { EditableText } from "@/components/admin/EditableText";
+import { EditableImage } from "@/components/admin/EditableImage";
+import { EditableArrayItemText } from "@/components/admin/EditableArrayItemText";
 
 interface ProductItem {
     id: string;
@@ -93,7 +95,7 @@ export function Product({ initialData = {} }: ProductProps) {
 
             {/* Product Grid */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                {products.map((product) => (
+                {products.map((product, idx) => (
                     <div
                         key={product.id}
                         className={cn(
@@ -106,12 +108,8 @@ export function Product({ initialData = {} }: ProductProps) {
                         {/* Card Header */}
                         <div className="mb-4 flex justify-between items-start">
                             <div>
-                                <h3 className="text-3xl font-black uppercase mb-1 text-text-dark">
-                                    {product.name}
-                                </h3>
-                                <p className="text-sm font-bold uppercase tracking-wide text-primary">
-                                    {product.tagline}
-                                </p>
+                                <EditableArrayItemText section="product" arrayKey="items" items={products} index={idx} field="name" as="h3" className="text-3xl font-black uppercase mb-1 text-text-dark" />
+                                <EditableArrayItemText section="product" arrayKey="items" items={products} index={idx} field="tagline" as="p" className="text-sm font-bold uppercase tracking-wide text-primary" />
                             </div>
                             {product.badge && (
                                 <span className="bg-secondary text-white text-xs px-2 py-1 font-bold border border-black">
@@ -120,9 +118,7 @@ export function Product({ initialData = {} }: ProductProps) {
                             )}
                         </div>
 
-                        <p className="font-bold uppercase text-text-dark mb-4">
-                            {product.description}
-                        </p>
+                        <EditableArrayItemText section="product" arrayKey="items" items={products} index={idx} field="description" as="p" className="font-bold uppercase text-text-dark mb-4" />
 
                         {/* Expandable Specs — CSS grid transition */}
                         <div className={expandedId === product.id ? "grid-expand" : "grid-collapse"}>
@@ -154,8 +150,27 @@ export function Product({ initialData = {} }: ProductProps) {
                             {content.pro_description}
                         </EditableText>
                     </div>
-                    <div className="w-full md:w-64 h-48 bg-white/10 border-4 border-white flex items-center justify-center">
-                        <span className="text-white/40 font-bold uppercase text-sm">[Equipment Photo]</span>
+                    <div className="w-full md:w-64 h-48 border-4 border-white overflow-hidden flex items-center justify-center bg-white/10">
+                        {initialData["equipment_image"] ? (
+                            <EditableImage
+                                section="product"
+                                fieldKey="equipment_image"
+                                defaultValue={initialData["equipment_image"]}
+                                className="w-full h-full object-cover"
+                                altText="Equipment Photo"
+                            />
+                        ) : (
+                            <div className="relative w-full h-full flex items-center justify-center">
+                                <EditableImage
+                                    section="product"
+                                    fieldKey="equipment_image"
+                                    defaultValue=""
+                                    className="w-full h-full object-cover"
+                                    altText="Equipment Photo"
+                                />
+                                <span className="absolute text-white/40 font-bold uppercase text-sm pointer-events-none">[Equipment Photo]</span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

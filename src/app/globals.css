@@ -43,6 +43,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Prevent horizontal overflow on mobile */
+  overflow-x: hidden;
 }
 
 body {
@@ -50,6 +52,9 @@ body {
   color: var(--foreground);
   font-family: var(--font-headline), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  /* Prevent layout shift from scrollbar */
+  overflow-x: hidden;
 }
 
 /* ════════════════════════════════════════════════════
@@ -174,6 +179,18 @@ body {
     outline-offset: 4px;
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
     cursor: text !important;
+  }
+
+  /* ─── Mobile Touch Utilities ─── */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
   }
 }
 

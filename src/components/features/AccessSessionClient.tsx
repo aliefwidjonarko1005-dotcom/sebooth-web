@@ -78,13 +78,13 @@ export default function AccessSessionClient({ session: initialSession, sessionId
 
   if (error) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-6 text-center">
-        <XCircle className="h-16 w-16 text-red-400 mb-4" />
-        <h1 className="text-2xl font-black text-gray-900 leading-tight">Oops!</h1>
-        <p className="mt-2 text-gray-500 font-medium">{error}</p>
+      <div className="flex min-h-[100svh] flex-col items-center justify-center bg-gray-50 p-6 text-center">
+        <XCircle className="h-12 w-12 md:h-16 md:w-16 text-red-400 mb-4" />
+        <h1 className="text-xl md:text-2xl font-black text-gray-900 leading-tight">Oops!</h1>
+        <p className="mt-2 text-gray-500 font-medium text-sm md:text-base">{error}</p>
         <button
           onClick={() => router.push('/')}
-          className="mt-8 rounded-2xl bg-gray-900 px-8 py-4 font-black text-white shadow-xl hover:scale-105 active:scale-95 transition-all"
+          className="mt-8 rounded-2xl bg-gray-900 px-8 py-4 font-black text-white shadow-xl active:scale-95 transition-all min-h-[48px]"
         >
           Kembali ke Beranda
         </button>
@@ -93,24 +93,24 @@ export default function AccessSessionClient({ session: initialSession, sessionId
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 md:p-12">
+    <div className="min-h-[100svh] bg-gray-50 p-4 md:p-12">
       <div className="mx-auto max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <div className="inline-flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-blue-100 text-blue-600 shadow-inner">
-            <Camera className="h-8 w-8" />
+          <div className="inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-[1.25rem] bg-blue-100 text-blue-600 shadow-inner">
+            <Camera className="h-7 w-7 md:h-8 md:w-8" />
           </div>
-          <h1 className="mt-8 text-4xl font-black text-gray-900 md:text-6xl tracking-tighter">Yeay! Kenanganmu Siap.</h1>
-          <p className="mt-4 text-gray-500 font-medium italic text-lg">
+          <h1 className="mt-6 md:mt-8 text-3xl md:text-4xl font-black text-gray-900 lg:text-6xl tracking-tighter">Yeay! Kenanganmu Siap.</h1>
+          <p className="mt-3 md:mt-4 text-gray-500 font-medium italic text-base md:text-lg">
             Ditemukan {session.media?.length || 0} media dari sesi di <span className="font-black text-blue-600 not-italic uppercase tracking-wider">{session.event_name || 'Sebooth Studio'}</span>.
           </p>
         </motion.div>
 
         {/* Preview Grid */}
-        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 md:mt-16 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
           {session.media?.map((item: MediaItem, idx: number) => (
             <motion.div
               key={item.id}
@@ -144,7 +144,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-20 rounded-[3rem] bg-blue-600 p-8 text-center text-white shadow-2xl md:p-16 relative overflow-hidden"
+          className="mt-12 md:mt-20 rounded-[2rem] md:rounded-[3rem] bg-blue-600 p-6 md:p-8 text-center text-white shadow-2xl lg:p-16 relative overflow-hidden"
         >
           <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
 
@@ -153,11 +153,11 @@ export default function AccessSessionClient({ session: initialSession, sessionId
               <div className="mx-auto h-20 w-20 rounded-full bg-white/20 flex items-center justify-center">
                 <CheckCircle className="h-10 w-10 text-white" />
               </div>
-              <h2 className="text-3xl font-black">Foto Sudah Di Klaim ✓</h2>
-              <p className="text-blue-100 font-medium">Mengalihkan ke galeri pribadimu...</p>
+              <h2 className="text-2xl md:text-3xl font-black">Foto Sudah Di Klaim ✓</h2>
+              <p className="text-blue-100 font-medium text-sm md:text-base">Mengalihkan ke galeri pribadimu...</p>
               <button
                 onClick={() => router.push('/profile')}
-                className="mt-4 rounded-2xl bg-white px-10 py-4 text-lg font-black text-blue-600 shadow-xl hover:scale-105 active:scale-95 transition-all"
+                className="mt-4 rounded-2xl bg-white px-8 py-4 text-base md:text-lg font-black text-blue-600 shadow-xl active:scale-95 transition-all min-h-[48px]"
               >
                 Lihat My Photos
               </button>
@@ -177,34 +177,34 @@ export default function AccessSessionClient({ session: initialSession, sessionId
             </div>
           ) : user ? (
             <div className="space-y-8">
-              <h2 className="text-3xl font-black md:text-5xl italic tracking-tight">Hai {user.email?.split('@')[0]}!</h2>
-              <p className="mt-4 text-blue-100 text-lg max-w-xl mx-auto font-medium">
+              <h2 className="text-2xl md:text-3xl font-black lg:text-5xl italic tracking-tight">Hai {user.email?.split('@')[0]}!</h2>
+              <p className="mt-3 md:mt-4 text-blue-100 text-base md:text-lg max-w-xl mx-auto font-medium">
                 Klik tombol di bawah untuk memasukkan sesi ini ke akunmu.
               </p>
               <button
                 onClick={handleClaim}
                 disabled={isClaiming}
-                className="inline-flex items-center gap-3 rounded-2xl bg-white px-10 py-5 text-xl font-black text-blue-600 shadow-xl hover:scale-105 active:scale-95 transition-all disabled:bg-white/50"
+                className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 md:px-10 md:py-5 text-lg md:text-xl font-black text-blue-600 shadow-xl active:scale-95 transition-all disabled:bg-white/50 min-h-[48px]"
               >
                 Klaim Sekarang! 🚀
               </button>
             </div>
           ) : (
             <>
-              <h2 className="text-3xl font-black md:text-5xl italic tracking-tight leading-[0.9]">Simpan Selamanya?</h2>
-              <p className="mt-6 text-blue-100 text-lg max-w-xl mx-auto font-medium">
+              <h2 className="text-2xl md:text-3xl font-black lg:text-5xl italic tracking-tight leading-[0.9]">Simpan Selamanya?</h2>
+              <p className="mt-4 md:mt-6 text-blue-100 text-base md:text-lg max-w-xl mx-auto font-medium">
                 Buat akun Sebooth sekarang untuk menyimpan foto-foto ini selamanya.
               </p>
-              <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <div className="mt-8 md:mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
                 <button
                   onClick={() => router.push(`/register?claim=${sessionId}`)}
-                  className="w-full rounded-2xl bg-white px-10 py-5 text-lg font-black text-blue-600 shadow-xl hover:scale-105 active:scale-95 transition-all sm:w-auto"
+                  className="w-full rounded-2xl bg-white px-8 py-4 md:px-10 md:py-5 text-base md:text-lg font-black text-blue-600 shadow-xl active:scale-95 transition-all sm:w-auto min-h-[48px]"
                 >
                   Daftar Sekarang
                 </button>
                 <button
                   onClick={() => router.push(`/login?claim=${sessionId}`)}
-                  className="w-full rounded-2xl bg-white/10 px-10 py-5 text-lg font-black text-white backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all sm:w-auto"
+                  className="w-full rounded-2xl bg-white/10 px-8 py-4 md:px-10 md:py-5 text-base md:text-lg font-black text-white backdrop-blur-md border border-white/20 active:bg-white/20 transition-all sm:w-auto min-h-[48px]"
                 >
                   Sudah Punya Akun
                 </button>

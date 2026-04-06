@@ -15,6 +15,8 @@ export async function revalidateSiteContent() {
     revalidatePath("/about", "page");
     // Partnership page
     revalidatePath("/partnership", "page");
+    // News detail pages
+    revalidatePath("/news/[id]", "page");
 }
 
 /**

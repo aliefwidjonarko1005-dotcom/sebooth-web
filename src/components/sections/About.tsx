@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { EditableText } from "@/components/admin/EditableText";
+import { EditableImage } from "@/components/admin/EditableImage";
 
 const defaultContent = {
     tag: "[ 00 — ORIGIN STORY ]",
@@ -61,10 +62,29 @@ export function About({ initialData = {} }: AboutProps) {
                     transition={{ duration: 0.8, delay: 0.2 }}
                     className="relative h-[500px] w-full bg-gray-100 border-4 border-black hard-shadow-blue flex items-center justify-center overflow-hidden"
                 >
-                    <div className="text-text-dark/20 font-black text-center p-8 flex items-center justify-center flex-col gap-4 uppercase">
-                        <span className="text-6xl">⚡</span>
-                        <span className="text-2xl">[Zero-Lag System]</span>
-                    </div>
+                    {initialData["image"] ? (
+                        <EditableImage
+                            section="about"
+                            fieldKey="image"
+                            defaultValue={initialData["image"]}
+                            className="w-full h-full object-cover"
+                            altText="About Sebooth"
+                        />
+                    ) : (
+                        <div className="relative w-full h-full flex items-center justify-center">
+                            <EditableImage
+                                section="about"
+                                fieldKey="image"
+                                defaultValue=""
+                                className="w-full h-full object-cover"
+                                altText="About Sebooth"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center text-text-dark/20 font-black text-center p-8 flex-col gap-4 uppercase pointer-events-none">
+                                <span className="text-6xl">⚡</span>
+                                <span className="text-2xl">[Zero-Lag System]</span>
+                            </div>
+                        </div>
+                    )}
                 </motion.div>
             </div>
         </section>

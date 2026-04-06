@@ -1,6 +1,7 @@
 "use client";
 
 import { EditableText } from "@/components/admin/EditableText";
+import { EditableImage } from "@/components/admin/EditableImage";
 
 const defaultContent = {
     title: "Visit Our Studio",
@@ -39,7 +40,26 @@ export function Location({ initialData = {} }: LocationProps) {
                             Get Directions &rarr;
                         </a>
                     </div>
-                    <p className="text-[#1A1A1A]/30 font-bold">[Google Maps Embed Placeholder]</p>
+                    {initialData["image"] ? (
+                        <EditableImage
+                            section="location"
+                            fieldKey="image"
+                            defaultValue={initialData["image"]}
+                            className="max-w-md w-full h-48 object-cover rounded-lg"
+                            altText="Sebooth Studio"
+                        />
+                    ) : (
+                        <div className="relative">
+                            <EditableImage
+                                section="location"
+                                fieldKey="image"
+                                defaultValue=""
+                                className="max-w-md w-full h-48 object-cover rounded-lg"
+                                altText="Sebooth Studio"
+                            />
+                            <p className="text-[#1A1A1A]/30 font-bold mt-2">[Upload Foto Studio / Map]</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </section>

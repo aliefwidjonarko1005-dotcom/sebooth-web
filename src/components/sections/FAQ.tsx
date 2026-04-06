@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import { parseJsonContent } from "@/lib/useSiteContent";
 import { EditableText } from "@/components/admin/EditableText";
+import { EditableArrayItemText } from "@/components/admin/EditableArrayItemText";
 
 const shadowCycle = ["hard-shadow-black", "hard-shadow-blue", "hard-shadow-orange", "hard-shadow-black"];
 
@@ -70,9 +71,7 @@ export function FAQ({ initialData = {} }: FAQProps) {
                                     : "bg-white text-text-dark hover:bg-primary hover:text-white border-b-4 border-black"
                             }`}
                         >
-                            <h3 className="text-xl font-black uppercase tracking-tight">
-                                {faq.question}
-                            </h3>
+                            <EditableArrayItemText section="faq" arrayKey="items" items={faqs} index={i} field="question" as="h3" className="text-xl font-black uppercase tracking-tight" />
                             {activeIndex === i ? (
                                 <Minus className="w-6 h-6 shrink-0" />
                             ) : (
@@ -83,9 +82,7 @@ export function FAQ({ initialData = {} }: FAQProps) {
                         {/* Answer — CSS grid transition */}
                         <div className={activeIndex === i ? "grid-expand" : "grid-collapse"}>
                             <div className="grid-inner">
-                                <p className="p-6 text-text-dark font-bold uppercase leading-relaxed">
-                                    {faq.answer}
-                                </p>
+                                <EditableArrayItemText section="faq" arrayKey="items" items={faqs} index={i} field="answer" as="p" className="p-6 text-text-dark font-bold uppercase leading-relaxed" />
                             </div>
                         </div>
                     </div>
