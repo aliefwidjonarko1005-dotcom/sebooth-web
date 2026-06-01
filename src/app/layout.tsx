@@ -4,6 +4,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { LayoutShell } from "@/components/layout/LayoutShell";
 import { ClientProviders } from "@/components/admin/ClientProviders";
+import { OrientationProvider } from "@/components/layout/OrientationProvider";
+import { OrientationToggle } from "@/components/ui/OrientationToggle";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -36,7 +38,12 @@ export default function RootLayout({
         className={`${spaceGrotesk.variable} ${permanentMarker.variable} ${seboothFont.variable} antialiased paper-texture`}
       >
         <ClientProviders>
-          <LayoutShell>{children}</LayoutShell>
+          <OrientationProvider>
+            <OrientationToggle />
+            <div id="root-app" className="w-full h-full relative transition-all duration-300">
+              <LayoutShell>{children}</LayoutShell>
+            </div>
+          </OrientationProvider>
         </ClientProviders>
       </body>
     </html>

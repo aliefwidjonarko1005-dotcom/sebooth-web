@@ -9,10 +9,11 @@ import Link from 'next/link'
 import { 
   Loader2, Home, LogOut, ShieldCheck, Users, Type, DollarSign, 
   Instagram, Newspaper, Plus, Trash2, Save, X, Image, PenTool,
-  ChevronDown, ChevronUp, Upload, Film
+  ChevronDown, ChevronUp, Upload, Film, Ticket
 } from 'lucide-react'
+import QueueOperatorTab from '@/components/admin/QueueOperatorTab'
 
-type TabKey = 'editor' | 'content' | 'pricing' | 'instagram' | 'news' | 'admins'
+type TabKey = 'editor' | 'content' | 'pricing' | 'instagram' | 'news' | 'admins' | 'queue'
 
 interface ContentItem { id: string; section: string; key: string; value: string; }
 interface IGPost { id: string; instagram_url: string; display_order: number; }
@@ -431,6 +432,7 @@ export default function AdminPage() {
     { key: 'pricing', label: 'Pricing', icon: <DollarSign className="w-4 h-4" /> },
     { key: 'instagram', label: 'Instagram', icon: <Instagram className="w-4 h-4" /> },
     { key: 'news', label: 'News', icon: <Newspaper className="w-4 h-4" /> },
+    { key: 'queue', label: 'Antrean', icon: <Ticket className="w-4 h-4" /> },
     ...(isSuper ? [{ key: 'admins' as const, label: 'Admins', icon: <Users className="w-4 h-4" /> }] : []),
   ]
 
@@ -982,6 +984,11 @@ export default function AdminPage() {
               ))}
             </div>
           </div>
+        )}
+
+        {/* ═══════════════════ QUEUE TAB ═══════════════════ */}
+        {tab === 'queue' && (
+          <QueueOperatorTab flash={flash} />
         )}
       </div>
     </div>

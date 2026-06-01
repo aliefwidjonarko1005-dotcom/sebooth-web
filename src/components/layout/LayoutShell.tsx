@@ -5,7 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingCTA } from "@/components/ui/FloatingCTA";
 
-const EXCLUDED_PATHS = ["/profile", "/login", "/register", "/admin"];
+const EXCLUDED_PATHS = ["/profile", "/login", "/register", "/admin", "/queue"];
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
