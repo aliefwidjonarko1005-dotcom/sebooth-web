@@ -110,18 +110,17 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
         ? Math.round((Date.now() - new Date(status.currentTicket.called_at).getTime()) / 1000)
         : undefined;
 
-    // ── Push Notification Setup ──
+    // ── Push Notification Setup — Auto-prompt on mount ──
     useEffect(() => {
         if (pushSubscribedRef.current || !ticket.user_id) return;
         if (!isPushSupported()) return;
+        pushSubscribedRef.current = true;
 
-        const permission = getPushPermission();
-        if (permission === "granted") {
-            subscribeToPush(ticket.user_id).then((sub) => {
-                if (sub) setPushEnabled(true);
-            });
-            pushSubscribedRef.current = true;
-        }
+        // Always attempt to subscribe — this will trigger the permission prompt
+        // if not yet granted, or silently subscribe if already granted
+        subscribeToPush(ticket.user_id).then((sub) => {
+            if (sub) setPushEnabled(true);
+        });
     }, [ticket.user_id]);
 
     async function handleEnablePush() {

@@ -104,17 +104,45 @@ export async function POST(req: NextRequest) {
                 .eq("id", sessionId);
         }
 
-        // Find next waiting ticket number for response info
+        // ══════════════════════════════════════════════
+        // AUTO-ADVANCE: Call the next waiting ticket
+        // ══════════════════════════════════════════════
         const { data: nextTicket } = await supabase
             .from("queue_tickets")
-            .select("queue_number")
+            .select("id, queue_number, user_id, display_name")
             .eq("event_id", eventId)
             .eq("status", "waiting")
             .order("queue_number", { ascending: true })
             .limit(1)
             .maybeSingle();
 
-        nextTicketNumber = nextTicket?.queue_number ?? null;
+        if (nextTicket) {
+            // Auto-call the next ticket
+            const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+            await supabase
+                .from("queue_tickets")
+                .update({
+                    status: "called",
+                    called_at: new Date().toISOString(),
+                    expires_at: expiresAt,
+                })
+                .eq("id", nextTicket.id);
+
+            nextTicketNumber = nextTicket.queue_number;
+
+            // Send urgent push notification to the called user
+            if (nextTicket.user_id) {
+                const eventData = (await supabase.from("queue_events").select("name, booth_name").eq("id", eventId).single()).data;
+                await sendPushToUser(nextTicket.user_id, {
+                    title: "GILIRAN KAMU! 🔴",
+                    body: `Segera menuju booth ${eventData?.booth_name || "Sebooth"}! Nomor antrean #${String(nextTicket.queue_number).padStart(3, "0")}`,
+                    url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.sebooth.in"}/queue/${eventId}/ticket/${nextTicket.id}`,
+                    tag: `your-turn-${nextTicket.id}`,
+                    vibrate: [200, 100, 200, 100, 200],
+                    requireInteraction: true,
+                });
+            }
+        }
 
         // Update event's avg_session_duration if we have timing data
         if (ticket.status === "in_session") {
@@ -177,6 +205,7 @@ export async function POST(req: NextRequest) {
         ticketId: ticket.id,
         updatedStatus: webhookEvent === "session_started" ? "in_session" : "completed",
         nextTicketNumber,
+        autoCalledNext: webhookEvent === "session_completed" && nextTicketNumber !== null,
     });
 }
 
@@ -192,7 +221,8 @@ async function sendProximityPushNotifications(
     const { waitingTickets, event } = status;
     if (!waitingTickets || !event) return;
 
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sebooth.com";
+    const supabase = createServiceClient();
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.sebooth.in";
 
     for (const ticket of waitingTickets) {
         if (!ticket.user_id) continue;
@@ -209,13 +239,7 @@ async function sendProximityPushNotifications(
                 vibrate: [200, 100, 200],
             });
 
-            // Mark as sent (update in background, don't block)
-            const { createClient: createSB } = await import("@supabase/supabase-js");
-            const sb = createSB(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-            );
-            await sb.from("queue_tickets")
+            await supabase.from("queue_tickets")
                 .update({ push_preparing_sent: true })
                 .eq("id", ticket.id);
         }
@@ -230,12 +254,7 @@ async function sendProximityPushNotifications(
                 vibrate: [200],
             });
 
-            const { createClient: createSB } = await import("@supabase/supabase-js");
-            const sb = createSB(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-            );
-            await sb.from("queue_tickets")
+            await supabase.from("queue_tickets")
                 .update({ push_approaching_sent: true })
                 .eq("id", ticket.id);
         }

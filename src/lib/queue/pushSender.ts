@@ -9,7 +9,7 @@ import { createClient } from "@supabase/supabase-js";
 // Configure VAPID keys
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || "";
-const VAPID_SUBJECT = process.env.NEXT_PUBLIC_SITE_URL || "https://sebooth.com";
+const VAPID_SUBJECT = `mailto:${process.env.NEXT_PUBLIC_ADMIN_EMAILS || "seboothin@gmail.com"}`;
 
 if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
     webpush.setVapidDetails(
