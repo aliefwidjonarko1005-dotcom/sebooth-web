@@ -41,9 +41,10 @@ export interface PushPayload {
  */
 export async function sendPushToUser(userId: string, payload: PushPayload): Promise<number> {
     if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
-        console.warn("[Push Send] VAPID keys not configured — skipping push");
+        console.warn("[Push Send] VAPID keys not configured — skipping push. Public:", VAPID_PUBLIC_KEY ? "SET" : "EMPTY", "Private:", VAPID_PRIVATE_KEY ? "SET" : "EMPTY");
         return 0;
     }
+    console.info(`[Push Send] Sending to user ${userId}: "${payload.title}"`);
 
     const supabase = createServiceClient();
 
@@ -52,9 +53,15 @@ export async function sendPushToUser(userId: string, payload: PushPayload): Prom
         .select("id, endpoint, p256dh, auth_key")
         .eq("user_id", userId);
 
-    if (error || !subscriptions || subscriptions.length === 0) {
+    if (error) {
+        console.error("[Push Send] DB error fetching subscriptions:", error.message);
         return 0;
     }
+    if (!subscriptions || subscriptions.length === 0) {
+        console.warn(`[Push Send] No subscriptions found for user ${userId}`);
+        return 0;
+    }
+    console.info(`[Push Send] Found ${subscriptions.length} subscription(s) for user ${userId}`);
 
     let sentCount = 0;
     const expiredIds: string[] = [];
@@ -91,6 +98,7 @@ export async function sendPushToUser(userId: string, payload: PushPayload): Prom
             .in("id", expiredIds);
     }
 
+    console.info(`[Push Send] Sent ${sentCount}/${subscriptions.length} push(es) for user ${userId}`);
     return sentCount;
 }
 

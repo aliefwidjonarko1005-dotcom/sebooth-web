@@ -5,8 +5,25 @@
  * Handles incoming push events and notification click actions.
  */
 
+// Activate immediately — don't wait for old SW to die
+self.addEventListener("install", function (event) {
+    event.waitUntil(self.skipWaiting());
+});
+
+// Claim all clients immediately so push works right away
+self.addEventListener("activate", function (event) {
+    event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener("push", function (event) {
-    const data = event.data ? event.data.json() : {};
+    if (!event.data) return;
+
+    let data;
+    try {
+        data = event.data.json();
+    } catch {
+        data = { title: "Sebooth Antrean", body: event.data.text() };
+    }
 
     const title = data.title || "Sebooth Antrean";
     const options = {
@@ -20,6 +37,8 @@ self.addEventListener("push", function (event) {
         vibrate: data.vibrate || [200, 100, 200],
         requireInteraction: data.requireInteraction || false,
         actions: data.actions || [],
+        // Ensure notification shows even if app is in foreground
+        renotify: true,
     };
 
     event.waitUntil(self.registration.showNotification(title, options));

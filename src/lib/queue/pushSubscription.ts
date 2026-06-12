@@ -50,36 +50,47 @@ export async function subscribeToPush(userId: string): Promise<PushSubscription 
     }
 
     if (!VAPID_PUBLIC_KEY) {
-        console.warn("[Push] VAPID_PUBLIC_KEY not configured");
+        console.warn("[Push] VAPID_PUBLIC_KEY not configured — value:", JSON.stringify(VAPID_PUBLIC_KEY));
         return null;
     }
 
     try {
         // Request permission
         const permission = await Notification.requestPermission();
+        console.info("[Push] Permission result:", permission);
         if (permission !== "granted") {
             console.info("[Push] Notification permission denied");
             return null;
         }
 
         // Register service worker
-        const registration = await navigator.serviceWorker.register("/service-worker.js");
+        const registration = await navigator.serviceWorker.register("/service-worker.js", {
+            scope: "/",
+        });
+        console.info("[Push] Service worker registered, scope:", registration.scope);
+
+        // Wait for the service worker to be ready
         await navigator.serviceWorker.ready;
+        console.info("[Push] Service worker is ready");
 
         // Check for existing subscription
         let subscription = await registration.pushManager.getSubscription();
 
         if (!subscription) {
-            // Create new subscription
+            // Create new subscription — pass Uint8Array directly (not .buffer)
+            const vapidKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
             subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY).buffer as ArrayBuffer,
+                applicationServerKey: vapidKey.buffer as ArrayBuffer,
             });
+            console.info("[Push] New push subscription created");
+        } else {
+            console.info("[Push] Existing push subscription found");
         }
 
         // Send subscription to server
         const subJson = subscription.toJSON();
-        await fetch("/api/queue/push/subscribe", {
+        const response = await fetch("/api/queue/push/subscribe", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -89,6 +100,12 @@ export async function subscribeToPush(userId: string): Promise<PushSubscription 
                 auth: subJson.keys?.auth,
             }),
         });
+
+        const result = await response.json();
+        if (!result.success) {
+            console.error("[Push] Server rejected subscription:", result.error);
+            return null;
+        }
 
         console.info("[Push] Successfully subscribed to push notifications");
         return subscription;
