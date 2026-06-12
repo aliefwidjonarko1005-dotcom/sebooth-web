@@ -278,13 +278,13 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                 <motion.div
                     initial={{ opacity: 0, y: -12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-center bg-white border-4 border-black hard-shadow-black p-3"
+                    className="text-center mb-4"
                 >
                     <p className="text-primary text-[0.85rem] font-black uppercase tracking-widest">
                         {status.event?.name || "Sebooth Photobooth"}
                     </p>
                     <p className="text-primary/70 text-[0.7rem] font-bold mt-1 uppercase">
-                        📸 {status.event?.booth_name}
+                        {status.event?.booth_name}
                     </p>
                 </motion.div>
 
@@ -345,7 +345,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                                         className="bg-yellow-300 border-4 border-black p-4 relative overflow-hidden"
                                     >
                                         <p className="text-primary text-[0.85rem] font-black uppercase tracking-widest mb-3 text-center">
-                                            {liveStatus === "called" ? "⚠️ SEGERA CHECK-IN!" : "WAKTU CHECK-IN TIBA!"}
+                                            {liveStatus === "called" ? "SEGERA CHECK-IN!" : "WAKTU CHECK-IN TIBA!"}
                                         </p>
                                         <button
                                             onClick={handleCheckIn}
@@ -391,7 +391,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                         {scanStatus === 'success' && (
                             <div className="mt-6 flex items-center gap-2 bg-green-200 border-4 border-black px-4 py-3">
                                 <CheckSquare className="w-5 h-5 text-primary shrink-0" />
-                                <span className="text-primary text-[0.8rem] font-black uppercase tracking-wider">SESI TERHUBUNG! 🎉</span>
+                                <span className="text-primary text-[0.8rem] font-black uppercase tracking-wider">SESI TERHUBUNG!</span>
                             </div>
                         )}
                         {scanStatus === 'linking' && (

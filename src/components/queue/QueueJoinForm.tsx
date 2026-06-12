@@ -52,28 +52,24 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
                 className="w-full max-w-md"
             >
                 {/* Header Container */}
-                <div className="bg-white border-4 border-black hard-shadow-black p-6 mb-8 text-center relative overflow-hidden">
-                    {/* Background pattern inside header */}
-                    <div className="absolute inset-0 opacity-10 pointer-events-none"
-                        style={{ backgroundImage: "radial-gradient(circle at 2px 2px, #000 1px, transparent 0)", backgroundSize: "16px 16px" }} />
-                    
+                <div className="mb-8 text-center relative">
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.1, duration: 0.4 }}
-                        className="inline-flex items-center justify-center w-16 h-16 bg-primary text-white border-2 border-black hard-shadow-black mb-4 relative z-10"
+                        className="inline-flex items-center justify-center w-16 h-16 bg-primary text-white mb-4 relative z-10"
                     >
                         <Ticket className="w-8 h-8" />
                     </motion.div>
                     <h1 className="text-3xl font-black text-primary uppercase tracking-tight marker-font relative z-10">
                         Ambil Antrean
                     </h1>
-                    <div className="mt-4 p-3 bg-white border-2 border-black text-left relative z-10">
+                    <div className="mt-2 text-center relative z-10">
                         <p className="text-primary text-[0.8rem] font-bold uppercase tracking-wider truncate">
                             Event: <span className="font-black text-secondary">{event.name}</span>
                         </p>
                         <p className="text-primary/70 text-[0.7rem] font-bold uppercase tracking-widest mt-1 truncate">
-                            📸 {event.booth_name}
+                            {event.booth_name}
                         </p>
                     </div>
                 </div>
@@ -83,42 +79,42 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2, duration: 0.4 }}
-                    className="bg-white border-4 border-black hard-shadow-black p-6"
+                    className="mb-8"
                 >
                     {/* Greeting */}
                     <div className="text-center mb-6">
-                        <div className="inline-flex items-center gap-2 bg-green-100 border-2 border-black px-4 py-2 hard-shadow-black">
-                            <CheckSquare className="w-4 h-4 text-primary" />
-                            <span className="text-primary text-[0.7rem] font-black uppercase tracking-widest">Akun Terverifikasi</span>
+                        <div className="inline-flex items-center gap-2 bg-green-100 px-3 py-1.5 border border-green-500">
+                            <CheckSquare className="w-3.5 h-3.5 text-green-700" />
+                            <span className="text-green-700 text-[0.65rem] font-black uppercase tracking-widest">Akun Terverifikasi</span>
                         </div>
                         <p className="text-primary font-black text-xl mt-4 uppercase tracking-wider">
-                            HALO, {user.fullName}! 👋
+                            HALO, {user.fullName}!
                         </p>
-                        <p className="text-primary/70 text-[0.75rem] font-bold mt-2 uppercase tracking-widest border-b-2 border-black pb-3 inline-block">
+                        <p className="text-primary/50 text-[0.7rem] font-bold mt-1 uppercase tracking-widest">
                             DATA AKUNMU DIGUNAKAN UNTUK ANTREAN INI
                         </p>
                     </div>
 
                     {/* User Data Preview */}
-                    <div className="space-y-4 mb-8">
-                        <div className="flex items-center gap-4 bg-gray-50 border-2 border-black px-4 py-3">
-                            <User className="w-5 h-5 text-primary shrink-0" />
+                    <div className="space-y-3 mb-8">
+                        <div className="flex items-center gap-4 border-b border-gray-200 pb-3">
+                            <User className="w-4 h-4 text-primary shrink-0" />
                             <div className="flex-1 min-w-0">
                                 <p className="text-primary/50 text-[0.65rem] font-black uppercase tracking-widest">NAMA LENGKAP</p>
                                 <p className="text-primary font-bold text-[0.85rem] truncate uppercase tracking-wider">{user.fullName}</p>
                             </div>
                         </div>
                         {user.phoneNumber && (
-                            <div className="flex items-center gap-4 bg-gray-50 border-2 border-black px-4 py-3">
-                                <Phone className="w-5 h-5 text-primary shrink-0" />
+                            <div className="flex items-center gap-4 border-b border-gray-200 pb-3">
+                                <Phone className="w-4 h-4 text-primary shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-primary/50 text-[0.65rem] font-black uppercase tracking-widest">WHATSAPP</p>
                                     <p className="text-primary font-bold text-[0.85rem] truncate uppercase tracking-wider">{user.phoneNumber}</p>
                                 </div>
                             </div>
                         )}
-                        <div className="flex items-center gap-4 bg-gray-50 border-2 border-black px-4 py-3">
-                            <Mail className="w-5 h-5 text-primary shrink-0" />
+                        <div className="flex items-center gap-4 border-b border-gray-200 pb-3">
+                            <Mail className="w-4 h-4 text-primary shrink-0" />
                             <div className="flex-1 min-w-0">
                                 <p className="text-primary/50 text-[0.65rem] font-black uppercase tracking-widest">EMAIL</p>
                                 <p className="text-primary font-bold text-[0.85rem] truncate uppercase tracking-wider">{user.email}</p>
@@ -131,9 +127,9 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
                         <motion.div
                             initial={{ opacity: 0, x: -8 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-red-100 border-2 border-red-500 text-red-700 p-4 mb-6 text-center"
+                            className="bg-red-50 border border-red-200 text-red-600 p-3 mb-6 text-center"
                         >
-                            <p className="text-[0.75rem] font-black uppercase tracking-widest">{error}</p>
+                            <p className="text-[0.7rem] font-black uppercase tracking-widest">{error}</p>
                         </motion.div>
                     )}
 
@@ -157,9 +153,9 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4 }}
-                    className="text-center text-primary/50 text-[0.7rem] font-black uppercase tracking-widest mt-8 border-2 border-black border-dashed p-3 bg-white"
+                    className="text-center text-primary/50 text-[0.7rem] font-black uppercase tracking-widest mt-6"
                 >
-                    NOMOR ANTREAN TIDAK BISA DIPINDAHTANGANKAN.<br/>HADIR SAAT DIPANGGIL YA! 📣
+                    NOMOR ANTREAN TIDAK BISA DIPINDAHTANGANKAN.<br/>HADIR SAAT DIPANGGIL YA!
                 </motion.p>
             </motion.div>
         </div>

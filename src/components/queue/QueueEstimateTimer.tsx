@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Users, Zap, Camera } from "lucide-react";
+import { Clock, Users, Zap, Camera, PartyPopper } from "lucide-react";
 import type { QueueProximityTier } from "@/types/database";
 import { getProximityTierColor } from "@/types/database";
 
@@ -70,7 +70,7 @@ export default function QueueEstimateTimer({
                     </div>
                 </div>
                 <p className="text-primary font-black text-lg text-center uppercase border-b-4 border-black pb-1 inline-block mt-2">
-                    {status === "called" ? "SEGERA KE BOOTH!" : "SEDANG BERFOTO 📸"}
+                    {status === "called" ? "SEGERA KE BOOTH!" : "SEDANG BERFOTO"}
                 </p>
             </motion.div>
         );
@@ -84,7 +84,9 @@ export default function QueueEstimateTimer({
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center gap-2 py-4"
             >
-                <div className="text-5xl border-4 border-black p-4 bg-yellow-300 hard-shadow-black">🎉</div>
+                <div className="border-4 border-black p-4 bg-yellow-300 hard-shadow-black">
+                    <PartyPopper className="w-12 h-12 text-primary" />
+                </div>
                 <p className="text-primary font-black text-xl uppercase mt-2">Sesi Selesai!</p>
             </motion.div>
         );
