@@ -12,8 +12,8 @@ export function EditModeToggle() {
     const { isAdmin, editMode, toggleEditMode, layoutEditorOpen, setLayoutEditorOpen } = useAdminEdit();
     const pathname = usePathname();
 
-    // Hide edit mode toggle on profile/my photos page
-    if (!isAdmin || pathname === "/profile") return null;
+    // Hide edit mode toggle on profile/my photos pages
+    if (!isAdmin || pathname.startsWith("/profile")) return null;
 
     return (
         <>
