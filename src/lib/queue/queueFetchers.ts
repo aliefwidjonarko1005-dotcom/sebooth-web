@@ -88,7 +88,8 @@ export async function fetchQueueStatus(eventId: string) {
     ]);
 
     const event: QueueEvent | null = eventRes.data;
-    const activeTickets: QueueTicket[] = ticketsRes.data ?? [];
+    // Force empty active tickets if event is inactive to prevent ghost tickets
+    const activeTickets: QueueTicket[] = (event && !event.is_active) ? [] : (ticketsRes.data ?? []);
     const completedTickets = completedRes.data ?? [];
 
     // Calculate rolling average session duration
