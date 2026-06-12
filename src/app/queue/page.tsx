@@ -76,10 +76,11 @@ export default async function QueueLandingPage() {
                     <p className="text-white/60 text-xs font-black uppercase tracking-wider mb-3">Cara Kerja</p>
                     <div className="space-y-2.5">
                         {[
-                            { icon: "1️⃣", text: "Pilih event di atas & isi nama kamu" },
-                            { icon: "2️⃣", text: "Dapat nomor antrean digital otomatis" },
+                            { icon: "1️⃣", text: "Pilih event di atas & login/daftar akun" },
+                            { icon: "2️⃣", text: "Ambil nomor antrean digital otomatis" },
                             { icon: "3️⃣", text: "Pantau posisi & estimasi waktu live" },
-                            { icon: "4️⃣", text: "Datang ke booth saat dipanggil 📣" },
+                            { icon: "4️⃣", text: "Scan QR di booth saat dipanggil 📸" },
+                            { icon: "5️⃣", text: "Foto otomatis masuk ke akunmu! ✨" },
                         ].map((step) => (
                             <div key={step.icon} className="flex items-start gap-3">
                                 <span className="text-sm">{step.icon}</span>

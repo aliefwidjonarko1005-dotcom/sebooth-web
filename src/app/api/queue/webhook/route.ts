@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
+import { sendPushToUser } from "@/lib/queue/pushSender";
 
 export const dynamic = "force-dynamic";
 
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
     // Find the target ticket
     const { data: ticket, error: findError } = await supabase
         .from("queue_tickets")
-        .select("id, queue_number, status")
+        .select("id, queue_number, status, user_id")
         .eq("event_id", eventId)
         .eq("queue_number", ticketNumber)
         .maybeSingle();
@@ -75,8 +76,28 @@ export async function POST(req: NextRequest) {
             session_id: sessionId || null,
         };
 
-        // If sessionId provided, also link back on the sessions table
-        if (sessionId) {
+        // If sessionId provided, auto-claim to user account
+        if (sessionId && ticket.user_id) {
+            await supabase
+                .from("sessions")
+                .update({
+                    queue_ticket_id: ticket.id,
+                    user_id: ticket.user_id,
+                    is_claimed: true,
+                })
+                .eq("id", sessionId);
+
+            // Send push notification: "Foto sudah siap!"
+            await sendPushToUser(ticket.user_id, {
+                title: "Foto Kamu Sudah Siap! 📸",
+                body: "Sesi fotomu sudah selesai. Lihat hasilnya di profil kamu!",
+                url: "/profile",
+                tag: "photo-ready",
+                vibrate: [200, 100, 200, 100, 200],
+                requireInteraction: true,
+            });
+        } else if (sessionId) {
+            // No user_id on ticket, just link ticket
             await supabase
                 .from("sessions")
                 .update({ queue_ticket_id: ticket.id })
@@ -108,7 +129,6 @@ export async function POST(req: NextRequest) {
                     (Date.now() - new Date(updatedTicket.called_at).getTime()) / 1000
                 );
                 if (durationSec > 60 && durationSec < 7200) {
-                    // Rolling update of avg (simple weighted average)
                     const { data: ev } = await supabase
                         .from("queue_events")
                         .select("avg_session_duration_sec")
@@ -149,10 +169,75 @@ export async function POST(req: NextRequest) {
     const freshStatus = await fetchQueueStatus(eventId);
     broadcastQueueUpdate(eventId, freshStatus);
 
+    // Send push notifications to users whose proximity tier changed
+    await sendProximityPushNotifications(eventId, freshStatus);
+
     return NextResponse.json({
         success: true,
         ticketId: ticket.id,
         updatedStatus: webhookEvent === "session_started" ? "in_session" : "completed",
         nextTicketNumber,
     });
+}
+
+/**
+ * Send push notifications to users whose proximity tier warrants notification.
+ * Triggered after any queue state change.
+ */
+async function sendProximityPushNotifications(
+    eventId: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    status: any
+) {
+    const { waitingTickets, event } = status;
+    if (!waitingTickets || !event) return;
+
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sebooth.com";
+
+    for (const ticket of waitingTickets) {
+        if (!ticket.user_id) continue;
+
+        const position = ticket.positionFromFront;
+
+        // Send push for "preparing" tier (1-2 positions away)
+        if (position <= 2 && !ticket.push_preparing_sent) {
+            await sendPushToUser(ticket.user_id, {
+                title: "Bersiap-siap! 🟠",
+                body: `Tinggal ${position} sesi lagi sebelum giliranmu di ${event.name}. Segera menuju booth!`,
+                url: `${baseUrl}/queue/${eventId}/ticket/${ticket.id}`,
+                tag: `preparing-${ticket.id}`,
+                vibrate: [200, 100, 200],
+            });
+
+            // Mark as sent (update in background, don't block)
+            const { createClient: createSB } = await import("@supabase/supabase-js");
+            const sb = createSB(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+            );
+            await sb.from("queue_tickets")
+                .update({ push_preparing_sent: true })
+                .eq("id", ticket.id);
+        }
+
+        // Send push for "approaching" tier (3-4 positions away)
+        if (position >= 3 && position <= 4 && !ticket.push_approaching_sent) {
+            await sendPushToUser(ticket.user_id, {
+                title: "Antrean Hampir Tiba! 🟡",
+                body: `Masih ${position} sesi lagi di ${event.name}. Jangan jauh-jauh ya!`,
+                url: `${baseUrl}/queue/${eventId}/ticket/${ticket.id}`,
+                tag: `approaching-${ticket.id}`,
+                vibrate: [200],
+            });
+
+            const { createClient: createSB } = await import("@supabase/supabase-js");
+            const sb = createSB(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+            );
+            await sb.from("queue_tickets")
+                .update({ push_approaching_sent: true })
+                .eq("id", ticket.id);
+        }
+    }
 }

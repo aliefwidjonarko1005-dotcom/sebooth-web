@@ -11,7 +11,8 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
-import { SessionData, MediaItem } from '@/types/database'
+import { SessionData, MediaItem, QueueTicket } from '@/types/database'
+import ActiveQueueCard from '@/components/queue/ActiveQueueCard'
 
 /* ─── Frame Templates ─── */
 const FRAME_TEMPLATES = [
@@ -68,6 +69,7 @@ export default function ProfilePage() {
   const [totalStrips, setTotalStrips] = useState(0)
   const [generatedStripsMap, setGeneratedStripsMap] = useState<Record<number, string>>({})
   const [isGenerating, setIsGenerating] = useState(false)
+  const [activeTickets, setActiveTickets] = useState<QueueTicket[]>([])
 
   useEffect(() => {
     async function init() {
@@ -85,6 +87,17 @@ export default function ProfilePage() {
         setSessions(data)
         if (data.length > 0) setActiveSession(data[0])
       }
+
+      // Fetch active queue tickets
+      const { data: ticketsData } = await supabase
+        .from('queue_tickets')
+        .select('*, queue_events(*)')
+        .eq('user_id', user.id)
+        .in('status', ['waiting', 'called', 'in_session'])
+        .order('created_at', { ascending: false })
+
+      if (ticketsData) setActiveTickets(ticketsData)
+
       setLoading(false)
     }
     init()
@@ -366,6 +379,12 @@ export default function ProfilePage() {
         </div>
       ) : (
         <main className="mx-auto max-w-lg px-5 pt-6 pb-40">
+          {/* Active Queue Tickets */}
+          {activeTickets.length > 0 && (
+            <div className="bg-gradient-to-br from-[#0a1628] via-[#0F3D2E] to-[#0a1628] rounded-3xl p-5 mb-6">
+              <ActiveQueueCard tickets={activeTickets} />
+            </div>
+          )}
           <AnimatePresence mode="wait">
             {/* STRIP TAB */}
             {activeTab === 'strip' && (

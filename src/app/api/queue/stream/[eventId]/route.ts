@@ -1,10 +1,5 @@
 import { NextRequest } from "next/server";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
-import {
-    sendWaNotification,
-    shouldNotify,
-    markTicketNotified,
-} from "@/lib/queue/whatsappNotifier";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +17,7 @@ export function broadcastQueueUpdate(eventId: string, data: unknown) {
     const controllers = eventControllers.get(eventId);
     if (!controllers || controllers.size === 0) return;
 
-    const payload = `data: ${JSON.stringify(data)}\n\n`;
+    const payload = `event: queue_update\ndata: ${JSON.stringify(data)}\n\n`;
     const encoder = new TextEncoder();
     const encoded = encoder.encode(payload);
 
@@ -64,9 +59,6 @@ export async function GET(
             const initialPayload = `event: queue_update\ndata: ${JSON.stringify(status)}\n\n`;
             controller.enqueue(encoder.encode(initialPayload));
 
-            // Check and send WA notifications for eligible tickets
-            await checkAndSendWaNotifications(eventId, status);
-
             // Heartbeat every 15 seconds to keep connection alive
             heartbeatInterval = setInterval(async () => {
                 try {
@@ -77,9 +69,6 @@ export async function GET(
                     const freshStatus = await fetchQueueStatus(eventId);
                     const updatePayload = `event: queue_update\ndata: ${JSON.stringify(freshStatus)}\n\n`;
                     controller.enqueue(encoder.encode(updatePayload));
-
-                    // Check WA notifications again
-                    await checkAndSendWaNotifications(eventId, freshStatus);
                 } catch {
                     clearInterval(heartbeatInterval);
                 }
@@ -105,41 +94,4 @@ export async function GET(
             "X-Accel-Buffering": "no", // Disable Nginx buffering
         },
     });
-}
-
-/**
- * Check waiting tickets and send WA notifications to those at the threshold position.
- */
-async function checkAndSendWaNotifications(
-    eventId: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    status: any
-) {
-    const { waitingTickets, event } = status;
-    if (!waitingTickets || !event) return;
-
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sebooth.com";
-
-    for (const ticket of waitingTickets) {
-        if (
-            !ticket.wa_notified &&
-            ticket.phone_number &&
-            shouldNotify(ticket.positionFromFront)
-        ) {
-            const estimatedWaitMin = Math.ceil(ticket.estimatedWaitMs / 60000);
-            const sent = await sendWaNotification({
-                ticketId: ticket.id,
-                phone: ticket.phone_number,
-                displayName: ticket.display_name,
-                queueNumber: ticket.queue_number,
-                eventName: event.name,
-                positionFromFront: ticket.positionFromFront,
-                estimatedWaitMin,
-                ticketUrl: `${baseUrl}/queue/${eventId}/ticket/${ticket.id}`,
-            });
-            if (sent) {
-                await markTicketNotified(ticket.id);
-            }
-        }
-    }
 }

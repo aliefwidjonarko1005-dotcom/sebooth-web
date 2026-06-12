@@ -113,19 +113,21 @@ export async function fetchQueueStatus(eventId: string) {
 
     // Estimate remaining time for the current in-session ticket
     let currentSessionRemainingMs = 0;
+    let currentSessionElapsedSec: number | undefined;
     if (currentTicket?.called_at) {
         const elapsedMs = Date.now() - new Date(currentTicket.called_at).getTime();
+        currentSessionElapsedSec = Math.round(elapsedMs / 1000);
         const remainingMs = avgDurationSec * 1000 - elapsedMs;
         currentSessionRemainingMs = Math.max(0, remainingMs);
     }
 
-    // Build per-ticket wait estimates
+    // Build per-ticket wait estimates with proximity tier
     const ticketsWithEstimates = waitingTickets.map((ticket, index) => {
-        const positionFromFront = index; // 0-indexed
-        const waitMs = currentSessionRemainingMs + positionFromFront * avgDurationSec * 1000;
+        const positionFromFront = index + 1; // 1-indexed
+        const waitMs = currentSessionRemainingMs + index * avgDurationSec * 1000;
         return {
             ...ticket,
-            positionFromFront: index + 1,
+            positionFromFront,
             estimatedWaitMs: waitMs,
         };
     });
@@ -138,5 +140,8 @@ export async function fetchQueueStatus(eventId: string) {
         avgDurationSec,
         totalWaiting: waitingTickets.length,
         totalCompleted: completedTickets.length,
+        // Enhanced fields for Phase 3C
+        currentSessionName: currentTicket?.display_name || null,
+        currentSessionElapsedSec: currentSessionElapsedSec ?? null,
     };
 }

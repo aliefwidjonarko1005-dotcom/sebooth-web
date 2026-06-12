@@ -36,13 +36,10 @@ async function createAuthClient() {
 export async function joinQueue(
     eventId: string,
     displayName: string,
-    phoneNumber?: string
+    phoneNumber: string | null,
+    userId: string
 ): Promise<{ success: boolean; ticketId?: string; queueNumber?: number; error?: string }> {
     const supabase = createAnonClient();
-    const authClient = await createAuthClient();
-
-    // Get logged-in user (optional)
-    const { data: { user } } = await authClient.auth.getUser();
 
     // Get next queue number atomically
     const { data: lastTicket } = await supabase
@@ -62,7 +59,7 @@ export async function joinQueue(
             queue_number: nextNumber,
             display_name: displayName,
             phone_number: phoneNumber || null,
-            user_id: user?.id ?? null,
+            user_id: userId,
             status: "waiting",
         })
         .select("id, queue_number")

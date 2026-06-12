@@ -2,13 +2,20 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Users, Zap } from "lucide-react";
+import { Clock, Users, Zap, Camera } from "lucide-react";
+import type { QueueProximityTier } from "@/types/database";
+import { getProximityTierColor } from "@/types/database";
 
 interface QueueEstimateTimerProps {
     estimatedWaitMs: number;
     positionFromFront: number;
     avgDurationSec: number;
     status: string;
+    proximityTier: QueueProximityTier;
+    /** Name of the person currently in session */
+    currentSessionName?: string;
+    /** Elapsed time of current session in seconds */
+    currentSessionElapsedSec?: number;
 }
 
 export default function QueueEstimateTimer({
@@ -16,6 +23,9 @@ export default function QueueEstimateTimer({
     positionFromFront,
     avgDurationSec,
     status,
+    proximityTier,
+    currentSessionName,
+    currentSessionElapsedSec,
 }: QueueEstimateTimerProps) {
     const [remainingMs, setRemainingMs] = useState(estimatedWaitMs);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -44,6 +54,9 @@ export default function QueueEstimateTimer({
     const minutes = Math.floor(totalSec / 60);
     const seconds = totalSec % 60;
 
+    // Get tier color for the countdown ring
+    const tierColors = getProximityTierColor(proximityTier);
+
     if (status === "called" || status === "in_session") {
         return (
             <motion.div
@@ -54,7 +67,11 @@ export default function QueueEstimateTimer({
             >
                 <div className="relative">
                     <div className="w-24 h-24 rounded-full border-4 border-[#D4AF37]/30 flex items-center justify-center">
-                        <Zap className="w-10 h-10 text-[#D4AF37] animate-pulse" />
+                        {status === "in_session" ? (
+                            <Camera className="w-10 h-10 text-green-400 animate-pulse" />
+                        ) : (
+                            <Zap className="w-10 h-10 text-[#D4AF37] animate-pulse" />
+                        )}
                     </div>
                     <div className="absolute inset-0 rounded-full border-4 border-[#D4AF37] animate-ping opacity-30" />
                 </div>
@@ -94,11 +111,12 @@ export default function QueueEstimateTimer({
                             <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
                             <circle
                                 cx="50" cy="50" r="42" fill="none"
-                                stroke="#D4AF37" strokeWidth="8"
+                                stroke={tierColors.hex}
+                                strokeWidth="8"
                                 strokeLinecap="round"
                                 strokeDasharray={`${2 * Math.PI * 42}`}
                                 strokeDashoffset={`${2 * Math.PI * 42 * (1 - Math.min(1, remainingMs / Math.max(estimatedWaitMs, 1)))}`}
-                                style={{ transition: "stroke-dashoffset 1s linear" }}
+                                style={{ transition: "stroke-dashoffset 1s linear, stroke 0.5s ease" }}
                             />
                         </svg>
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -110,16 +128,44 @@ export default function QueueEstimateTimer({
                     </div>
                 </div>
 
+                {/* Detailed Estimate Breakdown */}
+                {positionFromFront > 0 && (
+                    <div className="bg-white/5 border border-white/10 rounded-2xl p-3 space-y-2">
+                        <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider text-center">
+                            Detail Estimasi
+                        </p>
+                        <div className="text-white/50 text-xs space-y-1.5">
+                            {currentSessionName && (
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
+                                    <span>Sedang berfoto: <span className="text-white/70 font-bold">{currentSessionName}</span></span>
+                                    {currentSessionElapsedSec != null && (
+                                        <span className="text-white/30 ml-auto text-[10px]">
+                                            {Math.floor(currentSessionElapsedSec / 60)}m berlalu
+                                        </span>
+                                    )}
+                                </div>
+                            )}
+                            <div className="flex items-center gap-2">
+                                <Users className="w-3 h-3 text-white/30 shrink-0" />
+                                <span>
+                                    {positionFromFront} orang × ~{Math.round(avgDurationSec / 60)} menit = <span className="text-white/70 font-bold">~{minutes} menit</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Stats row */}
                 <div className="flex gap-3 justify-center flex-wrap">
                     <div className="flex items-center gap-1.5 bg-white/10 rounded-xl px-3 py-2">
-                        <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <Users className={`w-3.5 h-3.5 ${tierColors.text}`} />
                         <span className="text-white/70 text-xs font-bold">
                             Posisi ke-<span className="text-white">{positionFromFront}</span>
                         </span>
                     </div>
                     <div className="flex items-center gap-1.5 bg-white/10 rounded-xl px-3 py-2">
-                        <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <Clock className={`w-3.5 h-3.5 ${tierColors.text}`} />
                         <span className="text-white/70 text-xs font-bold">
                             ~<span className="text-white">{Math.round(avgDurationSec / 60)} min</span>/sesi
                         </span>

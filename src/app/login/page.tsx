@@ -10,6 +10,7 @@ function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const claimId = searchParams.get('claim')
+  const redirectTo = searchParams.get('redirect')
   const supabase = createClient()
 
   const [email, setEmail] = useState('')
@@ -45,7 +46,14 @@ function LoginContent() {
         }
       }
 
-      router.push(claimId ? `/access/${claimId}` : '/profile')
+      // Priority: claim > redirect > profile
+      if (claimId) {
+        router.push(`/access/${claimId}`)
+      } else if (redirectTo) {
+        router.push(redirectTo)
+      } else {
+        router.push('/profile')
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Gagal masuk. Periksa kembali email dan password Anda.'
       setError(message)
@@ -71,11 +79,18 @@ function LoginContent() {
           <p className="mt-2 text-gray-600">
             {claimId 
               ? 'Satu langkah lagi untuk menyimpan sesi fotomu.' 
+              : redirectTo?.startsWith('/queue')
+              ? 'Masuk ke akunmu untuk mengambil nomor antrean.'
               : 'Akses semua galeri fotomu di sini.'}
           </p>
           {claimId && (
             <div className="mt-4 rounded-xl bg-blue-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-blue-600 ring-1 ring-blue-100">
               ⚡ Mode Klaim Aktif
+            </div>
+          )}
+          {redirectTo?.startsWith('/queue') && !claimId && (
+            <div className="mt-4 rounded-xl bg-amber-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-amber-700 ring-1 ring-amber-200">
+              🎫 Masuk untuk Ambil Antrean
             </div>
           )}
         </div>
@@ -133,7 +148,12 @@ function LoginContent() {
         <div className="mt-8 flex items-center justify-between text-sm">
           <button className="text-gray-500 hover:text-blue-600">Lupa Password?</button>
           <button 
-            onClick={() => router.push(`/register${claimId ? `?claim=${claimId}` : ''}`)}
+            onClick={() => {
+              const query = new URLSearchParams()
+              if (claimId) query.set('claim', claimId)
+              if (redirectTo) query.set('redirect', redirectTo)
+              router.push(`/register${query.toString() ? `?${query.toString()}` : ''}`)
+            }}
             className="font-bold text-blue-600 hover:underline"
           >
             Daftar Akun Baru
