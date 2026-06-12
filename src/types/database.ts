@@ -47,6 +47,7 @@ export interface QueueTicket {
   session_id: string | null
   wa_notified: boolean
   expires_at: string | null
+  is_checked_in: boolean
   created_at: string
   // Joined fields (from event)
   queue_events?: QueueEvent

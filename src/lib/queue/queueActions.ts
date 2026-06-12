@@ -77,6 +77,7 @@ export async function joinQueue(
             status: initialStatus,
             called_at: isIdle ? now.toISOString() : null,
             expires_at: expiresAt,
+            is_checked_in: isIdle,
         })
         .select("id, queue_number")
         .single();
@@ -131,7 +132,7 @@ export async function operatorCallNext(
     // Get the next waiting ticket
     const { data: nextTicket } = await authClient
         .from("queue_tickets")
-        .select("id, queue_number")
+        .select("id, queue_number, is_checked_in")
         .eq("event_id", eventId)
         .eq("status", "waiting")
         .order("queue_number", { ascending: true })
@@ -142,7 +143,9 @@ export async function operatorCallNext(
         return { success: false, error: "Tidak ada antrean yang menunggu." };
     }
 
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString(); // 5 min timeout
+    // Determine expiration time based on check-in status
+    const timeoutMins = nextTicket.is_checked_in ? 5 : 1;
+    const expiresAt = new Date(Date.now() + timeoutMins * 60 * 1000).toISOString();
 
     const { error } = await authClient
         .from("queue_tickets")

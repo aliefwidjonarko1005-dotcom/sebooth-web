@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
         // ══════════════════════════════════════════════
         const { data: nextTicket } = await supabase
             .from("queue_tickets")
-            .select("id, queue_number, user_id, display_name")
+            .select("id, queue_number, user_id, display_name, is_checked_in")
             .eq("event_id", eventId)
             .eq("status", "waiting")
             .order("queue_number", { ascending: true })
@@ -118,7 +118,8 @@ export async function POST(req: NextRequest) {
 
         if (nextTicket) {
             // Auto-call the next ticket
-            const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+            const timeoutMins = nextTicket.is_checked_in ? 5 : 1;
+            const expiresAt = new Date(Date.now() + timeoutMins * 60 * 1000).toISOString();
             await supabase
                 .from("queue_tickets")
                 .update({

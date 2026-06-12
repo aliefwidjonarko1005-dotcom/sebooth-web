@@ -129,6 +129,28 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
         setPushEnabled(!!sub);
     }
 
+    // ── Check-In Handler ──
+    const [isCheckingIn, setIsCheckingIn] = useState(false);
+    
+    async function handleCheckIn() {
+        setIsCheckingIn(true);
+        try {
+            const res = await fetch('/api/queue/check-in', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ticketId: ticket.id, eventId }),
+            });
+            const data = await res.json();
+            if (!data.success) {
+                alert(data.error || 'Gagal check-in. Silakan coba lagi.');
+            }
+        } catch (e) {
+            alert('Kesalahan jaringan. Gagal check-in.');
+        } finally {
+            setIsCheckingIn(false);
+        }
+    }
+
     // ── QR Scan Handler ──
     async function handleQRScanned(sessionToken: string) {
         setScanStatus('linking');
@@ -371,8 +393,43 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                             />
                         </div>
 
-                        {/* SCAN QR button — shown when called */}
-                        {liveStatus === "called" && ticket.user_id && (
+                        {/* Check-in logic */}
+                        {liveStatus !== "completed" && liveStatus !== "cancelled" && liveStatus !== "expired" && liveStatus !== "in_session" && (
+                            <div className="mt-5">
+                                {!ticket.is_checked_in && (myPosition <= 2 || liveStatus === "called") ? (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="bg-[#0a1628] border border-[#D4AF37]/30 p-4 rounded-2xl relative overflow-hidden"
+                                    >
+                                        <div className="absolute inset-0 bg-[#D4AF37]/5 animate-pulse" />
+                                        <p className="text-[#D4AF37] text-sm font-bold mb-3 text-center relative z-10">
+                                            {liveStatus === "called" ? "⚠️ SEGERA CHECK-IN!" : "Waktu Check-in Tiba!"}
+                                        </p>
+                                        <button
+                                            onClick={handleCheckIn}
+                                            disabled={isCheckingIn}
+                                            className="w-full bg-[#D4AF37] hover:bg-[#c4a030] text-[#0a1628] font-black text-sm rounded-xl py-3 flex items-center justify-center gap-2 transition-all relative z-10"
+                                        >
+                                            {isCheckingIn ? <Loader2 className="w-4 h-4 animate-spin" /> : "CHECK-IN SEKARANG"}
+                                        </button>
+                                        {liveStatus === "called" && (
+                                            <p className="text-red-400 text-xs text-center mt-2 relative z-10 font-bold">
+                                                Antrean akan di-skip dalam 1 menit jika tidak check-in!
+                                            </p>
+                                        )}
+                                    </motion.div>
+                                ) : ticket.is_checked_in ? (
+                                    <div className="flex items-center justify-center gap-2 text-green-400 bg-green-500/10 border border-green-500/20 py-2.5 px-4 rounded-xl">
+                                        <CheckCircle className="w-4 h-4" />
+                                        <span className="text-sm font-bold">Sudah Check-in (Siap di lokasi)</span>
+                                    </div>
+                                ) : null}
+                            </div>
+                        )}
+
+                        {/* SCAN QR button — shown when called AND checked in */}
+                        {liveStatus === "called" && ticket.user_id && ticket.is_checked_in && (
                             <motion.div
                                 initial={{ opacity: 0, y: 12 }}
                                 animate={{ opacity: 1, y: 0 }}
