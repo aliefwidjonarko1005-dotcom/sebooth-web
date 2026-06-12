@@ -96,7 +96,11 @@ export default function ProfilePage() {
         .in('status', ['waiting', 'called', 'in_session'])
         .order('created_at', { ascending: false })
 
-      if (ticketsData) setActiveTickets(ticketsData)
+      if (ticketsData) {
+        // Filter out ghost tickets belonging to deactivated events
+        const validTickets = ticketsData.filter(t => t.queue_events?.is_active)
+        setActiveTickets(validTickets)
+      }
 
       setLoading(false)
     }
