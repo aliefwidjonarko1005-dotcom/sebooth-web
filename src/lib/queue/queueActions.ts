@@ -96,9 +96,9 @@ export async function joinQueue(
 export async function cancelQueueTicket(
     ticketId: string
 ): Promise<{ success: boolean; error?: string }> {
-    const supabase = createAnonClient();
+    const authClient = await createAuthClient();
 
-    const { error } = await supabase
+    const { error } = await authClient
         .from("queue_tickets")
         .update({ status: "cancelled" })
         .eq("id", ticketId)

@@ -244,7 +244,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
         setCancelling(true);
         await fetch(`/api/queue/ticket/${ticket.id}`, { method: "DELETE" });
         setCancelling(false);
-        window.location.href = `/queue/${eventId}`;
+        window.location.href = `/queue`;
     }
 
     // Completed state — show link to photos
