@@ -14,30 +14,30 @@ export default function QueueAuthGate({ event }: QueueAuthGateProps) {
     const redirectPath = `/queue/${event.id}`;
 
     return (
-        <div className="min-h-[100svh] bg-gradient-to-br from-white to-gray-200 paper-texture flex flex-col items-center justify-center p-4">
+        <div className="min-h-[100svh] bg-gradient-to-br from-gray-100 to-gray-300 paper-texture flex flex-col items-center justify-center p-6">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md"
+                className="w-full max-w-[400px]"
             >
                 {/* Header Container */}
-                <div className="mb-8 text-center">
+                <div className="mb-10 text-center">
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.1 }}
-                        className="inline-flex items-center justify-center w-16 h-16 bg-primary text-white mb-4"
+                        className="inline-flex items-center justify-center w-20 h-20 bg-primary text-white mb-6"
                     >
-                        <Ticket className="w-8 h-8" />
+                        <Ticket className="w-10 h-10" />
                     </motion.div>
-                    <h1 className="text-2xl font-black text-primary uppercase tracking-tight">
+                    <h1 className="text-3xl font-black text-primary uppercase tracking-tight">
                         Ambil Antrean
                     </h1>
-                    <div className="mt-2 text-center">
-                        <p className="text-primary text-[0.8rem] font-bold uppercase tracking-wider">
+                    <div className="mt-3 text-center">
+                        <p className="text-primary text-[0.9rem] font-bold uppercase tracking-wider">
                             Event: <span className="font-black text-secondary">{event.name}</span>
                         </p>
-                        <p className="text-primary/70 text-[0.7rem] font-bold uppercase tracking-widest mt-1">
+                        <p className="text-primary/70 text-[0.8rem] font-bold uppercase tracking-widest mt-1">
                             {event.booth_name}
                         </p>
                     </div>
@@ -48,12 +48,12 @@ export default function QueueAuthGate({ event }: QueueAuthGateProps) {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="mb-8 flex gap-3 items-start"
+                    className="mb-10 flex gap-4 items-start"
                 >
-                    <div className="bg-primary text-white p-2 shrink-0">
-                        <Info className="w-5 h-5" />
+                    <div className="bg-primary text-white p-3 shrink-0">
+                        <Info className="w-6 h-6" />
                     </div>
-                    <p className="text-primary text-[0.8rem] font-bold leading-relaxed">
+                    <p className="text-primary text-[0.9rem] font-bold leading-relaxed">
                         UNTUK MENGAMBIL NOMOR ANTREAN, KAMU PERLU MEMILIKI AKUN SEBOOTH TERLEBIH DAHULU. 
                         FOTO HASIL SESIMU AKAN OTOMATIS TERSIMPAN KE AKUNMU.
                     </p>

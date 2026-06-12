@@ -44,31 +44,31 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
     }
 
     return (
-        <div className="min-h-[100svh] bg-gradient-to-br from-white to-gray-200 paper-texture flex flex-col items-center justify-center p-4">
+        <div className="min-h-[100svh] bg-gradient-to-br from-gray-100 to-gray-300 paper-texture flex flex-col items-center justify-center p-6">
             <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="w-full max-w-md"
+                className="w-full max-w-[400px]"
             >
                 {/* Header Container */}
-                <div className="mb-8 text-center relative">
+                <div className="mb-10 text-center relative">
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.1, duration: 0.4 }}
-                        className="inline-flex items-center justify-center w-16 h-16 bg-primary text-white mb-4 relative z-10"
+                        className="inline-flex items-center justify-center w-20 h-20 bg-primary text-white mb-6 relative z-10"
                     >
-                        <Ticket className="w-8 h-8" />
+                        <Ticket className="w-10 h-10" />
                     </motion.div>
-                    <h1 className="text-2xl font-black text-primary uppercase tracking-tight">
+                    <h1 className="text-3xl font-black text-primary uppercase tracking-tight relative z-10">
                         Ambil Antrean
                     </h1>
-                    <div className="mt-2 text-center relative z-10">
-                        <p className="text-primary text-[0.8rem] font-bold uppercase tracking-wider truncate">
+                    <div className="mt-3 text-center relative z-10">
+                        <p className="text-primary text-[0.9rem] font-bold uppercase tracking-wider truncate">
                             Event: <span className="font-black text-secondary">{event.name}</span>
                         </p>
-                        <p className="text-primary/70 text-[0.7rem] font-bold uppercase tracking-widest mt-1 truncate">
+                        <p className="text-primary/70 text-[0.8rem] font-bold uppercase tracking-widest mt-1 truncate">
                             {event.booth_name}
                         </p>
                     </div>
@@ -82,42 +82,42 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
                     className="mb-8"
                 >
                     {/* Greeting */}
-                    <div className="text-center mb-6">
-                        <div className="inline-flex items-center gap-2 bg-green-100 px-3 py-1.5 border border-green-500">
-                            <CheckSquare className="w-3.5 h-3.5 text-green-700" />
-                            <span className="text-green-700 text-[0.65rem] font-black uppercase tracking-widest">Akun Terverifikasi</span>
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center gap-2 bg-green-100 px-3 py-1.5 border border-green-500 mb-2">
+                            <CheckSquare className="w-4 h-4 text-green-700" />
+                            <span className="text-green-700 text-[0.7rem] font-black uppercase tracking-widest">Akun Terverifikasi</span>
                         </div>
-                        <p className="text-primary font-black text-xl mt-4 uppercase tracking-wider">
+                        <p className="text-primary font-black text-2xl mt-4 uppercase tracking-wider">
                             HALO, {user.fullName}!
                         </p>
-                        <p className="text-primary/50 text-[0.7rem] font-bold mt-1 uppercase tracking-widest">
+                        <p className="text-primary/50 text-[0.75rem] font-bold mt-2 uppercase tracking-widest">
                             DATA AKUNMU DIGUNAKAN UNTUK ANTREAN INI
                         </p>
                     </div>
 
                     {/* User Data Preview */}
-                    <div className="space-y-3 mb-8">
+                    <div className="space-y-4 mb-8">
                         <div className="flex items-center gap-4 border-b border-gray-200 pb-3">
-                            <User className="w-4 h-4 text-primary shrink-0" />
+                            <User className="w-5 h-5 text-primary shrink-0" />
                             <div className="flex-1 min-w-0">
-                                <p className="text-primary/50 text-[0.65rem] font-black uppercase tracking-widest">NAMA LENGKAP</p>
-                                <p className="text-primary font-bold text-[0.85rem] truncate uppercase tracking-wider">{user.fullName}</p>
+                                <p className="text-primary/50 text-[0.7rem] font-black uppercase tracking-widest">NAMA LENGKAP</p>
+                                <p className="text-primary font-bold text-[0.9rem] truncate uppercase tracking-wider">{user.fullName}</p>
                             </div>
                         </div>
                         {user.phoneNumber && (
                             <div className="flex items-center gap-4 border-b border-gray-200 pb-3">
-                                <Phone className="w-4 h-4 text-primary shrink-0" />
+                                <Phone className="w-5 h-5 text-primary shrink-0" />
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-primary/50 text-[0.65rem] font-black uppercase tracking-widest">WHATSAPP</p>
-                                    <p className="text-primary font-bold text-[0.85rem] truncate uppercase tracking-wider">{user.phoneNumber}</p>
+                                    <p className="text-primary/50 text-[0.7rem] font-black uppercase tracking-widest">WHATSAPP</p>
+                                    <p className="text-primary font-bold text-[0.9rem] truncate uppercase tracking-wider">{user.phoneNumber}</p>
                                 </div>
                             </div>
                         )}
                         <div className="flex items-center gap-4 border-b border-gray-200 pb-3">
-                            <Mail className="w-4 h-4 text-primary shrink-0" />
+                            <Mail className="w-5 h-5 text-primary shrink-0" />
                             <div className="flex-1 min-w-0">
-                                <p className="text-primary/50 text-[0.65rem] font-black uppercase tracking-widest">EMAIL</p>
-                                <p className="text-primary font-bold text-[0.85rem] truncate uppercase tracking-wider">{user.email}</p>
+                                <p className="text-primary/50 text-[0.7rem] font-black uppercase tracking-widest">EMAIL</p>
+                                <p className="text-primary font-bold text-[0.9rem] truncate uppercase tracking-wider">{user.email}</p>
                             </div>
                         </div>
                     </div>
