@@ -332,7 +332,7 @@ export default function ProfilePage() {
 
       {/* Header */}
       <header className="text-center pt-10 pb-4 px-6">
-        <h1 className="text-3xl font-black text-primary uppercase marker-font">
+        <h1 className="text-3xl font-black text-primary uppercase tracking-tighter">
           Halo, {userName}! 👋
         </h1>
         
