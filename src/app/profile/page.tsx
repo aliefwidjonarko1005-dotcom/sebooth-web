@@ -314,17 +314,17 @@ export default function ProfilePage() {
   ].filter(t => t.available)
 
   return (
-    <div className="min-h-[100svh] bg-[#F9F9F9]">
+    <div className="min-h-[100svh] bg-white paper-texture flex flex-col">
       <canvas ref={canvasRef} style={{ display: 'none' }} />
 
-      {/* Minimal Header */}
-      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#1A1A1A]/5">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-[#1A1A1A]/60 hover:text-[#0F3D2E] transition-colors text-sm font-medium">
+      {/* Brutalist Header */}
+      <nav className="sticky top-0 z-50 bg-white border-b-4 border-black safe-top py-3">
+        <div className="container mx-auto px-6 h-12 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-primary hover:text-secondary transition-none text-sm font-black uppercase">
             <Home className="h-4 w-4" /> Beranda
           </Link>
-          <span className="font-bold text-[#1A1A1A] tracking-tight text-lg">My Photos</span>
-          <button onClick={handleLogout} className="flex items-center gap-2 text-sm font-medium text-[#1A1A1A]/50 hover:text-red-600 transition-colors">
+          <span className="font-black text-primary text-xl marker-font tracking-widest">MY PHOTOS</span>
+          <button onClick={handleLogout} className="flex items-center gap-2 text-sm font-black uppercase text-primary hover:text-secondary transition-none">
             <LogOut className="h-4 w-4" /> Keluar
           </button>
         </div>
@@ -332,7 +332,7 @@ export default function ProfilePage() {
 
       {/* Header */}
       <header className="text-center pt-10 pb-4 px-6">
-        <h1 className="text-2xl font-bold text-[#1A1A1A] tracking-tight">
+        <h1 className="text-3xl font-black text-primary uppercase marker-font">
           Halo, {userName}! 👋
         </h1>
         
@@ -340,7 +340,7 @@ export default function ProfilePage() {
           <div className="relative mt-4 inline-block">
             <button 
               onClick={() => setShowSessionPicker(!showSessionPicker)}
-              className="flex items-center gap-2 rounded-full bg-white px-5 py-2 text-sm font-medium text-[#1A1A1A]/70 border border-[#1A1A1A]/10 hover:border-[#0F3D2E] transition-all shadow-sm"
+              className="flex items-center gap-2 bg-white px-5 py-2 text-sm font-black uppercase text-primary border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-y-0 active:shadow-none transition-all"
             >
               {activeSession?.event_name || 'Sebooth Session'} 
               <ChevronDown className="w-4 h-4" />
@@ -349,14 +349,14 @@ export default function ProfilePage() {
               {showSessionPicker && (
                 <motion.div 
                   initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-64 rounded-2xl bg-white border border-[#1A1A1A]/10 shadow-2xl overflow-hidden z-50"
+                  className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-64 bg-white border-4 border-black hard-shadow-black overflow-hidden z-50"
                 >
                   {sessions.map(s => (
                     <button key={s.id} onClick={() => { setActiveSession(s); setShowSessionPicker(false) }}
-                      className={`w-full text-left px-5 py-3 text-sm font-medium transition-colors ${activeSession?.id === s.id ? 'bg-[#0F3D2E]/10 text-[#0F3D2E] font-bold' : 'text-[#1A1A1A]/60 hover:bg-[#F9F9F9]'}`}
+                      className={`w-full text-left px-5 py-3 text-sm font-black uppercase border-b-2 border-black last:border-b-0 transition-none ${activeSession?.id === s.id ? 'bg-secondary text-white' : 'text-primary hover:bg-gray-100'}`}
                     >
                       {s.event_name || 'Sebooth Session'}
-                      <span className="block text-[10px] font-medium text-[#1A1A1A]/30 mt-0.5">
+                      <span className={`block text-[10px] font-bold mt-0.5 ${activeSession?.id === s.id ? 'text-white/80' : 'text-primary/50'}`}>
                         {new Date(s.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </span>
                     </button>
@@ -368,24 +368,24 @@ export default function ProfilePage() {
         )}
 
         {sessions.length === 1 && (
-          <p className="mt-2 text-[#1A1A1A]/40 text-xs font-medium uppercase tracking-widest">
-            {activeSession?.event_name || 'Sebooth Session'} · {activeSession && new Date(activeSession.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+          <p className="mt-2 text-primary/60 text-xs font-black uppercase tracking-widest bg-white border-2 border-black inline-block px-3 py-1">
+            {activeSession?.event_name || 'Sebooth Session'} · {activeSession && new Date(activeSession.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
           </p>
         )}
       </header>
 
       {/* Content Area */}
       {sessions.length === 0 ? (
-        <div className="flex flex-col items-center justify-center text-center pt-20 px-6">
-          <div className="h-24 w-24 rounded-3xl bg-[#1A1A1A]/5 flex items-center justify-center"><Grid className="h-12 w-12 text-[#1A1A1A]/15" /></div>
-          <h3 className="mt-6 text-xl font-bold text-[#1A1A1A]">Belum Ada Koleksi</h3>
-          <p className="mt-2 text-[#1A1A1A]/40 max-w-xs text-sm">Scan QR code di Sebooth untuk mulai mengisi galerimu!</p>
+        <div className="flex flex-col items-center justify-center text-center pt-20 px-6 flex-1">
+          <div className="h-24 w-24 bg-white border-4 border-black hard-shadow-black flex items-center justify-center mb-6"><Grid className="h-10 w-10 text-primary" /></div>
+          <h3 className="text-2xl font-black text-primary uppercase marker-font">Belum Ada Koleksi</h3>
+          <p className="mt-2 text-primary/70 font-bold max-w-xs text-sm">Scan QR code di Sebooth untuk mulai mengisi galerimu!</p>
         </div>
       ) : (
-        <main className="mx-auto max-w-lg px-5 pt-6 pb-40">
+        <main className="mx-auto max-w-lg w-full px-5 pt-6 pb-40 flex-1">
           {/* Active Queue Tickets */}
           {activeTickets.length > 0 && (
-            <div className="bg-gradient-to-br from-[#0a1628] via-[#0F3D2E] to-[#0a1628] rounded-3xl p-5 mb-6">
+            <div className="bg-primary border-4 border-black p-5 mb-6 hard-shadow-blue">
               <ActiveQueueCard tickets={activeTickets} />
             </div>
           )}
@@ -394,50 +394,50 @@ export default function ProfilePage() {
             {activeTab === 'strip' && (
               <motion.section key="strip" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="flex flex-col items-center">
                 {isGenerating || (!generatedStripsMap[frameIdx] && totalStrips > 0) ? (
-                  <div className="flex flex-col items-center py-20 text-[#1A1A1A]/40">
-                    <Loader2 className="w-8 h-8 animate-spin mb-4" />
-                    <p className="font-medium text-sm">Membuat template...</p>
+                  <div className="flex flex-col items-center py-20 text-primary">
+                    <Loader2 className="w-10 h-10 animate-spin mb-4" />
+                    <p className="font-black uppercase text-sm">Membuat template...</p>
                   </div>
                 ) : generatedStripsMap[frameIdx] ? (
                   <>
                     <div className="relative w-full">
-                      <div className="w-full rounded-3xl overflow-hidden bg-white shadow-xl ring-1 ring-[#1A1A1A]/5">
-                        <img src={generatedStripsMap[frameIdx]} alt="Photo Strip" className="w-full object-contain max-h-[65vh]" />
+                      <div className="w-full bg-white border-4 border-black hard-shadow-black p-2">
+                        <img src={generatedStripsMap[frameIdx]} alt="Photo Strip" className="w-full object-contain max-h-[65vh] border-2 border-black" />
                       </div>
                       {totalStrips > 1 && (
-                        <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2 pointer-events-none">
-                          <button onClick={() => setFrameIdx(prev => prev === 0 ? totalStrips - 1 : prev - 1)} className="pointer-events-auto w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center text-[#1A1A1A] hover:bg-white transition-all">
-                            <ChevronLeft className="w-5 h-5" />
+                        <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-0 pointer-events-none -mx-4">
+                          <button onClick={() => setFrameIdx(prev => prev === 0 ? totalStrips - 1 : prev - 1)} className="pointer-events-auto w-12 h-12 bg-white border-4 border-black hard-shadow-black flex items-center justify-center text-primary active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
+                            <ChevronLeft className="w-6 h-6" />
                           </button>
-                          <button onClick={() => setFrameIdx(prev => (prev + 1) % totalStrips)} className="pointer-events-auto w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center text-[#1A1A1A] hover:bg-white transition-all">
-                            <ChevronRight className="w-5 h-5" />
+                          <button onClick={() => setFrameIdx(prev => (prev + 1) % totalStrips)} className="pointer-events-auto w-12 h-12 bg-white border-4 border-black hard-shadow-black flex items-center justify-center text-primary active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
+                            <ChevronRight className="w-6 h-6" />
                           </button>
                         </div>
                       )}
                     </div>
                     {totalStrips > 1 && (
-                      <div className="flex gap-2 mt-4">
+                      <div className="flex gap-2 mt-6">
                         {Array.from({ length: totalStrips }).map((_, i) => (
-                          <button key={i} onClick={() => setFrameIdx(i)} className={`h-2 rounded-full transition-all ${i === frameIdx ? 'bg-[#0F3D2E] w-6' : 'bg-[#1A1A1A]/15 w-2'}`} />
+                          <button key={i} onClick={() => setFrameIdx(i)} className={`h-3 transition-all border-2 border-black ${i === frameIdx ? 'bg-secondary w-8 hard-shadow-orange' : 'bg-white w-3'}`} />
                         ))}
                       </div>
                     )}
                     <button onClick={() => downloadFile(generatedStripsMap[frameIdx], `strip_${frameIdx + 1}.jpg`)} 
-                      className="mt-6 w-full py-4 rounded-2xl bg-[#0F3D2E] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:bg-[#195240] active:scale-[0.98] transition-all">
+                      className="mt-8 w-full py-4 bg-secondary text-white font-black uppercase text-sm flex items-center justify-center gap-2 border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
                       <Download className="w-5 h-5" /> Simpan Strip
                     </button>
                   </>
                 ) : strip ? (
                   <>
-                    <div className="w-full rounded-3xl overflow-hidden bg-white shadow-xl ring-1 ring-[#1A1A1A]/5">
-                      <img src={strip.url} alt="Photo Strip" className="w-full object-contain max-h-[65vh]" />
+                    <div className="w-full bg-white border-4 border-black hard-shadow-black p-2">
+                      <img src={strip.url} alt="Photo Strip" className="w-full object-contain max-h-[65vh] border-2 border-black" />
                     </div>
-                    <button onClick={() => downloadFile(strip.url, 'strip.jpg')} className="mt-6 w-full py-4 rounded-2xl bg-[#0F3D2E] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:bg-[#195240] active:scale-[0.98] transition-all">
+                    <button onClick={() => downloadFile(strip.url, 'strip.jpg')} className="mt-8 w-full py-4 bg-secondary text-white font-black uppercase text-sm flex items-center justify-center gap-2 border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
                       <Download className="w-5 h-5" /> Simpan Strip
                     </button>
                   </>
                 ) : (
-                  <p className="text-[#1A1A1A]/40 py-20 text-sm">Tidak ada photo strip.</p>
+                  <p className="text-primary/60 font-bold py-20 text-sm">Tidak ada photo strip.</p>
                 )}
               </motion.section>
             )}
@@ -447,15 +447,15 @@ export default function ProfilePage() {
               <motion.section key="gif" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="flex flex-col items-center">
                 {gif ? (
                   <>
-                    <div className="w-full rounded-3xl overflow-hidden bg-white shadow-xl ring-1 ring-[#1A1A1A]/5">
-                      <img src={gif.url} alt="GIF Animation" className="w-full object-contain max-h-[65vh]" />
+                    <div className="w-full bg-white border-4 border-black hard-shadow-black p-2">
+                      <img src={gif.url} alt="GIF Animation" className="w-full object-contain max-h-[65vh] border-2 border-black" />
                     </div>
-                    <button onClick={() => downloadFile(gif.url, 'animation.gif')} className="mt-6 w-full py-4 rounded-2xl bg-[#0F3D2E] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:bg-[#195240] active:scale-[0.98] transition-all">
+                    <button onClick={() => downloadFile(gif.url, 'animation.gif')} className="mt-8 w-full py-4 bg-secondary text-white font-black uppercase text-sm flex items-center justify-center gap-2 border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
                       <Download className="w-5 h-5" /> Simpan GIF
                     </button>
                   </>
                 ) : (
-                  <p className="text-[#1A1A1A]/40 py-20 text-sm">Tidak ada GIF.</p>
+                  <p className="text-primary/60 font-bold py-20 text-sm">Tidak ada GIF.</p>
                 )}
               </motion.section>
             )}
@@ -465,11 +465,11 @@ export default function ProfilePage() {
               <motion.section key="live" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="flex flex-col items-center">
                 {live ? (
                   <>
-                    <div className="w-full rounded-3xl overflow-hidden bg-white shadow-xl ring-1 ring-[#1A1A1A]/5">
+                    <div className="w-full bg-white border-4 border-black hard-shadow-black p-2">
                       <video 
                         key={live.url}
                         autoPlay loop muted playsInline 
-                        className="w-full object-contain max-h-[65vh]"
+                        className="w-full object-contain max-h-[65vh] border-2 border-black"
                         onError={(e) => {
                           const target = e.currentTarget
                           target.style.display = 'none'
@@ -479,18 +479,18 @@ export default function ProfilePage() {
                       >
                         <source src={live.url} type="video/mp4" />
                       </video>
-                      <div className="video-fallback hidden flex-col items-center justify-center py-16 text-[#1A1A1A]/30" style={{ display: 'none' }}>
+                      <div className="video-fallback hidden flex-col items-center justify-center py-16 text-primary border-2 border-black" style={{ display: 'none' }}>
                         <AlertCircle className="w-10 h-10 mb-3" />
-                        <p className="font-bold text-sm">Video gagal dimuat</p>
-                        <p className="text-xs mt-1">File mungkin rusak atau belum selesai</p>
+                        <p className="font-black uppercase text-sm">Video gagal dimuat</p>
+                        <p className="text-xs mt-1 font-bold">File mungkin rusak atau belum selesai</p>
                       </div>
                     </div>
-                    <button onClick={() => downloadFile(live.url, 'live_photo.mp4')} className="mt-6 w-full py-4 rounded-2xl bg-[#0F3D2E] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:bg-[#195240] active:scale-[0.98] transition-all">
+                    <button onClick={() => downloadFile(live.url, 'live_photo.mp4')} className="mt-8 w-full py-4 bg-secondary text-white font-black uppercase text-sm flex items-center justify-center gap-2 border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
                       <Download className="w-5 h-5" /> Simpan Live Photo
                     </button>
                   </>
                 ) : (
-                  <p className="text-[#1A1A1A]/40 py-20 text-sm">Tidak ada Live Photo.</p>
+                  <p className="text-primary/60 font-bold py-20 text-sm">Tidak ada Live Photo.</p>
                 )}
               </motion.section>
             )}
@@ -498,20 +498,20 @@ export default function ProfilePage() {
             {/* PHOTOS TAB */}
             {activeTab === 'photos' && (
               <motion.section key="photos" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   {photos.map((p, i) => (
-                    <div key={p.id} className="relative group aspect-square rounded-2xl overflow-hidden bg-white shadow-md ring-1 ring-[#1A1A1A]/5">
-                      <img src={p.url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <div key={p.id} className="relative group aspect-square bg-white border-4 border-black hard-shadow-black p-1">
+                      <img src={p.url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover border-2 border-black transition-transform duration-700" />
                       <button 
                         onClick={() => downloadFile(p.url, `photo_${i + 1}.jpg`)}
-                        className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white shadow-lg flex items-center justify-center text-[#1A1A1A] opacity-100 md:opacity-0 md:group-hover:opacity-100 translate-y-0 md:translate-y-2 md:group-hover:translate-y-0 transition-all"
+                        className="absolute bottom-2 right-2 w-10 h-10 bg-secondary border-2 border-black hard-shadow-orange flex items-center justify-center text-white opacity-100 md:opacity-0 md:group-hover:opacity-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                       >
-                        <Download className="w-4 h-4" />
+                        <Download className="w-5 h-5" />
                       </button>
                     </div>
                   ))}
                 </div>
-                <button onClick={handleDownloadAll} className="mt-6 w-full py-4 rounded-2xl bg-[#0F3D2E] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:bg-[#195240] active:scale-[0.98] transition-all">
+                <button onClick={handleDownloadAll} className="mt-8 w-full py-4 bg-secondary text-white font-black uppercase text-sm flex items-center justify-center gap-2 border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
                   <Download className="w-5 h-5" /> Simpan Semua Foto
                 </button>
               </motion.section>
@@ -520,22 +520,24 @@ export default function ProfilePage() {
         </main>
       )}
 
-      {/* Bottom Nav Pill */}
+      {/* Brutalist Bottom Nav Pill */}
       {sessions.length > 0 && (
         <div className="fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] md:w-[calc(100%-48px)] max-w-[360px] z-40 safe-bottom">
-          <div className="flex p-1.5 rounded-[32px] bg-white border border-[#1A1A1A]/10 shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
-            {tabs.map(tab => (
+          <div className="flex bg-white border-4 border-black hard-shadow-black">
+            {tabs.map((tab, idx) => (
               <button 
                 key={tab.key} 
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex-1 flex flex-col items-center gap-1 py-3 md:py-2.5 rounded-[28px] transition-all duration-300 touch-target ${
+                className={`flex-1 flex flex-col items-center justify-center gap-1 py-3 md:py-3 touch-target border-r-2 border-black last:border-r-0 transition-none ${
                   activeTab === tab.key 
-                    ? 'text-[#0F3D2E] bg-[#0F3D2E]/10 font-bold' 
-                    : 'text-[#1A1A1A]/35 active:text-[#1A1A1A]/60'
+                    ? 'text-white bg-primary' 
+                    : 'text-primary hover:bg-gray-100'
                 }`}
               >
-                {tab.icon}
-                <span className="text-[9px] font-extrabold uppercase tracking-[1px]">{tab.label}</span>
+                <div className={activeTab === tab.key ? "text-white" : "text-primary"}>
+                  {tab.icon}
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest mt-1">{tab.label}</span>
               </button>
             ))}
           </div>
@@ -543,8 +545,8 @@ export default function ProfilePage() {
       )}
 
       {/* Footer */}
-      <footer className="text-center pb-28 pt-8">
-        <p className="text-[10px] text-[#1A1A1A]/20 font-medium">Powered by Sebooth</p>
+      <footer className="text-center pb-28 pt-8 border-t-4 border-black bg-white mt-auto">
+        <p className="text-xs text-primary font-black uppercase tracking-widest marker-font">Powered by Sebooth</p>
       </footer>
     </div>
   )

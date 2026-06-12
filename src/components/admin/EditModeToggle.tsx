@@ -6,10 +6,14 @@ import { PenTool, Check, Layout } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
+import { usePathname } from "next/navigation";
+
 export function EditModeToggle() {
     const { isAdmin, editMode, toggleEditMode, layoutEditorOpen, setLayoutEditorOpen } = useAdminEdit();
+    const pathname = usePathname();
 
-    if (!isAdmin) return null;
+    // Hide edit mode toggle on profile/my photos page
+    if (!isAdmin || pathname === "/profile") return null;
 
     return (
         <>
