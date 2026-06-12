@@ -58,8 +58,17 @@ export async function fetchQueueTicketById(ticketId: string): Promise<QueueTicke
         .select("*, queue_events(*)")
         .eq("id", ticketId)
         .single();
-    if (error) return null;
-    return data;
+    if (error || !data) return null;
+
+    // Force ticket status to cancelled if the parent event is no longer active
+    // This mathematically squashes any "ghost" active status if DB bulk updates failed
+    if (data.queue_events && !data.queue_events.is_active) {
+        if (data.status === "waiting" || data.status === "called" || data.status === "in_session") {
+            data.status = "cancelled";
+        }
+    }
+
+    return data as QueueTicket;
 }
 
 /**
