@@ -270,11 +270,20 @@ export async function toggleQueueEventActive(
 
     // If event is being deactivated, wipe out all active queues
     if (!isActive) {
-        await authClient
+        const { createClient } = await import("@supabase/supabase-js");
+        const serviceClient = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
+        const { error: cancelError } = await serviceClient
             .from("queue_tickets")
             .update({ status: "cancelled" })
             .eq("event_id", eventId)
             .in("status", ["waiting", "called", "in_session"]);
+            
+        if (cancelError) {
+            console.error("Failed to cancel tickets on deactivation:", cancelError);
+        }
     }
 
     // Broadcast the update so all active clients and photobooths receive the wipe
