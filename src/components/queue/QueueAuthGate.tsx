@@ -14,7 +14,7 @@ export default function QueueAuthGate({ event }: QueueAuthGateProps) {
     const redirectPath = `/queue/${event.id}`;
 
     return (
-        <div className="min-h-[100svh] bg-gradient-to-br from-gray-100 to-gray-300 paper-texture flex flex-col items-center justify-center p-6">
+        <div className="min-h-[100svh] bg-gradient-to-br from-gray-200 via-blue-100 to-orange-100 flex flex-col items-center justify-center p-6">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
