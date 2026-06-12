@@ -5,7 +5,6 @@ import "./globals.css";
 import { LayoutShell } from "@/components/layout/LayoutShell";
 import { ClientProviders } from "@/components/admin/ClientProviders";
 import { OrientationProvider } from "@/components/layout/OrientationProvider";
-import { OrientationToggle } from "@/components/ui/OrientationToggle";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -39,7 +38,6 @@ export default function RootLayout({
       >
         <ClientProviders>
           <OrientationProvider>
-            <OrientationToggle />
             <div id="root-app" className="w-full h-full relative transition-all duration-300">
               <LayoutShell>{children}</LayoutShell>
             </div>
