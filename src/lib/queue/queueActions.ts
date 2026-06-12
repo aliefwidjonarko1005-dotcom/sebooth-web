@@ -52,6 +52,20 @@ export async function joinQueue(
 
     const nextNumber = (lastTicket?.queue_number ?? 0) + 1;
 
+    // Check if the booth is currently idle (no one called or in session)
+    const { data: activeTicket } = await supabase
+        .from("queue_tickets")
+        .select("id")
+        .eq("event_id", eventId)
+        .in("status", ["called", "in_session"])
+        .limit(1)
+        .maybeSingle();
+
+    const isIdle = !activeTicket;
+    const initialStatus = isIdle ? "called" : "waiting";
+    const now = new Date();
+    const expiresAt = isIdle ? new Date(now.getTime() + 5 * 60 * 1000).toISOString() : null;
+
     const { data, error } = await supabase
         .from("queue_tickets")
         .insert({
@@ -60,7 +74,9 @@ export async function joinQueue(
             display_name: displayName,
             phone_number: phoneNumber || null,
             user_id: userId,
-            status: "waiting",
+            status: initialStatus,
+            called_at: isIdle ? now.toISOString() : null,
+            expires_at: expiresAt,
         })
         .select("id, queue_number")
         .single();

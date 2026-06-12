@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { joinQueue } from "@/lib/queue/queueActions";
+import { fetchQueueStatus } from "@/lib/queue/queueStatus";
+import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
 
 export const dynamic = "force-dynamic";
 
@@ -53,6 +55,14 @@ export async function POST(req: NextRequest) {
 
     if (!result.success) {
         return NextResponse.json({ success: false, error: result.error }, { status: 500 });
+    }
+
+    // Broadcast updated state to SSE clients
+    try {
+        const freshStatus = await fetchQueueStatus(eventId);
+        broadcastQueueUpdate(eventId, freshStatus);
+    } catch (e) {
+        console.error("Failed to broadcast queue update:", e);
     }
 
     return NextResponse.json({
