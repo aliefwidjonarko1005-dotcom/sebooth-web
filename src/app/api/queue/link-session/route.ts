@@ -27,12 +27,7 @@ async function getAuthUser() {
     return user;
 }
 
-function createServiceClient() {
-    return createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-}
+// Remove createServiceClient since we'll use the auth client directly
 
 /**
  * POST /api/queue/link-session
@@ -45,8 +40,24 @@ function createServiceClient() {
  * Token is valid for 10 minutes.
  */
 export async function POST(req: NextRequest) {
-    // Validate auth
-    const user = await getAuthUser();
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                getAll() { return cookieStore.getAll(); },
+                setAll(cookiesToSet: { name: string; value: string; options: Record<string, unknown> }[]) {
+                    cookiesToSet.forEach(({ name, value, options }) =>
+                        cookieStore.set(name, value, options)
+                    );
+                },
+            },
+        }
+    );
+    
+    const { data: { user } } = await supabase.auth.getUser();
+
     if (!user) {
         return NextResponse.json(
             { success: false, error: "Unauthorized — kamu harus login." },
@@ -99,22 +110,20 @@ export async function POST(req: NextRequest) {
         );
     }
 
-    const supabase = createServiceClient();
-
     // Find user's active ticket for this event
     const { data: ticket, error: ticketError } = await supabase
         .from("queue_tickets")
         .select("id, queue_number, status")
         .eq("event_id", eventId)
         .eq("user_id", user.id)
-        .in("status", ["called", "waiting"])
+        .in("status", ["called", "waiting", "in_session"])
         .order("queue_number", { ascending: true })
         .limit(1)
         .maybeSingle();
 
     if (ticketError || !ticket) {
         return NextResponse.json(
-            { success: false, error: "Tidak ditemukan tiket antrean aktif untuk event ini." },
+            { success: false, error: "Tidak ditemukan tiket antrean aktif untuk event ini.", details: { ticketError, eventId, userId: user.id } },
             { status: 404 }
         );
     }
@@ -136,7 +145,7 @@ export async function POST(req: NextRequest) {
         );
     }
 
-    // Update session: link to user
+    // Update session: link to user (might fail silently if session not uploaded yet, which is fine)
     await supabase
         .from("sessions")
         .update({
