@@ -44,7 +44,7 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
     }
 
     return (
-        <div className="min-h-[100svh] bg-white paper-texture flex flex-col items-center justify-center p-4">
+        <div className="min-h-[100svh] bg-gradient-to-br from-white to-gray-200 paper-texture flex flex-col items-center justify-center p-4">
             <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -61,7 +61,7 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
                     >
                         <Ticket className="w-8 h-8" />
                     </motion.div>
-                    <h1 className="text-3xl font-black text-primary uppercase tracking-tight marker-font relative z-10">
+                    <h1 className="text-2xl font-black text-primary uppercase tracking-tight">
                         Ambil Antrean
                     </h1>
                     <div className="mt-2 text-center relative z-10">

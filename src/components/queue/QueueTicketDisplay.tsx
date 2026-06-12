@@ -237,10 +237,10 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
         (status.currentTicket?.id === ticket.id ? status.currentTicket : null)?.session_id;
 
     // Determine brutalist background color based on tier
-    let bgClass = "bg-white paper-texture";
-    if (proximityTier === "your_turn") bgClass = "bg-red-500 paper-texture";
-    else if (proximityTier === "preparing") bgClass = "bg-orange-400 paper-texture";
-    else if (proximityTier === "approaching") bgClass = "bg-yellow-300 paper-texture";
+    let bgClass = "bg-gradient-to-br from-white to-gray-200 paper-texture";
+    if (proximityTier === "your_turn") bgClass = "bg-gradient-to-br from-red-400 to-red-600 paper-texture";
+    else if (proximityTier === "preparing") bgClass = "bg-gradient-to-br from-orange-300 to-orange-500 paper-texture";
+    else if (proximityTier === "approaching") bgClass = "bg-gradient-to-br from-yellow-200 to-yellow-400 paper-texture";
 
     return (
         <div className={`min-h-[100svh] ${bgClass} flex flex-col items-center justify-center p-4 relative transition-colors duration-700`}>

@@ -14,7 +14,7 @@ export default function QueueAuthGate({ event }: QueueAuthGateProps) {
     const redirectPath = `/queue/${event.id}`;
 
     return (
-        <div className="min-h-[100svh] bg-white paper-texture flex flex-col items-center justify-center p-4">
+        <div className="min-h-[100svh] bg-gradient-to-br from-white to-gray-200 paper-texture flex flex-col items-center justify-center p-4">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -30,7 +30,7 @@ export default function QueueAuthGate({ event }: QueueAuthGateProps) {
                     >
                         <Ticket className="w-8 h-8" />
                     </motion.div>
-                    <h1 className="text-3xl font-black text-primary uppercase tracking-tight marker-font">
+                    <h1 className="text-2xl font-black text-primary uppercase tracking-tight">
                         Ambil Antrean
                     </h1>
                     <div className="mt-2 text-center">
@@ -91,30 +91,7 @@ export default function QueueAuthGate({ event }: QueueAuthGateProps) {
                     </button>
                 </motion.div>
 
-                {/* Benefits */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    className="mt-8 pt-6 border-t-2 border-black border-dashed"
-                >
-                    <p className="text-primary text-[0.8rem] font-black uppercase tracking-widest mb-4">
-                        KEUNTUNGAN PUNYA AKUN
-                    </p>
-                    <div className="space-y-3">
-                        {[
-                            { text: "FOTO OTOMATIS TERSIMPAN KE AKUNMU" },
-                            { text: "NOTIFIKASI REAL-TIME SAAT GILIRAN TIBA" },
-                            { text: "AKSES GALERI FOTO KAPAN SAJA" },
-                            { text: "AMBIL ANTREAN LEBIH CEPAT DI EVENT BERIKUTNYA" },
-                        ].map((benefit, i) => (
-                            <div key={i} className="flex items-start gap-3">
-                                <span className="text-primary text-[0.7rem] font-bold">✓</span>
-                                <p className="text-primary text-[0.7rem] font-bold mt-0.5">{benefit.text}</p>
-                            </div>
-                        ))}
-                    </div>
-                </motion.div>
+
             </motion.div>
         </div>
     );
