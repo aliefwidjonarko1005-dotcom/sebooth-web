@@ -22,22 +22,12 @@ const FRAME_TEMPLATES = [
 
 type TabKey = 'strip' | 'gif' | 'live' | 'photos'
 
-/* ─── Helper: Download a file via fetch + blob ─── */
+/* ─── Helper: Download a file via API proxy (Safari iOS Fix) ─── */
 async function downloadFile(url: string, filename: string) {
-  try {
-    const res = await fetch(url)
-    const blob = await res.blob()
-    const blobUrl = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = blobUrl
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(blobUrl)
-  } catch {
-    window.open(url, '_blank')
-  }
+  // Directly set window.location to trigger a native browser download
+  // via the Content-Disposition header returned by the proxy API.
+  // This bypasses all iOS Safari blob/async fetch restrictions.
+  window.location.href = `/api/download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`
 }
 
 /* ─── Mobile detection for canvas optimization ─── */

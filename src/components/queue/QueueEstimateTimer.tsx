@@ -12,9 +12,7 @@ interface QueueEstimateTimerProps {
     avgDurationSec: number;
     status: string;
     proximityTier: QueueProximityTier;
-    /** Name of the person currently in session */
     currentSessionName?: string;
-    /** Elapsed time of current session in seconds */
     currentSessionElapsedSec?: number;
 }
 
@@ -30,12 +28,10 @@ export default function QueueEstimateTimer({
     const [remainingMs, setRemainingMs] = useState(estimatedWaitMs);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-    // Sync from parent when SSE pushes new data
     useEffect(() => {
         setRemainingMs(estimatedWaitMs);
     }, [estimatedWaitMs]);
 
-    // Count down locally for smooth UX
     useEffect(() => {
         if (status !== "waiting" || remainingMs <= 0) {
             if (intervalRef.current) clearInterval(intervalRef.current);
@@ -54,7 +50,6 @@ export default function QueueEstimateTimer({
     const minutes = Math.floor(totalSec / 60);
     const seconds = totalSec % 60;
 
-    // Get tier color for the countdown ring
     const tierColors = getProximityTierColor(proximityTier);
 
     if (status === "called" || status === "in_session") {
@@ -66,17 +61,16 @@ export default function QueueEstimateTimer({
                 className="flex flex-col items-center gap-3 py-4"
             >
                 <div className="relative">
-                    <div className="w-24 h-24 rounded-full border-4 border-[#D4AF37]/30 flex items-center justify-center">
+                    <div className="w-24 h-24 bg-white border-4 border-black hard-shadow-black flex items-center justify-center">
                         {status === "in_session" ? (
-                            <Camera className="w-10 h-10 text-green-400 animate-pulse" />
+                            <Camera className="w-10 h-10 text-green-500" />
                         ) : (
-                            <Zap className="w-10 h-10 text-[#D4AF37] animate-pulse" />
+                            <Zap className="w-10 h-10 text-red-500 animate-pulse" />
                         )}
                     </div>
-                    <div className="absolute inset-0 rounded-full border-4 border-[#D4AF37] animate-ping opacity-30" />
                 </div>
-                <p className="text-[#D4AF37] font-black text-lg text-center">
-                    {status === "called" ? "Segera ke booth!" : "Sedang berfoto 📸"}
+                <p className="text-primary font-black text-lg text-center uppercase border-b-4 border-black pb-1 inline-block mt-2">
+                    {status === "called" ? "SEGERA KE BOOTH!" : "SEDANG BERFOTO 📸"}
                 </p>
             </motion.div>
         );
@@ -90,8 +84,8 @@ export default function QueueEstimateTimer({
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center gap-2 py-4"
             >
-                <div className="text-5xl">🎉</div>
-                <p className="text-white font-black text-lg text-center">Sesi Selesai!</p>
+                <div className="text-5xl border-4 border-black p-4 bg-yellow-300 hard-shadow-black">🎉</div>
+                <p className="text-primary font-black text-xl uppercase mt-2">Sesi Selesai!</p>
             </motion.div>
         );
     }
@@ -102,13 +96,13 @@ export default function QueueEstimateTimer({
                 key="waiting"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="space-y-4"
+                className="space-y-6"
             >
                 {/* Countdown Ring */}
                 <div className="flex justify-center">
-                    <div className="relative w-32 h-32">
+                    <div className="relative w-32 h-32 bg-white border-4 border-black rounded-full hard-shadow-black p-2">
                         <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+                            <circle cx="50" cy="50" r="42" fill="none" stroke="#E5E5E5" strokeWidth="8" />
                             <circle
                                 cx="50" cy="50" r="42" fill="none"
                                 stroke={tierColors.hex}
@@ -120,36 +114,36 @@ export default function QueueEstimateTimer({
                             />
                         </svg>
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className="text-white font-black text-xl tabular-nums">
+                            <span className="text-primary font-black text-xl tabular-nums tracking-tighter">
                                 {minutes}:{String(seconds).padStart(2, "0")}
                             </span>
-                            <span className="text-white/40 text-[10px] font-bold uppercase">menit</span>
+                            <span className="text-primary/50 text-[0.65rem] font-black uppercase">menit</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Detailed Estimate Breakdown */}
                 {positionFromFront > 0 && (
-                    <div className="bg-white/5 border border-white/10 rounded-2xl p-3 space-y-2">
-                        <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider text-center">
-                            Detail Estimasi
+                    <div className="bg-white border-2 border-black border-dashed p-3 space-y-2">
+                        <p className="text-primary/50 text-[0.7rem] font-black uppercase tracking-wider text-center border-b-2 border-black pb-1 mb-2 inline-block mx-auto w-full">
+                            DETAIL ESTIMASI
                         </p>
-                        <div className="text-white/50 text-xs space-y-1.5">
+                        <div className="text-primary text-xs space-y-2 font-bold">
                             {currentSessionName && (
                                 <div className="flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
-                                    <span>Sedang berfoto: <span className="text-white/70 font-bold">{currentSessionName}</span></span>
+                                    <span className="w-2.5 h-2.5 bg-green-500 border border-black animate-pulse shrink-0" />
+                                    <span>SEDANG BERFOTO: <span className="text-secondary font-black">{currentSessionName.toUpperCase()}</span></span>
                                     {currentSessionElapsedSec != null && (
-                                        <span className="text-white/30 ml-auto text-[10px]">
-                                            {Math.floor(currentSessionElapsedSec / 60)}m berlalu
+                                        <span className="text-primary/50 ml-auto text-[0.65rem] font-black bg-gray-100 border border-black px-1.5 py-0.5">
+                                            {Math.floor(currentSessionElapsedSec / 60)}M BERLALU
                                         </span>
                                     )}
                                 </div>
                             )}
                             <div className="flex items-center gap-2">
-                                <Users className="w-3 h-3 text-white/30 shrink-0" />
+                                <Users className="w-4 h-4 text-primary shrink-0" />
                                 <span>
-                                    {positionFromFront} orang × ~{Math.round(avgDurationSec / 60)} menit = <span className="text-white/70 font-bold">~{minutes} menit</span>
+                                    {positionFromFront} ORANG × ~{Math.round(avgDurationSec / 60)} MENIT = <span className="text-secondary font-black bg-yellow-200 px-1 border border-black">~{minutes} MNT</span>
                                 </span>
                             </div>
                         </div>
@@ -158,16 +152,16 @@ export default function QueueEstimateTimer({
 
                 {/* Stats row */}
                 <div className="flex gap-3 justify-center flex-wrap">
-                    <div className="flex items-center gap-1.5 bg-white/10 rounded-xl px-3 py-2">
-                        <Users className={`w-3.5 h-3.5 ${tierColors.text}`} />
-                        <span className="text-white/70 text-xs font-bold">
-                            Posisi ke-<span className="text-white">{positionFromFront}</span>
+                    <div className="flex items-center gap-2 bg-gray-50 border-2 border-black px-3 py-2 hard-shadow-black">
+                        <Users className={`w-4 h-4 text-primary`} />
+                        <span className="text-primary/70 text-[0.75rem] font-black uppercase">
+                            POSISI <span className="text-primary">#{positionFromFront}</span>
                         </span>
                     </div>
-                    <div className="flex items-center gap-1.5 bg-white/10 rounded-xl px-3 py-2">
-                        <Clock className={`w-3.5 h-3.5 ${tierColors.text}`} />
-                        <span className="text-white/70 text-xs font-bold">
-                            ~<span className="text-white">{Math.round(avgDurationSec / 60)} min</span>/sesi
+                    <div className="flex items-center gap-2 bg-gray-50 border-2 border-black px-3 py-2 hard-shadow-black">
+                        <Clock className={`w-4 h-4 text-primary`} />
+                        <span className="text-primary/70 text-[0.75rem] font-black uppercase">
+                            <span className="text-primary">~{Math.round(avgDurationSec / 60)}M</span>/SESI
                         </span>
                     </div>
                 </div>

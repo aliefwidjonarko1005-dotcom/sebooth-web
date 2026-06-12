@@ -93,12 +93,12 @@ export function getProximityTierColor(tier: QueueProximityTier): {
 } {
   switch (tier) {
     case 'waiting':
-      return { bg: 'bg-green-500/10', text: 'text-green-400', border: 'border-green-500/20', ring: 'ring-green-500/30', hex: '#22C55E' };
+      return { bg: 'bg-[#0F3D2E]', text: 'text-white', border: 'border-2 border-black', ring: 'ring-black', hex: '#0F3D2E' };
     case 'approaching':
-      return { bg: 'bg-yellow-500/10', text: 'text-yellow-400', border: 'border-yellow-500/20', ring: 'ring-yellow-500/30', hex: '#EAB308' };
+      return { bg: 'bg-yellow-400', text: 'text-primary', border: 'border-2 border-black', ring: 'ring-black', hex: '#FACC15' };
     case 'preparing':
-      return { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/20', ring: 'ring-orange-500/30', hex: '#F97316' };
+      return { bg: 'bg-orange-500', text: 'text-white', border: 'border-2 border-black', ring: 'ring-black', hex: '#F97316' };
     case 'your_turn':
-      return { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/20', ring: 'ring-red-500/30', hex: '#EF4444' };
+      return { bg: 'bg-red-600', text: 'text-white', border: 'border-2 border-black', ring: 'ring-black', hex: '#DC2626' };
   }
 }

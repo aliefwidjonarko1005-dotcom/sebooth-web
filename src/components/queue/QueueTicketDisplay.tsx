@@ -3,13 +3,13 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { RefreshCw, X, Camera, Volume2, VolumeX, Bell, BellOff, QrCode, Loader2, CheckCircle } from "lucide-react";
+import { RefreshCw, X, Camera, Volume2, VolumeX, Bell, BellOff, QrCode, Loader2, CheckSquare } from "lucide-react";
 import type { QueueTicket, QueueEvent, QueueProximityTier } from "@/types/database";
 import { getProximityTier, getProximityTierColor } from "@/types/database";
 import QueueStatusBadge from "./QueueStatusBadge";
 import QueueEstimateTimer from "./QueueEstimateTimer";
 import QRScannerModal from "./QRScannerModal";
-import { subscribeToPush, isPushSupported, getPushPermission } from "@/lib/queue/pushSubscription";
+import { subscribeToPush, isPushSupported } from "@/lib/queue/pushSubscription";
 
 interface QueueStatus {
     event: QueueEvent | null;
@@ -33,13 +33,12 @@ interface QueueTicketDisplayProps {
 function playTierAudio(tier: QueueProximityTier, enabled: boolean) {
     if (!enabled) return;
     try {
-        const ctx = new AudioContext();
+        const ctx = new window.AudioContext();
         const gainNode = ctx.createGain();
         gainNode.connect(ctx.destination);
         gainNode.gain.setValueAtTime(0.25, ctx.currentTime);
 
         if (tier === "approaching") {
-            // Single subtle chime
             const osc = ctx.createOscillator();
             osc.connect(gainNode);
             osc.frequency.setValueAtTime(660, ctx.currentTime);
@@ -47,7 +46,6 @@ function playTierAudio(tier: QueueProximityTier, enabled: boolean) {
             osc.start(ctx.currentTime);
             osc.stop(ctx.currentTime + 0.5);
         } else if (tier === "preparing") {
-            // Double urgent chime
             const osc1 = ctx.createOscillator();
             osc1.connect(gainNode);
             osc1.frequency.setValueAtTime(880, ctx.currentTime);
@@ -56,7 +54,6 @@ function playTierAudio(tier: QueueProximityTier, enabled: boolean) {
             osc1.start(ctx.currentTime);
             osc1.stop(ctx.currentTime + 0.6);
         } else if (tier === "your_turn") {
-            // Triple ascending excited chime
             const osc = ctx.createOscillator();
             osc.connect(gainNode);
             osc.frequency.setValueAtTime(880, ctx.currentTime);
@@ -88,36 +85,29 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
     const prevTierRef = useRef<QueueProximityTier>("waiting");
     const pushSubscribedRef = useRef(false);
 
-    // Get this ticket's current data from live status
     const myWaitingData = status.waitingTickets.find((t) => t.id === ticket.id);
     const myPosition = myWaitingData?.positionFromFront ?? 0;
     const myEstimateMs = myWaitingData?.estimatedWaitMs ?? 0;
 
-    // Determine current status from live data
     const liveStatus = (() => {
         if (status.currentTicket?.id === ticket.id) return status.currentTicket.status;
         if (myWaitingData) return "waiting";
         return ticket.status;
     })();
 
-    // Calculate proximity tier
     const proximityTier: QueueProximityTier = getProximityTier(myPosition, liveStatus as import("@/types/database").QueueTicketStatus);
     const tierColors = getProximityTierColor(proximityTier);
 
-    // Current session info for detailed estimate
     const currentSessionName = status.currentTicket?.display_name;
     const currentSessionElapsedSec = status.currentTicket?.called_at
         ? Math.round((Date.now() - new Date(status.currentTicket.called_at).getTime()) / 1000)
         : undefined;
 
-    // ── Push Notification Setup — Auto-prompt on mount ──
     useEffect(() => {
         if (pushSubscribedRef.current || !ticket.user_id) return;
         if (!isPushSupported()) return;
         pushSubscribedRef.current = true;
 
-        // Always attempt to subscribe — this will trigger the permission prompt
-        // if not yet granted, or silently subscribe if already granted
         subscribeToPush(ticket.user_id).then((sub) => {
             if (sub) setPushEnabled(true);
         });
@@ -129,7 +119,6 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
         setPushEnabled(!!sub);
     }
 
-    // ── Check-In Handler ──
     const [isCheckingIn, setIsCheckingIn] = useState(false);
     
     async function handleCheckIn() {
@@ -151,7 +140,6 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
         }
     }
 
-    // ── QR Scan Handler ──
     async function handleQRScanned(sessionToken: string) {
         setScanStatus('linking');
         try {
@@ -164,7 +152,6 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
             if (data.success) {
                 setScanStatus('success');
                 setShowQRScanner(false);
-                // Status will update via SSE
             } else {
                 setScanStatus('error');
                 setScanError(data.error || 'Gagal menghubungkan sesi.');
@@ -177,16 +164,13 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
         }
     }
 
-    // ── Audio + Tier Transition Detection ──
     useEffect(() => {
         if (proximityTier !== prevTierRef.current) {
-            // Tier changed — play audio cue
             playTierAudio(proximityTier, soundEnabled);
             prevTierRef.current = proximityTier;
         }
     }, [proximityTier, soundEnabled]);
 
-    // ── SSE Connection ──
     const connectSSE = useCallback(() => {
         if (sseRef.current) {
             sseRef.current.close();
@@ -205,7 +189,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                     clearInterval(pollingRef.current);
                     pollingRef.current = null;
                 }
-            } catch { /* ignore parse errors */ }
+            } catch { /* ignore */ }
         });
 
         es.onerror = () => {
@@ -247,71 +231,59 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
         window.location.href = `/queue`;
     }
 
-    // Completed state — show link to photos
     const isCompleted = liveStatus === "completed";
-    const sessionId = (status.currentTicket?.id === ticket.id && status.currentTicket.session_id) ||
+    const sessionObjId = (status.currentTicket?.id === ticket.id && status.currentTicket.session_id) ||
         (myWaitingData as QueueTicket | undefined)?.session_id ||
         (status.currentTicket?.id === ticket.id ? status.currentTicket : null)?.session_id;
 
-    // Dynamic background gradient based on tier
-    const bgGradient = proximityTier === "your_turn"
-        ? "from-[#1a0a0a] via-[#3D0F0F] to-[#1a0a0a]"
-        : proximityTier === "preparing"
-        ? "from-[#1a1408] via-[#3D2E0F] to-[#1a1408]"
-        : proximityTier === "approaching"
-        ? "from-[#141a08] via-[#2E3D0F] to-[#141a08]"
-        : "from-[#0a1628] via-[#0F3D2E] to-[#0a1628]";
+    // Determine brutalist background color based on tier
+    let bgClass = "bg-white paper-texture";
+    if (proximityTier === "your_turn") bgClass = "bg-red-500 paper-texture";
+    else if (proximityTier === "preparing") bgClass = "bg-orange-400 paper-texture";
+    else if (proximityTier === "approaching") bgClass = "bg-yellow-300 paper-texture";
 
     return (
-        <div className={`min-h-screen bg-gradient-to-br ${bgGradient} flex flex-col items-center justify-center p-4 relative overflow-hidden transition-all duration-1000`}>
-            {/* Background pattern */}
-            <div className="absolute inset-0 opacity-5 pointer-events-none"
-                style={{ backgroundImage: "radial-gradient(circle at 2px 2px, #D4AF37 1px, transparent 0)", backgroundSize: "32px 32px" }} />
-
+        <div className={`min-h-[100svh] ${bgClass} flex flex-col items-center justify-center p-4 relative transition-colors duration-700`}>
             {/* Top bar: SSE indicator + controls */}
-            <div className="absolute top-4 left-4 flex items-center gap-1.5">
-                <span className={`w-2 h-2 rounded-full ${sseConnected ? "bg-green-400 animate-pulse" : "bg-yellow-400"}`} />
-                <span className="text-white/30 text-[10px] font-bold uppercase">
-                    {sseConnected ? "Live" : "Polling"}
+            <div className="absolute top-4 left-4 flex items-center gap-2 bg-white border-2 border-black hard-shadow-black px-3 py-1.5 z-10">
+                <span className={`w-3 h-3 border border-black ${sseConnected ? "bg-green-500 animate-pulse" : "bg-yellow-500"}`} />
+                <span className="text-primary text-[0.65rem] font-black uppercase tracking-widest">
+                    {sseConnected ? "LIVE" : "POLLING"}
                 </span>
             </div>
 
-            <div className="absolute top-4 right-4 flex items-center gap-2">
-                {/* Push notification toggle */}
+            <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
                 {isPushSupported() && (
                     <button
                         onClick={handleEnablePush}
-                        className={`p-2 rounded-xl transition-all ${
-                            pushEnabled
-                                ? "bg-green-500/20 text-green-400"
-                                : "bg-white/10 text-white/50 hover:text-white hover:bg-white/20"
+                        className={`p-2 border-2 border-black hard-shadow-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ${
+                            pushEnabled ? "bg-green-300 text-primary" : "bg-white text-primary"
                         }`}
                         title={pushEnabled ? "Push notification aktif" : "Aktifkan push notification"}
                     >
-                        {pushEnabled ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4" />}
+                        {pushEnabled ? <Bell className="w-5 h-5" /> : <BellOff className="w-5 h-5" />}
                     </button>
                 )}
-                {/* Sound toggle */}
                 <button
                     onClick={() => setSoundEnabled((s) => !s)}
-                    className="p-2 rounded-xl bg-white/10 text-white/50 hover:text-white hover:bg-white/20 transition-all"
-                    title={soundEnabled ? "Matikan suara notifikasi" : "Nyalakan suara notifikasi"}
+                    className="p-2 bg-white text-primary border-2 border-black hard-shadow-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                    title={soundEnabled ? "Matikan suara" : "Nyalakan suara"}
                 >
-                    {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                    {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
                 </button>
             </div>
 
-            <div className="w-full max-w-sm space-y-4">
+            <div className="w-full max-w-sm space-y-6 mt-16 pb-8 relative z-0">
                 {/* Event info */}
                 <motion.div
                     initial={{ opacity: 0, y: -12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-center"
+                    className="text-center bg-white border-4 border-black hard-shadow-black p-3"
                 >
-                    <p className="text-white/40 text-xs font-bold uppercase tracking-widest">
+                    <p className="text-primary text-[0.85rem] font-black uppercase tracking-widest">
                         {status.event?.name || "Sebooth Photobooth"}
                     </p>
-                    <p className="text-white/30 text-[10px] mt-0.5">
+                    <p className="text-primary/70 text-[0.7rem] font-bold mt-1 uppercase">
                         📸 {status.event?.booth_name}
                     </p>
                 </motion.div>
@@ -324,35 +296,10 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1.02 }}
                         transition={{ duration: 0.3 }}
-                        className={`bg-white/10 backdrop-blur-xl border rounded-3xl p-6 text-center shadow-2xl transition-all ${
-                            proximityTier === "your_turn"
-                                ? "border-red-500/50 shadow-red-500/20"
-                                : proximityTier === "preparing"
-                                ? "border-orange-500/30 shadow-orange-500/10"
-                                : proximityTier === "approaching"
-                                ? "border-yellow-500/30 shadow-yellow-500/10"
-                                : liveStatus === "in_session"
-                                ? "border-green-500/30 shadow-green-500/10"
-                                : "border-white/20"
-                        }`}
+                        className={`bg-white border-4 border-black p-6 text-center shadow-[8px_8px_0px_rgba(0,0,0,1)] transition-transform`}
                     >
-                        {/* Full-screen takeover for your_turn */}
-                        {proximityTier === "your_turn" && liveStatus === "called" && (
-                            <motion.div
-                                className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                            >
-                                <motion.div
-                                    className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/10 to-red-500/0"
-                                    animate={{ x: ["-100%", "200%"] }}
-                                    transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                                />
-                            </motion.div>
-                        )}
-
                         {/* Status badge */}
-                        <div className="flex justify-center mb-4 relative">
+                        <div className="flex justify-center mb-6">
                             <QueueStatusBadge
                                 status={liveStatus as import("@/types/database").QueueTicketStatus}
                                 positionFromFront={myPosition}
@@ -364,24 +311,19 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                             animate={proximityTier === "your_turn" ? { scale: [1, 1.05, 1] } : {}}
                             transition={{ repeat: proximityTier === "your_turn" ? Infinity : 0, duration: 1.5 }}
                         >
-                            <p className="text-white/50 text-xs font-bold uppercase tracking-widest mb-1">
-                                Nomor Antrean
+                            <p className="text-primary/50 text-[0.75rem] font-black uppercase tracking-widest mb-2 border-b-2 border-black pb-1 inline-block">
+                                NOMOR ANTREAN
                             </p>
-                            <div className={`text-7xl font-black tabular-nums leading-none mb-2 ${
-                                proximityTier === "your_turn" ? "text-red-400"
-                                : proximityTier === "preparing" ? "text-orange-400"
-                                : proximityTier === "approaching" ? "text-yellow-400"
-                                : "text-white"
-                            }`}>
+                            <div className="text-[5rem] md:text-[6rem] font-black tabular-nums leading-none mb-4 text-primary tracking-tighter">
                                 {String(ticket.queue_number).padStart(3, "0")}
                             </div>
-                            <p className="text-white/70 text-sm font-bold">
-                                Halo, <span className="text-white">{ticket.display_name}</span>! 👋
+                            <p className="text-primary text-[0.9rem] font-bold uppercase tracking-wider bg-gray-100 border-2 border-black py-2 px-4 inline-block">
+                                HALO, <span className="font-black text-secondary">{ticket.display_name}</span>!
                             </p>
                         </motion.div>
 
                         {/* Timer / Status Content */}
-                        <div className="mt-6 relative">
+                        <div className="mt-8 relative pt-6 border-t-4 border-black border-dashed">
                             <QueueEstimateTimer
                                 estimatedWaitMs={myEstimateMs}
                                 positionFromFront={myPosition}
@@ -395,112 +337,95 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
 
                         {/* Check-in logic */}
                         {liveStatus !== "completed" && liveStatus !== "cancelled" && liveStatus !== "expired" && liveStatus !== "in_session" && (
-                            <div className="mt-5">
+                            <div className="mt-8">
                                 {!ticket.is_checked_in && (myPosition <= 2 || liveStatus === "called") ? (
                                     <motion.div
                                         initial={{ opacity: 0, scale: 0.95 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        className="bg-[#0a1628] border border-[#D4AF37]/30 p-4 rounded-2xl relative overflow-hidden"
+                                        className="bg-yellow-300 border-4 border-black p-4 relative overflow-hidden"
                                     >
-                                        <div className="absolute inset-0 bg-[#D4AF37]/5 animate-pulse" />
-                                        <p className="text-[#D4AF37] text-sm font-bold mb-3 text-center relative z-10">
-                                            {liveStatus === "called" ? "⚠️ SEGERA CHECK-IN!" : "Waktu Check-in Tiba!"}
+                                        <p className="text-primary text-[0.85rem] font-black uppercase tracking-widest mb-3 text-center">
+                                            {liveStatus === "called" ? "⚠️ SEGERA CHECK-IN!" : "WAKTU CHECK-IN TIBA!"}
                                         </p>
                                         <button
                                             onClick={handleCheckIn}
                                             disabled={isCheckingIn}
-                                            className="w-full bg-[#D4AF37] hover:bg-[#c4a030] text-[#0a1628] font-black text-sm rounded-xl py-3 flex items-center justify-center gap-2 transition-all relative z-10"
+                                            className="w-full bg-secondary text-white font-black text-[0.85rem] uppercase tracking-wider border-4 border-black py-4 flex items-center justify-center gap-2 active:translate-x-[2px] active:translate-y-[2px] transition-transform shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none"
                                         >
-                                            {isCheckingIn ? <Loader2 className="w-4 h-4 animate-spin" /> : "CHECK-IN SEKARANG"}
+                                            {isCheckingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "CHECK-IN SEKARANG"}
                                         </button>
                                         {liveStatus === "called" && (
-                                            <p className="text-red-400 text-xs text-center mt-2 relative z-10 font-bold">
-                                                Antrean akan di-skip dalam 1 menit jika tidak check-in!
+                                            <p className="text-red-600 text-[0.65rem] text-center mt-3 font-black uppercase tracking-widest">
+                                                ANTREAN DI-SKIP JIKA TIDAK CHECK-IN!
                                             </p>
                                         )}
                                     </motion.div>
                                 ) : ticket.is_checked_in ? (
-                                    <div className="flex items-center justify-center gap-2 text-green-400 bg-green-500/10 border border-green-500/20 py-2.5 px-4 rounded-xl">
-                                        <CheckCircle className="w-4 h-4" />
-                                        <span className="text-sm font-bold">Sudah Check-in (Siap di lokasi)</span>
+                                    <div className="flex items-center justify-center gap-2 bg-green-200 border-4 border-black py-3 px-4 hard-shadow-black">
+                                        <CheckSquare className="w-5 h-5 text-primary" />
+                                        <span className="text-[0.8rem] font-black uppercase tracking-wider text-primary">SUDAH CHECK-IN</span>
                                     </div>
                                 ) : null}
                             </div>
                         )}
 
-                        {/* SCAN QR button — shown when called AND checked in */}
+                        {/* SCAN QR button */}
                         {liveStatus === "called" && ticket.user_id && ticket.is_checked_in && (
                             <motion.div
                                 initial={{ opacity: 0, y: 12 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="mt-5"
+                                className="mt-8"
                             >
                                 <button
                                     onClick={() => { setShowQRScanner(true); setScanStatus('idle'); setScanError(''); }}
-                                    className="w-full bg-[#D4AF37] hover:bg-[#c4a030] text-[#0a1628] font-black text-base rounded-2xl py-4 flex items-center justify-center gap-3 transition-all shadow-lg shadow-[#D4AF37]/20 hover:shadow-[#D4AF37]/30 hover:-translate-y-0.5 active:translate-y-0"
+                                    className="w-full bg-primary hover:bg-primary/90 text-white font-black text-base uppercase tracking-wider border-4 border-black hard-shadow-black py-4 flex items-center justify-center gap-3 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"
                                 >
-                                    <QrCode className="w-5 h-5" />
+                                    <QrCode className="w-6 h-6" />
                                     SCAN QR UNTUK MULAI
                                 </button>
-                                <p className="text-white/30 text-xs text-center mt-2">Scan QR di layar mesin booth</p>
+                                <p className="text-primary/60 text-[0.7rem] font-black uppercase tracking-widest text-center mt-3">SCAN QR DI LAYAR MESIN BOOTH</p>
                             </motion.div>
                         )}
 
                         {/* Scan result feedback */}
                         {scanStatus === 'success' && (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="mt-4 flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3"
-                            >
-                                <CheckCircle className="w-4 h-4 text-green-400 shrink-0" />
-                                <span className="text-green-300 text-sm font-bold">Sesi berhasil dihubungkan! 🎉</span>
-                            </motion.div>
+                            <div className="mt-6 flex items-center gap-2 bg-green-200 border-4 border-black px-4 py-3">
+                                <CheckSquare className="w-5 h-5 text-primary shrink-0" />
+                                <span className="text-primary text-[0.8rem] font-black uppercase tracking-wider">SESI TERHUBUNG! 🎉</span>
+                            </div>
                         )}
                         {scanStatus === 'linking' && (
-                            <div className="mt-4 flex items-center gap-2 justify-center py-2">
-                                <Loader2 className="w-4 h-4 text-[#D4AF37] animate-spin" />
-                                <span className="text-white/50 text-sm">Menghubungkan sesi...</span>
+                            <div className="mt-6 flex items-center gap-2 justify-center py-2 border-2 border-black bg-gray-100">
+                                <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                                <span className="text-primary text-[0.8rem] font-black uppercase tracking-wider">MENGHUBUNGKAN...</span>
                             </div>
                         )}
                         {scanStatus === 'error' && (
-                            <motion.div
-                                initial={{ opacity: 0, x: -8 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                className="mt-4 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3"
-                            >
-                                <p className="text-red-400 text-sm font-medium">{scanError}</p>
-                            </motion.div>
+                            <div className="mt-6 bg-red-200 border-4 border-black px-4 py-3">
+                                <p className="text-red-700 text-[0.8rem] font-black uppercase tracking-wider">{scanError}</p>
+                            </div>
                         )}
 
                         {/* Completed — link to photos */}
-                        {isCompleted && sessionId && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 12 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="mt-4"
-                            >
+                        {isCompleted && sessionObjId && (
+                            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-6">
                                 <Link
-                                    href={`/access/${sessionId}`}
-                                    className="flex items-center justify-center gap-2 w-full bg-[#D4AF37] hover:bg-[#c4a030] text-[#0a1628] font-black text-sm rounded-2xl py-3.5 transition-all shadow-lg"
+                                    href={`/access/${sessionObjId}`}
+                                    className="flex items-center justify-center gap-2 w-full bg-secondary hover:bg-secondary/90 text-white font-black text-[0.9rem] uppercase tracking-wider border-4 border-black hard-shadow-black py-4 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"
                                 >
-                                    <Camera className="w-4 h-4" /> Lihat Foto Saya!
+                                    <Camera className="w-5 h-5" /> LIHAT FOTO SAYA!
                                 </Link>
                             </motion.div>
                         )}
 
                         {/* Completed — link to profile */}
-                        {isCompleted && !sessionId && ticket.user_id && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 12 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="mt-4"
-                            >
+                        {isCompleted && !sessionObjId && ticket.user_id && (
+                            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-6">
                                 <Link
                                     href="/profile"
-                                    className="flex items-center justify-center gap-2 w-full bg-[#D4AF37] hover:bg-[#c4a030] text-[#0a1628] font-black text-sm rounded-2xl py-3.5 transition-all shadow-lg"
+                                    className="flex items-center justify-center gap-2 w-full bg-secondary hover:bg-secondary/90 text-white font-black text-[0.9rem] uppercase tracking-wider border-4 border-black hard-shadow-black py-4 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"
                                 >
-                                    <Camera className="w-4 h-4" /> Lihat di Profil Saya
+                                    <Camera className="w-5 h-5" /> LIHAT DI PROFIL
                                 </Link>
                             </motion.div>
                         )}
@@ -513,19 +438,19 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="bg-white/5 border border-white/10 rounded-2xl p-4"
+                        className="bg-white border-4 border-black hard-shadow-black p-4"
                     >
-                        <p className="text-white/40 text-xs font-bold uppercase tracking-wider mb-3 text-center">
-                            Antrean di depanmu
+                        <p className="text-primary text-[0.8rem] font-black uppercase tracking-widest mb-4 text-center border-b-2 border-black pb-2 inline-block mx-auto w-full">
+                            ANTREAN DI DEPANMU
                         </p>
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             {/* Current */}
                             {status.currentTicket && (
-                                <div className="flex items-center justify-between py-1.5 px-3 bg-green-500/10 border border-green-500/20 rounded-xl">
-                                    <span className="text-green-300 text-xs font-bold">
-                                        #{String(status.currentTicket.queue_number).padStart(3, "0")} — Sedang berfoto
+                                <div className="flex items-center justify-between py-2 px-3 bg-green-200 border-2 border-black">
+                                    <span className="text-primary text-[0.7rem] font-black uppercase tracking-wider">
+                                        #{String(status.currentTicket.queue_number).padStart(3, "0")} — PROSES
                                     </span>
-                                    <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                                    <span className="w-3 h-3 bg-green-500 border border-black animate-pulse" />
                                 </div>
                             )}
 
@@ -537,11 +462,11 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                                     const tTier = getProximityTier(t.positionFromFront, "waiting");
                                     const tColors = getProximityTierColor(tTier);
                                     return (
-                                        <div key={t.id} className={`flex items-center justify-between py-1.5 px-3 ${tColors.bg} border ${tColors.border} rounded-xl`}>
-                                            <span className={`${tColors.text} text-xs font-bold`}>
+                                        <div key={t.id} className={`flex items-center justify-between py-2 px-3 ${tColors.bg} ${tColors.border} border-2`}>
+                                            <span className={`${tColors.text === 'text-white' ? 'text-white' : 'text-primary'} text-[0.7rem] font-black uppercase tracking-wider truncate mr-2`}>
                                                 #{String(t.queue_number).padStart(3, "0")} — {t.display_name}
                                             </span>
-                                            <span className="text-white/20 text-[10px]">Antri</span>
+                                            <span className="text-primary/50 text-[0.6rem] font-black uppercase px-1.5 bg-white border border-black shrink-0">ANTRI</span>
                                         </div>
                                     );
                                 })
@@ -551,51 +476,53 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                 )}
 
                 {/* Queue stats */}
-                <div className="flex gap-3 text-center">
-                    <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3">
-                        <p className="text-[#D4AF37] font-black text-lg">{status.totalWaiting}</p>
-                        <p className="text-white/40 text-xs font-bold uppercase">Menunggu</p>
+                <div className="flex gap-4 text-center">
+                    <div className="flex-1 bg-white border-4 border-black hard-shadow-black p-3">
+                        <p className="text-primary font-black text-2xl">{status.totalWaiting}</p>
+                        <p className="text-primary/60 text-[0.6rem] font-black uppercase tracking-widest mt-1 border-t-2 border-black pt-1">MENUNGGU</p>
                     </div>
-                    <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3">
-                        <p className="text-green-300 font-black text-lg">{status.totalCompleted}</p>
-                        <p className="text-white/40 text-xs font-bold uppercase">Selesai</p>
+                    <div className="flex-1 bg-white border-4 border-black hard-shadow-black p-3">
+                        <p className="text-green-600 font-black text-2xl">{status.totalCompleted}</p>
+                        <p className="text-primary/60 text-[0.6rem] font-black uppercase tracking-widest mt-1 border-t-2 border-black pt-1">SELESAI</p>
                     </div>
-                    <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3">
-                        <p className="text-white font-black text-lg">~{Math.round(status.avgDurationSec / 60)}m</p>
-                        <p className="text-white/40 text-xs font-bold uppercase">Avg/Sesi</p>
+                    <div className="flex-1 bg-white border-4 border-black hard-shadow-black p-3">
+                        <p className="text-primary font-black text-2xl">~{Math.round(status.avgDurationSec / 60)}M</p>
+                        <p className="text-primary/60 text-[0.6rem] font-black uppercase tracking-widest mt-1 border-t-2 border-black pt-1">AVG/SESI</p>
                     </div>
                 </div>
 
-                {/* Cancel button — only for waiting */}
+                {/* Cancel button */}
                 {(liveStatus === "waiting") && (
-                    <div className="text-center">
+                    <div className="text-center pt-4">
                         {!cancelConfirm ? (
                             <button
                                 onClick={() => setCancelConfirm(true)}
-                                className="text-white/30 hover:text-red-400 text-xs font-bold transition-colors flex items-center gap-1 mx-auto"
+                                className="text-primary/50 hover:text-red-600 text-[0.7rem] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 mx-auto bg-white border-2 border-black border-dashed px-4 py-2"
                             >
-                                <X className="w-3 h-3" /> Batalkan antrean
+                                <X className="w-4 h-4" /> BATALKAN ANTREAN
                             </button>
                         ) : (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 space-y-3"
+                                className="bg-white border-4 border-black hard-shadow-black p-5 space-y-4"
                             >
-                                <p className="text-red-400 text-sm font-bold">Yakin ingin membatalkan antrean?</p>
-                                <div className="flex gap-2">
+                                <p className="text-red-600 text-[0.8rem] font-black uppercase tracking-widest border-b-2 border-red-200 pb-2">
+                                    YAKIN INGIN MEMBATALKAN?
+                                </p>
+                                <div className="flex gap-3">
                                     <button
                                         onClick={handleCancel}
                                         disabled={cancelling}
-                                        className="flex-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl py-2 text-xs font-black hover:bg-red-500/30 transition-all disabled:opacity-60"
+                                        className="flex-1 bg-red-600 text-white border-2 border-black py-3 text-[0.75rem] font-black uppercase tracking-widest hover:bg-red-700 transition-all disabled:opacity-60 shadow-[2px_2px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-y-[2px] active:translate-x-[2px]"
                                     >
-                                        {cancelling ? <RefreshCw className="w-3 h-3 animate-spin mx-auto" /> : "Ya, Batalkan"}
+                                        {cancelling ? <RefreshCw className="w-4 h-4 animate-spin mx-auto" /> : "YA, BATAL"}
                                     </button>
                                     <button
                                         onClick={() => setCancelConfirm(false)}
-                                        className="flex-1 bg-white/10 text-white/60 rounded-xl py-2 text-xs font-black hover:bg-white/20 transition-all"
+                                        className="flex-1 bg-gray-200 text-primary border-2 border-black py-3 text-[0.75rem] font-black uppercase tracking-widest hover:bg-gray-300 transition-all shadow-[2px_2px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-y-[2px] active:translate-x-[2px]"
                                     >
-                                        Tidak
+                                        TIDAK
                                     </button>
                                 </div>
                             </motion.div>
@@ -604,7 +531,6 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                 )}
             </div>
 
-            {/* QR Scanner Modal */}
             <QRScannerModal
                 isOpen={showQRScanner}
                 onClose={() => setShowQRScanner(false)}
