@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { joinQueue } from "@/lib/queue/queueActions";
-import { fetchQueueStatus } from "@/lib/queue/queueStatus";
+import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
 import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
 
 export const dynamic = "force-dynamic";
