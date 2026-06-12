@@ -31,9 +31,14 @@ async function getAuthUser() {
             cookies: {
                 getAll() { return cookieStore.getAll(); },
                 setAll(cookiesToSet: { name: string; value: string; options: Record<string, unknown> }[]) {
-                    cookiesToSet.forEach(({ name, value, options }) => {
-                        cookieStore.set(name, value, options);
-                    });
+                    try {
+                        cookiesToSet.forEach(({ name, value, options }) => {
+                            cookieStore.set(name, value, options);
+                        });
+                    } catch {
+                        // Server Components cannot set cookies.
+                        // This is safe to ignore — middleware handles token refresh.
+                    }
                 },
             },
         }
