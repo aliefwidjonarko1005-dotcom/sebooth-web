@@ -128,12 +128,11 @@ export async function POST(req: NextRequest) {
         );
     }
 
-    // Update ticket: link to session and mark as in_session
+    // Update ticket: mark as in_session
     const { error: updateTicketError } = await supabase
         .from("queue_tickets")
         .update({
             status: "in_session",
-            session_id: sessionId,
             called_at: ticket.status === "called" ? undefined : new Date().toISOString(),
         })
         .eq("id", ticket.id);
