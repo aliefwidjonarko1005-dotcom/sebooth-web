@@ -264,5 +264,25 @@ export async function toggleQueueEventActive(
         .eq("id", eventId);
 
     if (error) return { success: false, error: "Gagal mengubah status event." };
+
+    // If event is being deactivated, wipe out all active queues
+    if (!isActive) {
+        await authClient
+            .from("queue_tickets")
+            .update({ status: "cancelled" })
+            .eq("event_id", eventId)
+            .in("status", ["waiting", "called", "in_session"]);
+    }
+
+    // Broadcast the update so all active clients and photobooths receive the wipe
+    try {
+        const { fetchQueueStatus: getFreshStatus } = await import("@/lib/queue/queueFetchers");
+        const { broadcastQueueUpdate } = await import("@/app/api/queue/stream/[eventId]/route");
+        const freshStatus = await getFreshStatus(eventId);
+        broadcastQueueUpdate(eventId, freshStatus);
+    } catch (e) {
+        console.error("Failed to broadcast queue wipe:", e);
+    }
+
     return { success: true };
 }
