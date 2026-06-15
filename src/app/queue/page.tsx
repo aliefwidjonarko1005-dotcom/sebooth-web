@@ -14,7 +14,7 @@ export default async function QueueLandingPage() {
     const events = await fetchActiveQueueEvents();
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-200 via-blue-100 to-orange-100 flex flex-col items-center justify-center p-6">
+        <div className="min-h-screen bg-fluid-gradient flex flex-col items-center justify-center p-6">
             <div className="relative w-full max-w-[400px] space-y-8">
                 {/* Header */}
                 <div className="text-center">

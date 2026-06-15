@@ -8,6 +8,7 @@ import type { SessionData, MediaItem } from '@/types/database'
 interface SessionFeedCardProps {
   session: SessionData
   index: number
+  showOwner?: boolean
 }
 
 /* ─── Media helpers (extract from session) ─── */
@@ -41,7 +42,7 @@ function getPhotosFromSession(session: SessionData): MediaItem[] {
   })
 }
 
-export default function SessionFeedCard({ session, index }: SessionFeedCardProps) {
+export default function SessionFeedCard({ session, index, showOwner = false }: SessionFeedCardProps) {
   const strip = getStripFromSession(session)
   const gif = getGifFromSession(session)
   const live = getLiveFromSession(session)
@@ -90,6 +91,11 @@ export default function SessionFeedCard({ session, index }: SessionFeedCardProps
                 year: 'numeric',
               })}
             </p>
+            {showOwner && session.user_id && (
+              <p className="text-[0.6rem] font-bold text-primary/30 mt-0.5 font-mono truncate max-w-[200px]">
+                👤 {session.user_id.slice(0, 8)}...
+              </p>
+            )}
           </div>
         </div>
 

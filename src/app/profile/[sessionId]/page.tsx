@@ -266,7 +266,7 @@ export default function SessionDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
+      <div className="flex min-h-screen items-center justify-center bg-fluid-gradient">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
       </div>
     )
@@ -287,7 +287,7 @@ export default function SessionDetailPage() {
   ].filter(t => t.available)
 
   return (
-    <div className="min-h-[100svh] bg-white paper-texture flex flex-col">
+    <div className="min-h-[100svh] bg-fluid-gradient paper-texture flex flex-col">
       <canvas ref={canvasRef} style={{ display: 'none' }} />
 
       {/* Header */}

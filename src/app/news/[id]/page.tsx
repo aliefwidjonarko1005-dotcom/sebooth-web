@@ -49,7 +49,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
     });
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-fluid-gradient">
             {/* Hero Image */}
             {news.image_url && (
                 <div className="relative w-full h-[50vh] md:h-[60vh] bg-primary overflow-hidden">
