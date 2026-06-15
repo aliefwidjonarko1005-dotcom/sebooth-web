@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Film, Zap, Grid, ArrowRight, Image } from 'lucide-react'
+import { Film, Zap, Grid, ArrowRight, Image as ImageIcon } from 'lucide-react'
+import NextImage from 'next/image'
 import type { SessionData, MediaItem } from '@/types/database'
 
 interface SessionFeedCardProps {
@@ -55,24 +56,27 @@ export default function SessionFeedCard({ session, index, showOwner = false }: S
     <motion.article
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08, duration: 0.4 }}
+      transition={{ delay: Math.min(index * 0.08, 0.4), duration: 0.4 }}
       className="bg-white border-2 border-black hard-shadow-black mb-6"
     >
       {/* Hero Image */}
       {heroUrl ? (
         <Link href={`/profile/${session.id}`} className="block">
-          <div className="relative w-full bg-gray-100 border-b-2 border-black overflow-hidden">
-            <img
+          <div className="relative w-full bg-gray-100 border-b-2 border-black overflow-hidden" style={{ aspectRatio: '9/16', maxHeight: '70vh' }}>
+            <NextImage
               src={heroUrl}
               alt={session.event_name || 'Photo Strip'}
-              className="w-full object-contain max-h-[70vh]"
-              loading="lazy"
+              fill
+              className="object-contain"
+              sizes="(max-width: 512px) 100vw, 512px"
+              quality={75}
+              loading={index < 2 ? 'eager' : 'lazy'}
             />
           </div>
         </Link>
       ) : (
         <div className="w-full aspect-[9/16] bg-gray-100 border-b-2 border-black flex items-center justify-center">
-          <Image className="w-10 h-10 text-primary/20" />
+          <ImageIcon className="w-10 h-10 text-primary/20" />
         </div>
       )}
 
@@ -93,7 +97,7 @@ export default function SessionFeedCard({ session, index, showOwner = false }: S
             </p>
             {showOwner && session.user_id && (
               <p className="text-[0.6rem] font-bold text-primary/30 mt-0.5 font-mono truncate max-w-[200px]">
-                👤 {session.user_id.slice(0, 8)}...
+👤 {session.user_id.slice(0, 8)}...
               </p>
             )}
           </div>
@@ -103,7 +107,7 @@ export default function SessionFeedCard({ session, index, showOwner = false }: S
         <div className="flex items-center gap-3 mb-3">
           {strip && (
             <span className="flex items-center gap-1.5 text-[0.7rem] font-black text-primary/60 uppercase">
-              <Image className="w-3.5 h-3.5" /> Strip
+              <ImageIcon className="w-3.5 h-3.5" /> Strip
             </span>
           )}
           {gif && (

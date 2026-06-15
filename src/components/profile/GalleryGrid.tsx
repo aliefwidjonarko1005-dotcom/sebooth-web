@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Image } from 'lucide-react'
+import { Image as ImageIcon } from 'lucide-react'
+import NextImage from 'next/image'
 import type { SessionData, MediaItem } from '@/types/database'
 
 interface GalleryGridProps {
@@ -37,24 +38,27 @@ export default function GalleryGrid({ sessions }: GalleryGridProps) {
             key={session.id}
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: idx * 0.04, duration: 0.3 }}
+            transition={{ delay: Math.min(idx * 0.04, 0.4), duration: 0.3 }}
           >
             <Link
               href={`/profile/${session.id}`}
               className="block relative bg-white border-2 border-black hard-shadow-black group overflow-hidden"
             >
               {hero ? (
-                <div className="aspect-[3/4] overflow-hidden">
-                  <img
+                <div className="aspect-[3/4] overflow-hidden relative">
+                  <NextImage
                     src={hero.url}
                     alt={session.event_name || 'Photo Strip'}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 50vw, 280px"
+                    quality={60}
+                    loading={idx < 4 ? 'eager' : 'lazy'}
                   />
                 </div>
               ) : (
                 <div className="aspect-[3/4] bg-gray-100 flex items-center justify-center">
-                  <Image className="w-8 h-8 text-primary/20" />
+                  <ImageIcon className="w-8 h-8 text-primary/20" />
                 </div>
               )}
 

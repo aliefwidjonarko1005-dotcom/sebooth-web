@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LogOut, Loader2, Grid, Home, LayoutGrid, List, ShieldCheck, Users, User } from 'lucide-react'
@@ -16,17 +16,53 @@ import GalleryGrid from '@/components/profile/GalleryGrid'
 type ViewMode = 'feed' | 'gallery'
 type SessionScope = 'mine' | 'all'
 
+const PAGE_SIZE = 10
+
 export default function ProfilePage() {
   const router = useRouter()
   const supabase = createClient()
 
   const [sessions, setSessions] = useState<SessionData[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
   const [viewMode, setViewMode] = useState<ViewMode>('feed')
   const [activeTickets, setActiveTickets] = useState<QueueTicket[]>([])
   const [isSuperAdmin, setIsSuperAdmin] = useState(false)
   const [sessionScope, setSessionScope] = useState<SessionScope>('mine')
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+  const sentinelRef = useRef<HTMLDivElement>(null)
+
+  // ─── Fetch a page of sessions ───
+  const fetchSessions = useCallback(async (
+    scope: SessionScope,
+    userId: string,
+    offset: number,
+    append: boolean
+  ) => {
+    let query = supabase
+      .from('sessions')
+      .select('*, media(*)')
+      .order('created_at', { ascending: false })
+      .range(offset, offset + PAGE_SIZE - 1)
+
+    if (scope === 'mine') {
+      query = query.eq('user_id', userId)
+    }
+
+    const { data, error } = await query
+    if (!error && data) {
+      if (append) {
+        setSessions(prev => [...prev, ...data])
+      } else {
+        setSessions(data)
+      }
+      setHasMore(data.length === PAGE_SIZE)
+    } else {
+      setHasMore(false)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     async function init() {
@@ -51,16 +87,8 @@ export default function ProfilePage() {
       }
       setIsSuperAdmin(superAdmin)
 
-      // ─── Fetch sessions (own sessions by default) ───
-      const { data, error } = await supabase
-        .from('sessions')
-        .select('*, media(*)')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-
-      if (!error && data) {
-        setSessions(data)
-      }
+      // ─── Fetch first page of sessions ───
+      await fetchSessions('mine', user.id, 0, false)
 
       // Fetch active queue tickets
       const { data: ticketsData } = await supabase
@@ -84,25 +112,31 @@ export default function ProfilePage() {
   // ─── Refetch sessions when scope changes ───
   useEffect(() => {
     if (!currentUserId || loading) return
-    async function refetch() {
-      let query = supabase
-        .from('sessions')
-        .select('*, media(*)')
-        .order('created_at', { ascending: false })
-
-      if (sessionScope === 'mine') {
-        query = query.eq('user_id', currentUserId!)
-      }
-      // For 'all' scope: no user_id filter → fetches ALL sessions
-
-      const { data, error } = await query
-      if (!error && data) {
-        setSessions(data)
-      }
-    }
-    refetch()
+    setSessions([])
+    setHasMore(true)
+    fetchSessions(sessionScope, currentUserId, 0, false)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionScope])
+
+  // ─── Infinite scroll: observe sentinel ───
+  useEffect(() => {
+    if (!sentinelRef.current || !hasMore || loadingMore) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore && currentUserId) {
+          setLoadingMore(true)
+          fetchSessions(sessionScope, currentUserId, sessions.length, true)
+            .then(() => setLoadingMore(false))
+        }
+      },
+      { rootMargin: '400px' }
+    )
+
+    observer.observe(sentinelRef.current)
+    return () => observer.disconnect()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasMore, loadingMore, sessions.length, sessionScope, currentUserId])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -190,13 +224,13 @@ export default function ProfilePage() {
         <div className="bg-yellow-400 border-b-2 border-black px-4 py-2 flex items-center justify-center gap-2">
           <ShieldCheck className="w-4 h-4 text-black" />
           <span className="text-[0.7rem] font-black text-black uppercase tracking-wider">
-            Menampilkan {sessions.length} sesi dari semua pengguna
+            Menampilkan {sessions.length} sesi dari semua pengguna{hasMore ? '+' : ''}
           </span>
         </div>
       )}
 
       {/* ═══ Content ═══ */}
-      {sessions.length === 0 ? (
+      {sessions.length === 0 && !loadingMore ? (
         /* ─── Empty State ─── */
         <div className="flex flex-col items-center justify-center text-center pt-20 px-6 flex-1">
           <div className="h-20 w-20 bg-white border-2 border-black hard-shadow-black flex items-center justify-center mb-5">
@@ -257,6 +291,19 @@ export default function ProfilePage() {
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* ─── Infinite Scroll Sentinel ─── */}
+          <div ref={sentinelRef} className="h-4" />
+          {loadingMore && (
+            <div className="flex items-center justify-center py-6">
+              <Loader2 className="h-6 w-6 animate-spin text-primary/40" />
+            </div>
+          )}
+          {!hasMore && sessions.length > 0 && (
+            <p className="text-center text-[0.6rem] font-bold text-primary/30 uppercase tracking-widest py-4">
+              Semua sesi telah dimuat
+            </p>
+          )}
         </main>
       )}
 

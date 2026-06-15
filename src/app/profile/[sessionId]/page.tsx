@@ -6,10 +6,11 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Loader2, Download, Image, Film, Zap, Grid,
+  Loader2, Download, Image as ImageIcon, Film, Zap, Grid,
   AlertCircle, ChevronLeft, ChevronRight, ArrowLeft, LogOut, Home
 } from 'lucide-react'
 import Link from 'next/link'
+import NextImage from 'next/image'
 import { createClient } from '@/lib/supabase'
 import { SessionData, MediaItem } from '@/types/database'
 
@@ -63,12 +64,31 @@ export default function SessionDetailPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
 
-      const { data, error } = await supabase
+      // Check if super admin
+      const userEmail = user.email || ''
+      const envAdmins = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase())
+      const isEnvSuperAdmin = envAdmins.includes(userEmail.toLowerCase())
+      let isSuperAdmin = isEnvSuperAdmin
+      if (!isEnvSuperAdmin) {
+        const { data: adminData } = await supabase
+          .from('admins')
+          .select('is_super')
+          .eq('email', userEmail)
+          .maybeSingle()
+        if (adminData?.is_super) isSuperAdmin = true
+      }
+
+      // Super admin: fetch any session. Normal user: only own sessions.
+      let query = supabase
         .from('sessions')
         .select('*, media(*)')
         .eq('id', sessionId)
-        .eq('user_id', user.id)
-        .single()
+
+      if (!isSuperAdmin) {
+        query = query.eq('user_id', user.id)
+      }
+
+      const { data, error } = await query.single()
 
       if (error || !data) {
         router.push('/profile')
@@ -280,7 +300,7 @@ export default function SessionDetailPage() {
   const photos = getPhotos()
 
   const tabs = [
-    { key: 'strip' as const, label: 'Strip', icon: <Image className="w-5 h-5" />, available: !!(strip || photos.length >= 3) },
+    { key: 'strip' as const, label: 'Strip', icon: <ImageIcon className="w-5 h-5" />, available: !!(strip || photos.length >= 3) },
     { key: 'gif' as const, label: 'GIF', icon: <Film className="w-5 h-5" />, available: !!gif },
     { key: 'live' as const, label: 'Live', icon: <Zap className="w-5 h-5" />, available: !!live },
     { key: 'photos' as const, label: 'Photos', icon: <Grid className="w-5 h-5" />, available: photos.length > 0 },
@@ -326,7 +346,13 @@ export default function SessionDetailPage() {
                 <>
                   <div className="relative w-full">
                     <div className="w-full bg-white border-2 border-black hard-shadow-black p-1.5">
-                      <img src={generatedStripsMap[frameIdx]} alt="Photo Strip" className="w-full object-contain max-h-[65vh] border border-black" />
+                      {generatedStripsMap[frameIdx].startsWith('data:') ? (
+                        <img src={generatedStripsMap[frameIdx]} alt="Photo Strip" className="w-full object-contain max-h-[65vh] border border-black" />
+                      ) : (
+                        <div className="relative w-full border border-black" style={{ aspectRatio: '9/16', maxHeight: '65vh' }}>
+                          <NextImage src={generatedStripsMap[frameIdx]} alt="Photo Strip" fill className="object-contain" sizes="(max-width: 512px) 100vw, 512px" quality={80} />
+                        </div>
+                      )}
                     </div>
                     {totalStrips > 1 && (
                       <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none -mx-3">
@@ -354,7 +380,9 @@ export default function SessionDetailPage() {
               ) : strip ? (
                 <>
                   <div className="w-full bg-white border-2 border-black hard-shadow-black p-1.5">
-                    <img src={strip.url} alt="Photo Strip" className="w-full object-contain max-h-[65vh] border border-black" />
+                    <div className="relative w-full border border-black" style={{ aspectRatio: '9/16', maxHeight: '65vh' }}>
+                      <NextImage src={strip.url} alt="Photo Strip" fill className="object-contain" sizes="(max-width: 512px) 100vw, 512px" quality={80} />
+                    </div>
                   </div>
                   <button onClick={() => downloadFile(strip.url, 'strip.jpg')} className="mt-6 w-full py-3.5 bg-secondary text-white font-black uppercase text-[0.8rem] flex items-center justify-center gap-2 border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
                     <Download className="w-4 h-4" /> Simpan Strip
@@ -372,7 +400,7 @@ export default function SessionDetailPage() {
               {gif ? (
                 <>
                   <div className="w-full bg-white border-2 border-black hard-shadow-black p-1.5">
-                    <img src={gif.url} alt="GIF Animation" className="w-full object-contain max-h-[65vh] border border-black" />
+                    <img src={gif.url} alt="GIF Animation" className="w-full object-contain max-h-[65vh] border border-black" loading="lazy" />
                   </div>
                   <button onClick={() => downloadFile(gif.url, 'animation.gif')} className="mt-6 w-full py-3.5 bg-secondary text-white font-black uppercase text-[0.8rem] flex items-center justify-center gap-2 border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
                     <Download className="w-4 h-4" /> Simpan GIF
@@ -425,15 +453,18 @@ export default function SessionDetailPage() {
               <div className="grid grid-cols-2 gap-3">
                 {photos.map((p, i) => (
                   <div key={p.id} className="relative group aspect-square bg-white border-2 border-black hard-shadow-black p-1">
-                    <img src={p.url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover border border-black" loading="lazy" />
+                    <div className="relative w-full h-full border border-black">
+                      <NextImage src={p.url} alt={`Photo ${i + 1}`} fill className="object-cover" sizes="(max-width: 512px) 50vw, 256px" quality={75} loading="lazy" />
+                    </div>
                     <button
                       onClick={() => downloadFile(p.url, `photo_${i + 1}.jpg`)}
                       className="absolute bottom-2 right-2 w-9 h-9 bg-secondary border-2 border-black flex items-center justify-center text-white opacity-100 md:opacity-0 md:group-hover:opacity-100 active:translate-x-[1px] active:translate-y-[1px] transition-all"
                     >
-                      <Download className="w-4 h-4" />
+                    <Download className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
+
               </div>
               <button onClick={handleDownloadAll} className="mt-6 w-full py-3.5 bg-secondary text-white font-black uppercase text-[0.8rem] flex items-center justify-center gap-2 border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
                 <Download className="w-4 h-4" /> Simpan Semua Foto
