@@ -78,13 +78,15 @@ export default function AccessSessionClient({ session: initialSession, sessionId
 
   if (error) {
     return (
-      <div className="flex min-h-[100svh] flex-col items-center justify-center bg-gray-50 p-6 text-center">
-        <XCircle className="h-12 w-12 md:h-16 md:w-16 text-red-400 mb-4" />
-        <h1 className="text-xl md:text-2xl font-black text-gray-900 leading-tight">Oops!</h1>
-        <p className="mt-2 text-gray-500 font-medium text-sm md:text-base">{error}</p>
+      <div className="flex min-h-[100svh] flex-col items-center justify-center bg-fluid-gradient paper-texture p-6 text-center">
+        <div className="h-16 w-16 bg-red-200 border-2 border-black flex items-center justify-center mb-5 hard-shadow-black">
+          <XCircle className="h-8 w-8 text-primary" />
+        </div>
+        <h1 className="text-xl md:text-2xl font-black text-primary uppercase tracking-tight">Oops!</h1>
+        <p className="mt-2 text-primary/60 font-bold text-sm md:text-base">{error}</p>
         <button
           onClick={() => router.push('/')}
-          className="mt-8 rounded-2xl bg-gray-900 px-8 py-4 font-black text-white shadow-xl active:scale-95 transition-all min-h-[48px]"
+          className="mt-8 bg-primary hover:bg-primary/90 text-white font-black text-sm md:text-base uppercase tracking-wider border-4 border-black py-4 px-8 active:translate-x-[2px] active:translate-y-[2px] shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none transition-all"
         >
           Kembali ke Beranda
         </button>
@@ -93,45 +95,47 @@ export default function AccessSessionClient({ session: initialSession, sessionId
   }
 
   return (
-    <div className="min-h-[100svh] bg-gray-50 p-4 md:p-12">
-      <div className="mx-auto max-w-4xl">
+    <div className="min-h-[100svh] bg-fluid-gradient paper-texture p-4 md:p-12 flex flex-col">
+      <div className="mx-auto max-w-4xl w-full flex-1 flex flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <div className="inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-[1.25rem] bg-blue-100 text-blue-600 shadow-inner">
+          <div className="inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center bg-white border-2 border-black text-primary hard-shadow-black">
             <Camera className="h-7 w-7 md:h-8 md:w-8" />
           </div>
-          <h1 className="mt-6 md:mt-8 text-3xl md:text-4xl font-black text-gray-900 lg:text-6xl tracking-tighter">Yeay! Kenanganmu Siap.</h1>
-          <p className="mt-3 md:mt-4 text-gray-500 font-medium italic text-base md:text-lg">
-            Ditemukan {session.media?.length || 0} media dari sesi di <span className="font-black text-blue-600 not-italic uppercase tracking-wider">{session.event_name || 'Sebooth Studio'}</span>.
+          <h1 className="mt-6 md:mt-8 text-[1.8rem] md:text-[2.5rem] lg:text-[3rem] font-black text-primary uppercase tracking-tight leading-none">
+            Yeay! Kenanganmu Siap.
+          </h1>
+          <p className="mt-3 md:mt-4 text-primary/60 font-bold text-sm md:text-base uppercase tracking-wider">
+            Ditemukan {session.media?.length || 0} media dari sesi di <span className="font-black text-secondary">{session.event_name || 'Sebooth Studio'}</span>.
           </p>
         </motion.div>
 
         {/* Preview Grid */}
-        <div className="mt-10 md:mt-16 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
+        <div className="mt-10 md:mt-12 grid grid-cols-2 gap-4 lg:grid-cols-3">
           {session.media?.map((item: MediaItem, idx: number) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: idx * 0.05 }}
-              className="group relative aspect-[3/4] overflow-hidden rounded-[2.5rem] bg-white shadow-xl ring-1 ring-gray-900/5 transition-all hover:shadow-2xl"
+              className="group relative aspect-[3/4] overflow-hidden bg-white border-4 border-black hard-shadow-black transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
             >
               {item.type === 'live' || item.type === 'video' ? (
-                <video src={item.url} muted loop autoPlay playsInline className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <video src={item.url} muted loop autoPlay playsInline className="h-full w-full object-cover transition-transform duration-75 group-hover:scale-105" />
               ) : (
                 <Image
                   src={item.url}
                   alt={`Sebooth ${item.type}`}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="object-cover transition-transform duration-75 group-hover:scale-105"
                 />
               )}
-              <div className="absolute inset-x-4 bottom-4 flex items-center justify-between opacity-0 transition-all translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
-                <span className="rounded-xl bg-black/50 px-3 py-1.5 text-[10px] font-black text-white backdrop-blur-md uppercase tracking-widest">
+              <div className="absolute top-2 right-2 z-10">
+                <span className="bg-white border-2 border-black px-2 py-1 text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest shadow-[2px_2px_0px_rgba(0,0,0,1)]">
                   {item.type}
                 </span>
               </div>
@@ -144,67 +148,67 @@ export default function AccessSessionClient({ session: initialSession, sessionId
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-12 md:mt-20 rounded-[2rem] md:rounded-[3rem] bg-blue-600 p-6 md:p-8 text-center text-white shadow-2xl lg:p-16 relative overflow-hidden"
+          className="mt-12 bg-white border-4 border-black p-6 md:p-10 text-center text-primary shadow-[8px_8px_0px_rgba(0,0,0,1)] relative"
         >
-          <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-
           {claimSuccess ? (
             <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="space-y-4 py-4">
-              <div className="mx-auto h-20 w-20 rounded-full bg-white/20 flex items-center justify-center">
-                <CheckCircle className="h-10 w-10 text-white" />
+              <div className="mx-auto h-16 w-16 bg-green-200 border-2 border-black flex items-center justify-center hard-shadow-black">
+                <CheckCircle className="h-8 w-8 text-primary" />
               </div>
-              <h2 className="text-2xl md:text-3xl font-black">Foto Sudah Di Klaim ✓</h2>
-              <p className="text-blue-100 font-medium text-sm md:text-base">Mengalihkan ke galeri pribadimu...</p>
+              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight">Foto Sudah Di Klaim ✓</h2>
+              <p className="text-primary/60 font-bold text-sm md:text-base">Mengalihkan ke galeri pribadimu...</p>
               <button
                 onClick={() => router.push('/profile')}
-                className="mt-4 rounded-2xl bg-white px-8 py-4 text-base md:text-lg font-black text-blue-600 shadow-xl active:scale-95 transition-all min-h-[48px]"
+                className="mt-4 bg-secondary hover:bg-secondary/90 text-white font-black text-sm md:text-base uppercase tracking-wider border-4 border-black py-4 px-8 active:translate-x-[2px] active:translate-y-[2px] shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none transition-all"
               >
                 Lihat My Photos
               </button>
             </motion.div>
           ) : alreadyClaimed ? (
             <div className="space-y-4 py-4">
-              <div className="mx-auto h-20 w-20 rounded-full bg-red-400/20 flex items-center justify-center">
-                <XCircle className="h-10 w-10 text-white" />
+              <div className="mx-auto h-16 w-16 bg-red-200 border-2 border-black flex items-center justify-center hard-shadow-black">
+                <XCircle className="h-8 w-8 text-primary" />
               </div>
-              <h2 className="text-3xl font-black">Sudah Diklaim</h2>
-              <p className="text-blue-100 font-medium">Maaf, sesi foto ini sudah diklaim oleh pengguna lain.</p>
+              <h2 className="text-2xl font-black uppercase tracking-tight text-primary">Sudah Diklaim</h2>
+              <p className="text-primary/60 font-bold text-sm">Maaf, sesi foto ini sudah diklaim oleh pengguna lain.</p>
             </div>
           ) : isClaiming ? (
             <div className="space-y-4 py-4">
-              <Loader2 className="mx-auto h-10 w-10 animate-spin text-white" />
-              <h2 className="text-2xl font-black">Mengklaim foto...</h2>
+              <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
+              <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight text-primary">Mengklaim foto...</h2>
             </div>
           ) : user ? (
-            <div className="space-y-8">
-              <h2 className="text-2xl md:text-3xl font-black lg:text-5xl italic tracking-tight">Hai {user.email?.split('@')[0]}!</h2>
-              <p className="mt-3 md:mt-4 text-blue-100 text-base md:text-lg max-w-xl mx-auto font-medium">
+            <div className="space-y-6">
+              <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight text-primary">
+                Hai <span className="text-secondary">{user.email?.split('@')[0]}</span>!
+              </h2>
+              <p className="text-primary/60 font-bold text-sm md:text-base max-w-xl mx-auto">
                 Klik tombol di bawah untuk memasukkan sesi ini ke akunmu.
               </p>
               <button
                 onClick={handleClaim}
                 disabled={isClaiming}
-                className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 md:px-10 md:py-5 text-lg md:text-xl font-black text-blue-600 shadow-xl active:scale-95 transition-all disabled:bg-white/50 min-h-[48px]"
+                className="inline-flex items-center gap-3 bg-secondary hover:bg-secondary/90 text-white font-black text-sm md:text-base uppercase tracking-wider border-4 border-black py-4 px-8 active:translate-x-[2px] active:translate-y-[2px] shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none transition-all disabled:bg-gray-300"
               >
                 Klaim Sekarang! 🚀
               </button>
             </div>
           ) : (
             <>
-              <h2 className="text-2xl md:text-3xl font-black lg:text-5xl italic tracking-tight leading-[0.9]">Simpan Selamanya?</h2>
-              <p className="mt-4 md:mt-6 text-blue-100 text-base md:text-lg max-w-xl mx-auto font-medium">
+              <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight text-primary">Simpan Selamanya?</h2>
+              <p className="mt-3 text-primary/60 font-bold text-sm md:text-base max-w-xl mx-auto">
                 Buat akun Sebooth sekarang untuk menyimpan foto-foto ini selamanya.
               </p>
-              <div className="mt-8 md:mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+              <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <button
                   onClick={() => router.push(`/register?claim=${sessionId}`)}
-                  className="w-full rounded-2xl bg-white px-8 py-4 md:px-10 md:py-5 text-base md:text-lg font-black text-blue-600 shadow-xl active:scale-95 transition-all sm:w-auto min-h-[48px]"
+                  className="w-full bg-secondary hover:bg-secondary/90 text-white font-black text-sm md:text-base uppercase tracking-wider border-4 border-black py-4 px-8 active:translate-x-[2px] active:translate-y-[2px] shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none transition-all sm:w-auto"
                 >
                   Daftar Sekarang
                 </button>
                 <button
                   onClick={() => router.push(`/login?claim=${sessionId}`)}
-                  className="w-full rounded-2xl bg-white/10 px-8 py-4 md:px-10 md:py-5 text-base md:text-lg font-black text-white backdrop-blur-md border border-white/20 active:bg-white/20 transition-all sm:w-auto min-h-[48px]"
+                  className="w-full bg-white hover:bg-gray-100 text-primary font-black text-sm md:text-base uppercase tracking-wider border-4 border-black py-4 px-8 active:translate-x-[2px] active:translate-y-[2px] shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none transition-all sm:w-auto"
                 >
                   Sudah Punya Akun
                 </button>
@@ -213,9 +217,11 @@ export default function AccessSessionClient({ session: initialSession, sessionId
           )}
         </motion.div>
 
-        <p className="mt-12 text-center text-sm text-gray-400">
-          © 2026 Sebooth Indonesia.
-        </p>
+        <footer className="text-center py-8 mt-auto">
+          <p className="text-[0.6rem] text-primary/40 font-black uppercase tracking-widest">
+            © 2026 Sebooth Indonesia
+          </p>
+        </footer>
       </div>
     </div>
   )
