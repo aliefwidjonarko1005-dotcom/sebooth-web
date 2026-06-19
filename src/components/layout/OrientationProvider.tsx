@@ -16,6 +16,13 @@ export function OrientationProvider({ children }: { children: React.ReactNode })
   const [orientation, setOrientationState] = useState<Orientation>("landscape");
 
   useEffect(() => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      document.documentElement.removeAttribute("data-orientation");
+      setOrientationState("landscape");
+      return;
+    }
+
     const stored = localStorage.getItem("sebooth-orientation") as Orientation | null;
     if (stored === "portrait" || stored === "landscape") {
       setOrientation(stored);
@@ -30,6 +37,13 @@ export function OrientationProvider({ children }: { children: React.ReactNode })
   }, []);
 
   const setOrientation = (val: Orientation) => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      document.documentElement.removeAttribute("data-orientation");
+      setOrientationState("landscape");
+      return;
+    }
+
     setOrientationState(val);
     localStorage.setItem("sebooth-orientation", val);
     
