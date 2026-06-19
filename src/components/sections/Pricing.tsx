@@ -158,13 +158,6 @@ export function Pricing({ initialData = {} }: PricingProps) {
                             {content.unlimited_badge}
                         </div>
                     )}
-                    
-                    {/* Technical metadata header */}
-                    <div className="flex justify-between items-center mb-6 border-b border-white/20 pb-2 select-none pointer-events-none">
-                        <span className="text-[9px] font-mono tracking-widest text-secondary font-black uppercase">[ SCHEMATIC: TIME_BASED_SERVICE ]</span>
-                        <span className="text-[9px] font-mono tracking-widest text-white/40 uppercase">CODE: UNL-PKG</span>
-                    </div>
-
                     <EditableText section="pricing" fieldKey="unlimited_title" defaultValue={content.unlimited_title} as="h3" className="text-white text-4xl font-black uppercase mb-2">
                         {content.unlimited_title}
                     </EditableText>
@@ -174,8 +167,8 @@ export function Pricing({ initialData = {} }: PricingProps) {
 
                     <ul className="space-y-4 mb-8">
                         {unlimitedFeatures.map((feature, i) => (
-                            <li key={i} className="flex items-center gap-3 text-white font-bold uppercase border-b border-white/10 pb-2 border-dashed">
-                                <span className="text-secondary font-mono text-xs select-none">[v]</span>
+                            <li key={i} className="flex items-center gap-3 text-white font-bold uppercase">
+                                <CheckCircle className="w-5 h-5 text-secondary shrink-0" />
                                 <FeatureText section="pricing" arrayKey="unlimited_features" items={unlimitedFeatures} index={i} />
                             </li>
                         ))}
@@ -206,12 +199,6 @@ export function Pricing({ initialData = {} }: PricingProps) {
                     transition={{ delay: 0.2 }}
                     className="bg-primary p-12 border-2 border-black relative hard-shadow-orange"
                 >
-                    {/* Technical metadata header */}
-                    <div className="flex justify-between items-center mb-6 border-b border-white/20 pb-2 select-none pointer-events-none">
-                        <span className="text-[9px] font-mono tracking-widest text-secondary font-black uppercase">[ SCHEMATIC: VOLUME_BASED_SERVICE ]</span>
-                        <span className="text-[9px] font-mono tracking-widest text-white/40 uppercase">CODE: QTA-PKG</span>
-                    </div>
-
                     <EditableText section="pricing" fieldKey="quota_title" defaultValue={content.quota_title} as="h3" className="text-white text-4xl font-black uppercase mb-2">
                         {content.quota_title}
                     </EditableText>
@@ -221,8 +208,8 @@ export function Pricing({ initialData = {} }: PricingProps) {
 
                     <ul className="space-y-4 mb-8">
                         {quotaFeatures.map((feature, i) => (
-                            <li key={i} className="flex items-center gap-3 text-white font-bold uppercase border-b border-white/10 pb-2 border-dashed">
-                                <span className="text-secondary font-mono text-xs select-none">[v]</span>
+                            <li key={i} className="flex items-center gap-3 text-white font-bold uppercase">
+                                <CheckCircle className="w-5 h-5 text-secondary shrink-0" />
                                 <FeatureText section="pricing" arrayKey="quota_features" items={quotaFeatures} index={i} />
                             </li>
                         ))}

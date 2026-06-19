@@ -1,12 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Minus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { parseJsonContent } from "@/lib/useSiteContent";
 import { EditableText } from "@/components/admin/EditableText";
 import { EditableArrayItemText } from "@/components/admin/EditableArrayItemText";
 
 const shadowCycle = ["hard-shadow-black", "hard-shadow-blue", "hard-shadow-orange", "hard-shadow-black"];
+const hoverShadows = [
+    "md:hover:shadow-[8px_8px_0px_0px_#000000]",
+    "md:hover:shadow-[8px_8px_0px_0px_#002366]",
+    "md:hover:shadow-[8px_8px_0px_0px_#ff4500]",
+    "md:hover:shadow-[8px_8px_0px_0px_#000000]"
+];
 
 interface FaqItem {
     question: string;
@@ -60,23 +66,19 @@ export function FAQ({ initialData = {} }: FAQProps) {
                 {faqs.map((faq, i) => (
                     <div
                         key={i}
-                        className={`bg-white border-2 border-black ${shadowCycle[i % shadowCycle.length]} cursor-pointer`}
+                        className={`bg-white border-2 border-black ${shadowCycle[i % shadowCycle.length]} ${hoverShadows[i % hoverShadows.length]} md:hover:-translate-y-1 md:hover:-translate-x-1 transition-all duration-200 ease-out cursor-pointer`}
                         onClick={() => setActiveIndex(activeIndex === i ? null : i)}
                     >
                         {/* Question Row */}
                         <div
-                            className={`p-6 flex justify-between items-center transition-all duration-200 ease-out ${
+                            className={`p-6 flex justify-between items-center transition-all duration-300 ease-out ${
                                 activeIndex === i
                                     ? "bg-primary text-white border-b-4 border-black"
-                                    : "bg-white text-text-dark hover:bg-primary hover:text-white border-b-4 border-black"
+                                    : "bg-white text-text-dark hover:bg-primary/5 hover:text-primary border-b-4 border-black"
                             }`}
                         >
                             <EditableArrayItemText section="faq" arrayKey="items" items={faqs} index={i} field="question" as="h3" className="text-xl font-black uppercase tracking-tight" />
-                            {activeIndex === i ? (
-                                <Minus className="w-6 h-6 shrink-0" />
-                            ) : (
-                                <Plus className="w-6 h-6 shrink-0" />
-                            )}
+                            <Plus className={`w-6 h-6 shrink-0 transition-transform duration-300 ${activeIndex === i ? "rotate-45" : "rotate-0"}`} />
                         </div>
 
                         {/* Answer — CSS grid transition */}

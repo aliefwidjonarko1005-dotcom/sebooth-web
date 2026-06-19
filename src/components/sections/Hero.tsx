@@ -16,17 +16,6 @@ export function Hero({ initialData = {} }: HeroProps) {
 
     return (
         <section className="relative w-full min-h-[100svh] md:min-h-[850px] bg-primary flex flex-col justify-center items-start px-6 md:px-20 overflow-hidden">
-            {/* Corner crosshairs for industrial blueprint feel */}
-            <div className="absolute top-6 left-6 text-white/30 font-mono text-base select-none pointer-events-none">+</div>
-            <div className="absolute top-6 right-6 text-white/30 font-mono text-base select-none pointer-events-none">+</div>
-            <div className="absolute bottom-6 left-6 text-white/30 font-mono text-base select-none pointer-events-none">+</div>
-            <div className="absolute bottom-6 right-6 text-white/30 font-mono text-base select-none pointer-events-none">+</div>
-
-            {/* Telemetry data */}
-            <div className="absolute bottom-6 left-12 hidden md:block text-white/30 font-mono text-[9px] tracking-widest select-none pointer-events-none">
-                COORDINATES: 110.42E, 7.02S // DEVICE_STATUS: ACTIVE // CLK_REF: internal_rc
-            </div>
-
             {/* Main Content */}
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -34,18 +23,6 @@ export function Hero({ initialData = {} }: HeroProps) {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="max-w-5xl z-10"
             >
-                {/* Technical Eyebrow */}
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1, duration: 0.5 }}
-                    className="mb-6 flex items-center gap-2 text-secondary font-mono text-xs font-black tracking-widest select-none uppercase"
-                >
-                    <span>[ SYSTEM // SEBOOTH DIGITAL CORE v4.5 ]</span>
-                    <span className="opacity-50">//</span>
-                    <span>UNIT: SEMARANG_HQ</span>
-                </motion.div>
-
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
