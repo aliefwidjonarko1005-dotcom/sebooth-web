@@ -6,6 +6,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { parseJsonContent } from "@/lib/useSiteContent";
 import { EditableText } from "@/components/admin/EditableText";
+import { Play, Camera } from "lucide-react";
 
 interface GalleryVideoItemProps {
     src: string;
@@ -88,8 +89,6 @@ export function Gallery({ initialData = {}, initialGalleryImages = [] }: Gallery
 
     const [activeCategory, setActiveCategory] = useState("All");
 
-    const heightCycle = ["h-80", "h-[500px]", "h-96", "h-[400px]", "h-72", "h-[450px]"];
-
     const filteredItems =
         activeCategory === "All"
             ? initialGalleryImages
@@ -122,8 +121,8 @@ export function Gallery({ initialData = {}, initialGalleryImages = [] }: Gallery
                 </div>
             </div>
 
-            {/* Masonry Grid */}
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-8">
+            {/* Grid Layout (aligned rows like YouTube Shorts desktop) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredItems.length === 0 && (
                     <p className="text-text-dark/40 font-bold uppercase text-center py-16 col-span-full">
                         Belum ada gambar di gallery. Upload melalui Admin Panel.
@@ -136,16 +135,23 @@ export function Gallery({ initialData = {}, initialGalleryImages = [] }: Gallery
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.4 }}
-                        className="break-inside-avoid"
                     >
                         <div
                             className={cn(
-                                "w-full border-2 border-black relative group cursor-pointer transition-all overflow-hidden",
-                                "md:grayscale md:hover:grayscale-0",
-                                heightCycle[index % heightCycle.length],
+                                "w-full aspect-[9/16] border-2 border-black relative group cursor-pointer transition-all duration-300 overflow-hidden",
+                                "md:grayscale md:hover:grayscale-0 hover:-translate-y-1",
                                 shadowCycle[index % shadowCycle.length]
                             )}
                         >
+                            {/* Media Type Indicator Badge (Top Right) */}
+                            <div className="absolute top-4 right-4 z-20 bg-black/75 backdrop-blur-sm border-2 border-black text-white w-9 h-9 flex items-center justify-center pointer-events-none select-none">
+                                {item.mediaType === "video" ? (
+                                    <Play className="w-4.5 h-4.5 fill-white text-white" />
+                                ) : (
+                                    <Camera className="w-4.5 h-4.5 text-white" />
+                                )}
+                            </div>
+
                             {/* Image or Video */}
                             {item.mediaType === "video" ? (
                                 <GalleryVideoItem src={item.url} />
@@ -155,18 +161,20 @@ export function Gallery({ initialData = {}, initialGalleryImages = [] }: Gallery
                                     alt={item.event}
                                     fill
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                    className="object-cover"
+                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
                             )}
 
                             {/* Hover/Tap Overlay — always visible on mobile, hover on desktop */}
-                            <div className="absolute inset-0 bg-primary/70 md:bg-primary/90 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4 md:p-6">
-                                <h3 className="text-white font-black text-lg md:text-xl uppercase mb-1">
-                                    {item.event}
-                                </h3>
-                                <p className="text-white/70 text-xs md:text-sm font-bold uppercase tracking-wide">
-                                    {item.type}
-                                </p>
+                            <div className="absolute inset-0 bg-primary/80 md:bg-primary/90 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-4 md:p-6">
+                                <div className="transform translate-y-3 group-hover:translate-y-0 transition-transform duration-300">
+                                    <h3 className="text-white font-black text-lg md:text-xl uppercase mb-1">
+                                        {item.event}
+                                    </h3>
+                                    <p className="text-white/70 text-xs md:text-sm font-bold uppercase tracking-wide">
+                                        {item.type}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </motion.div>
