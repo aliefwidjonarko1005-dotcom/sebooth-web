@@ -99,50 +99,72 @@ export function Product({ initialData = {} }: ProductProps) {
                     <div
                         key={product.id}
                         className={cn(
-                            "bg-white p-8 border-2 border-black cursor-pointer group hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 ease-out",
+                            "bg-white p-8 border-2 border-black cursor-pointer group hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 ease-out flex flex-col justify-between",
                             product.colSpan,
                             product.shadow
                         )}
                         onClick={() => toggleProduct(product.id)}
                     >
-                        {/* Card Header */}
-                        <div className="mb-4 flex justify-between items-start">
-                            <div>
-                                <EditableArrayItemText section="product" arrayKey="items" items={products} index={idx} field="name" as="h3" className="text-3xl font-black uppercase mb-1 text-text-dark" />
-                                <EditableArrayItemText section="product" arrayKey="items" items={products} index={idx} field="tagline" as="p" className="text-sm font-bold uppercase tracking-wide text-primary" />
-                            </div>
-                            {product.badge && (
-                                <span className="bg-secondary text-white text-xs px-2 py-1 font-bold border border-black">
-                                    {product.badge}
+                        <div>
+                            {/* Technical telemetry metadata header */}
+                            <div className="flex justify-between items-center mb-6 border-b border-gray-200 pb-2 select-none pointer-events-none">
+                                <span className="text-[9px] font-mono tracking-widest text-primary/60 uppercase">
+                                    [ SYSTEM UNIT // {product.id.toUpperCase()}-0{idx + 1} ]
                                 </span>
-                            )}
-                        </div>
+                                <span className="text-[9px] font-mono tracking-widest text-primary/60 uppercase">
+                                    REV 4.2 // SEB-OP
+                                </span>
+                            </div>
 
-                        <EditableArrayItemText section="product" arrayKey="items" items={products} index={idx} field="description" as="p" className="font-bold uppercase text-text-dark mb-4" />
+                            {/* Card Header */}
+                            <div className="mb-4 flex justify-between items-start">
+                                <div>
+                                    <EditableArrayItemText section="product" arrayKey="items" items={products} index={idx} field="name" as="h3" className="text-3xl font-black uppercase mb-1 text-text-dark" />
+                                    <EditableArrayItemText section="product" arrayKey="items" items={products} index={idx} field="tagline" as="p" className="text-sm font-bold uppercase tracking-wide text-primary" />
+                                </div>
+                                {product.badge && (
+                                    <span className="bg-secondary text-white text-xs px-2 py-1 font-bold border border-black">
+                                        {product.badge}
+                                    </span>
+                                )}
+                            </div>
 
-                        {/* Expandable Specs — CSS grid transition */}
-                        <div className={expandedId === product.id ? "grid-expand" : "grid-collapse"}>
-                            <div className="grid-inner">
-                                <div className="border-t-2 border-black pt-6 mt-4">
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3">
-                                        {product.specs.map((spec, i) => (
-                                            <div key={i} className="flex items-center gap-3">
-                                                <Check className="w-4 h-4 shrink-0 text-secondary" />
-                                                <span className="text-sm font-bold uppercase text-text-dark">
-                                                    {spec}
-                                                </span>
-                                            </div>
-                                        ))}
+                            <EditableArrayItemText section="product" arrayKey="items" items={products} index={idx} field="description" as="p" className="font-bold uppercase text-text-dark mb-4" />
+
+                            {/* Expandable Specs — CSS grid transition */}
+                            <div className={expandedId === product.id ? "grid-expand" : "grid-collapse"}>
+                                <div className="grid-inner">
+                                    <div className="border-t-2 border-black pt-6 mt-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3">
+                                            {product.specs.map((spec, i) => (
+                                                <div key={i} className="flex items-center gap-3">
+                                                    <Check className="w-4 h-4 shrink-0 text-secondary" />
+                                                    <span className="text-sm font-bold uppercase text-text-dark">
+                                                        {spec}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Visual toggle schematic indicator at the bottom */}
+                        <div className="flex items-center justify-between border-t border-black/10 pt-4 mt-6">
+                            <span className="text-[9px] font-mono font-bold tracking-wider text-secondary">
+                                {expandedId === product.id ? "/// CLOSE SCHEMATIC" : ">>> VIEW SPECIFICATIONS"}
+                            </span>
+                            <span className="text-xs font-mono font-bold text-primary select-none">
+                                {expandedId === product.id ? "[ - ]" : "[ + ]"}
+                            </span>
                         </div>
                     </div>
                 ))}
 
                 {/* Pro Hardware Banner */}
-                <div className="md:col-span-12 bg-primary text-white p-12 border-2 border-black flex flex-col md:flex-row justify-between items-center gap-8 hard-shadow-orange">
-                    <div className="max-w-xl">
+                <div className="md:col-span-12 bg-primary text-white p-12 border-2 border-black flex flex-col lg:flex-row justify-between items-center gap-8 hard-shadow-orange">
+                    <div className="max-w-xl flex-1">
                         <EditableText section="product" fieldKey="pro_title" defaultValue={content.pro_title} as="h3" className="text-4xl md:text-5xl font-black uppercase mb-4 leading-none text-white">
                             {content.pro_title}
                         </EditableText>
@@ -150,6 +172,16 @@ export function Product({ initialData = {} }: ProductProps) {
                             {content.pro_description}
                         </EditableText>
                     </div>
+
+                    {/* Technical hardware telemetry specs sidebar */}
+                    <div className="hidden xl:flex flex-col font-mono text-[9px] text-white/50 tracking-wider gap-1 border-l border-white/20 pl-6 h-32 justify-center select-none pointer-events-none uppercase">
+                        <div>DEVICE: DSLR_EOS_5D_MK4</div>
+                        <div>OPTICS: L-SERIES_24-70MM</div>
+                        <div>STROBE: PROFOTO_D2_500_AIRTTL</div>
+                        <div>PRINTER: DNP_DS-RX1HS_DYESUB</div>
+                        <div className="mt-2 text-secondary tracking-[0.2em] font-black">STATUS: OPERATIONAL [100%]</div>
+                    </div>
+
                     <div className="w-full md:w-64 h-48 border-4 border-white overflow-hidden flex items-center justify-center bg-white/10">
                         {initialData["equipment_image"] ? (
                             <EditableImage
