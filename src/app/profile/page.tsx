@@ -262,10 +262,10 @@ export default function ProfilePage() {
               /* ─── Feed View ─── */
               <motion.div
                 key="feed"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.25 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
                 className="max-w-lg mx-auto px-4 pt-5"
               >
                 {sessions.map((session, idx) => (
@@ -281,10 +281,10 @@ export default function ProfilePage() {
               /* ─── Gallery View ─── */
               <motion.div
                 key="gallery"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.25 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
                 className="pt-4"
               >
                 <GalleryGrid sessions={sessions} />
