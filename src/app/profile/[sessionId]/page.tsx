@@ -25,10 +25,16 @@ type TabKey = 'strip' | 'gif' | 'live' | 'photos'
 
 /* ─── Helper: Download a file via API proxy (Safari iOS Fix) ─── */
 async function downloadFile(url: string, filename: string) {
-  // Directly set window.location to trigger a native browser download
-  // via the Content-Disposition header returned by the proxy API.
-  // This bypasses all iOS Safari blob/async fetch restrictions.
-  window.location.href = `/api/download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`
+  if (url.startsWith('data:') || url.startsWith('blob:')) {
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  } else {
+    window.location.href = `/api/download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`
+  }
 }
 
 /* ─── Mobile detection for canvas optimization ─── */
@@ -58,6 +64,33 @@ export default function SessionDetailPage() {
   const [totalStrips, setTotalStrips] = useState(0)
   const [generatedStripsMap, setGeneratedStripsMap] = useState<Record<number, string>>({})
   const [isGenerating, setIsGenerating] = useState(false)
+
+  // Keep a ref to the current generatedStripsMap so we can access it inside effects/cleanups
+  const generatedStripsRef = useRef<Record<number, string>>({})
+
+  useEffect(() => {
+    generatedStripsRef.current = generatedStripsMap
+  }, [generatedStripsMap])
+
+  const revokeAllStrips = useCallback(() => {
+    Object.values(generatedStripsRef.current).forEach((url) => {
+      if (url.startsWith('blob:')) {
+        URL.revokeObjectURL(url)
+      }
+    })
+    setGeneratedStripsMap({})
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      // Clean up all blob URLs on unmount
+      Object.values(generatedStripsRef.current).forEach((url) => {
+        if (url.startsWith('blob:')) {
+          URL.revokeObjectURL(url)
+        }
+      })
+    }
+  }, [])
 
   useEffect(() => {
     async function init() {
@@ -139,8 +172,8 @@ export default function SessionDetailPage() {
       const orig = getStrip()
       const total = photos.length < 3 ? (orig ? 1 : 0) : (orig ? FRAME_TEMPLATES.length + 1 : FRAME_TEMPLATES.length)
       setTotalStrips(total)
-      setGeneratedStripsMap({})
       setFrameIdx(0)
+      revokeAllStrips()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, session])
@@ -266,7 +299,15 @@ export default function SessionDetailPage() {
     ctx.fillStyle = template.subColor
     ctx.fillText(template.subText, W / 2, brandY + 30)
 
-    return canvas.toDataURL('image/jpeg', 0.92)
+    return new Promise<string | null>((resolve) => {
+      canvas.toBlob((blob) => {
+        if (blob) {
+          resolve(URL.createObjectURL(blob))
+        } else {
+          resolve(null)
+        }
+      }, 'image/jpeg', 0.92)
+    })
   }
 
   const handleLogout = async () => {
@@ -346,7 +387,7 @@ export default function SessionDetailPage() {
                 <>
                   <div className="relative w-full">
                     <div className="w-full bg-white border-2 border-black hard-shadow-black p-1.5">
-                      {generatedStripsMap[frameIdx].startsWith('data:') ? (
+                      {generatedStripsMap[frameIdx].startsWith('data:') || generatedStripsMap[frameIdx].startsWith('blob:') ? (
                         <img src={generatedStripsMap[frameIdx]} alt="Photo Strip" className="w-full object-contain max-h-[65vh] border border-black" />
                       ) : (
                         <div className="relative w-full border border-black" style={{ aspectRatio: '9/16', maxHeight: '65vh' }}>

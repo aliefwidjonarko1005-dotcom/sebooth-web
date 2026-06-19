@@ -15,6 +15,7 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const scanIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const jsQRModuleRef = useRef<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [scanning, setScanning] = useState(false);
     const [torchOn, setTorchOn] = useState(false);
@@ -36,6 +37,16 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
     const startCamera = useCallback(async () => {
         setError(null);
         setScannedResult(null);
+
+        // Pre-load jsQR dynamically if not already cached and native detector is not available
+        if (!jsQRModuleRef.current && !("BarcodeDetector" in window)) {
+            try {
+                const { default: jsQR } = await import("jsqr");
+                jsQRModuleRef.current = jsQR;
+            } catch (e) {
+                console.error("[QR Scanner] Failed to pre-load jsQR:", e);
+            }
+        }
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
@@ -107,7 +118,12 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
         // Fallback: try jsQR if available
         try {
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const { default: jsQR } = await import("jsqr");
+            let jsQR = jsQRModuleRef.current;
+            if (!jsQR) {
+                const { default: loaded } = await import("jsqr");
+                jsQR = loaded;
+                jsQRModuleRef.current = loaded;
+            }
             const code = jsQR(imageData.data, imageData.width, imageData.height);
             if (code) {
                 handleScanResult(code.data);

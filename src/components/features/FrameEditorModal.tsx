@@ -38,6 +38,14 @@ export function FrameEditorModal({ isOpen, onClose, rawPhotos }: FrameEditorModa
         renderComposite();
     }, [isOpen, currentFrameIdx, rawPhotos]);
 
+    useEffect(() => {
+        return () => {
+            if (previewUrl && previewUrl.startsWith("blob:")) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        };
+    }, [previewUrl]);
+
     const handlePrevious = () => {
         setCurrentFrameIdx((prev) => (prev === 0 ? FRAMES.length - 1 : prev - 1));
     };
@@ -116,7 +124,16 @@ export function FrameEditorModal({ isOpen, onClose, rawPhotos }: FrameEditorModa
             }
 
             // 3. Export to Preview
-            setPreviewUrl(canvas.toDataURL("image/jpeg", 0.95));
+            const blobUrl = await new Promise<string | null>((resolve) => {
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        resolve(URL.createObjectURL(blob));
+                    } else {
+                        resolve(null);
+                    }
+                }, "image/jpeg", 0.95);
+            });
+            setPreviewUrl(blobUrl);
 
         } catch (globalErr) {
             console.error("Rendering failed:", globalErr);

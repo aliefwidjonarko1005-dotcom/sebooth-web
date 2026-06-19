@@ -1,11 +1,64 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { parseJsonContent } from "@/lib/useSiteContent";
 import { EditableText } from "@/components/admin/EditableText";
+
+interface GalleryVideoItemProps {
+    src: string;
+}
+
+function GalleryVideoItem({ src }: GalleryVideoItemProps) {
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [isIntersecting, setIsIntersecting] = useState(false);
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsIntersecting(entry.isIntersecting);
+            },
+            {
+                threshold: 0.1, // trigger play when 10% visible
+            }
+        );
+
+        observer.observe(video);
+        return () => {
+            observer.unobserve(video);
+        };
+    }, []);
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (isIntersecting) {
+            video.play().catch(() => {
+                // Ignore autoplay block errors
+            });
+        } else {
+            video.pause();
+        }
+    }, [isIntersecting]);
+
+    return (
+        <video
+            ref={videoRef}
+            src={src}
+            muted
+            loop
+            playsInline
+            preload="none"
+            className="absolute inset-0 w-full h-full object-cover"
+        />
+    );
+}
 
 const shadowCycle = ["hard-shadow-black", "hard-shadow-blue", "hard-shadow-orange"];
 
@@ -95,14 +148,7 @@ export function Gallery({ initialData = {}, initialGalleryImages = [] }: Gallery
                         >
                             {/* Image or Video */}
                             {item.mediaType === "video" ? (
-                                <video
-                                    src={item.url}
-                                    muted
-                                    loop
-                                    autoPlay
-                                    playsInline
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                />
+                                <GalleryVideoItem src={item.url} />
                             ) : (
                                 <Image
                                     src={item.url}

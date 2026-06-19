@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { EditableText } from "@/components/admin/EditableText";
 
 interface IGPost {
@@ -23,6 +23,8 @@ interface InstagramFeedProps {
 
 export function InstagramFeed({ initialPosts = [] }: InstagramFeedProps) {
     const scriptLoaded = useRef(false);
+    const [hasBeenVisible, setHasBeenVisible] = useState(false);
+    const sectionRef = useRef<HTMLDivElement>(null);
 
     // Load Instagram embed script
     const loadInstagramScript = useCallback(() => {
@@ -50,16 +52,37 @@ export function InstagramFeed({ initialPosts = [] }: InstagramFeedProps) {
         document.body.appendChild(script);
     }, []);
 
-    // When posts are available, load/process Instagram embeds
+    // IntersectionObserver to delay script loading until viewport intersection
     useEffect(() => {
-        if (initialPosts.length > 0) {
+        const section = sectionRef.current;
+        if (!section) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setHasBeenVisible(true);
+                    observer.disconnect();
+                }
+            },
+            {
+                rootMargin: "400px", // Trigger when the user is 400px away from the section
+            }
+        );
+
+        observer.observe(section);
+        return () => observer.disconnect();
+    }, []);
+
+    // When posts are available and section has been visible, load/process Instagram embeds
+    useEffect(() => {
+        if (initialPosts.length > 0 && hasBeenVisible) {
             // Small delay to allow DOM to render blockquotes first
             const timer = setTimeout(() => {
                 loadInstagramScript();
             }, 100);
             return () => clearTimeout(timer);
         }
-    }, [initialPosts, loadInstagramScript]);
+    }, [initialPosts, hasBeenVisible, loadInstagramScript]);
 
     if (initialPosts.length === 0) return null;
 
@@ -71,7 +94,7 @@ export function InstagramFeed({ initialPosts = [] }: InstagramFeedProps) {
     }
 
     return (
-        <section className="py-24 px-6 md:px-20 bg-white paper-texture border-t-8 border-black">
+        <section ref={sectionRef} className="py-24 px-6 md:px-20 bg-white paper-texture border-t-8 border-black">
             {/* Section Header */}
             <div className="mb-12 flex items-center gap-6">
                 <EditableText section="instagram" fieldKey="section_title" defaultValue={sectionTitle} as="h2" className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-text-dark">
