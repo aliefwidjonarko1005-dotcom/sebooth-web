@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { EditableText } from "@/components/admin/EditableText";
 
 const navItems = [
-    { name: "ABOUT", href: "/about" },
     { name: "PRODUCT", href: "/#product" },
     { name: "PRICING", href: "/#pricing" },
     { name: "GALLERY", href: "/#gallery" },
@@ -17,14 +17,31 @@ const navItems = [
 export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const pathname = usePathname();
+    const [activeHash, setActiveHash] = useState("");
+    const [activeItem, setActiveItem] = useState("");
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+            setIsScrolled(window.scrollY > 20);
+        };
+
+        const handleHashChange = () => {
+            setActiveHash(window.location.hash);
         };
 
         window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        window.addEventListener("hashchange", handleHashChange);
+        window.addEventListener("popstate", handleHashChange);
+        
+        handleScroll();
+        handleHashChange();
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("hashchange", handleHashChange);
+            window.removeEventListener("popstate", handleHashChange);
+        };
     }, []);
 
     useEffect(() => {
@@ -38,35 +55,91 @@ export function Header() {
         };
     }, [isMobileMenuOpen]);
 
+    useEffect(() => {
+        const currentPath = pathname;
+        const currentHash = activeHash;
+
+        if (currentHash) {
+            const matchingItem = navItems.find(
+                (item) => item.href === `${currentPath}${currentHash}` || item.href === `/${currentHash}`
+            );
+            if (matchingItem) {
+                setActiveItem(matchingItem.name);
+                return;
+            }
+        }
+
+        const matchingItem = navItems.find((item) => item.href === currentPath);
+        if (matchingItem) {
+            setActiveItem(matchingItem.name);
+        } else if (currentPath === "/profile") {
+            setActiveItem("MY PHOTOS");
+        } else {
+            setActiveItem("");
+        }
+    }, [pathname, activeHash]);
+
     return (
         <header
-            className={`sticky top-0 left-0 right-0 z-50 bg-white border-b-4 border-black transition-none safe-top ${
-                isScrolled ? "py-2 md:py-3" : "py-3 md:py-4"
+            className={`fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-6xl z-50 floating-glass-header border border-black/[0.08] transition-all duration-300 ${
+                isScrolled
+                    ? "py-2.5 shadow-lg"
+                    : "py-4 shadow-sm"
             }`}
         >
-            <div className="w-full px-6 flex items-center justify-between">
+            {/* Glass Background & Blur with Increased Transparency */}
+            <div className={`absolute inset-0 w-full h-full pointer-events-none z-[-2] shimmer-container transition-all duration-300 ${
+                isScrolled
+                    ? "bg-white/25 backdrop-blur-lg"
+                    : "bg-white/12 backdrop-blur-md"
+            }`} />
+
+            {/* Glass shine animation overlay */}
+            <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-[-1] shimmer-container">
+                <div className="absolute top-0 -left-[150%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -skew-x-20 animate-shimmer" />
+            </div>
+
+            <div className="w-full px-6 flex items-center justify-between relative z-10">
                 {/* Text Logo */}
                 <Link
                     href="/"
-                    className="text-2xl font-black text-primary uppercase tracking-tighter"
+                    onClick={() => setActiveItem("")}
+                    className="text-2xl font-black text-secondary uppercase tracking-tighter"
                 >
                     sebooth.
                 </Link>
 
                 {/* Desktop Navigation */}
-                <nav className="hidden md:flex gap-6 items-center">
-                    {navItems.map((item) => (
-                        <Link
-                            key={item.name}
-                            href={item.href}
-                            className="font-bold uppercase tracking-tight text-primary hover:bg-secondary hover:text-white transition-none px-2 py-1"
-                        >
-                            {item.name}
-                        </Link>
-                    ))}
+                <nav className="hidden md:flex gap-3 items-center">
+                    {navItems.map((item) => {
+                        const isActive = activeItem === item.name;
+                        return (
+                            <Link
+                                key={item.name}
+                                href={item.href}
+                                onClick={() => setActiveItem(item.name)}
+                                className={`font-bold uppercase tracking-tight px-3 py-1.5 transition-all duration-200 ${
+                                    isActive
+                                        ? "bg-secondary text-white shadow-sm"
+                                        : "text-secondary hover:bg-secondary/10 hover:text-primary"
+                                }`}
+                            >
+                                {item.name}
+                            </Link>
+                        );
+                    })}
+                    
+                    {/* Vertical Divider */}
+                    <div className="h-5 w-[1.5px] bg-black/10 mx-2" />
+
                     <Link
                         href="/profile"
-                        className="font-black uppercase tracking-tight text-primary border-l-2 border-black pl-6 ml-2"
+                        onClick={() => setActiveItem("MY PHOTOS")}
+                        className={`font-black uppercase tracking-tight px-3 py-1.5 transition-all duration-200 ${
+                            activeItem === "MY PHOTOS"
+                                ? "bg-secondary text-white shadow-sm"
+                                : "text-secondary hover:bg-secondary/10 hover:text-primary"
+                        }`}
                     >
                         MY PHOTOS
                     </Link>
@@ -76,7 +149,12 @@ export function Header() {
                 <div className="flex items-center gap-4">
                     <Link
                         href="#contact"
-                        className="hidden md:inline-block font-bold uppercase tracking-tight bg-secondary text-white px-6 py-2 border-2 border-black active:translate-x-[2px] active:translate-y-[2px] transition-none hard-shadow-black"
+                        onClick={() => setActiveItem("BOOK NOW")}
+                        className={`hidden md:inline-block font-bold uppercase tracking-tight px-5 py-2 transition-all duration-200 ${
+                            activeItem === "BOOK NOW"
+                                ? "bg-secondary text-white shadow-sm"
+                                : "bg-primary text-white hover:bg-secondary shadow-md"
+                        }`}
                     >
                         <EditableText section="header" fieldKey="cta_text" defaultValue="BOOK NOW" as="span" className="font-bold uppercase tracking-tight text-white">
                             BOOK NOW
@@ -85,7 +163,7 @@ export function Header() {
 
                     {/* Mobile Menu Toggle */}
                     <button
-                        className="md:hidden text-primary"
+                        className="md:hidden text-primary p-2 focus:outline-none"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     >
                         {isMobileMenuOpen ? <X /> : <Menu />}
@@ -110,30 +188,54 @@ export function Header() {
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
-                            className="absolute top-full left-0 right-0 bg-white border-b-4 border-black p-6 md:hidden z-50 shadow-2xl"
+                            className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white/95 backdrop-blur-md border border-black/10 p-6 md:hidden z-50 shadow-2xl floating-glass-header"
                         >
-                            <nav className="flex flex-col gap-4">
-                                {navItems.map((item) => (
-                                    <Link
-                                        key={item.name}
-                                        href={item.href}
-                                        className="text-xl font-black uppercase tracking-tight text-primary active:bg-secondary active:text-white transition-none px-2 py-3 min-h-[44px] flex items-center"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                    >
-                                        {item.name}
-                                    </Link>
-                                ))}
+                            <nav className="flex flex-col gap-3">
+                                {navItems.map((item) => {
+                                    const isActive = activeItem === item.name;
+                                    return (
+                                        <Link
+                                            key={item.name}
+                                            href={item.href}
+                                            className={`text-lg font-black uppercase tracking-tight px-4 py-3 min-h-[44px] flex items-center transition-all duration-200 ${
+                                                isActive
+                                                    ? "bg-secondary text-white"
+                                                    : "text-secondary hover:bg-secondary/10 hover:text-primary"
+                                            }`}
+                                            onClick={() => {
+                                                setActiveItem(item.name);
+                                                setIsMobileMenuOpen(false);
+                                            }}
+                                        >
+                                            {item.name}
+                                        </Link>
+                                    );
+                                })}
                                 <Link
                                     href="/profile"
-                                    className="text-xl font-black uppercase tracking-tight text-primary border-t-2 border-black pt-4 mt-2 min-h-[44px] flex items-center px-2"
-                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`text-lg font-black uppercase tracking-tight px-4 py-3 min-h-[44px] flex items-center transition-all duration-200 ${
+                                        activeItem === "MY PHOTOS"
+                                            ? "bg-secondary text-white"
+                                            : "text-secondary hover:bg-secondary/10 hover:text-primary"
+                                    }`}
+                                    onClick={() => {
+                                        setActiveItem("MY PHOTOS");
+                                        setIsMobileMenuOpen(false);
+                                    }}
                                 >
                                     MY PHOTOS
                                 </Link>
                                 <Link
                                     href="#contact"
-                                    className="font-bold uppercase bg-secondary text-white text-center py-4 border-2 border-black hard-shadow-black transition-none mt-2 min-h-[44px] flex items-center justify-center active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
-                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`font-bold uppercase text-center py-3.5 min-h-[44px] flex items-center justify-center transition-all duration-200 ${
+                                        activeItem === "BOOK NOW"
+                                            ? "bg-secondary text-white"
+                                            : "bg-primary text-white hover:bg-secondary"
+                                    }`}
+                                    onClick={() => {
+                                        setActiveItem("BOOK NOW");
+                                        setIsMobileMenuOpen(false);
+                                    }}
                                 >
                                     BOOK NOW
                                 </Link>

@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { parseJsonContent } from "@/lib/useSiteContent";
 import { EditableText } from "@/components/admin/EditableText";
 import { EditableArrayItemText } from "@/components/admin/EditableArrayItemText";
+import { motion, AnimatePresence } from "framer-motion";
 
 const shadowCycle = ["hard-shadow-black", "hard-shadow-blue", "hard-shadow-orange", "hard-shadow-black"];
 const hoverShadows = [
@@ -53,40 +54,48 @@ export function FAQ({ initialData = {} }: FAQProps) {
     const faqs = parseJsonContent<FaqItem[]>(content.items, defaultFaqs);
 
     return (
-        <section className="py-24 px-6 md:px-20 bg-white paper-texture border-t-8 border-black">
+        <section className="py-24 px-6 md:px-20 bg-transparent paper-texture border-t-8 border-black">
             {/* Section Header */}
-            <div className="mb-16">
-                <EditableText section="faq" fieldKey="section_title" defaultValue={content.section_title} as="h2" className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-text-dark">
+            <div className="mb-16 text-center">
+                <EditableText section="faq" fieldKey="section_title" defaultValue={content.section_title} as="h2" className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-text-dark text-center w-full">
                     {content.section_title}
                 </EditableText>
             </div>
 
             {/* FAQ Accordion */}
-            <div className="max-w-4xl space-y-4">
+            <div className="max-w-4xl mx-auto space-y-4">
                 {faqs.map((faq, i) => (
                     <div
                         key={i}
-                        className={`bg-white border-2 border-black ${shadowCycle[i % shadowCycle.length]} ${hoverShadows[i % hoverShadows.length]} md:hover:-translate-y-1 md:hover:-translate-x-1 transition-all duration-200 ease-out cursor-pointer`}
+                        className={`bg-white border-2 border-black ${shadowCycle[i % shadowCycle.length]} ${hoverShadows[i % hoverShadows.length]} md:hover:-translate-y-1 md:hover:-translate-x-1 transition-[transform,box-shadow] duration-200 ease-out cursor-pointer`}
                         onClick={() => setActiveIndex(activeIndex === i ? null : i)}
                     >
                         {/* Question Row */}
                         <div
-                            className={`p-6 flex justify-between items-center transition-all duration-300 ease-out ${
+                            className={`p-6 flex items-center justify-center relative transition-colors duration-300 ease-out ${
                                 activeIndex === i
                                     ? "bg-primary text-white border-b-4 border-black"
                                     : "bg-white text-text-dark hover:bg-primary/5 hover:text-primary border-b-4 border-black"
                             }`}
                         >
-                            <EditableArrayItemText section="faq" arrayKey="items" items={faqs} index={i} field="question" as="h3" className="text-xl font-black uppercase tracking-tight" />
-                            <Plus className={`w-6 h-6 shrink-0 transition-transform duration-300 ${activeIndex === i ? "rotate-45" : "rotate-0"}`} />
+                            <EditableArrayItemText section="faq" arrayKey="items" items={faqs} index={i} field="question" as="h3" className="text-xl font-black uppercase tracking-tight text-center w-full px-8" />
+                            <Plus className={`w-6 h-6 shrink-0 absolute right-6 transition-transform duration-300 ${activeIndex === i ? "rotate-45" : "rotate-0"}`} />
                         </div>
 
-                        {/* Answer — CSS grid transition */}
-                        <div className={activeIndex === i ? "grid-expand" : "grid-collapse"}>
-                            <div className="grid-inner">
-                                <EditableArrayItemText section="faq" arrayKey="items" items={faqs} index={i} field="answer" as="p" className="p-6 text-text-dark font-bold uppercase leading-relaxed" />
-                            </div>
-                        </div>
+                        {/* Answer — Framer Motion transition */}
+                        <AnimatePresence initial={false}>
+                            {activeIndex === i && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                                    className="overflow-hidden"
+                                >
+                                    <EditableArrayItemText section="faq" arrayKey="items" items={faqs} index={i} field="answer" as="p" className="p-6 text-text-dark font-bold uppercase leading-relaxed text-center" />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 ))}
             </div>

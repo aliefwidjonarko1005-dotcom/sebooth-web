@@ -97,31 +97,13 @@ export default function SessionDetailPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
 
-      // Check if super admin
-      const userEmail = user.email || ''
-      const envAdmins = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase())
-      const isEnvSuperAdmin = envAdmins.includes(userEmail.toLowerCase())
-      let isSuperAdmin = isEnvSuperAdmin
-      if (!isEnvSuperAdmin) {
-        const { data: adminData } = await supabase
-          .from('admins')
-          .select('is_super')
-          .eq('email', userEmail)
-          .maybeSingle()
-        if (adminData?.is_super) isSuperAdmin = true
-      }
-
-      // Super admin: fetch any session. Normal user: only own sessions.
-      let query = supabase
+      // Always fetch only user's own session
+      const { data, error } = await supabase
         .from('sessions')
         .select('*, media(*)')
         .eq('id', sessionId)
-
-      if (!isSuperAdmin) {
-        query = query.eq('user_id', user.id)
-      }
-
-      const { data, error } = await query.single()
+        .eq('user_id', user.id)
+        .single()
 
       if (error || !data) {
         router.push('/profile')

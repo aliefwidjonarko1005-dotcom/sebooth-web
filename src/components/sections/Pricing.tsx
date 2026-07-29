@@ -127,7 +127,7 @@ export function Pricing({ initialData = {} }: PricingProps) {
     const waBase = "https://wa.me/6285713899441?text=";
 
     return (
-        <section id="pricing" className="py-24 px-6 md:px-20 bg-white paper-texture border-y-8 border-black">
+        <section id="pricing" className="py-24 px-6 md:px-20 bg-transparent paper-texture border-y-8 border-black">
             {/* Section Header */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}

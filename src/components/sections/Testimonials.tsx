@@ -55,7 +55,7 @@ export function Testimonials({ initialData = {} }: TestimonialsProps) {
     const testimonials = parseJsonContent<TestimonialItem[]>(content.items, defaultTestimonials);
 
     return (
-        <section className="py-24 px-6 md:px-20 bg-white paper-texture overflow-hidden border-t-8 border-black">
+        <section className="py-24 px-6 md:px-20 bg-transparent paper-texture overflow-hidden border-t-8 border-black">
             {/* Section Header */}
             <div className="text-center mb-16">
                 <div className="inline-block relative">

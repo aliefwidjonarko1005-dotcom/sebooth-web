@@ -6,17 +6,39 @@ const nextConfig: NextConfig = {
   // Whitelist external image domains for next/image
   // ═══════════════════════════════════════════════════════
   images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 31536000, // Cache optimized images for 1 year
     remotePatterns: [
       {
-        // Supabase Storage (gallery uploads, news images)
+        // Supabase Storage (all projects & buckets)
         protocol: "https",
-        hostname: "hfheuhivhwooaobgjtqv.supabase.co",
-        pathname: "/storage/v1/object/public/**",
+        hostname: "*.supabase.co",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.supabase.in",
+        pathname: "/**",
       },
       {
         // Google Cloud Storage (photos, videos, GIFs)
         protocol: "https",
         hostname: "storage.googleapis.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.googleapis.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.googleusercontent.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "**",
         pathname: "/**",
       },
     ],

@@ -50,7 +50,7 @@ export function PartnershipContent({ content }: PartnershipContentProps) {
     const submitText = content["submit_text"] || "Apply for Partnership";
 
     return (
-        <div className="min-h-screen bg-[#F9F9F9] pt-20">
+        <div className="min-h-screen bg-transparent pt-20">
             <div className="container mx-auto px-6 py-24">
                 {/* Header Section */}
                 <motion.div

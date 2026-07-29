@@ -26,6 +26,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
   const [isClaiming, setIsClaiming] = useState(false)
   const [claimSuccess, setClaimSuccess] = useState(false)
   const [alreadyClaimed, setAlreadyClaimed] = useState(false)
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({})
 
   // 1. Check auth
   useEffect(() => {
@@ -115,32 +116,47 @@ export default function AccessSessionClient({ session: initialSession, sessionId
 
         {/* Preview Grid */}
         <div className="mt-10 md:mt-12 grid grid-cols-2 gap-4 lg:grid-cols-3">
-          {session.media?.map((item: MediaItem, idx: number) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: idx * 0.05 }}
-              className="group relative aspect-[3/4] overflow-hidden bg-white border-4 border-black hard-shadow-black transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
-            >
-              {item.type === 'live' || item.type === 'video' ? (
-                <video src={item.url} muted loop autoPlay playsInline className="h-full w-full object-cover transition-transform duration-75 group-hover:scale-105" />
-              ) : (
-                <Image
-                  src={item.url}
-                  alt={`Sebooth ${item.type}`}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-75 group-hover:scale-105"
-                />
-              )}
-              <div className="absolute top-2 right-2 z-10">
-                <span className="bg-white border-2 border-black px-2 py-1 text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest shadow-[2px_2px_0px_rgba(0,0,0,1)]">
-                  {item.type}
-                </span>
-              </div>
-            </motion.div>
-          ))}
+          {session.media?.map((item: MediaItem, idx: number) => {
+            const isVideo = item.type === 'live' || item.type === 'video' || item.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+            const isGif = item.type === 'gif' || item.url?.match(/\.gif(\?.*)?$/i)
+            const isFailed = failedImages[item.id]
+
+            return (
+              <motion.div
+                key={item.id || idx}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: idx * 0.05 }}
+                className="group relative aspect-[3/4] overflow-hidden bg-white border-4 border-black hard-shadow-black transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+              >
+                {isVideo ? (
+                  <video src={item.url} muted loop autoPlay playsInline className="h-full w-full object-cover transition-transform duration-75 group-hover:scale-105" />
+                ) : isGif || isFailed ? (
+                  /* Render directly via standard img tag to bypass Next.js image optimization failures/CORS/GIF processing issues */
+                  <img
+                    src={item.url}
+                    alt={`Sebooth ${item.type}`}
+                    className="h-full w-full object-cover transition-transform duration-75 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                ) : (
+                  <Image
+                    src={item.url}
+                    alt={`Sebooth ${item.type}`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-75 group-hover:scale-105"
+                    onError={() => setFailedImages((prev) => ({ ...prev, [item.id]: true }))}
+                  />
+                )}
+                <div className="absolute top-2 right-2 z-10">
+                  <span className="bg-white border-2 border-black px-2 py-1 text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+                    {item.type}
+                  </span>
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
 
         {/* Claim CTA */}

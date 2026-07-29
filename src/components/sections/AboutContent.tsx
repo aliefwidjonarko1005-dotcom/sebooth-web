@@ -80,7 +80,7 @@ export function AboutContent({ content }: AboutContentProps) {
     ];
 
     return (
-        <div className="min-h-screen bg-white paper-texture">
+        <div className="min-h-screen bg-transparent paper-texture">
             {/* Hero Narrative */}
             <section className="px-6 md:px-20 py-24 md:py-32 bg-primary relative overflow-hidden">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -151,7 +151,7 @@ export function AboutContent({ content }: AboutContentProps) {
             </section>
 
             {/* Vision & Mission */}
-            <section className="py-24 px-6 md:px-20 bg-white paper-texture border-y-8 border-black">
+            <section className="py-24 px-6 md:px-20 bg-transparent paper-texture border-y-8 border-black">
                 <div className="grid md:grid-cols-2 gap-12">
                     {/* Left: Vision */}
                     <motion.div

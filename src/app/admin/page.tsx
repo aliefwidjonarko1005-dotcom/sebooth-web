@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import QueueOperatorTab from '@/components/admin/QueueOperatorTab'
 
-type TabKey = 'editor' | 'content' | 'pricing' | 'instagram' | 'news' | 'admins' | 'queue'
+type TabKey = 'editor' | 'content' | 'pricing' | 'instagram' | 'news' | 'admins' | 'queue' | 'featured_frames'
 
 interface ContentItem { id: string; section: string; key: string; value: string; }
 interface IGPost { id: string; instagram_url: string; display_order: number; }
@@ -21,9 +21,10 @@ interface NewsItem { id: string; title: string; body: string; image_url: string;
 interface AdminItem { id: string; email: string; is_super: boolean; }
 interface GalleryImage { name: string; url: string; }
 interface GalleryMeta { name: string; event: string; type: string; }
+interface FrameItem { id: string; title: string; category: string; image_url: string; }
 
 // ─── Editor Section Collapse State ───
-type EditorSection = 'hero' | 'about' | 'product' | 'pricing' | 'testimonials' | 'gallery' | 'faq' | 'location'
+type EditorSection = 'hero' | 'about' | 'product' | 'pricing' | 'testimonials' | 'gallery' | 'faq' | 'location' | 'featured_frames'
 
 export default function AdminPage() {
   const router = useRouter()
@@ -99,6 +100,15 @@ export default function AdminPage() {
   const [locName, setLocName] = useState('Sebooth HQ')
   const [locAddress, setLocAddress] = useState('Jl. Photobooth Premium No. 12\nSemarang Selatan, Jawa Tengah 50241')
   const [locMaps, setLocMaps] = useState('https://maps.google.com')
+
+  // Featured Frames States
+  const [featuredFrames, setFeaturedFrames] = useState<FrameItem[]>([])
+  const [newFrameTitle, setNewFrameTitle] = useState('')
+  const [newFrameCategory, setNewFrameCategory] = useState('')
+  const [newFrameImage, setNewFrameImage] = useState('')
+  const [uploadingFrameImage, setUploadingFrameImage] = useState(false)
+  const [featuredFramesTitle, setFeaturedFramesTitle] = useState('FEATURED FRAMES')
+  const [featuredFramesTag, setFeaturedFramesTag] = useState('[ 02 — DESIGN ARCHIVE ]')
 
   // Collapsible sections
   const [openSections, setOpenSections] = useState<Set<EditorSection>>(new Set(['hero']))
@@ -196,6 +206,14 @@ export default function AdminPage() {
     loadFieldsFromContent(items, 'location', {
       title: setLocTitle, name: setLocName, address: setLocAddress, maps_url: setLocMaps,
     })
+    // Load featured frames
+    loadFieldsFromContent(items, 'featured_frames', {
+      section_title: setFeaturedFramesTitle, section_tag: setFeaturedFramesTag,
+    })
+    const featuredFramesRow = items.find(i => i.section === 'featured_frames' && i.key === 'items')
+    if (featuredFramesRow?.value) {
+      try { setFeaturedFrames(JSON.parse(featuredFramesRow.value)) } catch {}
+    }
 
     await loadGalleryImages()
   }
@@ -264,6 +282,58 @@ export default function AdminPage() {
     await supabase.storage.from('gallery').remove([name])
     await loadGalleryImages()
     flash('Image deleted')
+  }
+
+  async function uploadFrameImage(file: File): Promise<string | null> {
+    setUploadingFrameImage(true)
+    const ext = file.name.split('.').pop()
+    const fileName = `frame_${Date.now()}.${ext}`
+    const { error } = await supabase.storage.from('gallery').upload(fileName, file)
+    if (error) {
+      flash(`Upload error: ${error.message}`)
+      setUploadingFrameImage(false)
+      return null
+    }
+    const url = supabase.storage.from('gallery').getPublicUrl(fileName).data.publicUrl
+    setUploadingFrameImage(false)
+    return url
+  }
+
+  async function addFeaturedFrame() {
+    if (!newFrameTitle || !newFrameImage) {
+      flash('Judul dan Gambar Frame harus diisi!')
+      return
+    }
+    const newFrame: FrameItem = {
+      id: `frame_${Date.now()}`,
+      title: newFrameTitle,
+      category: newFrameCategory || 'General',
+      image_url: newFrameImage,
+    }
+    const updatedFrames = [...featuredFrames, newFrame]
+    setFeaturedFrames(updatedFrames)
+    await saveField('featured_frames', 'items', JSON.stringify(updatedFrames))
+    
+    // Auto-revalidate the ISR page cache
+    const { revalidateSiteContent } = await import('@/app/actions')
+    await revalidateSiteContent()
+    
+    setNewFrameTitle('')
+    setNewFrameCategory('')
+    setNewFrameImage('')
+    flash('Frame ditambahkan!')
+  }
+
+  async function deleteFeaturedFrame(id: string) {
+    const updatedFrames = featuredFrames.filter(f => f.id !== id)
+    setFeaturedFrames(updatedFrames)
+    await saveField('featured_frames', 'items', JSON.stringify(updatedFrames))
+    
+    // Auto-revalidate the ISR page cache
+    const { revalidateSiteContent } = await import('@/app/actions')
+    await revalidateSiteContent()
+    
+    flash('Frame dihapus!')
   }
 
   // ─── Generic save field to site_content ───
@@ -432,6 +502,7 @@ export default function AdminPage() {
     { key: 'pricing', label: 'Pricing', icon: <DollarSign className="w-4 h-4" /> },
     { key: 'instagram', label: 'Instagram', icon: <Instagram className="w-4 h-4" /> },
     { key: 'news', label: 'News', icon: <Newspaper className="w-4 h-4" /> },
+    { key: 'featured_frames', label: 'Featured Frames', icon: <Image className="w-4 h-4" /> },
     { key: 'queue', label: 'Antrean', icon: <Ticket className="w-4 h-4" /> },
     ...(isSuper ? [{ key: 'admins' as const, label: 'Admins', icon: <Users className="w-4 h-4" /> }] : []),
   ]
@@ -764,6 +835,21 @@ export default function AdminPage() {
               )}
             </div>
 
+            {/* ── FEATURED FRAMES ── */}
+            <div className="bg-white rounded-2xl border border-[#1A1A1A]/5 overflow-hidden">
+              <SectionHeader id="featured_frames" title="🎨 Featured Frames Section" />
+              {openSections.has('featured_frames') && (
+                <div className="p-6 pt-0 space-y-4">
+                  <Field label="Section Title" value={featuredFramesTitle} onChange={setFeaturedFramesTitle} />
+                  <Field label="Section Tag" value={featuredFramesTag} onChange={setFeaturedFramesTag} />
+                  <SaveBtn onClick={() => saveMultipleFields('featured_frames', {
+                    section_title: featuredFramesTitle, section_tag: featuredFramesTag,
+                  })} label="Save Featured Frames Content" />
+                  <p className="text-[10px] text-[#1A1A1A]/40">Untuk edit/tambah item desain frame individual, gunakan tab utama &quot;Featured Frames&quot; di atas.</p>
+                </div>
+              )}
+            </div>
+
             {/* ── LOCATION ── */}
             <div className="bg-white rounded-2xl border border-[#1A1A1A]/5 overflow-hidden">
               <SectionHeader id="location" title="📍 Location Section" />
@@ -982,6 +1068,72 @@ export default function AdminPage() {
                   )}
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ═══════════════════ FEATURED FRAMES TAB ═══════════════════ */}
+        {tab === 'featured_frames' && (
+          <div className="space-y-6">
+            <h2 className="text-xl font-bold text-[#1A1A1A]">Featured Frames Management</h2>
+            <p className="text-sm text-[#1A1A1A]/50">Upload dan kelola desain frame photobooth premium Anda di sini.</p>
+            
+            <div className="bg-white rounded-2xl p-6 border border-[#1A1A1A]/5 space-y-4">
+              <h3 className="font-bold text-sm uppercase tracking-widest text-[#0F3D2E]">Tambah Frame Baru</h3>
+              <input value={newFrameTitle} onChange={e => setNewFrameTitle(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/10 text-sm font-bold" placeholder="Nama/Judul Frame (misal: Wedding Vintage)" />
+              <input value={newFrameCategory} onChange={e => setNewFrameCategory(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/10 text-sm" placeholder="Kategori (misal: Classic Strip, Collage, 3-Photo)" />
+              
+              {/* Image Upload */}
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2 block flex items-center gap-2">
+                  <Upload className="w-4 h-4" /> Upload Desain Gambar Frame
+                </label>
+                {newFrameImage ? (
+                  <div className="flex items-center gap-3">
+                    <img src={newFrameImage} className="w-20 h-20 rounded-xl object-contain bg-black/10 border border-[#1A1A1A]/10" alt="Preview" />
+                    <button onClick={() => setNewFrameImage('')} className="text-xs font-bold text-red-500">Hapus</button>
+                  </div>
+                ) : (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={async e => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        const url = await uploadFrameImage(file)
+                        if (url) setNewFrameImage(url)
+                      }
+                    }}
+                    className="text-sm"
+                    disabled={uploadingFrameImage}
+                  />
+                )}
+                {uploadingFrameImage && <p className="text-xs text-[#0F3D2E] mt-1 font-bold">Uploading...</p>}
+              </div>
+
+              <button onClick={addFeaturedFrame} className="px-6 py-3 rounded-xl bg-[#0F3D2E] text-white font-bold text-sm hover:bg-[#195240] transition-all flex items-center gap-2">
+                <Plus className="w-4 h-4" /> Tambah Frame
+              </button>
+            </div>
+
+            {/* List of Frames */}
+            <div className="space-y-3">
+              <h3 className="font-bold text-sm uppercase tracking-widest text-[#0F3D2E]">Koleksi Frame Saat Ini</h3>
+              {featuredFrames.map(frame => (
+                <div key={frame.id} className="flex items-center gap-4 bg-white rounded-xl p-4 border border-[#1A1A1A]/5">
+                  {frame.image_url && <img src={frame.image_url} className="w-16 h-20 rounded-lg object-contain bg-black/5 p-1 border" alt="" />}
+                  <div className="flex-1">
+                    <h4 className="font-bold text-sm text-[#1A1A1A]">{frame.title}</h4>
+                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 mt-1 rounded-full">{frame.category || 'General'}</span>
+                  </div>
+                  <button onClick={() => deleteFeaturedFrame(frame.id)} className="p-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-100">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+              {featuredFrames.length === 0 && <p className="text-[#1A1A1A]/40 text-sm text-center py-10 bg-white border border-[#1A1A1A]/5 rounded-xl">Belum ada koleksi frame.</p>}
             </div>
           </div>
         )}

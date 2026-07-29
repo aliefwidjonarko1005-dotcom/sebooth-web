@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LogOut, Loader2, Grid, Home, LayoutGrid, List, ShieldCheck, Users, User } from 'lucide-react'
+import { LogOut, Loader2, Grid, Home, LayoutGrid, List } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
 import { SessionData, QueueTicket } from '@/types/database'
@@ -14,7 +14,7 @@ import SessionFeedCard from '@/components/profile/SessionFeedCard'
 import GalleryGrid from '@/components/profile/GalleryGrid'
 
 type ViewMode = 'feed' | 'gallery'
-type SessionScope = 'mine' | 'all'
+
 
 const PAGE_SIZE = 10
 
@@ -28,29 +28,22 @@ export default function ProfilePage() {
   const [hasMore, setHasMore] = useState(true)
   const [viewMode, setViewMode] = useState<ViewMode>('feed')
   const [activeTickets, setActiveTickets] = useState<QueueTicket[]>([])
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
-  const [sessionScope, setSessionScope] = useState<SessionScope>('mine')
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const sentinelRef = useRef<HTMLDivElement>(null)
 
   // ─── Fetch a page of sessions ───
   const fetchSessions = useCallback(async (
-    scope: SessionScope,
     userId: string,
     offset: number,
     append: boolean
   ) => {
-    let query = supabase
+    const { data, error } = await supabase
       .from('sessions')
       .select('*, media(*)')
+      .eq('user_id', userId)
       .order('created_at', { ascending: false })
       .range(offset, offset + PAGE_SIZE - 1)
 
-    if (scope === 'mine') {
-      query = query.eq('user_id', userId)
-    }
-
-    const { data, error } = await query
     if (!error && data) {
       if (append) {
         setSessions(prev => [...prev, ...data])
@@ -71,24 +64,8 @@ export default function ProfilePage() {
 
       setCurrentUserId(user.id)
 
-      // ─── Check if user is super admin ───
-      const userEmail = user.email || ''
-      const envAdmins = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase())
-      const isEnvSuperAdmin = envAdmins.includes(userEmail.toLowerCase())
-
-      let superAdmin = isEnvSuperAdmin
-      if (!isEnvSuperAdmin) {
-        const { data: adminData } = await supabase
-          .from('admins')
-          .select('is_super')
-          .eq('email', userEmail)
-          .maybeSingle()
-        if (adminData?.is_super) superAdmin = true
-      }
-      setIsSuperAdmin(superAdmin)
-
       // ─── Fetch first page of sessions ───
-      await fetchSessions('mine', user.id, 0, false)
+      await fetchSessions(user.id, 0, false)
 
       // Fetch active queue tickets
       const { data: ticketsData } = await supabase
@@ -109,14 +86,7 @@ export default function ProfilePage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // ─── Refetch sessions when scope changes ───
-  useEffect(() => {
-    if (!currentUserId || loading) return
-    setSessions([])
-    setHasMore(true)
-    fetchSessions(sessionScope, currentUserId, 0, false)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionScope])
+
 
   // ─── Infinite scroll: observe sentinel ───
   useEffect(() => {
@@ -126,7 +96,7 @@ export default function ProfilePage() {
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loadingMore && currentUserId) {
           setLoadingMore(true)
-          fetchSessions(sessionScope, currentUserId, sessions.length, true)
+          fetchSessions(currentUserId, sessions.length, true)
             .then(() => setLoadingMore(false))
         }
       },
@@ -136,7 +106,7 @@ export default function ProfilePage() {
     observer.observe(sentinelRef.current)
     return () => observer.disconnect()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasMore, loadingMore, sessions.length, sessionScope, currentUserId])
+  }, [hasMore, loadingMore, sessions.length, currentUserId])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -178,34 +148,14 @@ export default function ProfilePage() {
                 <List className="h-5 w-5" />
               )}
             </button>
-            {/* Super Admin: scope toggle */}
-            {isSuperAdmin && (
-              <button
-                onClick={() => setSessionScope(sessionScope === 'mine' ? 'all' : 'mine')}
-                className={`flex items-center justify-center w-10 h-10 transition-none ${
-                  sessionScope === 'all' ? 'text-yellow-400' : 'text-white/50 hover:text-white/80'
-                }`}
-                title={sessionScope === 'mine' ? 'Lihat Semua Sesi (Admin)' : 'Lihat Sesi Saya'}
-              >
-                {sessionScope === 'all' ? (
-                  <Users className="h-5 w-5" />
-                ) : (
-                  <User className="h-5 w-5" />
-                )}
-              </button>
-            )}
+
           </div>
 
           {/* Center: Title */}
           <div className="flex flex-col items-center">
             <h1 className="text-[0.95rem] font-black text-white uppercase tracking-widest marker-font">
-              {sessionScope === 'all' ? 'ALL SESSIONS' : 'MY PHOTOS'}
+              MY PHOTOS
             </h1>
-            {isSuperAdmin && sessionScope === 'all' && (
-              <span className="flex items-center gap-1 text-[0.55rem] font-bold text-yellow-400/80 uppercase tracking-wider">
-                <ShieldCheck className="w-3 h-3" /> Super Admin
-              </span>
-            )}
           </div>
 
           {/* Right: Logout */}
@@ -219,15 +169,7 @@ export default function ProfilePage() {
         </div>
       </nav>
 
-      {/* ═══ Super Admin: Scope Info Banner ═══ */}
-      {isSuperAdmin && sessionScope === 'all' && (
-        <div className="bg-yellow-400 border-b-2 border-black px-4 py-2 flex items-center justify-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-black" />
-          <span className="text-[0.7rem] font-black text-black uppercase tracking-wider">
-            Menampilkan {sessions.length} sesi dari semua pengguna{hasMore ? '+' : ''}
-          </span>
-        </div>
-      )}
+
 
       {/* ═══ Content ═══ */}
       {sessions.length === 0 && !loadingMore ? (
@@ -240,15 +182,13 @@ export default function ProfilePage() {
             Belum Ada Koleksi
           </h3>
           <p className="mt-2 text-primary/60 font-bold max-w-xs text-[0.8rem]">
-            {sessionScope === 'all'
-              ? 'Belum ada sesi foto dari pengguna manapun.'
-              : 'Scan QR code di Sebooth untuk mulai mengisi galerimu!'}
+            Scan QR code di Sebooth untuk mulai mengisi galerimu!
           </p>
         </div>
       ) : (
         <main className="flex-1 pb-8">
           {/* Active Queue Tickets */}
-          {activeTickets.length > 0 && sessionScope === 'mine' && (
+          {activeTickets.length > 0 && (
             <div className="mx-4 mt-4">
               <div className="bg-primary border-2 border-black p-4 hard-shadow-blue">
                 <ActiveQueueCard tickets={activeTickets} />
@@ -273,7 +213,7 @@ export default function ProfilePage() {
                     key={session.id}
                     session={session}
                     index={idx}
-                    showOwner={sessionScope === 'all'}
+
                   />
                 ))}
               </motion.div>

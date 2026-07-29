@@ -31,6 +31,7 @@ export function LayoutEditorModal({ isOpen, onClose }: LayoutEditorModalProps) {
         { id: "pricing", title: "Pricing Plans", visible: true },
         { id: "testimonials", title: "Testimonials", visible: true },
         { id: "gallery", title: "Visual Gallery", visible: true },
+        { id: "featured_frames", title: "Featured Frames", visible: true },
         { id: "instagram", title: "Instagram Feed", visible: true },
         { id: "faq", title: "FAQ Accordion", visible: true },
         { id: "news", title: "Latest News", visible: true },

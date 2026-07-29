@@ -25,9 +25,10 @@
   --color-foreground: var(--foreground);
 
   /* ─── Font Tokens ─── */
-  --font-headline: var(--font-headline);
-  --font-marker: var(--font-marker);
-  --font-sebooth: var(--font-sebooth);
+  --font-headline: var(--font-poppins);
+  --font-marker: var(--font-poppins);
+  --font-sebooth: var(--font-poppins);
+  --font-poppins: var(--font-poppins);
 }
 
 /* ─── Brand font helper ─── */
@@ -48,9 +49,17 @@ html {
 }
 
 body {
-  background: var(--background);
+  --font-headline: var(--font-poppins);
+  --font-marker: var(--font-poppins);
+  --font-sebooth: var(--font-poppins);
+  background-color: var(--background);
+  background-image: url("/images/main-background.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: local;
+  background-position: top center;
   color: var(--foreground);
-  font-family: var(--font-headline), system-ui, sans-serif;
+  font-family: var(--font-poppins), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   /* Prevent layout shift from scrollbar */
@@ -69,22 +78,23 @@ body {
    ════════════════════════════════════════════════════ */
 @layer utilities {
 
-  /* ─── Paper Texture Overlay ─── */
+  /* ─── Global Paper Texture Overlay ─── */
   .paper-texture {
     position: relative;
   }
   @media (min-width: 768px) {
-    .paper-texture::before {
+    body::after {
       content: "";
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      right: 0;
-      bottom: 0;
+      width: 100vw;
+      height: 100vh;
       opacity: 0.05;
       pointer-events: none;
-      z-index: 1;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      z-index: 9999;
+      background-image: url("/images/paper-noise.png");
+      background-repeat: repeat;
     }
   }
 
@@ -213,6 +223,34 @@ body {
   .bg-fluid-gradient {
     background: linear-gradient(135deg, #F9F9F9 0%, #EAEAEA 100%);
   }
+
+  /* ─── Floating Header Custom Specificity (Bypass Brutalist border-radius Reset) ─── */
+  .floating-glass-header {
+    border-radius: 16px !important;
+  }
+  .floating-glass-header a,
+  .floating-glass-header button,
+  .floating-glass-header div {
+    border-radius: 8px !important;
+  }
+
+  /* ─── Glassmorphic Card (Bypass Brutalist border-radius Reset) ─── */
+  .glass-card {
+    border-radius: 24px !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.06), inset 0 1px 0 0 rgba(255, 255, 255, 0.15) !important;
+  }
+  .glass-card:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.25) !important;
+  }
+  .glass-card-icon-container {
+    border-radius: 9999px !important;
+  }
 }
 
 /* ─── Keyframes (outside @layer) ─── */
@@ -224,4 +262,52 @@ body {
 @keyframes fadeInDown {
   from { opacity: 0; transform: translate(-50%, -10px); }
   to   { opacity: 1; transform: translate(-50%, 0); }
+}
+@keyframes glass-shimmer {
+  0% {
+    left: -150%;
+  }
+  50% {
+    left: 150%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
+.animate-shimmer {
+  animation: glass-shimmer 7s infinite ease-in-out;
+}
+
+.shimmer-container {
+  border-radius: 16px !important;
+}
+
+/* ─── Featured Frames Marquee & Popup Animations ─── */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee-scroll var(--marquee-duration, 30s) linear infinite;
+}
+
+@keyframes popup-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-popup-in {
+  animation: popup-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

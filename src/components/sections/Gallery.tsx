@@ -95,7 +95,7 @@ export function Gallery({ initialData = {}, initialGalleryImages = [] }: Gallery
             : initialGalleryImages.filter((item) => item.type === activeCategory);
 
     return (
-        <section id="gallery" className="py-24 px-6 md:px-20 bg-white paper-texture">
+        <section id="gallery" className="py-24 px-6 md:px-20 bg-transparent paper-texture">
             {/* Section Header */}
             <div className="mb-12">
                 <EditableText section="gallery" fieldKey="section_title" defaultValue={content.section_title} as="h2" className="text-4xl md:text-7xl font-black uppercase tracking-tighter text-text-dark mb-8">

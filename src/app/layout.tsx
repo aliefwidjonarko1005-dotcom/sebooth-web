@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Permanent_Marker } from "next/font/google";
+import { Space_Grotesk, Permanent_Marker, Poppins } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { LayoutShell } from "@/components/layout/LayoutShell";
@@ -20,6 +20,11 @@ const seboothFont = localFont({
   src: "./fonts/Sebooth.otf",
   variable: "--font-sebooth",
 });
+const poppins = Poppins({
+  subsets: ["latin"],
+  variable: "--font-poppins",
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
   title: "Sebooth | The Most Favorite Photobooth in Semarang",
@@ -34,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${spaceGrotesk.variable} ${permanentMarker.variable} ${seboothFont.variable} antialiased paper-texture`}
+        className={`${spaceGrotesk.variable} ${permanentMarker.variable} ${seboothFont.variable} ${poppins.variable} antialiased paper-texture`}
       >
         <ClientProviders>
           <OrientationProvider>

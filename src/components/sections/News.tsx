@@ -25,7 +25,7 @@ export function News({ initialNews = [] }: NewsProps) {
     if (initialNews.length === 0) return null;
 
     return (
-        <section id="news" className="py-24 px-6 md:px-20 bg-white paper-texture border-t-8 border-black">
+        <section id="news" className="py-24 px-6 md:px-20 bg-transparent paper-texture border-t-8 border-black">
             {/* Header */}
             <div className="mb-12 flex items-center gap-6">
                 <EditableText section="news_section" fieldKey="section_title" defaultValue={sectionTitle} as="h2" className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-text-dark">

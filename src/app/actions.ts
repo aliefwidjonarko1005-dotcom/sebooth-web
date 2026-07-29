@@ -11,12 +11,12 @@ import { cookies } from "next/headers";
 export async function revalidateSiteContent() {
     // Homepage (all sections)
     revalidatePath("/", "page");
-    // About page (may reference site_content)
-    revalidatePath("/about", "page");
     // Partnership page
     revalidatePath("/partnership", "page");
     // News detail pages
     revalidatePath("/news/[id]", "page");
+    // Frames gallery page
+    revalidatePath("/frames", "page");
 }
 
 /**
