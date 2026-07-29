@@ -51,25 +51,53 @@ export async function fetchGalleryImages(
     metadataItems: { name: string; event: string; type: string }[]
 ): Promise<{ id: number; name: string; url: string; event: string; type: string; mediaType: "image" | "video" }[]> {
     const supabase = createServerContentClient();
-    const { data } = await supabase.storage
+    
+    // 1. Try listing from 'gallery' storage bucket
+    const { data: storageFiles } = await supabase.storage
         .from("gallery")
         .list("", { limit: 100, sortBy: { column: "created_at", order: "desc" } });
 
-    if (!data) return [];
+    let items: { id: number; name: string; url: string; event: string; type: string; mediaType: "image" | "video" }[] = [];
 
-    return data
-        .filter((f) => !f.name.startsWith("."))
-        .map((f, i) => {
-            const meta = metadataItems.find((m) => m.name === f.name);
-            return {
-                id: i + 1,
-                name: f.name,
-                url: supabase.storage.from("gallery").getPublicUrl(f.name).data.publicUrl,
-                event: meta?.event || f.name.replace(/\.[^/.]+$/, "").replace(/_/g, " "),
-                type: meta?.type || "All",
-                mediaType: isVideoFile(f.name) ? "video" as const : "image" as const,
-            };
-        });
+    if (storageFiles && storageFiles.length > 0) {
+        items = storageFiles
+            .filter((f) => !f.name.startsWith("."))
+            .map((f, i) => {
+                const meta = metadataItems.find((m) => m.name === f.name);
+                return {
+                    id: i + 1,
+                    name: f.name,
+                    url: supabase.storage.from("gallery").getPublicUrl(f.name).data.publicUrl,
+                    event: meta?.event || f.name.replace(/\.[^/.]+$/, "").replace(/_/g, " "),
+                    type: meta?.type || "All",
+                    mediaType: isVideoFile(f.name) ? ("video" as const) : ("image" as const),
+                };
+            });
+    }
+
+    // 2. Fallback: If storage bucket is empty, fetch public media from sessions/media table
+    if (items.length === 0) {
+        const { data: mediaRows } = await supabase
+            .from("media")
+            .select("id, url, type, created_at, session_id, sessions(event_name)")
+            .order("created_at", { ascending: false })
+            .limit(12);
+
+        if (mediaRows && mediaRows.length > 0) {
+            items = mediaRows
+                .filter((m: any) => m.url && !m.url.match(/\.mp4$/i))
+                .map((m: any, i: number) => ({
+                    id: i + 1,
+                    name: `session_media_${m.id}`,
+                    url: m.url,
+                    event: m.sessions?.event_name || "Sebooth Event",
+                    type: m.type === "gif" ? "Private" : "Wedding",
+                    mediaType: isVideoFile(m.url) ? ("video" as const) : ("image" as const),
+                }));
+        }
+    }
+
+    return items;
 }
 
 /**
