@@ -1,18 +1,17 @@
 @import "tailwindcss";
 
 /* ════════════════════════════════════════════════════
-   DONTBOARDME.COM PLAYFUL PASTEL DESIGN SYSTEM
+   SEBOOTH DEEP BLUE & ORANGE DESIGN SYSTEM
    ════════════════════════════════════════════════════ */
 
 @theme {
-  --color-primary: #e33529;
-  --color-secondary: #2b6786;
-  --color-pink-light: #f4ced3;
-  --color-pink-accent: #f3c3cb;
-  --color-blue-light: #afd8fb;
-  --color-yellow-accent: #fff500;
-  --color-gray-soft: #f3f3e9;
-  --color-dark-brown: #693413;
+  --color-primary: #002366;
+  --color-secondary: #ff4500;
+  --color-blue-dark: #00113a;
+  --color-blue-deep: #002366;
+  --color-orange-accent: #ff4500;
+  --color-cream-soft: #f8f9fa;
+  --color-blue-light: #eef2ff;
 
   /* ─── Font Tokens ─── */
   --font-headline: var(--font-bayon);
@@ -23,24 +22,20 @@
 }
 
 :root {
-  --c-brown: #854720;
-  --c-light-brown: #925026;
-  --c-dark-brown: #693413;
-  --c-yellow: #fff500;
+  --c-blue: #002366;
+  --c-dark-blue: #00113a;
+  --c-[#002366]: #002366;
+  --c-orange: #ff4500;
+  --c-[#ff4500]: #ff4500;
+  --c-red: #002366;
+  --c-yellow: #ff4500;
   --c-white: #ffffff;
-  --c-dark-white: #f6f6ed;
-  --c-light-purple: #e6dfe7;
-  --c-light-blue: #afd8fb;
-  --c-blue: #2b6786;
-  --c-dark-blue: #124e6d;
-  --c-gray1: #f3f3e9;
-  --c-gray2: #ede2e2;
-  --c-red: #e33529;
-  --c-light-pink: #f4ced3;
-  --c-pink: #f3c3cb;
-  --c-dark-pink: #f0b5be;
-  --background: #f4ced3;
-  --foreground: #e33529;
+  --c-dark-white: #f8f9fa;
+  --c-light-blue: #eef2ff;
+  --c-light-pink: #f8f9fa;
+  --c-pink: #eef2ff;
+  --background: #f8f9fa;
+  --foreground: #002366;
 }
 
 /* ─── Lenis Smooth Scroll Styles ─── */
@@ -66,8 +61,8 @@ html {
 }
 
 body {
-  background-color: var(--c-light-pink);
-  color: var(--c-red);
+  background-color: #f8f9fa;
+  color: #002366;
   font-family: var(--font-poppins), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
@@ -77,11 +72,11 @@ body {
 }
 
 /* ════════════════════════════════════════════════════
-   BAYON DISPLAY TYPOGRAPHY SCALES (DONTBOARDME STYLE)
+   BAYON DISPLAY TYPOGRAPHY SCALES
    ════════════════════════════════════════════════════ */
 .h0 {
   font-family: var(--font-bayon), sans-serif;
-  font-size: clamp(4rem, 16vw, 16rem);
+  font-size: clamp(3.8rem, 15vw, 15rem);
   font-weight: 400;
   letter-spacing: -0.04em;
   line-height: 0.8;
@@ -90,7 +85,7 @@ body {
 
 .h1 {
   font-family: var(--font-bayon), sans-serif;
-  font-size: clamp(3.5rem, 12vw, 12rem);
+  font-size: clamp(3.2rem, 11vw, 11rem);
   font-weight: 400;
   letter-spacing: -0.04em;
   line-height: 0.8;
@@ -99,7 +94,7 @@ body {
 
 .h2 {
   font-family: var(--font-bayon), sans-serif;
-  font-size: clamp(3rem, 9vw, 9.5rem);
+  font-size: clamp(2.8rem, 8vw, 8.5rem);
   font-weight: 400;
   letter-spacing: -0.03em;
   line-height: 0.82;
@@ -108,7 +103,7 @@ body {
 
 .h3 {
   font-family: var(--font-bayon), sans-serif;
-  font-size: clamp(2.5rem, 6.5vw, 6.5rem);
+  font-size: clamp(2.2rem, 6vw, 6rem);
   font-weight: 400;
   letter-spacing: -0.03em;
   line-height: 0.85;
@@ -117,19 +112,10 @@ body {
 
 .h4 {
   font-family: var(--font-bayon), sans-serif;
-  font-size: clamp(2rem, 4.5vw, 4.5rem);
+  font-size: clamp(1.8rem, 4vw, 4rem);
   font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 0.9;
-  text-transform: uppercase;
-}
-
-.h5 {
-  font-family: var(--font-bayon), sans-serif;
-  font-size: clamp(1.5rem, 3vw, 3rem);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 0.95;
   text-transform: uppercase;
 }
 
@@ -154,21 +140,11 @@ body {
   }
 }
 
-/* ─── Custom Card Shadows & Glassmorphic Utilities ─── */
-.hard-shadow-red {
-  box-shadow: 6px 6px 0px #e33529;
-}
-
+/* ─── Custom Card Shadows ─── */
 .hard-shadow-blue {
-  box-shadow: 6px 6px 0px #2b6786;
+  box-shadow: 6px 6px 0px #002366;
 }
 
-.hard-shadow-yellow {
-  box-shadow: 6px 6px 0px #fff500;
-}
-
-.pastel-card {
-  background-color: #ffffff;
-  border-radius: 1.25rem;
-  box-shadow: 0px 10px 30px rgba(227, 53, 41, 0.08);
+.hard-shadow-orange {
+  box-shadow: 6px 6px 0px #ff4500;
 }

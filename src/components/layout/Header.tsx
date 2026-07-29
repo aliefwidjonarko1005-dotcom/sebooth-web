@@ -104,7 +104,7 @@ export function Header() {
                 <Link
                     href="/"
                     onClick={() => setActiveItem("")}
-                    className="text-3xl font-black text-[#e33529] uppercase tracking-tight font-bayon"
+                    className="text-3xl font-black text-[#002366] uppercase tracking-tight font-bayon"
                 >
                     sebooth.
                 </Link>
@@ -120,8 +120,8 @@ export function Header() {
                                 onClick={() => setActiveItem(item.name)}
                                 className={`font-bold text-[0.8rem] uppercase tracking-wider px-4 py-2 rounded-full transition-all duration-200 ${
                                     isActive
-                                        ? "bg-[#e33529] text-white shadow-sm"
-                                        : "text-[#e33529] hover:bg-[#e33529]/10"
+                                        ? "bg-[#002366] text-white shadow-sm"
+                                        : "text-[#002366] hover:bg-[#002366]/10"
                                 }`}
                             >
                                 {item.name}
@@ -130,15 +130,15 @@ export function Header() {
                     })}
                     
                     {/* Vertical Divider */}
-                    <div className="h-4 w-[1.5px] bg-[#e33529]/20 mx-2" />
+                    <div className="h-4 w-[1.5px] bg-[#002366]/20 mx-2" />
 
                     <Link
                         href="/profile"
                         onClick={() => setActiveItem("MY PHOTOS")}
                         className={`font-black text-[0.8rem] uppercase tracking-wider px-4 py-2 rounded-full transition-all duration-200 ${
                             activeItem === "MY PHOTOS"
-                                ? "bg-[#e33529] text-white shadow-sm"
-                                : "text-[#e33529] hover:bg-[#e33529]/10"
+                                ? "bg-[#002366] text-white shadow-sm"
+                                : "text-[#002366] hover:bg-[#002366]/10"
                         }`}
                     >
                         MY PHOTOS
@@ -150,7 +150,7 @@ export function Header() {
                     <Link
                         href="#pricing"
                         onClick={() => setActiveItem("BOOK NOW")}
-                        className="hidden md:inline-block font-black text-[0.8rem] uppercase tracking-wider px-6 py-2.5 rounded-full bg-[#e33529] text-white hover:bg-[#a02b22] hover:scale-105 active:scale-95 transition-all shadow-md"
+                        className="hidden md:inline-block font-black text-[0.8rem] uppercase tracking-wider px-6 py-2.5 rounded-full bg-[#ff4500] text-white hover:bg-[#e03d00] hover:scale-105 active:scale-95 transition-all shadow-md"
                     >
                         <EditableText section="header" fieldKey="cta_text" defaultValue="BOOK NOW" as="span" className="font-black uppercase tracking-wider text-white">
                             BOOK NOW

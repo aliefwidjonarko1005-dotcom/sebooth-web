@@ -12,15 +12,15 @@ const socialLinks = [
 
 export function Footer() {
     return (
-        <footer className="bg-[#afd8fb] relative overflow-hidden select-none">
-            {/* Floating Decorative Yellow Balls */}
-            <div className="absolute bottom-10 left-12 w-16 h-16 rounded-full bg-[#fff500] opacity-80 pointer-events-none z-0" />
-            <div className="absolute top-12 right-20 w-24 h-24 rounded-full bg-[#f4ced3] opacity-70 pointer-events-none z-0" />
+        <footer className="bg-[#eef2ff] relative overflow-hidden select-none">
+            {/* Floating Decorative Balls */}
+            <div className="absolute bottom-10 left-12 w-20 h-20 rounded-full bg-[#ff4500] opacity-20 pointer-events-none z-0" />
+            <div className="absolute top-12 right-20 w-28 h-28 rounded-full bg-[#002366] opacity-10 pointer-events-none z-0" />
 
             {/* CTA Banner */}
             <div className="py-20 md:py-32 px-6 md:px-20 text-center relative z-10">
                 <div className="max-w-5xl mx-auto flex flex-col items-center">
-                    <span className="text-[#2b6786] font-bold text-xs md:text-sm uppercase tracking-widest bg-white/70 backdrop-blur-md px-4 py-1.5 rounded-full border border-[#2b6786]/20 inline-block mb-4">
+                    <span className="text-[#002366] font-bold text-xs md:text-sm uppercase tracking-widest bg-white/90 backdrop-blur-md px-5 py-2 rounded-full border border-[#002366]/15 inline-block mb-4 shadow-sm">
                         ✦ SEBOOTH PHOTOBOOTH CONSULTATION ✦
                     </span>
 
@@ -29,12 +29,12 @@ export function Footer() {
                         fieldKey="cta_heading"
                         defaultValue="SIAP ABADIKAN MOMEN SERUMU?"
                         as="h2"
-                        className="h1 text-[#2b6786] font-bayon uppercase leading-[0.8] tracking-[-0.04em] mb-8"
+                        className="h1 text-[#002366] font-bayon uppercase leading-[0.8] tracking-[-0.04em] mb-8"
                     >
                         SIAP ABADIKAN MOMEN SERUMU?
                     </EditableText>
 
-                    <p className="text-sm md:text-xl font-semibold text-[#2b6786] uppercase max-w-xl mb-10 leading-relaxed">
+                    <p className="text-sm md:text-xl font-semibold text-[#ff4500] uppercase max-w-xl mb-10 leading-relaxed tracking-wide">
                         Hubungi tim Sebooth hari ini untuk berkonsultasi mengenai tanggal event, paket unlimited, & custom frame overlay!
                     </p>
 
@@ -42,7 +42,7 @@ export function Footer() {
                         <RotatingBadge
                             text="SEBOOTH PHOTOBOOTH • GET QUOTE TODAY • "
                             btnText="CHAT US"
-                            bgColor="#2b6786"
+                            bgColor="#ff4500"
                             textColor="#ffffff"
                             size={145}
                             href="https://wa.me/6285713899441?text=Halo%20Sebooth%2C%20saya%20ingin%20booking%20photobooth%20untuk%20acara%20saya."
@@ -52,7 +52,7 @@ export function Footer() {
             </div>
 
             {/* Footer Bottom Bar */}
-            <div className="bg-[#2b6786] text-white flex flex-col md:flex-row justify-between items-center w-full px-8 py-8 gap-6 relative z-10 safe-bottom">
+            <div className="bg-[#002366] text-white flex flex-col md:flex-row justify-between items-center w-full px-8 py-8 gap-6 relative z-10 safe-bottom">
                 <div className="text-3xl font-black font-bayon uppercase tracking-tight text-white">
                     sebooth.
                 </div>
@@ -65,7 +65,7 @@ export function Footer() {
                             key={social.name}
                             href={social.href}
                             target="_blank"
-                            className="font-black uppercase text-[0.75rem] tracking-widest text-white/90 hover:text-[#fff500] transition-colors"
+                            className="font-black uppercase text-[0.75rem] tracking-widest text-white/90 hover:text-[#ff4500] transition-colors"
                         >
                             {social.name}
                         </Link>

@@ -14,10 +14,10 @@ const SERVICES = [
     tagline: 'Ringkas, Cepat & Sangat Populer',
     desc: 'Photobooth kiosk compact dengan layar sentuh HD intuitif, pencahayaan ringlight studio, dan sistem claim QR instant tanpa penundaan.',
     features: ['Ringlight Lighting Studio', 'Softfile Photo Strip & GIF', 'QR Scan Instant Claim', 'Operator Pendamping'],
-    bgColor: '#f4ced3',
-    textColor: '#e33529',
-    badgeColor: '#e33529',
-    icon: <Camera className="w-12 h-12 text-[#e33529]" />,
+    bgColor: '#eef2ff',
+    textColor: '#002366',
+    badgeColor: '#002366',
+    icon: <Camera className="w-12 h-12 text-[#002366]" />,
   },
   {
     id: 'deluxe',
@@ -26,10 +26,10 @@ const SERVICES = [
     tagline: 'Pengalaman Photobooth Spesial Paket Lengkap',
     desc: 'Solusi photobooth terlaris untuk pesta pernikahan & event korporat. Dilengkapi kustomisasi desain frame overlay eksklusif dan cetak unlimited.',
     features: ['Cetak Strip Unlimited High Quality', 'Kustom Design Frame Overlay', 'Properti Foto Unik & Seru', 'Live Photo (Video Short) Support'],
-    bgColor: '#afd8fb',
-    textColor: '#2b6786',
-    badgeColor: '#2b6786',
-    icon: <Sparkles className="w-12 h-12 text-[#2b6786]" />,
+    bgColor: '#fff0eb',
+    textColor: '#ff4500',
+    badgeColor: '#ff4500',
+    icon: <Sparkles className="w-12 h-12 text-[#ff4500]" />,
   },
   {
     id: 'glamour',
@@ -38,10 +38,10 @@ const SERVICES = [
     tagline: 'Fitur VIP & Glamour Filter High-End',
     desc: 'Pengalaman foto eksklusif kelas atas dengan filter glamour smooth-skin, kamera DSLR full-frame, dan galeri cloud publik untuk para tamu.',
     features: ['DSLR Full-Frame Camera', 'Live Glamour Skin Smoothing', 'Galeri Event Cloud Online', 'Prioritas Antrean Digital'],
-    bgColor: '#f3f3e9',
-    textColor: '#693413',
-    badgeColor: '#fff500',
-    icon: <Handshake className="w-12 h-12 text-[#693413]" />,
+    bgColor: '#eef2ff',
+    textColor: '#002366',
+    badgeColor: '#ff4500',
+    icon: <Handshake className="w-12 h-12 text-[#002366]" />,
   },
 ]
 
@@ -54,14 +54,14 @@ export function Product({ initialData = {} }: ProductProps) {
   const currentService = SERVICES[activeIdx]
 
   return (
-    <section id="product" className="relative w-full min-h-screen bg-[#f3c3cb] py-24 px-6 md:px-16 overflow-hidden select-none">
+    <section id="product" className="relative w-full min-h-screen bg-[#f8f9fa] py-24 px-6 md:px-16 overflow-hidden select-none">
       {/* Big Circular Background (dontboardme styling) */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85rem] h-[85rem] rounded-full bg-[#f4ced3] pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85rem] h-[85rem] rounded-full bg-[#eef2ff] pointer-events-none z-0" />
 
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center">
         {/* Header */}
         <div className="text-center mb-12">
-          <span className="text-[#e33529] font-bold text-xs md:text-sm uppercase tracking-widest bg-white/70 backdrop-blur-md px-4 py-1.5 rounded-full border border-[#e33529]/20 inline-block mb-3">
+          <span className="text-[#002366] font-bold text-xs md:text-sm uppercase tracking-widest bg-white/90 backdrop-blur-md px-5 py-2 rounded-full border border-[#002366]/15 inline-block mb-3 shadow-sm">
             ✦ PILIHAN LAYANAN SEBOOTH ✦
           </span>
           <EditableText
@@ -69,7 +69,7 @@ export function Product({ initialData = {} }: ProductProps) {
             fieldKey="section_title"
             defaultValue="SEBUTIN APA YANG LOE MAU!"
             as="h2"
-            className="h2 text-[#e33529] font-bayon uppercase leading-none"
+            className="h2 text-[#002366] font-bayon uppercase leading-none"
           >
             SEBUTIN APA YANG LOE MAU!
           </EditableText>
@@ -87,16 +87,16 @@ export function Product({ initialData = {} }: ProductProps) {
                 whileTap={{ scale: 0.98 }}
                 className={`w-full text-left p-6 rounded-2xl border-2 transition-all flex items-center justify-between ${
                   activeIdx === idx
-                    ? 'bg-white border-[#e33529] shadow-lg translate-x-2'
+                    ? 'bg-white border-[#002366] shadow-lg translate-x-2'
                     : 'bg-white/60 border-white/80 hover:bg-white/90'
                 }`}
               >
                 <div className="flex items-center gap-4">
-                  <span className="font-bayon text-2xl md:text-3xl text-[#e33529]">
+                  <span className="font-bayon text-2xl md:text-3xl text-[#002366]">
                     {srv.num}
                   </span>
                   <div>
-                    <h3 className="font-bayon text-xl md:text-2xl text-[#e33529] uppercase leading-none">
+                    <h3 className="font-bayon text-xl md:text-2xl text-[#002366] uppercase leading-none">
                       {srv.name}
                     </h3>
                     <p className="text-xs font-semibold text-gray-500 uppercase mt-1">
@@ -106,7 +106,7 @@ export function Product({ initialData = {} }: ProductProps) {
                 </div>
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                    activeIdx === idx ? 'bg-[#e33529] text-white' : 'bg-gray-200 text-gray-400'
+                    activeIdx === idx ? 'bg-[#ff4500] text-white' : 'bg-gray-200 text-gray-400'
                   }`}
                 >
                   <ArrowRight className="w-4 h-4" />
