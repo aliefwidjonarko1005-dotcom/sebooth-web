@@ -403,8 +403,8 @@ export default function SessionDetailPage() {
               ) : strip ? (
                 <>
                   <div className="w-full bg-white border-2 border-black hard-shadow-black p-1.5">
-                    <div className="relative w-full border border-black" style={{ aspectRatio: '9/16', maxHeight: '65vh' }}>
-                      <NextImage src={strip.url} alt="Photo Strip" fill className="object-contain" sizes="(max-width: 512px) 100vw, 512px" quality={80} />
+                    <div className="relative w-full border border-black flex items-center justify-center" style={{ aspectRatio: '9/16', maxHeight: '65vh' }}>
+                      <img src={strip.url} alt="Photo Strip" className="w-full h-full object-contain" />
                     </div>
                   </div>
                   <button onClick={() => downloadFile(strip.url, 'strip.jpg')} className="mt-6 w-full py-3.5 bg-secondary text-white font-black uppercase text-[0.8rem] flex items-center justify-center gap-2 border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
@@ -476,8 +476,8 @@ export default function SessionDetailPage() {
               <div className="grid grid-cols-2 gap-3">
                 {photos.map((p, i) => (
                   <div key={p.id} className="relative group aspect-square bg-white border-2 border-black hard-shadow-black p-1">
-                    <div className="relative w-full h-full border border-black">
-                      <NextImage src={p.url} alt={`Photo ${i + 1}`} fill className="object-cover" sizes="(max-width: 512px) 50vw, 256px" quality={75} loading="lazy" />
+                    <div className="relative w-full h-full border border-black flex items-center justify-center">
+                      <img src={p.url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
                     </div>
                     <button
                       onClick={() => downloadFile(p.url, `photo_${i + 1}.jpg`)}
