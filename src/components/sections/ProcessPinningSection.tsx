@@ -8,72 +8,101 @@ import { RotatingBadge } from '@/components/ui/RotatingBadge'
 
 const PROCESS_STEPS = [
   {
-    num: "01",
-    title: "TAP & CHOOSE FRAME",
+    num: "01.",
+    stepBadge: "1",
+    title: "FILL OUT & CHOOSE FRAME",
     desc: "Pilih template frame eksklusif favoritmu langsung di layar touch-screen kiosk Sebooth.",
     bgCard: "#ffffff",
-    bgCircle: "#eef2ff",
+    bgIllustration: "#eef2ff",
+    badgeBg: "#ff4500",
     color: "#002366",
-    icon: <Sparkles className="w-6 h-6 md:w-7 md:h-7 text-[#002366]" />,
+    rotate: -6,
+    icon: <Sparkles className="w-16 h-16 md:w-20 md:h-20 text-[#002366]/40" />,
   },
   {
-    num: "02",
-    title: "POSE & SHOOT",
-    desc: "Ambil foto bersama teman-temanmu dengan pencahayaan studio profesional dan filter cantik.",
+    num: "02.",
+    stepBadge: "2",
+    title: "POSE & SHOOT WITH FRIENDS",
+    desc: "Ambil foto bersama teman-temanmu dengan pencahayaan studio profesional & filter cantik.",
     bgCard: "#ffffff",
-    bgCircle: "#fff0eb",
+    bgIllustration: "#fff0eb",
+    badgeBg: "#002366",
     color: "#ff4500",
-    icon: <Camera className="w-6 h-6 md:w-7 md:h-7 text-[#ff4500]" />,
+    rotate: 2,
+    icon: <Camera className="w-16 h-16 md:w-20 md:h-20 text-[#ff4500]/40" />,
   },
   {
-    num: "03",
-    title: "SCAN QR INSTANT",
+    num: "03.",
+    stepBadge: "3",
+    title: "SCAN QR INSTANT CLAIM",
     desc: "Scan QR Code di layar kiosk dengan HP-mu untuk langsung menghubungkan foto ke akunmu.",
     bgCard: "#ffffff",
-    bgCircle: "#eef2ff",
+    bgIllustration: "#eef2ff",
+    badgeBg: "#ff4500",
     color: "#002366",
-    icon: <QrCode className="w-6 h-6 md:w-7 md:h-7 text-[#002366]" />,
+    rotate: -3,
+    icon: <QrCode className="w-16 h-16 md:w-20 md:h-20 text-[#002366]/40" />,
   },
   {
-    num: "04",
-    title: "SIMPAN SELAMANYA",
+    num: "04.",
+    stepBadge: "4",
+    title: "SAVE & PRINT FOREVER",
     desc: "Unduh Photo Strip, GIF Animasi, dan Live Photo berkualitas tinggi di profil pribadi Sebooth.",
     bgCard: "#ffffff",
-    bgCircle: "#fff0eb",
+    bgIllustration: "#fff0eb",
+    badgeBg: "#002366",
     color: "#ff4500",
-    icon: <ImageIcon className="w-6 h-6 md:w-7 md:h-7 text-[#ff4500]" />,
+    rotate: 5,
+    icon: <ImageIcon className="w-16 h-16 md:w-20 md:h-20 text-[#ff4500]/40" />,
   },
 ]
 
 export function ProcessPinningSection() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const trackRef = useRef<HTMLDivElement>(null)
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
 
     const container = containerRef.current
-    const track = trackRef.current
-    if (!container || !track) return
-
-    // Calculate exact horizontal distance required to scroll all cards to the end
-    const getScrollAmount = () => {
-      return -(track.scrollWidth - window.innerWidth + 80)
-    }
+    const cards = cardsRef.current.filter(Boolean)
+    if (!container || cards.length === 0) return
 
     const ctx = gsap.context(() => {
-      gsap.to(track, {
-        x: getScrollAmount,
-        ease: 'none',
+      const tl = gsap.timeline({
         scrollTrigger: {
           trigger: container,
           pin: true,
           pinSpacing: true,
           start: 'top top',
-          end: () => `+=${Math.abs(getScrollAmount()) + 200}`,
-          scrub: 1,
+          end: '+=1800',
+          scrub: 0.8,
           invalidateOnRefresh: true,
         },
+      })
+
+      // Animate each card rising one by one in staggered overlap sequence
+      cards.forEach((card, i) => {
+        const targetRotate = PROCESS_STEPS[i].rotate
+
+        tl.fromTo(
+          card,
+          {
+            y: 350 + i * 50,
+            opacity: 0,
+            scale: 0.8,
+            rotate: targetRotate + (i % 2 === 0 ? -12 : 12),
+          },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            rotate: targetRotate,
+            duration: 1,
+            ease: 'power2.out',
+          },
+          i * 0.7
+        )
       })
     }, container)
 
@@ -83,93 +112,86 @@ export function ProcessPinningSection() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-screen bg-[#f8f9fa] overflow-hidden flex flex-col justify-center py-6 md:py-10"
+      className="relative w-full min-h-screen bg-[#f8f9fa] overflow-hidden flex flex-col justify-between py-8 md:py-12 select-none"
     >
-      {/* Background Soft Decorative Circle */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70rem] h-[70rem] rounded-full bg-[#eef2ff] pointer-events-none z-0 opacity-70" />
+      {/* Background Soft Circle Accent */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75rem] h-[75rem] rounded-full bg-[#eef2ff] pointer-events-none z-0 opacity-60" />
 
-      {/* Header Title (Compact Scale for Single Screen Viewport Fit) */}
-      <div className="relative z-10 text-center px-6 mb-6 md:mb-8 shrink-0">
-        <span className="text-[#002366] font-bold text-[0.65rem] md:text-xs uppercase tracking-widest bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full border border-[#002366]/15 inline-block mb-2 shadow-sm">
+      {/* Header Tagline & Title */}
+      <div className="relative z-10 text-center px-6 shrink-0 mt-4 md:mt-8">
+        <span className="text-[#002366] font-bold text-[0.65rem] md:text-xs uppercase tracking-widest bg-white/90 backdrop-blur-md px-5 py-2 rounded-full border border-[#002366]/15 inline-block mb-3 shadow-sm">
           ✦ ALUR KERJA MESIN KOLONG ✦
         </span>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl text-[#002366] uppercase font-bayon leading-none tracking-tight">
+        <h2 className="text-3xl sm:text-5xl md:text-6xl text-[#002366] uppercase font-bayon leading-none tracking-tight">
           CARA KERJA SEBOOTH
         </h2>
-        <p className="text-[#ff4500] font-bold text-xs md:text-sm uppercase max-w-md mx-auto mt-1.5 tracking-wide">
-          Mudah, Cepat, dan Seru! Hanya 4 Langkah untuk Abadikan Kenanganmu.
-        </p>
       </div>
 
-      {/* Pinned Horizontal Track */}
-      <div className="relative z-10 w-full overflow-hidden shrink-0">
-        <div
-          ref={trackRef}
-          className="flex gap-4 md:gap-8 px-6 md:px-16 w-max items-center"
-        >
+      {/* Overlapping Card Container Stack (dontboardme style) */}
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 my-auto flex items-center justify-center min-h-[440px] md:min-h-[500px]">
+        <div className="flex flex-wrap md:flex-nowrap items-center justify-center -space-x-8 sm:-space-x-12 md:-space-x-16 w-full">
           {PROCESS_STEPS.map((step, idx) => (
             <div
               key={idx}
-              className="w-[260px] sm:w-[300px] md:w-[350px] h-[340px] sm:h-[370px] md:h-[400px] rounded-2xl p-6 md:p-8 flex flex-col justify-between shadow-lg border border-gray-100 relative group transition-all duration-300 hover:-translate-y-1 hover:shadow-xl shrink-0"
-              style={{ backgroundColor: step.bgCard }}
+              ref={(el) => { cardsRef.current[idx] = el }}
+              className="w-[240px] sm:w-[280px] md:w-[320px] h-[370px] sm:h-[410px] md:h-[450px] rounded-3xl p-6 md:p-7 bg-white border-2 border-white shadow-2xl flex flex-col justify-between relative shrink-0 transition-shadow duration-300 hover:shadow-2xl hover:z-30"
+              style={{
+                boxShadow: '0 25px 50px -12px rgba(0, 35, 102, 0.15)',
+              }}
             >
-              {/* Step Number Badge */}
-              <div className="flex items-center justify-between">
-                <span className="text-3xl md:text-4xl font-black font-bayon" style={{ color: step.color }}>
-                  {step.num}
-                </span>
-                <div
-                  className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center shadow-xs border border-gray-100"
-                  style={{ backgroundColor: step.bgCircle }}
-                >
-                  {step.icon}
-                </div>
+              {/* Circular Step Badge (Top-Left / Top-Right as in dontboardme layout) */}
+              <div
+                className="absolute -top-3 -left-3 w-8 h-8 md:w-10 md:h-10 rounded-full text-white font-black text-xs md:text-sm flex items-center justify-center border-2 border-white shadow-md z-20"
+                style={{ backgroundColor: step.badgeBg }}
+              >
+                {step.stepBadge}
               </div>
 
-              {/* Step Title & Description */}
-              <div className="my-auto py-2">
+              {/* Card Header Title */}
+              <div>
                 <h3
-                  className="text-xl md:text-2xl font-black font-bayon uppercase leading-tight tracking-tight mb-2"
+                  className="text-2xl sm:text-3xl md:text-4xl font-black font-bayon uppercase leading-[0.85] tracking-tight mb-2"
                   style={{ color: step.color }}
                 >
                   {step.title}
                 </h3>
-                <p className="text-xs md:text-sm font-medium uppercase text-gray-600 leading-relaxed">
+                <span className="text-2xl md:text-3xl font-black font-bayon block" style={{ color: step.color }}>
+                  {step.num}
+                </span>
+                <p className="text-[10px] md:text-xs font-semibold uppercase text-gray-500 mt-2 leading-relaxed line-clamp-2">
                   {step.desc}
                 </p>
               </div>
 
-              {/* Bottom Decorative Indicator */}
-              <div className="w-full flex items-center justify-between pt-3 border-t border-gray-100">
-                <span className="text-[9px] md:text-[11px] font-bold uppercase tracking-widest text-gray-400">
-                  STEP {step.num} OF 04
-                </span>
-                <span
-                  className="w-2.5 h-2.5 rounded-full"
-                  style={{ backgroundColor: step.color }}
-                />
+              {/* Bottom Pastel Illustration Container */}
+              <div
+                className="w-full h-[150px] sm:h-[180px] md:h-[200px] rounded-2xl border border-gray-100 flex items-center justify-center p-4 relative overflow-hidden mt-4"
+                style={{ backgroundColor: step.bgIllustration }}
+              >
+                {step.icon}
+                <div className="absolute bottom-2 right-3 text-[9px] font-black uppercase tracking-widest text-[#002366]/40">
+                  SEBOOTH STEP {step.stepBadge}
+                </div>
               </div>
             </div>
           ))}
-
-          {/* End Callout Card */}
-          <div className="w-[260px] sm:w-[300px] md:w-[350px] h-[340px] sm:h-[370px] md:h-[400px] rounded-2xl bg-[#002366] p-6 md:p-8 text-white flex flex-col justify-center items-center text-center shadow-xl relative overflow-hidden shrink-0">
-            <h3 className="text-2xl md:text-3xl font-bayon text-white uppercase leading-tight mb-2">
-              SIAP COBA SEBOOTH?
-            </h3>
-            <p className="text-[11px] md:text-xs font-medium uppercase text-white/80 mb-6 max-w-xs leading-relaxed">
-              Pesan Sebooth Photobooth untuk Acara Pernikahan, Ulang Tahun, atau Corporate Event-mu Sekarang!
-            </p>
-            <RotatingBadge
-              text="BOOK SEBOOTH PHOTOBOOTH • NOW • "
-              btnText="BOOK NOW"
-              bgColor="#ff4500"
-              textColor="#ffffff"
-              size={110}
-              href="https://wa.me/6285713899441?text=Halo%20Sebooth%2C%20saya%20ingin%20booking%20photobooth"
-            />
-          </div>
         </div>
+      </div>
+
+      {/* Bottom Subtitle & Floating Rotating CTA Badge */}
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-6 text-center shrink-0 mb-4 md:mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p className="text-[11px] md:text-xs font-bold text-[#002366] uppercase tracking-wider max-w-md text-center md:text-left">
+          JUST FOLLOW THE 4 SIMPLE STEPS, AND WE’LL BE HAPPY TO ELEVATE YOUR EVENT WITH SEBOOTH!
+        </p>
+
+        <RotatingBadge
+          text="BOOK SEBOOTH PHOTOBOOTH • NOW • "
+          btnText="BOOK NOW"
+          bgColor="#ff4500"
+          textColor="#ffffff"
+          size={110}
+          href="https://wa.me/6285713899441?text=Halo%20Sebooth%2C%20saya%20ingin%20booking%20photobooth"
+        />
       </div>
     </section>
   )
