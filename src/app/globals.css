@@ -1,313 +1,174 @@
 @import "tailwindcss";
 
 /* ════════════════════════════════════════════════════
-   GRAPHIC BRUTALISM DESIGN SYSTEM
+   DONTBOARDME.COM PLAYFUL PASTEL DESIGN SYSTEM
    ════════════════════════════════════════════════════ */
 
 @theme {
-  /* ─── Brutalism Palette ─── */
-  --color-primary: #002366;
-  --color-secondary: #ff4500;
-  --color-surface: #ffffff;
-  --color-text-dark: #00113a;
-  --color-on-primary: #ffffff;
-  --color-on-secondary: #ffffff;
-
-  /* ─── Legacy Tokens (used in /profile, /admin pages) ─── */
-  --color-gold: #D4AF37;
-  --color-gold-hover: #E5C158;
-  --color-charcoal: #1A1A1A;
-  --color-offwhite: #F9F9F9;
-  --color-accent: #0F3D2E;
-  --color-accent-hover: #195240;
-
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-primary: #e33529;
+  --color-secondary: #2b6786;
+  --color-pink-light: #f4ced3;
+  --color-pink-accent: #f3c3cb;
+  --color-blue-light: #afd8fb;
+  --color-yellow-accent: #fff500;
+  --color-gray-soft: #f3f3e9;
+  --color-dark-brown: #693413;
 
   /* ─── Font Tokens ─── */
-  --font-headline: var(--font-poppins);
+  --font-headline: var(--font-bayon);
   --font-marker: var(--font-poppins);
-  --font-sebooth: var(--font-poppins);
+  --font-sebooth: var(--font-bayon);
   --font-poppins: var(--font-poppins);
+  --font-bayon: var(--font-bayon);
 }
 
-/* ─── Brand font helper ─── */
-.font-sebooth {
-  font-family: var(--font-sebooth), sans-serif;
-}
-
-/* ─── Root Variables ─── */
 :root {
-  --background: #ffffff;
-  --foreground: #00113a;
+  --c-brown: #854720;
+  --c-light-brown: #925026;
+  --c-dark-brown: #693413;
+  --c-yellow: #fff500;
+  --c-white: #ffffff;
+  --c-dark-white: #f6f6ed;
+  --c-light-purple: #e6dfe7;
+  --c-light-blue: #afd8fb;
+  --c-blue: #2b6786;
+  --c-dark-blue: #124e6d;
+  --c-gray1: #f3f3e9;
+  --c-gray2: #ede2e2;
+  --c-red: #e33529;
+  --c-light-pink: #f4ced3;
+  --c-pink: #f3c3cb;
+  --c-dark-pink: #f0b5be;
+  --background: #f4ced3;
+  --foreground: #e33529;
+}
+
+/* ─── Lenis Smooth Scroll Styles ─── */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 html {
   scroll-behavior: smooth;
-  /* Prevent horizontal overflow on mobile */
   overflow-x: hidden;
 }
 
 body {
-  --font-headline: var(--font-poppins);
-  --font-marker: var(--font-poppins);
-  --font-sebooth: var(--font-poppins);
-  background-color: var(--background);
-  background-image: url("/images/main-background.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: local;
-  background-position: top center;
-  color: var(--foreground);
+  background-color: var(--c-light-pink);
+  color: var(--c-red);
   font-family: var(--font-poppins), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
-  /* Prevent layout shift from scrollbar */
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 /* ════════════════════════════════════════════════════
-   BRUTALISM: ZERO ROUNDED CORNERS
+   BAYON DISPLAY TYPOGRAPHY SCALES (DONTBOARDME STYLE)
    ════════════════════════════════════════════════════ */
-* {
-  border-radius: 0 !important;
+.h0 {
+  font-family: var(--font-bayon), sans-serif;
+  font-size: clamp(4rem, 16vw, 16rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 0.8;
+  text-transform: uppercase;
 }
 
-/* ════════════════════════════════════════════════════
-   CUSTOM UTILITY CLASSES
-   ════════════════════════════════════════════════════ */
-@layer utilities {
+.h1 {
+  font-family: var(--font-bayon), sans-serif;
+  font-size: clamp(3.5rem, 12vw, 12rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 0.8;
+  text-transform: uppercase;
+}
 
-  /* ─── Global Paper Texture Overlay ─── */
-  .paper-texture {
-    position: relative;
-  }
-  @media (min-width: 768px) {
-    body::after {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      opacity: 0.05;
-      pointer-events: none;
-      z-index: 9999;
-      background-image: url("/images/paper-noise.png");
-      background-repeat: repeat;
-    }
-  }
+.h2 {
+  font-family: var(--font-bayon), sans-serif;
+  font-size: clamp(3rem, 9vw, 9.5rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.82;
+  text-transform: uppercase;
+}
 
-  /* ─── Marker / Handwriting Font ─── */
-  .marker-font {
-    font-family: var(--font-marker), 'Permanent Marker', cursive;
-    text-shadow:
-      -1px -1px 0 #002366,
-       1px -1px 0 #002366,
-      -1px  1px 0 #002366,
-       1px  1px 0 #002366;
-  }
+.h3 {
+  font-family: var(--font-bayon), sans-serif;
+  font-size: clamp(2.5rem, 6.5vw, 6.5rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.85;
+  text-transform: uppercase;
+}
 
-  /* ─── Scribble Underline ─── */
-  .scribble-underline {
-    background-image: url("data:image/svg+xml,%3Csvg width='300' height='20' viewBox='0 0 300 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 15C50 12 150 18 295 10' stroke='%23ff4500' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: bottom;
-    padding-bottom: 8px;
-  }
+.h4 {
+  font-family: var(--font-bayon), sans-serif;
+  font-size: clamp(2rem, 4.5vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
 
-  /* ─── Scribble Arrow ─── */
-  .scribble-arrow {
-    position: absolute;
-    width: 120px;
-    height: 80px;
-    background-image: url("data:image/svg+xml,%3Csvg width='120' height='80' viewBox='0 0 120 80' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10C30 40 80 10 100 60M100 60L85 55M100 60L110 45' stroke='%23ff4500' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-  }
+.h5 {
+  font-family: var(--font-bayon), sans-serif;
+  font-size: clamp(1.5rem, 3vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
 
-  /* ─── Brutalist Hard Shadows ─── */
-  .hard-shadow-black {
-    box-shadow: 4px 4px 0px 0px #000000;
-  }
-  .hard-shadow-blue {
-    box-shadow: 4px 4px 0px 0px #002366;
-  }
-  .hard-shadow-orange {
-    box-shadow: 4px 4px 0px 0px #ff4500;
-  }
-  .hard-shadow-white {
-    box-shadow: 4px 4px 0px 0px #ffffff;
-  }
+/* ─── Global Paper Texture Overlay ─── */
+.paper-texture {
+  position: relative;
+}
 
-  /* ─── Brutalist Borders ─── */
-  .brutalist-border {
-    border: 2px solid #000000;
-  }
-  .brutalist-border-thick {
-    border: 4px solid #000000;
-  }
-
-  /* ─── Smooth Expand / Collapse (GPU-accelerated) ─── */
-  .grid-expand {
-    display: grid;
-    grid-template-rows: 1fr;
-    transition: grid-template-rows 0.25s ease-in-out;
-  }
-  .grid-collapse {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 0.25s ease-in-out;
-  }
-  .grid-expand > .grid-inner,
-  .grid-collapse > .grid-inner {
-    overflow: hidden;
-  }
-
-  /* ─── Hide Scrollbar (carousel) ─── */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  /* ─── Inline Editing Visual Cues ─── */
-  .editable-field {
-    position: relative;
-    cursor: pointer;
-  }
-  .editable-hover {
-    transition: outline 0.15s ease, box-shadow 0.15s ease;
-    outline: 2px dashed transparent;
-  }
-  .editable-hover:hover {
-    outline: 2px dashed #3B82F6;
-    outline-offset: 4px;
-    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
-  }
-  .editable-active {
-    outline: 2px solid #3B82F6 !important;
-    outline-offset: 4px;
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
-    cursor: text !important;
-  }
-
-  /* ─── Mobile Touch Utilities ─── */
-  .touch-target {
-    min-height: 44px;
-    min-width: 44px;
-  }
-  .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  .safe-top {
-    padding-top: env(safe-area-inset-top, 0px);
-  }
-
-  /* ─── Adaptive Rotation UI (Physical Portrait on Landscape Screen) ─── */
-  @media (min-width: 1024px) {
-    html[data-orientation="portrait"] body {
-      width: 100vh;
-      height: 100vw;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-90deg);
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-  }
-
-  /* ─── Abstract Fluid Gradient (Static Brutalist for Performance) ─── */
-  .bg-fluid-gradient {
-    background: linear-gradient(135deg, #F9F9F9 0%, #EAEAEA 100%);
-  }
-
-  /* ─── Floating Header Custom Specificity (Bypass Brutalist border-radius Reset) ─── */
-  .floating-glass-header {
-    border-radius: 16px !important;
-  }
-  .floating-glass-header a,
-  .floating-glass-header button,
-  .floating-glass-header div {
-    border-radius: 8px !important;
-  }
-
-  /* ─── Glassmorphic Card (Bypass Brutalist border-radius Reset) ─── */
-  .glass-card {
-    border-radius: 24px !important;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.06), inset 0 1px 0 0 rgba(255, 255, 255, 0.15) !important;
-  }
-  .glass-card:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.25) !important;
-  }
-  .glass-card-icon-container {
-    border-radius: 9999px !important;
+@media (min-width: 768px) {
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url("/images/paper-noise.png");
+    background-repeat: repeat;
   }
 }
 
-/* ─── Keyframes (outside @layer) ─── */
-@keyframes fluid-gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translate(-50%, -10px); }
-  to   { opacity: 1; transform: translate(-50%, 0); }
-}
-@keyframes glass-shimmer {
-  0% {
-    left: -150%;
-  }
-  50% {
-    left: 150%;
-  }
-  100% {
-    left: 150%;
-  }
+/* ─── Custom Card Shadows & Glassmorphic Utilities ─── */
+.hard-shadow-red {
+  box-shadow: 6px 6px 0px #e33529;
 }
 
-.animate-shimmer {
-  animation: glass-shimmer 7s infinite ease-in-out;
+.hard-shadow-blue {
+  box-shadow: 6px 6px 0px #2b6786;
 }
 
-.shimmer-container {
-  border-radius: 16px !important;
+.hard-shadow-yellow {
+  box-shadow: 6px 6px 0px #fff500;
 }
 
-/* ─── Featured Frames Marquee & Popup Animations ─── */
-@keyframes marquee-scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-marquee {
-  animation: marquee-scroll var(--marquee-duration, 30s) linear infinite;
-}
-
-@keyframes popup-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.95) translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-.animate-popup-in {
-  animation: popup-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.pastel-card {
+  background-color: #ffffff;
+  border-radius: 1.25rem;
+  box-shadow: 0px 10px 30px rgba(227, 53, 41, 0.08);
 }

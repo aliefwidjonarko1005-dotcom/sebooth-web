@@ -104,13 +104,13 @@ export function Header() {
                 <Link
                     href="/"
                     onClick={() => setActiveItem("")}
-                    className="text-2xl font-black text-secondary uppercase tracking-tighter"
+                    className="text-3xl font-black text-[#e33529] uppercase tracking-tight font-bayon"
                 >
                     sebooth.
                 </Link>
 
                 {/* Desktop Navigation */}
-                <nav className="hidden md:flex gap-3 items-center">
+                <nav className="hidden md:flex gap-2 items-center">
                     {navItems.map((item) => {
                         const isActive = activeItem === item.name;
                         return (
@@ -118,10 +118,10 @@ export function Header() {
                                 key={item.name}
                                 href={item.href}
                                 onClick={() => setActiveItem(item.name)}
-                                className={`font-bold uppercase tracking-tight px-3 py-1.5 transition-all duration-200 ${
+                                className={`font-bold text-[0.8rem] uppercase tracking-wider px-4 py-2 rounded-full transition-all duration-200 ${
                                     isActive
-                                        ? "bg-secondary text-white shadow-sm"
-                                        : "text-secondary hover:bg-secondary/10 hover:text-primary"
+                                        ? "bg-[#e33529] text-white shadow-sm"
+                                        : "text-[#e33529] hover:bg-[#e33529]/10"
                                 }`}
                             >
                                 {item.name}
@@ -130,15 +130,15 @@ export function Header() {
                     })}
                     
                     {/* Vertical Divider */}
-                    <div className="h-5 w-[1.5px] bg-black/10 mx-2" />
+                    <div className="h-4 w-[1.5px] bg-[#e33529]/20 mx-2" />
 
                     <Link
                         href="/profile"
                         onClick={() => setActiveItem("MY PHOTOS")}
-                        className={`font-black uppercase tracking-tight px-3 py-1.5 transition-all duration-200 ${
+                        className={`font-black text-[0.8rem] uppercase tracking-wider px-4 py-2 rounded-full transition-all duration-200 ${
                             activeItem === "MY PHOTOS"
-                                ? "bg-secondary text-white shadow-sm"
-                                : "text-secondary hover:bg-secondary/10 hover:text-primary"
+                                ? "bg-[#e33529] text-white shadow-sm"
+                                : "text-[#e33529] hover:bg-[#e33529]/10"
                         }`}
                     >
                         MY PHOTOS
@@ -148,15 +148,11 @@ export function Header() {
                 {/* Desktop CTA + Mobile Toggle */}
                 <div className="flex items-center gap-4">
                     <Link
-                        href="#contact"
+                        href="#pricing"
                         onClick={() => setActiveItem("BOOK NOW")}
-                        className={`hidden md:inline-block font-bold uppercase tracking-tight px-5 py-2 transition-all duration-200 ${
-                            activeItem === "BOOK NOW"
-                                ? "bg-secondary text-white shadow-sm"
-                                : "bg-primary text-white hover:bg-secondary shadow-md"
-                        }`}
+                        className="hidden md:inline-block font-black text-[0.8rem] uppercase tracking-wider px-6 py-2.5 rounded-full bg-[#e33529] text-white hover:bg-[#a02b22] hover:scale-105 active:scale-95 transition-all shadow-md"
                     >
-                        <EditableText section="header" fieldKey="cta_text" defaultValue="BOOK NOW" as="span" className="font-bold uppercase tracking-tight text-white">
+                        <EditableText section="header" fieldKey="cta_text" defaultValue="BOOK NOW" as="span" className="font-black uppercase tracking-wider text-white">
                             BOOK NOW
                         </EditableText>
                     </Link>

@@ -3,68 +3,123 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { EditableText } from "@/components/admin/EditableText";
+import { RotatingBadge } from "@/components/ui/RotatingBadge";
 
 interface HeroProps {
     initialData?: Record<string, string>;
 }
 
 export function Hero({ initialData = {} }: HeroProps) {
-    // Hardcoded new values — override any stale CMS data
-    const heroTitle = "Seboothkan Momenmu Bersama Sebooth";
-    const heroSubtitle = initialData["subtitle"] || "Premium Photobooth Experience for Weddings, Corporate, and Private Parties. Powered by Zero-Lag System.";
-    const heroCta = "Sebooth-in Moemenmu Sekarang!";
+    const heroTitle1 = initialData["title1"] || "SEBOOTH KAN";
+    const heroTitle2 = initialData["title2"] || "MOMEN INDAHMU";
+    const heroSubtitle = initialData["subtitle"] || "Premium Photobooth Experience for Weddings, Corporate, and Special Events.";
 
     return (
-        <section className="relative w-full min-h-[100svh] md:min-h-[850px] bg-primary flex flex-col justify-center items-center px-6 md:px-20 overflow-hidden">
-            {/* Main Content */}
+        <section className="relative w-full min-h-[100svh] lg:min-h-[920px] bg-[#f3f3e9] flex flex-col justify-between items-center px-4 md:px-12 pt-28 pb-16 overflow-hidden select-none">
+            {/* Floating Pastel Decorative Balls (dontboardme hero-ball replication) */}
             <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                animate={{ y: [0, -15, 0], rotate: [0, 5, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-[15%] left-[-40px] md:left-[5%] w-36 h-36 md:w-56 md:h-56 rounded-full bg-[#f4ced3] border-4 border-[#e33529] opacity-80 pointer-events-none z-0"
+            />
+            <motion.div
+                animate={{ y: [0, 20, 0], rotate: [0, -8, 0] }}
+                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                className="absolute top-[35%] right-[-30px] md:right-[8%] w-44 h-44 md:w-64 md:h-64 rounded-full bg-[#afd8fb] border-4 border-[#2b6786] opacity-75 pointer-events-none z-0"
+            />
+            <motion.div
+                animate={{ y: [0, -25, 0] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className="absolute bottom-[10%] left-[20%] w-24 h-24 md:w-36 md:h-36 rounded-full bg-[#fff500] border-4 border-[#693413] opacity-70 pointer-events-none z-0"
+            />
+
+            {/* Small Top Tagline Pill */}
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="max-w-5xl z-10 text-center flex flex-col items-center"
+                transition={{ duration: 0.6 }}
+                className="z-10 bg-[#e33529] text-white px-5 py-2 rounded-full font-bold text-xs md:text-sm uppercase tracking-widest shadow-sm"
             >
+                ✦ THE FAVORITE PHOTOBOOTH IN SEMARANG ✦
+            </motion.div>
+
+            {/* Center Giant Display Typography */}
+            <div className="z-10 w-full max-w-7xl my-auto text-center flex flex-col items-center justify-center">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.8 }}
-                    className="mb-8"
+                    transition={{ duration: 0.8, delay: 0.1 }}
+                    className="w-full"
                 >
-                    <EditableText section="hero" fieldKey="title" defaultValue={heroTitle} as="h1" className="text-5xl md:text-8xl font-black text-white leading-[0.95] tracking-tighter uppercase font-poppins">
-                        {heroTitle}
+                    <EditableText
+                        section="hero"
+                        fieldKey="title1"
+                        defaultValue={heroTitle1}
+                        as="h1"
+                        className="h0 text-[#e33529] leading-[0.78] tracking-[-0.04em] uppercase block font-bayon"
+                    >
+                        {heroTitle1}
+                    </EditableText>
+                </motion.div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.25 }}
+                    className="w-full"
+                >
+                    <EditableText
+                        section="hero"
+                        fieldKey="title2"
+                        defaultValue={heroTitle2}
+                        as="h1"
+                        className="h0 text-[#2b6786] leading-[0.78] tracking-[-0.04em] uppercase block font-bayon mt-1 md:mt-3"
+                    >
+                        {heroTitle2}
                     </EditableText>
                 </motion.div>
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4, duration: 0.8 }}
+                    transition={{ duration: 0.7, delay: 0.4 }}
+                    className="mt-6 md:mt-8 max-w-xl"
                 >
-                    <EditableText section="hero" fieldKey="subtitle" defaultValue={heroSubtitle} as="p" className="text-xl md:text-2xl text-white font-medium max-w-2xl mb-12 uppercase">
+                    <EditableText
+                        section="hero"
+                        fieldKey="subtitle"
+                        defaultValue={heroSubtitle}
+                        as="p"
+                        className="text-base md:text-xl text-[#e33529] font-semibold uppercase tracking-wide leading-snug"
+                    >
                         {heroSubtitle}
                     </EditableText>
                 </motion.div>
+            </div>
 
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.6, duration: 0.5 }}
-                    className="flex flex-col sm:flex-row gap-6"
-                >
+            {/* Bottom Row: Rotating Badge CTA & Direct WA Link */}
+            <div className="z-10 w-full max-w-6xl flex flex-col md:flex-row items-center justify-between gap-6 pt-4">
+                <div className="flex items-center gap-4 bg-white/80 backdrop-blur-md px-6 py-3 rounded-full border-2 border-[#e33529]/20 shadow-sm">
+                    <span className="w-3 h-3 rounded-full bg-[#e33529] animate-ping" />
+                    <span className="text-xs md:text-sm font-black text-[#e33529] uppercase tracking-wider">
+                        ⚡ ZERO-LAG PHYSICAL KIOSK SYSTEM
+                    </span>
+                </div>
+
+                <div className="flex items-center gap-6">
                     <Link
                         href="https://wa.me/6285713899441?text=Halo%20Sebooth%2C%20saya%20ingin%20booking%20photobooth%20untuk%20acara%20saya."
                         target="_blank"
-                        className="bg-secondary text-white text-xl font-black uppercase px-10 py-5 border-2 border-black hover:-translate-y-1 hover:-translate-x-1 active:translate-0 transition-all duration-200 ease-out hard-shadow-black text-center font-poppins"
                     >
-                        <EditableText section="hero" fieldKey="cta_text" defaultValue={heroCta} as="span" className="text-white text-xl font-black uppercase">
-                            {heroCta}
-                        </EditableText>
+                        <RotatingBadge
+                            text="SEBOOTH PHOTOBOOTH • BOOK NOW • "
+                            btnText="BOOK NOW"
+                            bgColor="#e33529"
+                            textColor="#ffffff"
+                            size={135}
+                        />
                     </Link>
-                </motion.div>
-            </motion.div>
-
-            {/* Background Watermark */}
-            <div className="absolute right-0 bottom-0 opacity-20 pointer-events-none select-none">
-                <span className="text-[20rem] font-black text-white leading-none">SE.</span>
+                </div>
             </div>
         </section>
     );

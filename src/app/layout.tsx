@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Permanent_Marker, Poppins } from "next/font/google";
+import { Space_Grotesk, Permanent_Marker, Poppins, Bayon } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { LayoutShell } from "@/components/layout/LayoutShell";
 import { ClientProviders } from "@/components/admin/ClientProviders";
 import { OrientationProvider } from "@/components/layout/OrientationProvider";
+import { CustomCursor } from "@/components/ui/CustomCursor";
+import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -25,6 +27,11 @@ const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["400", "500", "600", "700", "800", "900"],
 });
+const bayon = Bayon({
+  subsets: ["latin"],
+  variable: "--font-bayon",
+  weight: "400",
+});
 
 export const metadata: Metadata = {
   title: "Sebooth | The Most Favorite Photobooth in Semarang",
@@ -39,13 +46,16 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${spaceGrotesk.variable} ${permanentMarker.variable} ${seboothFont.variable} ${poppins.variable} antialiased paper-texture`}
+        className={`${spaceGrotesk.variable} ${permanentMarker.variable} ${seboothFont.variable} ${poppins.variable} ${bayon.variable} antialiased paper-texture`}
       >
         <ClientProviders>
           <OrientationProvider>
-            <div id="root-app" className="w-full h-full relative transition-all duration-300">
-              <LayoutShell>{children}</LayoutShell>
-            </div>
+            <SmoothScrollProvider>
+              <CustomCursor />
+              <div id="root-app" className="w-full h-full relative transition-all duration-300">
+                <LayoutShell>{children}</LayoutShell>
+              </div>
+            </SmoothScrollProvider>
           </OrientationProvider>
         </ClientProviders>
       </body>

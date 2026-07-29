@@ -1,121 +1,202 @@
-"use client";
+'use client'
 
-import { cn } from "@/lib/utils";
-import { parseJsonContent } from "@/lib/useSiteContent";
-import { EditableText } from "@/components/admin/EditableText";
-import { EditableArrayItemText } from "@/components/admin/EditableArrayItemText";
-import { motion } from "framer-motion";
-import { Camera, Sparkles, Handshake } from "lucide-react";
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Camera, Sparkles, Handshake, ArrowRight, Check } from 'lucide-react'
+import { EditableText } from '@/components/admin/EditableText'
+import { RotatingBadge } from '@/components/ui/RotatingBadge'
 
-interface ProductItem {
-    id: string;
-    name: string;
-    description: string;
-}
-
-const defaultProducts: ProductItem[] = [
-    {
-        id: "unlimited",
-        name: "Mau Foto Sepuasnya",
-        description: "Kamu bisa foto terus-terusan secara unlimited",
-    },
-    {
-        id: "fun",
-        name: "Mau Foto-foto asyik aja",
-        description: "Foto-foto bareng temen-temen kamu",
-    },
-    {
-        id: "partner",
-        name: "Mau jadi partner kita",
-        description: "Kalo ini, chat langsung aja ama admin kami",
-    },
-];
-
-const defaultContent = {
-    section_title: "Sebutin Apa Yang Loe Mau!",
-    section_tag: "[ OUR SERVICES ]",
-    items: "",
-};
+const SERVICES = [
+  {
+    id: 'standard',
+    num: '01',
+    name: 'STANDARD KIOSK',
+    tagline: 'Ringkas, Cepat & Sangat Populer',
+    desc: 'Photobooth kiosk compact dengan layar sentuh HD intuitif, pencahayaan ringlight studio, dan sistem claim QR instant tanpa penundaan.',
+    features: ['Ringlight Lighting Studio', 'Softfile Photo Strip & GIF', 'QR Scan Instant Claim', 'Operator Pendamping'],
+    bgColor: '#f4ced3',
+    textColor: '#e33529',
+    badgeColor: '#e33529',
+    icon: <Camera className="w-12 h-12 text-[#e33529]" />,
+  },
+  {
+    id: 'deluxe',
+    num: '02',
+    name: 'DELUXE EVENT',
+    tagline: 'Pengalaman Photobooth Spesial Paket Lengkap',
+    desc: 'Solusi photobooth terlaris untuk pesta pernikahan & event korporat. Dilengkapi kustomisasi desain frame overlay eksklusif dan cetak unlimited.',
+    features: ['Cetak Strip Unlimited High Quality', 'Kustom Design Frame Overlay', 'Properti Foto Unik & Seru', 'Live Photo (Video Short) Support'],
+    bgColor: '#afd8fb',
+    textColor: '#2b6786',
+    badgeColor: '#2b6786',
+    icon: <Sparkles className="w-12 h-12 text-[#2b6786]" />,
+  },
+  {
+    id: 'glamour',
+    num: '03',
+    name: 'GLAMOUR VIP',
+    tagline: 'Fitur VIP & Glamour Filter High-End',
+    desc: 'Pengalaman foto eksklusif kelas atas dengan filter glamour smooth-skin, kamera DSLR full-frame, dan galeri cloud publik untuk para tamu.',
+    features: ['DSLR Full-Frame Camera', 'Live Glamour Skin Smoothing', 'Galeri Event Cloud Online', 'Prioritas Antrean Digital'],
+    bgColor: '#f3f3e9',
+    textColor: '#693413',
+    badgeColor: '#fff500',
+    icon: <Handshake className="w-12 h-12 text-[#693413]" />,
+  },
+]
 
 interface ProductProps {
-    initialData?: Record<string, string>;
+  initialData?: Record<string, string>;
 }
 
 export function Product({ initialData = {} }: ProductProps) {
-    const content = { ...defaultContent, ...initialData };
-    
-    let products = parseJsonContent<ProductItem[]>(content.items, defaultProducts);
+  const [activeIdx, setActiveIdx] = useState(0)
+  const currentService = SERVICES[activeIdx]
 
-    // If the database has the old default items, override them with the new ones
-    if (products.length === 0 || products.some(p => p.id === "standard" || p.id === "deluxe" || p.id === "glamour" || p.id === "zero-lag")) {
-        products = defaultProducts;
-    }
+  return (
+    <section id="product" className="relative w-full min-h-screen bg-[#f3c3cb] py-24 px-6 md:px-16 overflow-hidden select-none">
+      {/* Big Circular Background (dontboardme styling) */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85rem] h-[85rem] rounded-full bg-[#f4ced3] pointer-events-none z-0" />
 
-    const getIcon = (index: number) => {
-        switch (index) {
-            case 0:
-                return <Camera className="w-10 h-10 text-secondary" />;
-            case 1:
-                return <Sparkles className="w-10 h-10 text-secondary" />;
-            case 2:
-                return <Handshake className="w-10 h-10 text-secondary" />;
-            default:
-                return <Camera className="w-10 h-10 text-secondary" />;
-        }
-    };
+      <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <span className="text-[#e33529] font-bold text-xs md:text-sm uppercase tracking-widest bg-white/70 backdrop-blur-md px-4 py-1.5 rounded-full border border-[#e33529]/20 inline-block mb-3">
+            ✦ PILIHAN LAYANAN SEBOOTH ✦
+          </span>
+          <EditableText
+            section="product"
+            fieldKey="section_title"
+            defaultValue="SEBUTIN APA YANG LOE MAU!"
+            as="h2"
+            className="h2 text-[#e33529] font-bayon uppercase leading-none"
+          >
+            SEBUTIN APA YANG LOE MAU!
+          </EditableText>
+        </div>
 
-    return (
-        <section id="product" className="py-24 px-6 md:px-20 bg-transparent paper-texture">
-            {/* Section Header */}
-            <div className="mb-16 flex flex-col md:flex-row justify-between items-end border-b-8 border-black pb-4">
-                <EditableText section="product" fieldKey="section_title" defaultValue={content.section_title} as="h2" className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-text-dark">
-                    {content.section_title}
-                </EditableText>
-                <EditableText section="product" fieldKey="section_tag" defaultValue={content.section_tag} as="p" className="text-lg font-bold uppercase text-primary mb-2">
-                    {content.section_tag}
-                </EditableText>
-            </div>
+        {/* Interactive Service Wheel & Card Stack */}
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-6">
+          {/* Left: Service Nav Tabs */}
+          <div className="lg:col-span-4 flex flex-col gap-4">
+            {SERVICES.map((srv, idx) => (
+              <motion.button
+                key={srv.id}
+                onClick={() => setActiveIdx(idx)}
+                whileHover={{ x: 6 }}
+                whileTap={{ scale: 0.98 }}
+                className={`w-full text-left p-6 rounded-2xl border-2 transition-all flex items-center justify-between ${
+                  activeIdx === idx
+                    ? 'bg-white border-[#e33529] shadow-lg translate-x-2'
+                    : 'bg-white/60 border-white/80 hover:bg-white/90'
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  <span className="font-bayon text-2xl md:text-3xl text-[#e33529]">
+                    {srv.num}
+                  </span>
+                  <div>
+                    <h3 className="font-bayon text-xl md:text-2xl text-[#e33529] uppercase leading-none">
+                      {srv.name}
+                    </h3>
+                    <p className="text-xs font-semibold text-gray-500 uppercase mt-1">
+                      {srv.tagline}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                    activeIdx === idx ? 'bg-[#e33529] text-white' : 'bg-gray-200 text-gray-400'
+                  }`}
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+              </motion.button>
+            ))}
+          </div>
 
-            {/* Product Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {products.map((product, idx) => (
-                    <motion.div
-                        key={product.id || idx}
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-100px" }}
-                        transition={{ duration: 0.5, delay: idx * 0.1 }}
-                        className="glass-card p-8 md:p-10 flex flex-col items-center text-center justify-center min-h-[360px] transition-all duration-300 group hover:-translate-y-2"
+          {/* Right: Active Service Display Card */}
+          <div className="lg:col-span-8 w-full">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentService.id}
+                initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.96 }}
+                transition={{ duration: 0.4 }}
+                className="w-full bg-white rounded-3xl p-8 md:p-12 shadow-2xl border-4 border-white flex flex-col justify-between relative overflow-hidden"
+              >
+                {/* Background Pastel Pill Accent */}
+                <div
+                  className="absolute top-0 right-0 w-64 h-64 rounded-full -translate-y-24 translate-x-24 opacity-40 pointer-events-none"
+                  style={{ backgroundColor: currentService.bgColor }}
+                />
+
+                <div className="relative z-10 flex items-start justify-between gap-6 mb-6">
+                  <div>
+                    <span className="text-xs font-black uppercase tracking-widest text-gray-400">
+                      PACKAGE {currentService.num} / 03
+                    </span>
+                    <h3
+                      className="h3 font-bayon uppercase leading-none mt-1"
+                      style={{ color: currentService.textColor }}
                     >
-                        {/* Icon Placeholder Container */}
-                        <div className="glass-card-icon-container w-20 h-20 bg-white/10 border border-white/20 flex items-center justify-center mb-6 shadow-inner transition-transform duration-300 group-hover:scale-110">
-                            {getIcon(idx)}
-                        </div>
+                      {currentService.name}
+                    </h3>
+                  </div>
 
-                        {/* Title */}
-                        <EditableArrayItemText 
-                            section="product" 
-                            arrayKey="items" 
-                            items={products} 
-                            index={idx} 
-                            field="name" 
-                            as="h3" 
-                            className="text-2xl font-black uppercase mb-3 text-text-dark tracking-tight leading-tight" 
-                        />
+                  <div
+                    className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-inner"
+                    style={{ backgroundColor: currentService.bgColor }}
+                  >
+                    {currentService.icon}
+                  </div>
+                </div>
 
-                        {/* Description */}
-                        <EditableArrayItemText 
-                            section="product" 
-                            arrayKey="items" 
-                            items={products} 
-                            index={idx} 
-                            field="description" 
-                            as="p" 
-                            className="text-sm font-semibold uppercase text-text-dark/70 leading-relaxed max-w-[240px]" 
-                        />
-                    </motion.div>
-                ))}
-            </div>
-        </section>
-    );
+                <p className="relative z-10 text-base md:text-xl font-medium text-gray-700 uppercase leading-relaxed mb-8">
+                  {currentService.desc}
+                </p>
+
+                {/* Features Grid */}
+                <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+                  {currentService.features.map((feat, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100"
+                    >
+                      <div
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-white"
+                        style={{ backgroundColor: currentService.textColor }}
+                      >
+                        <Check className="w-3.5 h-3.5 stroke-[3]" />
+                      </div>
+                      <span className="text-xs md:text-sm font-bold uppercase text-gray-800">
+                        {feat}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bottom CTA */}
+                <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-100">
+                  <span className="text-xs font-bold uppercase text-gray-400">
+                    KONSULTASIKAN KEBUTUHAN EVENT-MU
+                  </span>
+
+                  <RotatingBadge
+                    text="SEBOOTH PHOTOBOOTH • TANYA PAKET • "
+                    btnText="TANYA"
+                    bgColor={currentService.textColor}
+                    textColor="#ffffff"
+                    size={110}
+                    href="https://wa.me/6285713899441?text=Halo%20Sebooth%2C%20saya%20tertarik%20dengan%20paket%20"
+                  />
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
 }

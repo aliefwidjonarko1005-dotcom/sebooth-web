@@ -1,4 +1,5 @@
 import { Hero } from "@/components/sections/Hero";
+import { ProcessPinningSection } from "@/components/sections/ProcessPinningSection";
 import { Product } from "@/components/sections/Product";
 import { Pricing } from "@/components/sections/Pricing";
 import { Gallery } from "@/components/sections/Gallery";
@@ -47,6 +48,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col">
       {isVisible("hero") && <Hero initialData={contentMap["hero"]} />}
+      <ProcessPinningSection />
       {isVisible("product") && <Product initialData={contentMap["product"]} />}
       {isVisible("pricing") && <Pricing initialData={contentMap["pricing"]} />}
       {isVisible("testimonials") && (
