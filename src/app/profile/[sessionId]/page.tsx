@@ -64,6 +64,7 @@ export default function SessionDetailPage() {
   const [totalStrips, setTotalStrips] = useState(0)
   const [generatedStripsMap, setGeneratedStripsMap] = useState<Record<number, string>>({})
   const [isGenerating, setIsGenerating] = useState(false)
+  const [stripImgError, setStripImgError] = useState(false)
 
   // Keep a ref to the current generatedStripsMap so we can access it inside effects/cleanups
   const generatedStripsRef = useRef<Record<number, string>>({})
@@ -71,6 +72,10 @@ export default function SessionDetailPage() {
   useEffect(() => {
     generatedStripsRef.current = generatedStripsMap
   }, [generatedStripsMap])
+
+  useEffect(() => {
+    setStripImgError(false)
+  }, [frameIdx])
 
   const revokeAllStrips = useCallback(() => {
     Object.values(generatedStripsRef.current).forEach((url) => {
@@ -119,19 +124,29 @@ export default function SessionDetailPage() {
   /* ─── Data Helpers ─── */
   const getStrip = useCallback(() => {
     return session?.media?.find(
-      (m: MediaItem) => (m.metadata as Record<string, unknown>)?.is_strip || m.url?.toLowerCase().includes('strip.jpg')
+      (m: MediaItem) =>
+        (m as any).type === 'strip' ||
+        (m.metadata as Record<string, unknown>)?.is_strip ||
+        m.url?.toLowerCase().includes('strip')
     ) || null
   }, [session])
 
   const getGif = useCallback(() => {
     return session?.media?.find(
-      (m: MediaItem) => m.type === 'gif' || m.url?.toLowerCase().includes('animation.gif')
+      (m: MediaItem) =>
+        m.type === 'gif' ||
+        m.url?.toLowerCase().includes('gif') ||
+        m.url?.match(/\.gif(\?.*)?$/i)
     ) || null
   }, [session])
 
   const getLive = useCallback(() => {
     return session?.media?.find(
-      (m: MediaItem) => m.type === 'live' || m.url?.toLowerCase().includes('live.mp4')
+      (m: MediaItem) =>
+        m.type === 'live' ||
+        m.type === 'video' ||
+        m.url?.toLowerCase().includes('live') ||
+        m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
     ) || null
   }, [session])
 
@@ -139,13 +154,15 @@ export default function SessionDetailPage() {
     if (!session?.media) return []
     const strip = getStrip()
     const gif = getGif()
+    const live = getLive()
     return session.media.filter((m: MediaItem) => {
-      const isImg = m.url?.match(/\.(jpg|jpeg|png|webp)/i)
+      const isImg = m.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i) || (m.type !== 'live' && m.type !== 'video' && m.type !== 'gif')
       const isStrip = strip && m.id === strip.id
       const isGif = gif && m.id === gif.id
-      return isImg && !isStrip && !isGif
+      const isLive = live && m.id === live.id
+      return isImg && !isStrip && !isGif && !isLive
     })
-  }, [session, getStrip, getGif])
+  }, [session, getStrip, getGif, getLive])
 
   /* ─── Lazy Generate Strips ─── */
   useEffect(() => {
@@ -219,18 +236,34 @@ export default function SessionDetailPage() {
     ctx.fillRect(0, 0, W, H)
 
     const loadImage = async (src: string): Promise<HTMLImageElement> => {
+      // 1. Try Blob fetch
       try {
         const res = await fetch(src, { cache: 'no-store', mode: 'cors' })
-        if (!res.ok) throw new Error('Network response was not ok')
-        const blob = await res.blob()
-        const blobUrl = URL.createObjectURL(blob)
-        return new Promise((resolve, reject) => {
+        if (res.ok) {
+          const blob = await res.blob()
+          const blobUrl = URL.createObjectURL(blob)
+          return await new Promise((resolve, reject) => {
+            const img = new window.Image()
+            img.onload = () => { resolve(img); URL.revokeObjectURL(blobUrl) }
+            img.onerror = () => { reject(); URL.revokeObjectURL(blobUrl) }
+            img.src = blobUrl
+          })
+        }
+      } catch {
+        // ignore and fallback
+      }
+
+      // 2. Try direct image element
+      try {
+        return await new Promise((resolve, reject) => {
           const img = new window.Image()
-          img.onload = () => { resolve(img); URL.revokeObjectURL(blobUrl) }
-          img.onerror = () => { reject(); URL.revokeObjectURL(blobUrl) }
-          img.src = blobUrl
+          img.crossOrigin = 'anonymous'
+          img.onload = () => resolve(img)
+          img.onerror = reject
+          img.src = src
         })
       } catch {
+        // 3. Try Next.js proxy
         const proxyUrl = `/_next/image?url=${encodeURIComponent(src)}&w=1080&q=75`
         return new Promise((resolve, reject) => {
           const img = new window.Image()
@@ -369,11 +402,19 @@ export default function SessionDetailPage() {
                 <>
                   <div className="relative w-full">
                     <div className="w-full bg-white border-2 border-black hard-shadow-black p-1.5">
-                      {generatedStripsMap[frameIdx].startsWith('data:') || generatedStripsMap[frameIdx].startsWith('blob:') ? (
+                      {generatedStripsMap[frameIdx].startsWith('data:') || generatedStripsMap[frameIdx].startsWith('blob:') || stripImgError ? (
                         <img src={generatedStripsMap[frameIdx]} alt="Photo Strip" className="w-full object-contain max-h-[65vh] border border-black" />
                       ) : (
                         <div className="relative w-full border border-black" style={{ aspectRatio: '9/16', maxHeight: '65vh' }}>
-                          <NextImage src={generatedStripsMap[frameIdx]} alt="Photo Strip" fill className="object-contain" sizes="(max-width: 512px) 100vw, 512px" quality={80} />
+                          <NextImage
+                            src={generatedStripsMap[frameIdx]}
+                            alt="Photo Strip"
+                            fill
+                            className="object-contain"
+                            sizes="(max-width: 512px) 100vw, 512px"
+                            quality={80}
+                            onError={() => setStripImgError(true)}
+                          />
                         </div>
                       )}
                     </div>
