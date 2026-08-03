@@ -98,28 +98,19 @@ export function Hero({ initialData = {} }: HeroProps) {
             </div>
 
             {/* Bottom Row */}
-            <div className="z-10 w-full max-w-6xl flex flex-col md:flex-row items-center justify-between gap-6 pt-4">
-                <div className="flex items-center gap-4 bg-white/90 backdrop-blur-md px-6 py-3 rounded-full border-2 border-[#002366]/15 shadow-sm">
-                    <span className="w-3 h-3 rounded-full bg-[#ff4500] animate-ping" />
-                    <span className="text-xs md:text-sm font-black text-[#002366] uppercase tracking-wider">
-                        ⚡ ZERO-LAG PHYSICAL KIOSK SYSTEM
-                    </span>
-                </div>
-
-                <div className="flex items-center gap-6">
-                    <Link
-                        href="https://wa.me/6285713899441?text=Halo%20Sebooth%2C%20saya%20ingin%20booking%20photobooth%20untuk%20acara%20saya."
-                        target="_blank"
-                    >
-                        <RotatingBadge
-                            text="SEBOOTH PHOTOBOOTH • BOOK NOW • "
-                            btnText="BOOK NOW"
-                            bgColor="#ff4500"
-                            textColor="#ffffff"
-                            size={135}
-                        />
-                    </Link>
-                </div>
+            <div className="z-10 w-full max-w-6xl flex items-center justify-center md:justify-end gap-6 pt-4">
+                <Link
+                    href="https://wa.me/6285713899441?text=Halo%20Sebooth%2C%20saya%20ingin%20booking%20photobooth%20untuk%20acara%20saya."
+                    target="_blank"
+                >
+                    <RotatingBadge
+                        text="SEBOOTH PHOTOBOOTH • BOOK NOW • "
+                        btnText="BOOK NOW"
+                        bgColor="#ff4500"
+                        textColor="#ffffff"
+                        size={135}
+                    />
+                </Link>
             </div>
         </section>
     );

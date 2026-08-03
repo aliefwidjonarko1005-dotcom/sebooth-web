@@ -127,9 +127,9 @@ export function Pricing({ initialData = {} }: PricingProps) {
     const waBase = "https://wa.me/6285713899441?text=";
 
     return (
-        <section id="pricing" className="py-24 px-6 md:px-16 bg-[#f8f9fa] relative overflow-hidden select-none">
+        <section id="pricing" className="py-24 px-6 md:px-16 bg-transparent relative overflow-hidden select-none">
             {/* Background Circle */}
-            <div className="absolute top-0 right-0 w-[50rem] h-[50rem] rounded-full bg-[#eef2ff]/80 -translate-y-1/2 translate-x-1/3 pointer-events-none z-0" />
+            <div className="absolute top-0 right-0 w-[45rem] h-[45rem] rounded-full bg-[#eef2ff]/30 blur-[120px] -translate-y-1/2 translate-x-1/3 pointer-events-none z-0" />
 
             {/* Section Header */}
             <motion.div

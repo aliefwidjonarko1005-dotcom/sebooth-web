@@ -112,10 +112,10 @@ export function ProcessPinningSection() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-screen bg-[#f8f9fa] overflow-hidden flex flex-col justify-between py-8 md:py-12 select-none"
+      className="relative w-full min-h-screen bg-transparent overflow-hidden flex flex-col justify-between py-8 md:py-12 select-none"
     >
       {/* Background Soft Circle Accent */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75rem] h-[75rem] rounded-full bg-[#eef2ff] pointer-events-none z-0 opacity-60" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[45rem] h-[45rem] rounded-full bg-[#eef2ff]/40 blur-[140px] pointer-events-none z-0" />
 
       {/* Header Tagline & Title */}
       <div className="relative z-10 text-center px-6 shrink-0 mt-4 md:mt-8">

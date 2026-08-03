@@ -78,12 +78,12 @@ export function FeaturedFrames({ initialData = {} }: FeaturedFramesProps) {
     const isPaused = isHovered || selectedFrame !== null;
 
     return (
-        <section id="featured-frames" className="py-16 md:py-20 px-6 md:px-20 bg-transparent border-t-8 border-black relative overflow-hidden">
+        <section id="featured-frames" className="py-16 md:py-20 px-6 md:px-20 bg-transparent relative overflow-hidden">
             {/* Background Shimmer/Glow accent */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
             
             {/* Section Header */}
-            <div className="mb-10 flex flex-col md:flex-row justify-between items-end border-b-8 border-black pb-3">
+            <div className="mb-10 flex flex-col md:flex-row justify-between items-end pb-3">
                 <div className="w-full md:w-auto">
                     <EditableText section="featured_frames" fieldKey="section_title" defaultValue={content.section_title} as="h2" className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-text-dark">
                         {content.section_title}

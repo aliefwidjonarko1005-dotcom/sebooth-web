@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Camera, Sparkles, Handshake, ArrowRight, Check } from 'lucide-react'
 import { EditableText } from '@/components/admin/EditableText'
@@ -51,24 +51,13 @@ interface ProductProps {
 
 export function Product({ initialData = {} }: ProductProps) {
   const [activeIdx, setActiveIdx] = useState(0)
-  const [isHovered, setIsHovered] = useState(false)
-
-  // Auto-switch active service periodically every 4.5 seconds
-  useEffect(() => {
-    if (isHovered) return
-    const timer = setInterval(() => {
-      setActiveIdx((prev) => (prev + 1) % SERVICES.length)
-    }, 4500)
-    return () => clearInterval(timer)
-  }, [isHovered])
 
   const currentService = SERVICES[activeIdx]
 
   return (
-    <section id="product" className="relative w-full min-h-screen bg-[#f8f9fa] py-20 px-6 md:px-16 overflow-hidden select-none flex flex-col justify-between">
-      {/* Concentric Growing Circles (dontboardme styling) */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90rem] h-[90rem] rounded-full bg-[#eef2ff] pointer-events-none z-0 opacity-70" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[65rem] h-[65rem] rounded-full bg-[#ffffff] pointer-events-none z-0 shadow-inner opacity-80" />
+    <section id="product" className="relative w-full min-h-screen bg-transparent py-20 px-6 md:px-16 overflow-hidden select-none flex flex-col justify-between">
+      {/* Background Soft Glow Accent */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-[50rem] rounded-full bg-[#eef2ff]/40 blur-[140px] pointer-events-none z-0" />
 
       <div className="relative z-10 max-w-7xl mx-auto w-full my-auto flex flex-col items-center">
         {/* Header Title (dontboardme styling with floating ball icon) */}
@@ -91,8 +80,6 @@ export function Product({ initialData = {} }: ProductProps) {
 
         {/* Main Service Wheel Showcase (dontboardme layout) */}
         <div
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
           className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-4"
         >
           {/* Left: Giant Display Step Number (dontboardme "01", "02", "03" layout) */}
@@ -181,14 +168,7 @@ export function Product({ initialData = {} }: ProductProps) {
                 </div>
 
                 {/* Card Bottom CTA */}
-                <div className="relative z-10 flex items-center justify-between gap-4 pt-4 border-t border-gray-100">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#ff4500] animate-pulse" />
-                    <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-400">
-                      AUTO-ROTATING SERVICE
-                    </span>
-                  </div>
-
+                <div className="relative z-10 flex items-center justify-end gap-4 pt-4 border-t border-gray-100">
                   <RotatingBadge
                     text="SEBOOTH PHOTOBOOTH • TANYA PAKET • "
                     btnText="TANYA"

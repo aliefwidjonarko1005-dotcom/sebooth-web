@@ -54,7 +54,7 @@ export function FAQ({ initialData = {} }: FAQProps) {
     const faqs = parseJsonContent<FaqItem[]>(content.items, defaultFaqs);
 
     return (
-        <section className="py-24 px-6 md:px-20 bg-transparent paper-texture border-t-8 border-black">
+        <section className="py-24 px-6 md:px-20 bg-transparent paper-texture">
             {/* Section Header */}
             <div className="mb-16 text-center">
                 <EditableText section="faq" fieldKey="section_title" defaultValue={content.section_title} as="h2" className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-text-dark text-center w-full">

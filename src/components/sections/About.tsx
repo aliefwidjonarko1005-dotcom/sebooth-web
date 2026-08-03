@@ -20,7 +20,7 @@ export function About({ initialData = {} }: AboutProps) {
     const content = { ...defaultContent, ...initialData };
 
     return (
-        <section id="about" className="py-24 px-6 md:px-20 bg-transparent paper-texture border-t-8 border-black">
+        <section id="about" className="py-24 px-6 md:px-20 bg-transparent paper-texture">
             <div className="grid md:grid-cols-2 gap-12 items-center">
                 {/* Left: Text Content */}
                 <motion.div

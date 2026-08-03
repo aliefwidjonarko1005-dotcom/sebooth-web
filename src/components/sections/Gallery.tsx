@@ -148,7 +148,7 @@ export function Gallery({ initialData = {}, initialGalleryImages = [] }: Gallery
             : initialGalleryImages.filter((item) => item.type === activeCategory);
 
     return (
-        <section id="gallery" className="py-24 px-6 md:px-20 bg-[#f8f9fa] relative overflow-hidden select-none">
+        <section id="gallery" className="py-24 px-6 md:px-20 bg-transparent relative overflow-hidden select-none">
             {/* Section Header */}
             <div className="mb-12 text-center md:text-left max-w-7xl mx-auto">
                 <span className="text-[#002366] font-bold text-xs md:text-sm uppercase tracking-widest bg-white/90 px-5 py-2 rounded-full border border-[#002366]/15 inline-block mb-3 shadow-sm">
