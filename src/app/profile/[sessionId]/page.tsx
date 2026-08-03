@@ -65,6 +65,7 @@ export default function SessionDetailPage() {
   const [generatedStripsMap, setGeneratedStripsMap] = useState<Record<number, string>>({})
   const [isGenerating, setIsGenerating] = useState(false)
   const [stripImgError, setStripImgError] = useState(false)
+  const [liveIdx, setLiveIdx] = useState(0)
 
   // Keep a ref to the current generatedStripsMap so we can access it inside effects/cleanups
   const generatedStripsRef = useRef<Record<number, string>>({})
@@ -122,47 +123,73 @@ export default function SessionDetailPage() {
   }, [router, supabase, sessionId])
 
   /* ─── Data Helpers ─── */
+  const getSortedMedia = useCallback(() => {
+    if (!session?.media) return []
+    return [...session.media].sort((a, b) => {
+      const nameA = a.url.split('/').pop() || ''
+      const nameB = b.url.split('/').pop() || ''
+      return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' })
+    })
+  }, [session])
+
   const getStrip = useCallback(() => {
-    return session?.media?.find(
+    const sorted = getSortedMedia()
+    return sorted.find(
       (m: MediaItem) =>
         (m as any).type === 'strip' ||
         (m.metadata as Record<string, unknown>)?.is_strip ||
-        m.url?.toLowerCase().includes('strip')
+        m.url?.toLowerCase().includes('strip') ||
+        m.url?.toLowerCase().includes('photostrip')
     ) || null
-  }, [session])
+  }, [getSortedMedia])
 
   const getGif = useCallback(() => {
-    return session?.media?.find(
+    const sorted = getSortedMedia()
+    return sorted.find(
       (m: MediaItem) =>
         m.type === 'gif' ||
         m.url?.toLowerCase().includes('gif') ||
         m.url?.match(/\.gif(\?.*)?$/i)
     ) || null
-  }, [session])
+  }, [getSortedMedia])
+
+  const getLives = useCallback(() => {
+    const sorted = getSortedMedia()
+    return sorted.filter(
+      (m: MediaItem) => {
+        const isVideoExt = !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+        const isImageExt = !!m.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i)
+        const isVideoType = m.type === 'video' || m.type === 'live'
+        return isVideoExt || (isVideoType && !isImageExt)
+      }
+    )
+  }, [getSortedMedia])
 
   const getLive = useCallback(() => {
-    return session?.media?.find(
-      (m: MediaItem) =>
-        m.type === 'live' ||
-        m.type === 'video' ||
-        m.url?.toLowerCase().includes('live') ||
-        m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
-    ) || null
-  }, [session])
+    const lives = getLives()
+    return lives[liveIdx] || lives[0] || null
+  }, [getLives, liveIdx])
 
   const getPhotos = useCallback(() => {
-    if (!session?.media) return []
+    const sorted = getSortedMedia()
     const strip = getStrip()
     const gif = getGif()
-    const live = getLive()
-    return session.media.filter((m: MediaItem) => {
-      const isImg = m.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i) || (m.type !== 'live' && m.type !== 'video' && m.type !== 'gif')
+    const lives = getLives()
+    const liveIds = new Set(lives.map(l => l.id))
+
+    return sorted.filter((m: MediaItem) => {
+      const isImageExt = !!m.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i)
+      const isVideoExt = !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+      const isNotSpecialType = m.type !== 'live' && m.type !== 'video' && m.type !== 'gif' && (m as any).type !== 'strip'
+
+      const isImg = isImageExt || isNotSpecialType
       const isStrip = strip && m.id === strip.id
       const isGif = gif && m.id === gif.id
-      const isLive = live && m.id === live.id
-      return isImg && !isStrip && !isGif && !isLive
+      const isLiveVideo = liveIds.has(m.id) || isVideoExt
+
+      return isImg && !isStrip && !isGif && !isLiveVideo
     })
-  }, [session, getStrip, getGif, getLive])
+  }, [getSortedMedia, getStrip, getGif, getLives])
 
   /* ─── Lazy Generate Strips ─── */
   useEffect(() => {
@@ -481,28 +508,47 @@ export default function SessionDetailPage() {
             <motion.section key="live" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="flex flex-col items-center">
               {live ? (
                 <>
-                  <div className="w-full bg-white border-2 border-black hard-shadow-black p-1.5">
-                    <video
-                      key={live.url}
-                      autoPlay loop muted playsInline
-                      className="w-full object-contain max-h-[65vh] border border-black"
-                      onError={(e) => {
-                        const target = e.currentTarget
-                        target.style.display = 'none'
-                        const fallback = target.parentElement?.querySelector('.video-fallback') as HTMLElement
-                        if (fallback) fallback.style.display = 'flex'
-                      }}
-                    >
-                      <source src={live.url} type="video/mp4" />
-                    </video>
-                    <div className="video-fallback hidden flex-col items-center justify-center py-12 text-primary border border-black" style={{ display: 'none' }}>
-                      <AlertCircle className="w-8 h-8 mb-2" />
-                      <p className="font-black uppercase text-[0.8rem]">Video gagal dimuat</p>
-                      <p className="text-[0.65rem] mt-1 font-bold text-primary/60">File mungkin rusak atau belum selesai</p>
+                  <div className="relative w-full">
+                    <div className="w-full bg-white border-2 border-black hard-shadow-black p-1.5">
+                      <video
+                        key={live.url}
+                        autoPlay loop muted playsInline
+                        className="w-full object-contain max-h-[65vh] border border-black"
+                        onError={(e) => {
+                          const target = e.currentTarget
+                          target.style.display = 'none'
+                          const fallback = target.parentElement?.querySelector('.video-fallback') as HTMLElement
+                          if (fallback) fallback.style.display = 'flex'
+                        }}
+                      >
+                        <source src={live.url} type="video/mp4" />
+                      </video>
+                      <div className="video-fallback hidden flex-col items-center justify-center py-12 text-primary border border-black" style={{ display: 'none' }}>
+                        <AlertCircle className="w-8 h-8 mb-2" />
+                        <p className="font-black uppercase text-[0.8rem]">Video gagal dimuat</p>
+                        <p className="text-[0.65rem] mt-1 font-bold text-primary/60">File mungkin rusak atau belum selesai</p>
+                      </div>
                     </div>
+                    {getLives().length > 1 && (
+                      <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none -mx-3">
+                        <button onClick={() => setLiveIdx(prev => prev === 0 ? getLives().length - 1 : prev - 1)} className="pointer-events-auto w-10 h-10 bg-white border-2 border-black hard-shadow-black flex items-center justify-center text-primary active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
+                          <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <button onClick={() => setLiveIdx(prev => (prev + 1) % getLives().length)} className="pointer-events-auto w-10 h-10 bg-white border-2 border-black hard-shadow-black flex items-center justify-center text-primary active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  <button onClick={() => downloadFile(live.url, 'live_photo.mp4')} className="mt-6 w-full py-3.5 bg-secondary text-white font-black uppercase text-[0.8rem] flex items-center justify-center gap-2 border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
-                    <Download className="w-4 h-4" /> Simpan Live Photo
+                  {getLives().length > 1 && (
+                    <div className="flex gap-2 mt-5">
+                      {getLives().map((_, i) => (
+                        <button key={i} onClick={() => setLiveIdx(i)} className={`h-2.5 transition-all border-2 border-black ${i === liveIdx ? 'bg-secondary w-7 hard-shadow-orange' : 'bg-white w-2.5'}`} />
+                      ))}
+                    </div>
+                  )}
+                  <button onClick={() => downloadFile(live.url, `live_photo_${liveIdx + 1}.mp4`)} className="mt-6 w-full py-3.5 bg-secondary text-white font-black uppercase text-[0.8rem] flex items-center justify-center gap-2 border-2 border-black hard-shadow-black hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
+                    <Download className="w-4 h-4" /> Simpan Live Photo {getLives().length > 1 ? `#${liveIdx + 1}` : ''}
                   </button>
                 </>
               ) : (

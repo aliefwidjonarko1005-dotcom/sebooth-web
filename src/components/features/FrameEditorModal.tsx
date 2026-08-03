@@ -88,10 +88,16 @@ export function FrameEditorModal({ isOpen, onClose, rawPhotos }: FrameEditorModa
                 { x: 60, y: 980, w: SLOT_WIDTH, h: SLOT_HEIGHT },
             ];
 
-            for (let i = 0; i < Math.min(rawPhotos.length, 3); i++) {
+            const sortedPhotos = [...rawPhotos].sort((a, b) => {
+                const nameA = a.url.split('/').pop() || '';
+                const nameB = b.url.split('/').pop() || '';
+                return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+            });
+
+            for (let i = 0; i < Math.min(sortedPhotos.length, 3); i++) {
                 const slot = slots[i];
                 try {
-                    const img = await loadImage(rawPhotos[i].url);
+                    const img = await loadImage(sortedPhotos[i].url);
                     
                     // Calculate center crop
                     const imgAspect = img.width / img.height;

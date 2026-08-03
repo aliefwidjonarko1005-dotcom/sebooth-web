@@ -203,6 +203,7 @@ sebooth-website/
 - **August 2026 (Phase 4Q - Background Circle Softening & Edge Removal)** ✅: Replaced giant solid background accent circles in `Product.tsx`, `ProcessPinningSection.tsx`, and `Pricing.tsx` with soft, blurred ambient glows (`blur-[120px]`/`blur-[140px]`) to eliminate sharp visual edge cutoffs between "SEBUTIN APA YANG LOE MAU!" and "TRUSTED BY MANY". Removed remaining `border-y-8 border-black` in `AboutContent.tsx`.
 - **August 2026 (Phase 4R - AI Context Read & Sync)** ✅: Read and verified `AGENTS.md` file upon user request ("baca agents.md") to align AI context with project guidelines, directory structure, tech stack, database schema, design system, and latest roadmap updates.
 - **August 2026 (Phase 4S - GitHub Repository Synchronization)** ✅: Staged, committed, and pushed all recent section styling updates, background glow refinements, image assets, and documentation changes to GitHub repository.
+- **August 2026 (Phase 4T - Live Photo Classification & Frame Template Ordering Fix)** ✅: Fixed live photo misclassification bug where pose photo files containing `live` in their URL/filename (e.g. `live_photo_1.jpg`) were incorrectly excluded from `photos` and mistaken for video items, causing frame template rendering to fail or fall back to the first photo. Added natural numerical sorting to session media items (`photo_1`, `photo_2`, `photo_3`) and implemented multi-live photo video carousel navigation (`getLives()`) on the Live tab.
 
 
 

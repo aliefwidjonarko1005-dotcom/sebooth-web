@@ -117,8 +117,8 @@ export default function AccessSessionClient({ session: initialSession, sessionId
         {/* Preview Grid */}
         <div className="mt-10 md:mt-12 grid grid-cols-2 gap-4 lg:grid-cols-3">
           {session.media?.map((item: MediaItem, idx: number) => {
-            const isVideo = item.type === 'live' || item.type === 'video' || item.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
-            const isGif = item.type === 'gif' || item.url?.match(/\.gif(\?.*)?$/i)
+            const isVideo = (item.type === 'live' || item.type === 'video' || !!item.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)) && !item.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i)
+            const isGif = item.type === 'gif' || !!item.url?.match(/\.gif(\?.*)?$/i)
             const isFailed = failedImages[item.id]
 
             return (

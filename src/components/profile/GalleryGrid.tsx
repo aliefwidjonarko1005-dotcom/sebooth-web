@@ -11,23 +11,37 @@ interface GalleryGridProps {
   sessions: SessionData[]
 }
 
+function getSortedMediaFromSession(session: SessionData): MediaItem[] {
+  if (!session.media) return []
+  return [...session.media].sort((a, b) => {
+    const nameA = a.url.split('/').pop() || ''
+    const nameB = b.url.split('/').pop() || ''
+    return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' })
+  })
+}
+
 function getStripFromSession(session: SessionData): MediaItem | null {
-  return session.media?.find(
+  const sorted = getSortedMediaFromSession(session)
+  return sorted.find(
     (m) =>
       (m as any).type === 'strip' ||
       (m.metadata as Record<string, unknown>)?.is_strip ||
-      m.url?.toLowerCase().includes('strip')
+      m.url?.toLowerCase().includes('strip') ||
+      m.url?.toLowerCase().includes('photostrip')
   ) || null
 }
 
 function getFirstPhotoFromSession(session: SessionData): MediaItem | null {
-  if (!session.media) return null
+  const sorted = getSortedMediaFromSession(session)
+  if (sorted.length === 0) return null
   const strip = getStripFromSession(session)
-  const gif = session.media.find(m => m.type === 'gif' || m.url?.toLowerCase().includes('gif'))
-  return session.media.find((m) => {
-    const isImg = m.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i) || (m.type !== 'live' && m.type !== 'video' && m.type !== 'gif')
-    return isImg && (!strip || m.id !== strip.id) && (!gif || m.id !== gif.id)
-  }) || session.media[0] || null
+  const gif = sorted.find(m => m.type === 'gif' || m.url?.toLowerCase().includes('gif') || m.url?.match(/\.gif(\?.*)?$/i))
+  return sorted.find((m) => {
+    const isImageExt = !!m.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i)
+    const isVideoExt = !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+    const isImg = isImageExt || (m.type !== 'live' && m.type !== 'video' && m.type !== 'gif')
+    return isImg && !isVideoExt && (!strip || m.id !== strip.id) && (!gif || m.id !== gif.id)
+  }) || sorted[0] || null
 }
 
 function GalleryItemCard({ session, idx }: { session: SessionData; idx: number }) {

@@ -14,38 +14,59 @@ interface SessionFeedCardProps {
 }
 
 /* ─── Media helpers (extract from session) ─── */
+function getSortedMediaFromSession(session: SessionData): MediaItem[] {
+  if (!session.media) return []
+  return [...session.media].sort((a, b) => {
+    const nameA = a.url.split('/').pop() || ''
+    const nameB = b.url.split('/').pop() || ''
+    return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' })
+  })
+}
+
 function getStripFromSession(session: SessionData): MediaItem | null {
-  return session.media?.find(
+  const sorted = getSortedMediaFromSession(session)
+  return sorted.find(
     (m) =>
       (m as any).type === 'strip' ||
       (m.metadata as Record<string, unknown>)?.is_strip ||
-      m.url?.toLowerCase().includes('strip')
+      m.url?.toLowerCase().includes('strip') ||
+      m.url?.toLowerCase().includes('photostrip')
   ) || null
 }
 
 function getGifFromSession(session: SessionData): MediaItem | null {
-  return session.media?.find(
-    (m) => m.type === 'gif' || m.url?.toLowerCase().includes('gif')
+  const sorted = getSortedMediaFromSession(session)
+  return sorted.find(
+    (m) => m.type === 'gif' || m.url?.toLowerCase().includes('gif') || m.url?.match(/\.gif(\?.*)?$/i)
   ) || null
 }
 
 function getLiveFromSession(session: SessionData): MediaItem | null {
-  return session.media?.find(
-    (m) => m.type === 'live' || m.type === 'video' || m.url?.toLowerCase().includes('live') || m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
-  ) || null
+  const sorted = getSortedMediaFromSession(session)
+  return sorted.find((m) => {
+    const isVideoExt = !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+    const isImageExt = !!m.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i)
+    const isVideoType = m.type === 'video' || m.type === 'live'
+    return isVideoExt || (isVideoType && !isImageExt)
+  }) || null
 }
 
 function getPhotosFromSession(session: SessionData): MediaItem[] {
-  if (!session.media) return []
+  const sorted = getSortedMediaFromSession(session)
+  if (sorted.length === 0) return []
   const strip = getStripFromSession(session)
   const gif = getGifFromSession(session)
   const live = getLiveFromSession(session)
-  return session.media.filter((m) => {
-    const isImg = m.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i) || (m.type !== 'live' && m.type !== 'video' && m.type !== 'gif')
+  return sorted.filter((m) => {
+    const isImageExt = !!m.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i)
+    const isVideoExt = !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+    const isNotSpecialType = m.type !== 'live' && m.type !== 'video' && m.type !== 'gif' && (m as any).type !== 'strip'
+    
+    const isImg = isImageExt || isNotSpecialType
     const isStrip = strip && m.id === strip.id
     const isGif = gif && m.id === gif.id
-    const isLive = live && m.id === live.id
-    return isImg && !isStrip && !isGif && !isLive
+    const isLiveVideo = live && m.id === live.id
+    return isImg && !isStrip && !isGif && !isVideoExt && !isLiveVideo
   })
 }
 
