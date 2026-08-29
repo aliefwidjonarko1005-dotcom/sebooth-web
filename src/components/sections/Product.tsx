@@ -1,220 +1,429 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Camera, Sparkles, Handshake, ArrowRight, Check } from 'lucide-react'
-import { EditableText } from '@/components/admin/EditableText'
-import { RotatingBadge } from '@/components/ui/RotatingBadge'
+import Image from 'next/image'
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  Maximize2, 
+  MoreHorizontal, 
+  Search, 
+  Palette, 
+  Heart, 
+  User, 
+  SlidersHorizontal,
+  Plus,
+  Share2,
+  Lock,
+  Mic,
+  LayoutGrid,
+  CheckCircle2,
+  Sparkles,
+  ArrowRight,
+  X,
+  MessageCircle
+} from 'lucide-react'
 
-const SERVICES = [
+export interface ProductItem {
+  id: string
+  num: string
+  title: string
+  subtitle: string
+  desc: string
+  image: string
+  avatar: string
+  ctaText: string
+  waText: string
+  features: string[]
+  badge: string
+  priceTag?: string
+}
+
+const PRODUCTS: ProductItem[] = [
   {
-    id: 'batch',
+    id: 'mini-studio',
     num: '01',
-    name: 'BATCH BOOKING PACKAGE',
-    tagline: 'Paket Booking Hemat untuk Multiple Event',
-    desc: 'Solusi booking photobooth efisien untuk event organizer & brand yang membutuhkan layanan photobooth rutin dengan harga bundling khusus.',
-    features: ['Harga Bundling Hemat', 'Kustom Design Frame Overlay', 'Prioritas Reservasi Tanggal Event', 'Sistem Claim QR Scan Instant'],
-    bgColor: '#eef2ff',
-    textColor: '#002366',
-    accentColor: '#ff4500',
-    icon: <Camera className="w-20 h-20 md:w-28 md:h-28 text-[#002366]" />,
+    title: 'Mini Studio Photobooth',
+    subtitle: 'Studio Lighting & Professional Backdrop',
+    desc: 'Pengalaman mini studio foto profesional lengkap dengan lighting studio, backdrop kustom, dan pilihan properti foto seru untuk setiap momen spesialmu.',
+    image: '/images/products/mini_studio_booth.png',
+    avatar: '/images/products/mini_studio_booth.png',
+    ctaText: 'Mau ini dong',
+    waText: 'Halo Sebooth, saya berminat dengan Mini Studio Photobooth!',
+    features: ['Professional Studio Lighting', 'Custom Backdrop Selection', 'High Res Digital Softfiles', 'Instant QR Scan Access', 'Cetak Strip High Quality'],
+    badge: 'MOST FAVORITE',
+    priceTag: 'Mulai 1.2jt'
   },
   {
-    id: 'unlimited',
+    id: 'vending-machine',
     num: '02',
-    name: 'ALL YOU CAN PHOTOS',
-    tagline: 'Cetak Foto Unlimited & Akses Tanpa Batas',
-    desc: 'Pengalaman photobooth paling puas untuk pesta pernikahan, ulang tahun, dan gathering. Cetak strip sepuasnya tanpa batas kuota!',
-    features: ['Cetak Strip Unlimited High Quality', 'Softfile Photo Strip & GIF', 'Live Photo (Video Short) Support', 'Properti Foto Unik & Seru'],
-    bgColor: '#fff0eb',
-    textColor: '#ff4500',
-    accentColor: '#002366',
-    icon: <Sparkles className="w-20 h-20 md:w-28 md:h-28 text-[#ff4500]" />,
+    title: 'Vending Machine Photobooth',
+    subtitle: 'Self-Service Kiosk & Futuristic Experience',
+    desc: 'Konsep photobooth mandiri bergaya Vending Machine interaktif modern. Solusi estetik & futuristik untuk event, mall, cafe, dan brand activation.',
+    image: '/images/products/vending_machine_booth.png',
+    avatar: '/images/products/vending_machine_booth.png',
+    ctaText: 'Mau ini dong',
+    waText: 'Halo Sebooth, saya tertarik dengan Vending Machine Photobooth!',
+    features: ['Self-Service Interactive Touchscreen', 'Custom Branding Wrap', 'Instant High-Speed Printing', 'QR Softfile & GIF Download', 'Compact Futuristic Design'],
+    badge: 'POPULAR & UNIQUE',
+    priceTag: 'Exclusive Rate'
   },
   {
-    id: 'partnership',
+    id: 'sebooth-partner',
     num: '03',
-    name: 'JADIIN SEBOOTH PARTNER LOE',
-    tagline: 'Program Kemitraan & Kolaborasi Event',
-    desc: 'Gabung sebagai partner resmi Sebooth untuk dapatkan komisi menarik, dukungan peralatan studio profesional, dan paket sponsorship event.',
-    features: ['Komisi & Profit Sharing menarik', 'Priority Operator Support', 'Marketing Kit & Asset Promosi', 'Paket Sponsorship Event Partner'],
-    bgColor: '#eef2ff',
-    textColor: '#002366',
-    accentColor: '#ff4500',
-    icon: <Handshake className="w-20 h-20 md:w-28 md:h-28 text-[#002366]" />,
-  },
+    title: 'Jadi Partner Loe',
+    subtitle: 'Kemitraan & Kolaborasi Event Official',
+    desc: 'Gabung sebagai partner resmi Sebooth untuk WO & EO. Dapatkan komisi profit sharing, prioritas operator support, dan fasilitas sponsorship event.',
+    image: '/images/products/partner_sebooth.png',
+    avatar: '/images/products/partner_sebooth.png',
+    ctaText: 'Mau ini dong',
+    waText: 'Halo Sebooth, saya mau join sebagai Partner resmi Sebooth!',
+    features: ['Komisi & Profit Sharing', 'Priority Operator Support', 'Marketing Assets Support', 'Sponsorship Event Partner', 'Co-Branding Options'],
+    badge: 'PARTNERSHIP',
+    priceTag: 'Join Partner'
+  }
+]
+
+const PARTNER_LOGOS = [
+  { id: 'logo-1', src: '/images/partners/logo_1.png', alt: 'Partner Logo 1' },
+  { id: 'logo-2', src: '/images/partners/logo_2.png', alt: 'Partner Logo 2' },
+  { id: 'logo-3', src: '/images/partners/logo_3.png', alt: 'Partner Logo 3' },
+  { id: 'logo-4', src: '/images/partners/logo_4.png', alt: 'Partner Logo 4' },
+  { id: 'logo-5', src: '/images/partners/logo_5.png', alt: 'Partner Logo 5' },
+  { id: 'logo-6', src: '/images/partners/logo_6.png', alt: 'Partner Logo 6', scaleClass: 'scale-[1.45] sm:scale-[1.55]' },
 ]
 
 interface ProductProps {
-  initialData?: Record<string, string>;
+  initialData?: Record<string, string>
+  isActive?: boolean
 }
 
-export function Product({ initialData = {} }: ProductProps) {
+export function Product({ initialData = {}, isActive = true }: ProductProps) {
   const [activeIdx, setActiveIdx] = useState(0)
+  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null)
+  const [isLiked, setIsLiked] = useState<Record<string, boolean>>({})
+  const [isHovered, setIsHovered] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
-  const currentService = SERVICES[activeIdx]
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Touch Swipe Handling
+  const touchStartX = useRef<number | null>(null)
+
+  const count = PRODUCTS.length
+  const normalizedActiveIdx = ((activeIdx % count) + count) % count
+  const activeProduct = PRODUCTS[normalizedActiveIdx]
+
+  // Auto-play infinite sliding loop timer (5s interval, pauses when slide is not active or card hovered)
+  useEffect(() => {
+    if (!isActive || isHovered || selectedProduct) return
+
+    const timer = setInterval(() => {
+      setActiveIdx((prev) => prev + 1)
+    }, 5000)
+
+    return () => clearInterval(timer)
+  }, [isActive, isHovered, selectedProduct])
+
+  const handlePrev = () => {
+    setActiveIdx((prev) => prev - 1)
+  }
+
+  const handleNext = () => {
+    setActiveIdx((prev) => prev + 1)
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return
+    const touchEndX = e.changedTouches[0].clientX
+    const diff = touchStartX.current - touchEndX
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) handleNext()
+      else handlePrev()
+    }
+    touchStartX.current = null
+  }
+
+  const toggleLike = (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    setIsLiked((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
 
   return (
-    <section id="product" className="relative w-full min-h-screen bg-transparent py-20 px-6 md:px-16 overflow-hidden select-none flex flex-col justify-between">
-      {/* Background Soft Glow Accent */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-[50rem] rounded-full bg-[#eef2ff]/40 blur-[140px] pointer-events-none z-0" />
+    <section 
+      id="product" 
+      className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-gray-900 overflow-hidden select-none flex flex-col justify-center items-center px-3 sm:px-8 lg:px-16 pt-14 sm:pt-20 pb-4 sm:pb-8"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* ── ABSTRACT BLUR BLOBS (DESKTOP ONLY FOR 120FPS MOBILE) ── */}
+      <div className="hidden sm:block absolute top-[-5%] left-[10%] w-[32rem] h-[32rem] rounded-full bg-[#FF4500]/20 blur-[120px] pointer-events-none z-0" />
+      <div className="hidden sm:block absolute top-1/4 right-[-5%] w-[45rem] h-[45rem] rounded-full bg-[#FF5E00]/25 blur-[150px] pointer-events-none z-0" />
+      <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[35rem] h-[35rem] rounded-full bg-[#3B82F6]/20 blur-[130px] pointer-events-none z-0" />
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full my-auto flex flex-col items-center">
-        {/* Header Title (dontboardme styling with floating ball icon) */}
-        <div className="text-center mb-10 relative">
-          <div className="absolute -top-6 right-8 md:right-12 w-8 h-8 md:w-12 md:h-12 rounded-full bg-[#ff4500] animate-bounce shadow-md pointer-events-none" />
-          
-          <span className="text-[#002366] font-bold text-xs md:text-sm uppercase tracking-widest bg-white/90 backdrop-blur-md px-5 py-2 rounded-full border border-[#002366]/15 inline-block mb-3 shadow-sm">
-            ✦ PILIHAN LAYANAN SEBOOTH ✦
-          </span>
-          <EditableText
-            section="product"
-            fieldKey="section_title"
-            defaultValue="SEBUTIN APA YANG LOE MAU!"
-            as="h2"
-            className="text-4xl sm:text-6xl md:text-8xl text-[#002366] font-bayon uppercase leading-[0.82] tracking-tight"
-          >
+      {/* ── PERFECTLY CENTERED VERTICAL & HORIZONTAL CONTENT WRAPPER ── */}
+      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col items-center justify-center text-center my-auto gap-2.5 sm:gap-6">
+        
+        {/* ── SECTION TITLE (CENTERED) ── */}
+        <div className="flex flex-col items-center text-center w-full px-2">
+          <h2 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black font-bayon text-[#002366] uppercase tracking-tight leading-none drop-shadow-sm text-center">
             SEBUTIN APA YANG LOE MAU!
-          </EditableText>
+          </h2>
         </div>
 
-        {/* Main Service Wheel Showcase (dontboardme layout) */}
-        <div
-          className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-4"
+        {/* ── 3D COVERFLOW SPATIAL CAROUSEL (CENTERED, ULTRA SMOOTH 120FPS) ── */}
+        <div 
+          className="relative w-full flex items-center justify-center min-h-[335px] xs:min-h-[375px] sm:min-h-[490px] md:min-h-[530px] py-1"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          style={{ perspective: '1200px' }}
         >
-          {/* Left: Giant Display Step Number (dontboardme "01", "02", "03" layout) */}
-          <div className="lg:col-span-3 flex lg:flex-col items-center justify-center lg:items-start">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentService.num}
-                initial={{ opacity: 0, x: -30, scale: 0.8 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 30, scale: 0.8 }}
-                transition={{ duration: 0.4 }}
-                className="text-center lg:text-left"
-              >
-                <span className="text-7xl sm:text-9xl md:text-[11rem] font-black font-bayon leading-none block" style={{ color: currentService.accentColor }}>
-                  {currentService.num}
-                </span>
-                <span className="text-xs md:text-sm font-black uppercase tracking-widest text-[#002366]/60 block -mt-4">
-                  SERVICE {currentService.num} OF 03
-                </span>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          <div className="relative w-full h-full flex items-center justify-center">
+            {PRODUCTS.map((prod, idx) => {
+              // Infinite circular distance math
+              let diff = idx - normalizedActiveIdx
+              if (diff > count / 2) diff -= count
+              if (diff < -count / 2) diff += count
 
-          {/* Center: Active Service Display Card */}
-          <div className="lg:col-span-6 w-full">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentService.id}
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                transition={{ duration: 0.45 }}
-                className="w-full bg-white rounded-3xl p-8 md:p-10 shadow-2xl border-4 border-white flex flex-col justify-between relative overflow-hidden"
-              >
-                {/* Background Pastel Pill Accent */}
-                <div
-                  className="absolute top-0 right-0 w-56 h-56 rounded-full -translate-y-20 translate-x-20 opacity-40 pointer-events-none"
-                  style={{ backgroundColor: currentService.bgColor }}
-                />
+              const isActive = diff === 0
+              const isDirectNeighbor = Math.abs(diff) <= 1
 
-                {/* Card Top Header */}
-                <div className="relative z-10 flex items-start justify-between gap-6 mb-6">
-                  <div>
-                    <h3
-                      className="text-3xl md:text-4xl font-bayon uppercase leading-tight"
-                      style={{ color: currentService.textColor }}
-                    >
-                      {currentService.name}
-                    </h3>
-                    <p className="text-xs md:text-sm font-bold uppercase text-gray-400 tracking-wider mt-1">
-                      {currentService.tagline}
-                    </p>
-                  </div>
+              // 3D Perspective Transformations for Spatial Coverflow
+              // Scaled for desktop & mobile
+              let rotateY = diff * -18
+              let translateX = diff * 210
+              let translateZ = -Math.abs(diff) * 110
+              let scale = isActive ? 1 : Math.max(0.78, 1 - Math.abs(diff) * 0.15)
+              let opacity = isActive ? 1 : Math.max(0.35, 1 - Math.abs(diff) * 0.3)
+              let zIndex = 30 - Math.abs(diff) * 10
 
-                  <div
-                    className="w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-inner"
-                    style={{ backgroundColor: currentService.bgColor }}
-                  >
-                    {currentService.icon}
-                  </div>
-                </div>
+              // On mobile screens (< 640px), calculate hardware-composited 2D transforms
+              if (typeof window !== 'undefined' && window.innerWidth < 640) {
+                translateX = diff * 90
+                rotateY = diff * -8
+                translateZ = -Math.abs(diff) * 50
+                scale = isActive ? 1 : 0.85
+                opacity = isActive ? 1 : 0.45
+              }
 
-                {/* Description */}
-                <p className="relative z-10 text-sm md:text-base font-medium text-gray-700 uppercase leading-relaxed mb-6">
-                  {currentService.desc}
-                </p>
-
-                {/* Features Grid */}
-                <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-2.5 mb-8">
-                  {currentService.features.map((feat, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-2.5 p-3 rounded-xl bg-gray-50 border border-gray-100"
-                    >
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center text-white shrink-0"
-                        style={{ backgroundColor: currentService.accentColor }}
-                      >
-                        <Check className="w-3 h-3 stroke-[3]" />
-                      </div>
-                      <span className="text-xs font-bold uppercase text-gray-800">
-                        {feat}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Card Bottom CTA */}
-                <div className="relative z-10 flex items-center justify-end gap-4 pt-4 border-t border-gray-100">
-                  <RotatingBadge
-                    text="SEBOOTH PHOTOBOOTH • TANYA PAKET • "
-                    btnText="TANYA"
-                    bgColor={currentService.accentColor}
-                    textColor="#ffffff"
-                    size={105}
-                    href="https://wa.me/6285713899441?text=Halo%20Sebooth%2C%20saya%20tertarik%20dengan%20paket%20"
-                  />
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* Right: Service Selector Tabs (dontboardme arc pills) */}
-          <div className="lg:col-span-3 flex lg:flex-col gap-3 justify-center">
-            {SERVICES.map((srv, idx) => {
-              const isActive = activeIdx === idx
               return (
-                <motion.button
-                  key={srv.id}
-                  onClick={() => setActiveIdx(idx)}
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.96 }}
-                  className={`p-4 md:p-5 rounded-2xl border-2 text-left transition-all flex items-center justify-between ${
-                    isActive
-                      ? 'bg-white border-[#ff4500] shadow-lg text-[#002366]'
-                      : 'bg-white/80 border-transparent hover:bg-white text-gray-400'
-                  }`}
+                <div
+                  key={prod.id}
+                  onClick={() => setActiveIdx((prev) => prev + diff)}
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                  style={{
+                    transform: `translate3d(${translateX}px, 0px, ${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
+                    opacity: isDirectNeighbor || isActive ? opacity : 0,
+                    zIndex,
+                    transformStyle: 'preserve-3d',
+                    position: 'absolute',
+                    willChange: 'transform, opacity',
+                    transition: 'transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.35s ease',
+                    pointerEvents: isActive ? 'auto' : 'none'
+                  }}
+                  className="w-[230px] xs:w-[260px] sm:w-[320px] md:w-[350px] lg:w-[360px] xl:w-[380px] h-[330px] xs:h-[370px] sm:h-[480px] md:h-[530px] lg:h-[540px] xl:h-[570px] cursor-pointer shrink-0 [backface-visibility:hidden]"
                 >
-                  <div className="flex items-center gap-3">
-                    <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bayon text-sm ${
-                      isActive ? 'bg-[#ff4500] text-white' : 'bg-gray-100 text-gray-500'
-                    }`}>
-                      {srv.num}
-                    </span>
-                    <span className="font-bayon text-sm md:text-base uppercase tracking-tight line-clamp-1">
-                      {srv.name}
-                    </span>
+                  {/* ── CARD MODEL (PROPORTIONAL VERTICAL PORTRAIT + PROGRESSIVE BLUR) ── */}
+                  <div className="relative w-full h-full rounded-[24px] sm:rounded-[36px] overflow-hidden border-2 border-white/35 shadow-[0_20px_50px_rgba(0,0,0,0.65)] bg-zinc-900 group flex flex-col justify-between">
+                    {/* Full Card Background Image */}
+                    <Image
+                      src={prod.image}
+                      alt={prod.title}
+                      fill
+                      sizes="(max-width: 768px) 320px, 400px"
+                      priority={isActive}
+                      className="object-cover object-center w-full h-full transition-transform duration-700 group-hover:scale-105"
+                    />
+
+                    {/* Card Top Action Controls */}
+                    <div className="relative z-20 p-2.5 sm:p-4 flex items-center justify-between gap-1.5">
+                      <button 
+                        onClick={(e) => toggleLike(prod.id, e)}
+                        className="w-8 h-8 sm:w-9.5 sm:h-9.5 rounded-full bg-black/60 border border-white/25 flex items-center justify-center text-white hover:bg-black/80 transition-all shadow-md pointer-events-auto"
+                        title="Favorite"
+                      >
+                        <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isLiked[prod.id] ? 'fill-red-500 text-red-500' : 'text-white'}`} />
+                      </button>
+
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedProduct(prod)
+                        }}
+                        className="px-2.5 sm:px-3 py-1 rounded-full bg-white/25 border border-white/30 text-white text-[10px] sm:text-[11px] font-bold tracking-wider flex items-center gap-1 hover:bg-white/40 transition-all shadow-md uppercase pointer-events-auto"
+                      >
+                        <Maximize2 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                        <span>Expand</span>
+                      </button>
+
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedProduct(prod)
+                        }}
+                        className="w-8 h-8 sm:w-9.5 sm:h-9.5 rounded-full bg-black/60 border border-white/25 flex items-center justify-center text-white hover:bg-black/80 transition-all shadow-md pointer-events-auto"
+                        title="More Options"
+                      >
+                        <MoreHorizontal className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      </button>
+                    </div>
+
+                    {/* ── CLEAN GRADIENT OVERLAY SYSTEM (LIGHTWEIGHT 60FPS) ── */}
+                    <div className="absolute inset-x-0 bottom-0 h-[65%] pointer-events-none overflow-hidden rounded-b-[24px] sm:rounded-b-[36px] z-10 bg-gradient-to-t from-black/95 via-black/75 via-black/35 to-transparent" />
+
+                    {/* Card Bottom Content Container */}
+                    <div className="relative z-20 inset-x-0 p-3 sm:p-6 pt-6 sm:pt-10 flex flex-col justify-end text-left">
+                      {/* Badge Pill */}
+                      <div className="mb-1">
+                        <span className="text-[8px] sm:text-[10px] font-extrabold uppercase tracking-widest text-orange-300 bg-black/60 border border-orange-400/40 px-2 py-0.5 rounded-full">
+                          {prod.badge}
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="text-base xs:text-lg sm:text-2xl font-extrabold text-white leading-tight mb-1 tracking-tight drop-shadow-md">
+                        {prod.title}
+                      </h3>
+
+                      {/* Subtitle / Description */}
+                      <p className="line-clamp-2 text-[10.5px] xs:text-[11px] sm:text-xs text-white/85 leading-tight mb-2.5 sm:mb-4 font-medium">
+                        {prod.desc}
+                      </p>
+
+                      {/* CTA Button ("Mau ini dong" - Orange-to-Purple Gradient Pill) */}
+                      <a
+                        href={`https://wa.me/6285713899441?text=${encodeURIComponent(prod.waText)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-full rounded-full py-2 xs:py-2.5 sm:py-3.5 px-3.5 sm:px-5 bg-gradient-to-r from-[#FF5E00] via-[#FF3900] to-[#551286] text-white font-extrabold text-xs sm:text-base text-center tracking-wide border border-white/25 shadow-[0_4px_16px_rgba(255,94,0,0.35)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer pointer-events-auto"
+                      >
+                        <span>{prod.ctaText}</span>
+                        <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      </a>
+                    </div>
                   </div>
-                  <ArrowRight className={`w-4 h-4 transition-transform ${isActive ? 'text-[#ff4500] translate-x-1' : 'text-gray-300'}`} />
-                </motion.button>
+                </div>
               )
             })}
           </div>
         </div>
+
+        {/* ── TRUSTED BY SECTION WITH INFINITE AUTO-SLIDING LOGO MARQUEE (CENTERED) ── */}
+        <div className="w-full max-w-md mx-auto pt-1 sm:pt-4 border-t border-black/10 flex flex-col items-center text-center">
+          <span className="text-[8px] sm:text-[10px] font-extrabold uppercase tracking-widest text-[#002366]/60 block mb-1 text-center">
+            TRUSTED BY
+          </span>
+
+          {/* Infinite Marquee Track Container */}
+          <div className="relative w-full overflow-hidden select-none">
+            {/* Infinite Scrolling Track */}
+            <div 
+              className="animate-marquee-left flex items-center justify-center gap-2 sm:gap-3"
+              style={{
+                animationPlayState: isActive ? "running" : "paused",
+              }}
+            >
+              {[...PARTNER_LOGOS, ...PARTNER_LOGOS].map((logo, lIdx) => (
+                <div 
+                  key={lIdx} 
+                  className="relative h-6 sm:h-12 w-14 sm:w-28 shrink-0 flex items-center justify-center opacity-85 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+                >
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    fill
+                    sizes="150px"
+                    className={`object-contain object-center ${logo.scaleClass || ''}`}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* ── EXPAND DETAIL MODAL (PORTAL TO BODY TO ESCAPE SLIDE TRACK TRANSFORMS) ── */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {selectedProduct && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              onClick={() => setSelectedProduct(null)}
+              className="fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-3 xs:p-4 sm:p-6"
+            >
+              <motion.div
+                initial={{ scale: 0.92, y: 15 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.92, y: 15 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                style={{ willChange: "transform, opacity" }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative w-full max-w-xl md:max-w-2xl bg-zinc-900 border border-white/20 rounded-[20px] sm:rounded-[28px] overflow-hidden shadow-2xl text-white p-4 xs:p-5 sm:p-7 flex flex-col md:flex-row gap-4 sm:gap-6 max-h-[86vh] overflow-y-auto [transform:translate3d(0,0,0)] [backface-visibility:hidden]"
+              >
+                <button
+                  onClick={() => setSelectedProduct(null)}
+                  className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/70 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all"
+                >
+                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
+
+                {/* Left Product Image (Enlarged & Clean without overlay badges) */}
+                <div className="relative w-full md:w-1/2 h-56 xs:h-64 sm:h-72 md:h-auto min-h-[220px] xs:min-h-[250px] md:min-h-[340px] rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-black/40">
+                  <Image
+                    src={selectedProduct.image}
+                    alt={selectedProduct.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 450px"
+                    className="object-cover object-center"
+                  />
+                </div>
+
+                <div className="flex flex-col justify-between w-full md:w-1/2 text-left">
+                  <div>
+                    <h3 className="text-lg xs:text-xl sm:text-2xl font-extrabold text-white mb-0.5 sm:mb-1 font-bayon uppercase tracking-tight">{selectedProduct.title}</h3>
+                    <p className="text-[11px] xs:text-xs text-orange-400 font-bold uppercase tracking-wider mb-2 sm:mb-3">{selectedProduct.subtitle}</p>
+                    <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mb-3 sm:mb-4 font-medium">{selectedProduct.desc}</p>
+
+                    <div className="space-y-1.5 sm:space-y-2 mb-4 sm:mb-5">
+                      <h4 className="text-[10.5px] xs:text-xs font-bold uppercase text-white/70 tracking-widest">Fitur Utama:</h4>
+                      {selectedProduct.features.map((feat, fIdx) => (
+                        <div key={fIdx} className="flex items-center gap-1.5 xs:gap-2 text-[11px] xs:text-xs sm:text-sm text-gray-200 font-medium">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                          <span>{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <a
+                    href={`https://wa.me/6285713899441?text=${encodeURIComponent(selectedProduct.waText)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full rounded-full py-2.5 sm:py-3.5 px-4 sm:px-6 bg-gradient-to-r from-[#FF5E00] via-[#FF3900] to-[#551286] text-white font-bold text-xs xs:text-sm sm:text-base text-center tracking-wide border border-white/20 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                  >
+                    <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                    <span>Mau ini dong (Konsultasi WA)</span>
+                  </a>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   )
 }

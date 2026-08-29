@@ -24,9 +24,7 @@
 :root {
   --c-blue: #002366;
   --c-dark-blue: #00113a;
-  --c-[#002366]: #002366;
   --c-orange: #ff4500;
-  --c-[#ff4500]: #ff4500;
   --c-red: #002366;
   --c-yellow: #ff4500;
   --c-white: #ffffff;
@@ -147,4 +145,114 @@ body {
 
 .hard-shadow-orange {
   box-shadow: 6px 6px 0px #ff4500;
+}
+
+/* ─── Seamless Infinite Panning Background (Right to Left) ─── */
+@keyframes pan-horizontal {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-pan-left {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: pan-horizontal 40s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  contain: layout paint;
+}
+
+/* ─── Infinite Partner Logo Marquee ─── */
+@keyframes marquee-scroll-left {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-left 20s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  contain: layout paint;
+}
+
+.animate-marquee-left:hover {
+  animation-play-state: paused;
+}
+
+/* ─── Infinite Frame Cards Marquee ─── */
+@keyframes marquee-frames-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee-frames {
+  width: max-content;
+  animation: marquee-frames-scroll 140s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  contain: layout paint;
+}
+
+@media (max-width: 640px) {
+  .animate-marquee-frames {
+    animation-duration: 90s;
+  }
+}
+
+.animate-marquee-frames:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-frames-scroll-reverse {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-marquee-frames-reverse {
+  width: max-content;
+  animation: marquee-frames-scroll-reverse 140s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  contain: layout paint;
+}
+
+@media (max-width: 640px) {
+  .animate-marquee-frames-reverse {
+    animation-duration: 90s;
+  }
+}
+
+.animate-marquee-frames-reverse:hover {
+  animation-play-state: paused;
 }

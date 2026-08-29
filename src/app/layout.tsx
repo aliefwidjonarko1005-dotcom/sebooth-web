@@ -3,7 +3,6 @@ import { Space_Grotesk, Permanent_Marker, Poppins, Bayon } from "next/font/googl
 import localFont from "next/font/local";
 import "./globals.css";
 import { LayoutShell } from "@/components/layout/LayoutShell";
-import { ClientProviders } from "@/components/admin/ClientProviders";
 import { OrientationProvider } from "@/components/layout/OrientationProvider";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
@@ -48,16 +47,14 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${permanentMarker.variable} ${seboothFont.variable} ${poppins.variable} ${bayon.variable} antialiased paper-texture`}
       >
-        <ClientProviders>
-          <OrientationProvider>
-            <SmoothScrollProvider>
-              <CustomCursor />
-              <div id="root-app" className="w-full h-full relative transition-all duration-300">
-                <LayoutShell>{children}</LayoutShell>
-              </div>
-            </SmoothScrollProvider>
-          </OrientationProvider>
-        </ClientProviders>
+        <OrientationProvider>
+          <SmoothScrollProvider>
+            <CustomCursor />
+            <div id="root-app" className="w-full h-full relative transition-all duration-300">
+              <LayoutShell>{children}</LayoutShell>
+            </div>
+          </SmoothScrollProvider>
+        </OrientationProvider>
       </body>
     </html>
   );

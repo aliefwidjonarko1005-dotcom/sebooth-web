@@ -11,12 +11,13 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isExcluded = EXCLUDED_PATHS.some(p => pathname.startsWith(p));
     const isAccess = pathname.startsWith("/access");
+    const isHomepage = pathname === "/";
 
     return (
         <>
             {!isExcluded && !isAccess && <Header />}
             <main>{children}</main>
-            {!isExcluded && !isAccess && <Footer />}
+            {!isExcluded && !isAccess && !isHomepage && <Footer />}
             {!isExcluded && !isAccess && <FloatingCTA />}
         </>
     );

@@ -1,20 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { EditableText } from "@/components/admin/EditableText";
-import { EditableImage } from "@/components/admin/EditableImage";
 
 interface AboutContentProps {
     content: Record<string, string>;
 }
 
-/**
- * Client component for the About page.
- * Receives CMS content from the Server Component parent.
- * Framer Motion requires 'use client'.
- */
 export function AboutContent({ content }: AboutContentProps) {
-    // CMS keys with hardcoded fallbacks
     const heroLabel = content["hero_label"] || "OUR STORY";
     const heroTitle1 = content["hero_title_1"] || "Membangun";
     const heroTitle2 = content["hero_title_2"] || "Kenangan.";
@@ -55,24 +48,18 @@ export function AboutContent({ content }: AboutContentProps) {
     const steps = [
         {
             num: "01",
-            titleKey: "step1_title",
-            descKey: "step1_desc",
             title: step1Title,
             desc: step1Desc,
             shadow: "hard-shadow-black",
         },
         {
             num: "02",
-            titleKey: "step2_title",
-            descKey: "step2_desc",
             title: step2Title,
             desc: step2Desc,
             shadow: "hard-shadow-blue",
         },
         {
             num: "03",
-            titleKey: "step3_title",
-            descKey: "step3_desc",
             title: step3Title,
             desc: step3Desc,
             shadow: "hard-shadow-orange",
@@ -90,25 +77,25 @@ export function AboutContent({ content }: AboutContentProps) {
                         transition={{ duration: 0.8 }}
                         className="max-w-5xl z-10 relative"
                     >
-                        <EditableText section="about_page" fieldKey="hero_label" defaultValue={heroLabel} as="p" className="text-lg font-bold uppercase text-white/60 mb-4">
+                        <p className="text-lg font-bold uppercase text-white/60 mb-4">
                             [ {heroLabel} ]
-                        </EditableText>
+                        </p>
                         <h1 className="text-5xl md:text-8xl font-black text-white mb-12 tracking-tighter leading-[0.9] uppercase">
-                            <EditableText section="about_page" fieldKey="hero_title_1" defaultValue={heroTitle1} as="span" className="text-white text-5xl md:text-8xl font-black tracking-tighter leading-[0.9] uppercase">
+                            <span className="text-white text-5xl md:text-8xl font-black tracking-tighter leading-[0.9] uppercase">
                                 {heroTitle1}
-                            </EditableText>
+                            </span>
                             <br />
-                            <EditableText section="about_page" fieldKey="hero_title_2" defaultValue={heroTitle2} as="span" className="text-secondary scribble-underline italic marker-font normal-case text-5xl md:text-8xl" style={{ textShadow: "none" }}>
+                            <span className="text-secondary scribble-underline italic marker-font normal-case text-5xl md:text-8xl" style={{ textShadow: "none" }}>
                                 {heroTitle2}
-                            </EditableText>
+                            </span>
                         </h1>
                         <div className="space-y-8 text-xl md:text-2xl text-white font-bold uppercase leading-relaxed max-w-3xl">
-                            <EditableText section="about_page" fieldKey="hero_paragraph_1" defaultValue={heroParagraph1} as="p" className="text-xl md:text-2xl text-white font-bold uppercase leading-relaxed">
+                            <p className="text-xl md:text-2xl text-white font-bold uppercase leading-relaxed">
                                 {heroParagraph1}
-                            </EditableText>
-                            <EditableText section="about_page" fieldKey="hero_paragraph_2" defaultValue={heroParagraph2} as="p" className="text-xl md:text-2xl text-white font-bold uppercase leading-relaxed">
+                            </p>
+                            <p className="text-xl md:text-2xl text-white font-bold uppercase leading-relaxed">
                                 {heroParagraph2}
-                            </EditableText>
+                            </p>
                         </div>
                     </motion.div>
 
@@ -117,26 +104,18 @@ export function AboutContent({ content }: AboutContentProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.8, delay: 0.3 }}
-                        className="relative h-[400px] md:h-[500px] w-full border-4 border-white/20 overflow-hidden flex items-center justify-center"
+                        className="relative h-[400px] md:h-[500px] w-full border-4 border-white/20 overflow-hidden flex items-center justify-center bg-slate-900"
                     >
                         {content["hero_image"] ? (
-                            <EditableImage
-                                section="about_page"
-                                fieldKey="hero_image"
-                                defaultValue={content["hero_image"]}
+                            <Image
+                                src={content["hero_image"]}
+                                alt="About Sebooth Hero"
+                                fill
                                 className="w-full h-full object-cover"
-                                altText="About Sebooth Hero"
                             />
                         ) : (
                             <div className="relative w-full h-full flex items-center justify-center bg-white/5">
-                                <EditableImage
-                                    section="about_page"
-                                    fieldKey="hero_image"
-                                    defaultValue=""
-                                    className="w-full h-full object-cover"
-                                    altText="About Sebooth Hero"
-                                />
-                                <span className="absolute text-white/30 font-black uppercase text-sm pointer-events-none">[Upload Hero Image]</span>
+                                <span className="text-white/40 font-black uppercase text-sm">Sebooth Photo Booth</span>
                             </div>
                         )}
                     </motion.div>
@@ -160,39 +139,27 @@ export function AboutContent({ content }: AboutContentProps) {
                         viewport={{ once: true }}
                         className="bg-primary p-12 border-2 border-black hard-shadow-orange"
                     >
-                        <EditableText section="about_page" fieldKey="vision_label" defaultValue={visionLabel} as="p" className="text-secondary font-black uppercase text-sm mb-4 border-b-2 border-white/20 pb-4">
+                        <p className="text-secondary font-black uppercase text-sm mb-4 border-b-2 border-white/20 pb-4">
                             {visionLabel}
-                        </EditableText>
-                        <EditableText section="about_page" fieldKey="vision_title" defaultValue={visionTitle} as="h2" className="text-3xl md:text-4xl font-black uppercase text-white mb-8 tracking-tighter">
+                        </p>
+                        <h2 className="text-3xl md:text-4xl font-black uppercase text-white mb-8 tracking-tighter">
                             {visionTitle}
-                        </EditableText>
-                        <EditableText section="about_page" fieldKey="vision_text" defaultValue={visionText} as="p" className="text-lg text-white font-bold uppercase leading-relaxed">
+                        </h2>
+                        <p className="text-lg text-white font-bold uppercase leading-relaxed">
                             {visionText}
-                        </EditableText>
+                        </p>
 
                         {/* Vision Image */}
-                        <div className="mt-8 h-[200px] border-2 border-white/20 overflow-hidden flex items-center justify-center">
-                            {content["vision_image"] ? (
-                                <EditableImage
-                                    section="about_page"
-                                    fieldKey="vision_image"
-                                    defaultValue={content["vision_image"]}
+                        {content["vision_image"] && (
+                            <div className="mt-8 h-[200px] border-2 border-white/20 overflow-hidden relative">
+                                <Image
+                                    src={content["vision_image"]}
+                                    alt="Vision Image"
+                                    fill
                                     className="w-full h-full object-cover"
-                                    altText="Vision Image"
                                 />
-                            ) : (
-                                <div className="relative w-full h-full flex items-center justify-center bg-white/5">
-                                    <EditableImage
-                                        section="about_page"
-                                        fieldKey="vision_image"
-                                        defaultValue=""
-                                        className="w-full h-full object-cover"
-                                        altText="Vision Image"
-                                    />
-                                    <span className="absolute text-white/30 font-black uppercase text-xs pointer-events-none">[Upload Image]</span>
-                                </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </motion.div>
 
                     {/* Right: Steps */}
@@ -202,12 +169,12 @@ export function AboutContent({ content }: AboutContentProps) {
                         viewport={{ once: true }}
                         transition={{ delay: 0.2 }}
                     >
-                        <EditableText section="about_page" fieldKey="mission_label" defaultValue={missionLabel} as="p" className="text-primary font-black uppercase text-sm mb-4">
+                        <p className="text-primary font-black uppercase text-sm mb-4">
                             {missionLabel}
-                        </EditableText>
-                        <EditableText section="about_page" fieldKey="mission_title" defaultValue={missionTitle} as="h2" className="text-3xl md:text-4xl font-black uppercase text-text-dark mb-8 tracking-tighter">
+                        </p>
+                        <h2 className="text-3xl md:text-4xl font-black uppercase text-text-dark mb-8 tracking-tighter">
                             {missionTitle}
-                        </EditableText>
+                        </h2>
                         <ul className="space-y-0">
                             {steps.map((step) => (
                                 <div
@@ -218,12 +185,12 @@ export function AboutContent({ content }: AboutContentProps) {
                                         {step.num}
                                     </span>
                                     <div>
-                                        <EditableText section="about_page" fieldKey={step.titleKey} defaultValue={step.title} as="h3" className="text-xl font-black uppercase text-text-dark mb-2">
+                                        <h3 className="text-xl font-black uppercase text-text-dark mb-2">
                                             {step.title}
-                                        </EditableText>
-                                        <EditableText section="about_page" fieldKey={step.descKey} defaultValue={step.desc} as="p" className="text-text-dark font-bold uppercase text-sm">
+                                        </h3>
+                                        <p className="text-text-dark font-bold uppercase text-sm">
                                             {step.desc}
-                                        </EditableText>
+                                        </p>
                                     </div>
                                 </div>
                             ))}
@@ -236,13 +203,13 @@ export function AboutContent({ content }: AboutContentProps) {
             <section className="py-32 px-6 md:px-20 bg-primary text-center relative overflow-hidden">
                 <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tighter leading-tight max-w-4xl mx-auto">
                     &quot;
-                    <EditableText section="about_page" fieldKey="footer_quote_1" defaultValue={footerQuote1} as="span" className="text-white text-3xl md:text-5xl font-black uppercase tracking-tighter">
+                    <span className="text-white text-3xl md:text-5xl font-black uppercase tracking-tighter">
                         {footerQuote1}
-                    </EditableText>
+                    </span>
                     <br />
-                    <EditableText section="about_page" fieldKey="footer_quote_2" defaultValue={footerQuote2} as="span" className="text-secondary marker-font normal-case text-4xl md:text-6xl" style={{ textShadow: "none" }}>
+                    <span className="text-secondary marker-font normal-case text-4xl md:text-6xl" style={{ textShadow: "none" }}>
                         {footerQuote2}
-                    </EditableText>
+                    </span>
                     &quot;
                 </h2>
             </section>

@@ -8,19 +8,12 @@ import {
     ShieldCheck,
     Zap,
 } from "lucide-react";
-import { EditableText } from "@/components/admin/EditableText";
-import { EditableImage } from "@/components/admin/EditableImage";
 
 interface PartnershipContentProps {
     content: Record<string, string>;
 }
 
-/**
- * Client component for the Partnership page.
- * Receives CMS content from the Server Component parent.
- */
 export function PartnershipContent({ content }: PartnershipContentProps) {
-    // CMS keys with hardcoded fallbacks
     const headerLabel =
         content["header_label"] || "For Event Professionals";
     const headerTitle =
@@ -58,168 +51,98 @@ export function PartnershipContent({ content }: PartnershipContentProps) {
                     animate={{ opacity: 1, y: 0 }}
                     className="max-w-4xl"
                 >
-                    <EditableText section="partnership_page" fieldKey="header_label" defaultValue={headerLabel} as="span" className="text-[#0F3D2E] font-bold text-sm tracking-widest uppercase mb-4 block">
-                        {headerLabel}
-                    </EditableText>
-                    <EditableText section="partnership_page" fieldKey="header_title" defaultValue={headerTitle} as="h1" className="text-5xl md:text-7xl font-bold font-sebooth text-[#1A1A1A] mb-8 tracking-tighter leading-none">
+                    <span className="text-secondary font-black uppercase tracking-widest text-sm mb-4 block">
+                        [ {headerLabel} ]
+                    </span>
+                    <h1 className="text-6xl md:text-8xl font-black uppercase text-white tracking-tighter leading-none mb-8 whitespace-pre-line">
                         {headerTitle}
-                    </EditableText>
-                    <EditableText section="partnership_page" fieldKey="header_desc" defaultValue={headerDesc} as="p" className="text-xl text-[#1A1A1A]/70 mb-12 max-w-2xl leading-relaxed">
+                    </h1>
+                    <p className="text-xl md:text-2xl font-bold uppercase text-white/80 leading-relaxed max-w-3xl mb-12">
                         {headerDesc}
-                    </EditableText>
+                    </p>
+                    <a
+                        href="https://wa.me/6285713899441?text=Halo%20Sebooth,%20saya%20tertarik%20dengan%20kemitraan%20EO/WO"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-3 px-8 py-5 bg-white text-black font-black uppercase tracking-wider text-lg border-2 border-black hard-shadow-orange hover:bg-secondary transition-colors"
+                    >
+                        <Download className="w-6 h-6" />
+                        {ctaText}
+                    </a>
                 </motion.div>
 
-                <div className="grid md:grid-cols-2 gap-20 border-t border-[#1A1A1A]/10 pt-20">
-                    {/* Benefits Column */}
-                    <div>
-                        <EditableText section="partnership_page" fieldKey="benefits_title" defaultValue={benefitsTitle} as="h3" className="text-2xl font-bold text-[#1A1A1A] mb-8 font-sebooth">
-                            {benefitsTitle}
-                        </EditableText>
-                        <ul className="space-y-8">
-                            <li className="flex gap-4">
-                                <div className="bg-[#D4AF37]/10 p-3 h-fit rounded-none">
-                                    <Zap className="w-6 h-6 text-[#D4AF37]" />
-                                </div>
-                                <div>
-                                    <EditableText section="partnership_page" fieldKey="benefit1_title" defaultValue={benefit1Title} as="h4" className="font-bold text-[#0F3D2E] text-lg">
-                                        {benefit1Title}
-                                    </EditableText>
-                                    <EditableText section="partnership_page" fieldKey="benefit1_desc" defaultValue={benefit1Desc} as="p" className="text-[#1A1A1A]/70 leading-relaxed mt-1">
-                                        {benefit1Desc}
-                                    </EditableText>
-                                </div>
-                            </li>
-                            <li className="flex gap-4">
-                                <div className="bg-[#1A1A1A]/5 p-3 h-fit rounded-none">
-                                    <ShieldCheck className="w-6 h-6 text-[#1A1A1A]" />
-                                </div>
-                                <div>
-                                    <EditableText section="partnership_page" fieldKey="benefit2_title" defaultValue={benefit2Title} as="h4" className="font-bold text-[#0F3D2E] text-lg">
-                                        {benefit2Title}
-                                    </EditableText>
-                                    <EditableText section="partnership_page" fieldKey="benefit2_desc" defaultValue={benefit2Desc} as="p" className="text-[#1A1A1A]/70 leading-relaxed mt-1">
-                                        {benefit2Desc}
-                                    </EditableText>
-                                </div>
-                            </li>
-                            <li className="flex gap-4">
-                                <div className="bg-[#0F3D2E]/5 p-3 h-fit rounded-none">
-                                    <CheckCircle className="w-6 h-6 text-[#0F3D2E]" />
-                                </div>
-                                <div>
-                                    <EditableText section="partnership_page" fieldKey="benefit3_title" defaultValue={benefit3Title} as="h4" className="font-bold text-[#0F3D2E] text-lg">
-                                        {benefit3Title}
-                                    </EditableText>
-                                    <EditableText section="partnership_page" fieldKey="benefit3_desc" defaultValue={benefit3Desc} as="p" className="text-[#1A1A1A]/70 leading-relaxed mt-1">
-                                        {benefit3Desc}
-                                    </EditableText>
-                                </div>
-                            </li>
-                        </ul>
+                {/* Benefits Grid */}
+                <div className="mt-32">
+                    <h2 className="text-4xl md:text-5xl font-black uppercase text-white tracking-tighter mb-12">
+                        {benefitsTitle}
+                    </h2>
+                    <div className="grid md:grid-cols-3 gap-8">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="bg-primary p-8 border-2 border-black hard-shadow-white"
+                        >
+                            <Zap className="w-12 h-12 text-secondary mb-6" />
+                            <h3 className="text-2xl font-black uppercase text-white mb-4">
+                                {benefit1Title}
+                            </h3>
+                            <p className="text-white/80 font-bold uppercase text-sm leading-relaxed">
+                                {benefit1Desc}
+                            </p>
+                        </motion.div>
 
-                        {/* Partnership Image */}
-                        <div className="mt-12 h-[250px] border-2 border-[#1A1A1A]/10 overflow-hidden flex items-center justify-center">
-                            {content["partnership_image"] ? (
-                                <EditableImage
-                                    section="partnership_page"
-                                    fieldKey="partnership_image"
-                                    defaultValue={content["partnership_image"]}
-                                    className="w-full h-full object-cover"
-                                    altText="Partnership Image"
-                                />
-                            ) : (
-                                <div className="relative w-full h-full flex items-center justify-center bg-[#1A1A1A]/5">
-                                    <EditableImage
-                                        section="partnership_page"
-                                        fieldKey="partnership_image"
-                                        defaultValue=""
-                                        className="w-full h-full object-cover"
-                                        altText="Partnership Image"
-                                    />
-                                    <span className="absolute text-[#1A1A1A]/20 font-black uppercase text-sm pointer-events-none">[Upload Image]</span>
-                                </div>
-                            )}
-                        </div>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                            className="bg-primary p-8 border-2 border-black hard-shadow-orange"
+                        >
+                            <ShieldCheck className="w-12 h-12 text-secondary mb-6" />
+                            <h3 className="text-2xl font-black uppercase text-white mb-4">
+                                {benefit2Title}
+                            </h3>
+                            <p className="text-white/80 font-bold uppercase text-sm leading-relaxed">
+                                {benefit2Desc}
+                            </p>
+                        </motion.div>
 
-                        <button className="mt-8 px-8 py-4 bg-[#1A1A1A] text-white font-bold flex items-center gap-3 hover:bg-[#000] transition-colors">
-                            <Download className="w-5 h-5" />
-                            <EditableText section="partnership_page" fieldKey="cta_text" defaultValue={ctaText} as="span" className="text-white font-bold">
-                                {ctaText}
-                            </EditableText>
-                        </button>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 }}
+                            className="bg-primary p-8 border-2 border-black hard-shadow-blue"
+                        >
+                            <CheckCircle className="w-12 h-12 text-secondary mb-6" />
+                            <h3 className="text-2xl font-black uppercase text-white mb-4">
+                                {benefit3Title}
+                            </h3>
+                            <p className="text-white/80 font-bold uppercase text-sm leading-relaxed">
+                                {benefit3Desc}
+                            </p>
+                        </motion.div>
                     </div>
+                </div>
 
-                    {/* Inquiry Form Column */}
-                    <div className="bg-[#EAEAEA] p-10 h-fit">
-                        <EditableText section="partnership_page" fieldKey="form_title" defaultValue={formTitle} as="h3" className="text-2xl font-bold text-[#1A1A1A] mb-6 font-sebooth">
-                            {formTitle}
-                        </EditableText>
-                        <form className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60">
-                                    Agency / Company Name
-                                </label>
-                                <input
-                                    type="text"
-                                    className="w-full bg-white border-none p-4 text-[#1A1A1A] focus:ring-1 focus:ring-[#0F3D2E] outline-none"
-                                    placeholder="Ex: Majestic Events"
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60">
-                                        Contact Person
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="w-full bg-white border-none p-4 text-[#1A1A1A] focus:ring-1 focus:ring-[#0F3D2E] outline-none"
-                                        placeholder="John Doe"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60">
-                                        WhatsApp
-                                    </label>
-                                    <input
-                                        type="tel"
-                                        className="w-full bg-white border-none p-4 text-[#1A1A1A] focus:ring-1 focus:ring-[#0F3D2E] outline-none"
-                                        placeholder="+62..."
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60">
-                                    Est. Events per Year
-                                </label>
-                                <select className="w-full bg-white border-none p-4 text-[#1A1A1A] focus:ring-1 focus:ring-[#0F3D2E] outline-none">
-                                    <option>1 - 5 Events</option>
-                                    <option>5 - 10 Events</option>
-                                    <option>10 - 20 Events</option>
-                                    <option>20+ Events (VIP Partner)</option>
-                                </select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60">
-                                    Message / Special Request
-                                </label>
-                                <textarea
-                                    className="w-full bg-white border-none p-4 text-[#1A1A1A] focus:ring-1 focus:ring-[#0F3D2E] outline-none h-32 resize-none"
-                                    placeholder="Tell us about your typical event needs..."
-                                />
-                            </div>
-
-                            <button className="w-full py-4 bg-[#0F3D2E] text-white font-bold hover:bg-[#195240] transition-colors flex justify-center items-center gap-2">
-                                <EditableText section="partnership_page" fieldKey="submit_text" defaultValue={submitText} as="span" className="text-white font-bold">
-                                    {submitText}
-                                </EditableText>
-                                {" "}
-                                <ArrowRight className="w-4 h-4" />
-                            </button>
-                        </form>
-                    </div>
+                {/* Contact / Inquiry Form */}
+                <div className="mt-32 max-w-2xl bg-white p-8 md:p-12 border-2 border-black hard-shadow-black">
+                    <h2 className="text-3xl md:text-4xl font-black uppercase text-text-dark tracking-tighter mb-4">
+                        {formTitle}
+                    </h2>
+                    <p className="text-text-dark font-bold uppercase text-sm mb-8">
+                        Hubungi tim kami langsung via WhatsApp untuk mendiskusikan peluang kolaborasi & penawaran khusus EO / WO.
+                    </p>
+                    <a
+                        href="https://wa.me/6285713899441?text=Halo%20Sebooth,%20saya%20ingin%20mengajukan%20kemitraan%20resmi"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-5 bg-primary text-white font-black uppercase tracking-wider text-lg border-2 border-black flex items-center justify-center gap-3 hard-shadow-orange hover:bg-black transition-colors"
+                    >
+                        {submitText}
+                        <ArrowRight className="w-6 h-6" />
+                    </a>
                 </div>
             </div>
         </div>

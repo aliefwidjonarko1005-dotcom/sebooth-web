@@ -1,12 +1,18 @@
 'use client'
 
 import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  const isHomepage = pathname === '/'
+
   useEffect(() => {
+    if (isHomepage) return // Don't hijack scroll on full-screen slide deck
+
     gsap.registerPlugin(ScrollTrigger)
 
     const lenis = new Lenis({
@@ -16,19 +22,20 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       touchMultiplier: 2,
     })
 
-    // Synchronize Lenis scroll position with GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update)
 
-    gsap.ticker.add((time) => {
+    const updateTicker = (time: number) => {
       lenis.raf(time * 1000)
-    })
+    }
 
+    gsap.ticker.add(updateTicker)
     gsap.ticker.lagSmoothing(0)
 
     return () => {
+      gsap.ticker.remove(updateTicker)
       lenis.destroy()
     }
-  }, [])
+  }, [isHomepage])
 
   return <>{children}</>
 }

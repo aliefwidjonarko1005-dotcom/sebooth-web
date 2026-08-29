@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { EditableText } from "@/components/admin/EditableText";
 import { RotatingBadge } from "@/components/ui/RotatingBadge";
 
 const socialLinks = [
@@ -24,15 +23,9 @@ export function Footer() {
                         ✦ SEBOOTH PHOTOBOOTH CONSULTATION ✦
                     </span>
 
-                    <EditableText
-                        section="footer"
-                        fieldKey="cta_heading"
-                        defaultValue="SIAP ABADIKAN MOMEN SERUMU?"
-                        as="h2"
-                        className="h1 text-[#002366] font-bayon uppercase leading-[0.8] tracking-[-0.04em] mb-8"
-                    >
+                    <h2 className="h1 text-[#002366] font-bayon uppercase leading-[0.8] tracking-[-0.04em] mb-8">
                         SIAP ABADIKAN MOMEN SERUMU?
-                    </EditableText>
+                    </h2>
 
                     <p className="text-sm md:text-xl font-semibold text-[#ff4500] uppercase max-w-xl mb-10 leading-relaxed tracking-wide">
                         Hubungi tim Sebooth hari ini untuk berkonsultasi mengenai tanggal event, paket unlimited, & custom frame overlay!
