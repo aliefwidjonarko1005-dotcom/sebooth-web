@@ -9,11 +9,12 @@ import Link from 'next/link'
 import { 
   Loader2, Home, LogOut, ShieldCheck, Users, Type, DollarSign, 
   Instagram, Newspaper, Plus, Trash2, Save, X, Image, PenTool,
-  ChevronDown, ChevronUp, Upload, Film, Ticket
+  ChevronDown, ChevronUp, Upload, Film, Ticket, Search
 } from 'lucide-react'
 import QueueOperatorTab from '@/components/admin/QueueOperatorTab'
+import SessionLookupTab from '@/components/admin/SessionLookupTab'
 
-type TabKey = 'editor' | 'content' | 'pricing' | 'instagram' | 'news' | 'admins' | 'queue' | 'featured_frames'
+type TabKey = 'editor' | 'content' | 'pricing' | 'instagram' | 'news' | 'admins' | 'queue' | 'featured_frames' | 'session_lookup'
 
 interface ContentItem { id: string; section: string; key: string; value: string; }
 interface IGPost { id: string; instagram_url: string; display_order: number; }
@@ -504,6 +505,7 @@ export default function AdminPage() {
     { key: 'news', label: 'News', icon: <Newspaper className="w-4 h-4" /> },
     { key: 'featured_frames', label: 'Featured Frames', icon: <Image className="w-4 h-4" /> },
     { key: 'queue', label: 'Antrean', icon: <Ticket className="w-4 h-4" /> },
+    { key: 'session_lookup', label: 'Cek Sesi', icon: <Search className="w-4 h-4" /> },
     ...(isSuper ? [{ key: 'admins' as const, label: 'Admins', icon: <Users className="w-4 h-4" /> }] : []),
   ]
 
@@ -1141,6 +1143,11 @@ export default function AdminPage() {
         {/* ═══════════════════ QUEUE TAB ═══════════════════ */}
         {tab === 'queue' && (
           <QueueOperatorTab flash={flash} />
+        )}
+
+        {/* ═══════════════════ SESSION LOOKUP TAB ═══════════════════ */}
+        {tab === 'session_lookup' && (
+          <SessionLookupTab />
         )}
       </div>
     </div>
