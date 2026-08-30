@@ -407,7 +407,7 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
                       alt={pin.title}
                       width={pin.width}
                       height={pin.height}
-                      quality={70}
+                      unoptimized
                       sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, (max-width: 1536px) 20vw, 15vw"
                       className="w-full h-auto block object-cover transition-transform duration-300 group-hover:scale-[1.015]"
                       loading={idx < 8 ? "eager" : "lazy"}
@@ -513,7 +513,7 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
                   alt={selectedPin.title}
                   width={selectedPin.width}
                   height={selectedPin.height}
-                  quality={85}
+                  unoptimized
                   className="max-w-full max-h-[75vh] w-auto h-auto object-contain rounded-xl shadow-2xl border border-white/10"
                 />
               </div>

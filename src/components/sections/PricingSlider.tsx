@@ -414,6 +414,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                     src="/images/slides/slide4/all-you-can-photo-pckg.png"
                     alt="All You Can Photo Package Card"
                     fill
+                    unoptimized
                     sizes="340px"
                     className="object-contain pointer-events-none select-none"
                     priority
@@ -472,6 +473,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       src="/images/slides/slide4/card-obj-1-v2.png"
                       alt="Sebooth Mascot Package Artwork"
                       fill
+                      unoptimized
                       sizes="400px"
                       className="object-contain p-1"
                       priority
@@ -517,6 +519,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                     src="/images/slides/slide4/batch-booking-pckg.png"
                     alt="Batch Booking Package Card"
                     fill
+                    unoptimized
                     sizes="340px"
                     className="object-contain pointer-events-none select-none"
                     priority
@@ -601,6 +604,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                     }
                     alt={isAllYouCan ? "All You Can Photo Card" : "Batch Booking Card"}
                     fill
+                    unoptimized
                     sizes="340px"
                     className="object-contain pointer-events-none select-none"
                     priority
@@ -835,6 +839,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         src="/images/slides/slide4/all-you-can-photo-pckg.png"
                         alt="All You Can Photo"
                         fill
+                        unoptimized
                         sizes="310px"
                         className="object-contain pointer-events-none"
                         priority
@@ -889,6 +894,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                           src="/images/slides/slide4/card-obj-1-v2.png"
                           alt="Choose Your Photobooth Package"
                           fill
+                          unoptimized
                           sizes="330px"
                           className="object-contain p-1"
                           priority
@@ -928,6 +934,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         src="/images/slides/slide4/batch-booking-pckg.png"
                         alt="Batch Booking"
                         fill
+                        unoptimized
                         sizes="310px"
                         className="object-contain pointer-events-none"
                         priority

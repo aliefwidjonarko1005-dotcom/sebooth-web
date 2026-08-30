@@ -586,7 +586,7 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
                     src={item.image}
                     alt={item.title}
                     fill
-                    quality={55}
+                    unoptimized
                     draggable={false}
                     sizes="240px"
                     className="object-cover object-center select-none pointer-events-none"
@@ -628,7 +628,7 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
                     src={item.image}
                     alt={item.title}
                     fill
-                    quality={55}
+                    unoptimized
                     draggable={false}
                     sizes="240px"
                     className="object-cover object-center select-none pointer-events-none"
@@ -678,6 +678,7 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
                   src={item.image}
                   alt={item.title}
                   fill
+                  unoptimized
                   draggable={false}
                   sizes="450px"
                   className="object-cover object-center select-none pointer-events-none transition-transform duration-500 group-hover/img:scale-105"
@@ -748,6 +749,7 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
                     src={selectedFrame.image}
                     alt={selectedFrame.title}
                     fill
+                    unoptimized
                     draggable={false}
                     priority
                     sizes="(max-width: 768px) 100vw, 700px"

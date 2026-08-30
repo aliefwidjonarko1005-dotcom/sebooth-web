@@ -239,6 +239,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                       src={prod.image}
                       alt={prod.title}
                       fill
+                      unoptimized
                       sizes="(max-width: 768px) 320px, 400px"
                       priority={isActive}
                       className="object-cover object-center w-full h-full transition-transform duration-700 group-hover:scale-105"
@@ -342,6 +343,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                     src={logo.src}
                     alt={logo.alt}
                     fill
+                    unoptimized
                     sizes="150px"
                     className={`object-contain object-center ${logo.scaleClass || ''}`}
                   />
@@ -386,6 +388,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                     src={selectedProduct.image}
                     alt={selectedProduct.title}
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 100vw, 450px"
                     className="object-cover object-center"
                   />
