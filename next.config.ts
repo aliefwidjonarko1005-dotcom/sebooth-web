@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Allow mobile and LAN devices to connect to Next.js dev server without cross-origin warnings
+  allowedDevOrigins: [
+    "172.22.5.127",
+    "192.168.137.1",
+    "localhost",
+    "127.0.0.1",
+    "*.local"
+  ],
+
   // ═══════════════════════════════════════════════════════
   // IMAGE OPTIMIZATION
   // Whitelist external image domains for next/image

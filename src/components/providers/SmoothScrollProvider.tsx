@@ -9,9 +9,20 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isHomepage = pathname === '/'
+  const isProfile = pathname.startsWith('/profile')
+  const isAccess = pathname.startsWith('/access')
+  const isQueue = pathname.startsWith('/queue')
+  const isExcluded = isHomepage || isProfile || isAccess || isQueue
 
   useEffect(() => {
-    if (isHomepage) return // Don't hijack scroll on full-screen slide deck
+    if (isExcluded) return
+
+    // On mobile devices, native scroll is much smoother and prevents lag
+    const isMobile = typeof window !== 'undefined' && (
+      window.innerWidth < 1024 ||
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    )
+    if (isMobile) return
 
     gsap.registerPlugin(ScrollTrigger)
 
@@ -19,7 +30,7 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 2,
+      touchMultiplier: 1.5,
     })
 
     lenis.on('scroll', ScrollTrigger.update)
@@ -35,7 +46,7 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       gsap.ticker.remove(updateTicker)
       lenis.destroy()
     }
-  }, [isHomepage])
+  }, [isExcluded])
 
   return <>{children}</>
 }

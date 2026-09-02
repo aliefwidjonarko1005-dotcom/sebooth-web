@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState, useMemo, useRef } from 'react'
 import Link from 'next/link'
+import NextImage from 'next/image'
 import { useRouter } from 'next/navigation'
 import {
   X, LayoutGrid, Download, MoreHorizontal, Share2,
@@ -66,18 +67,22 @@ export default function MyPhotosPage() {
     return () => clearTimeout(timer)
   }, [])
 
-  // Live real-time finger drag tracking
+  // Live real-time finger drag tracking with RAF throttling
+  const touchStartTime = useRef<number>(0)
+  const hasMoved = useRef<boolean>(false)
+  const animFrameId = useRef<number | null>(null)
+  const pendingDragOffset = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
   const [isDraggingState, setIsDraggingState] = useState(false)
   const touchStartPos = useRef<{ x: number; y: number } | null>(null)
   const dragAxis = useRef<'none' | 'x' | 'y'>('none')
 
-  // Fetch real sessions from Supabase for logged-in user
+  // Fetch real sessions from Supabase for logged-in user (instant session check)
   useEffect(() => {
     async function init() {
       try {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.user) {
           router.push('/login?redirect=/profile')
           return
         }
@@ -85,7 +90,7 @@ export default function MyPhotosPage() {
         const { data, error } = await supabase
           .from('sessions')
           .select('*, media(*)')
-          .eq('user_id', user.id)
+          .eq('user_id', session.user.id)
           .order('created_at', { ascending: false })
 
         if (!error && data) {
@@ -160,12 +165,7 @@ export default function MyPhotosPage() {
     })
   }
 
-  // Live 1:1 tactile drag event handlers with RAF throttling
-  const touchStartTime = useRef<number>(0)
-  const hasMoved = useRef<boolean>(false)
-  const animFrameId = useRef<number | null>(null)
-  const pendingDragOffset = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
-
+  // Live 1:1 tactile drag event handlers
   const handleStart = (clientX: number, clientY: number) => {
     if (showSwipeGuide) setShowSwipeGuide(false)
     touchStartPos.current = { x: clientX, y: clientY }
@@ -747,7 +747,7 @@ export default function MyPhotosPage() {
                                   playsInline
                                   className="w-full h-full object-cover pointer-events-none select-none brightness-100 saturate-100"
                                 />
-                              ) : (
+                              ) : med.url.startsWith('data:') || med.url.startsWith('blob:') || med.type === 'gif' || med.url.toLowerCase().includes('.gif') ? (
                                 <img
                                   src={med.url}
                                   alt={med.label}
@@ -756,6 +756,18 @@ export default function MyPhotosPage() {
                                   }`}
                                   loading={isCurrentSession && diff === 0 ? 'eager' : 'lazy'}
                                   decoding="async"
+                                />
+                              ) : (
+                                <NextImage
+                                  src={med.url}
+                                  alt={med.label}
+                                  fill
+                                  sizes="(max-width: 640px) 420px, 490px"
+                                  quality={75}
+                                  priority={isCurrentSession && diff === 0}
+                                  className={`object-cover pointer-events-none select-none transition-opacity duration-200 ${
+                                    diff > 0 ? 'brightness-[0.85] saturate-[0.9]' : 'brightness-100 saturate-100'
+                                  }`}
                                 />
                               )}
 
