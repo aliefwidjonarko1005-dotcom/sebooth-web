@@ -169,18 +169,13 @@ export default function MyPhotosPage() {
     })
   }
 
-  // Direct DOM refs and native touch tracking for zero-latency 120 FPS mobile gestures
-  const containerRef = useRef<HTMLDivElement>(null)
+  // Direct DOM track ref for hardware-accelerated transforms
   const trackRef = useRef<HTMLDivElement>(null)
-  const activeSessionIndexRef = useRef(activeSessionIndex)
-  const sessionsListRef = useRef(sessionsList)
-  const handleNextMediaRef = useRef(handleNextMedia)
-  const isOverviewModeRef = useRef(isOverviewMode)
-
-  activeSessionIndexRef.current = activeSessionIndex
-  sessionsListRef.current = sessionsList
-  handleNextMediaRef.current = handleNextMedia
-  isOverviewModeRef.current = isOverviewMode
+  const isDragging = useRef<boolean>(false)
+  const dragStartX = useRef<number>(0)
+  const dragStartTime = useRef<number>(0)
+  const hasMoved = useRef<boolean>(false)
+  const currentDragDx = useRef<number>(0)
 
   // Sync track position smoothly whenever activeSessionIndex or isOverviewMode changes
   useEffect(() => {
@@ -191,163 +186,70 @@ export default function MyPhotosPage() {
         : `calc(-${activeSessionIndex * 100}%)`
       trackRef.current.style.transform = `translate3d(${baseCalc}, 0, 0)`
     }
-  }, [activeSessionIndex, isOverviewMode])
+  }, [activeSessionIndex, isOverviewMode, loading])
 
-  // Native touch listener attached directly to container element (bypasses React synthetic event queue)
-  useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
-
-    let startX = 0
-    let startTime = 0
-    let isTouching = false
-    let currentDx = 0
-    let hasMovedFar = false
-
-    const onTouchStart = (e: TouchEvent) => {
-      if (isOverviewModeRef.current) return
-      if (e.touches.length !== 1) return
-
-      startX = e.touches[0].clientX
-      startTime = Date.now()
-      isTouching = true
-      currentDx = 0
-      hasMovedFar = false
-
-      if (trackRef.current) {
-        trackRef.current.style.transition = 'none'
-      }
-    }
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (!isTouching || isOverviewModeRef.current) return
-      if (e.touches.length !== 1) return
-
-      const clientX = e.touches[0].clientX
-      const dx = clientX - startX
-      currentDx = dx
-
-      if (Math.abs(dx) > 3) {
-        hasMovedFar = true
-      }
-
-      if (trackRef.current) {
-        trackRef.current.style.transform = `translate3d(calc(-${activeSessionIndexRef.current * 100}% + ${dx}px), 0, 0)`
-      }
-    }
-
-    const onTouchEnd = (e: TouchEvent) => {
-      if (!isTouching || isOverviewModeRef.current) return
-      isTouching = false
-
-      const touch = e.changedTouches[0]
-      const dx = touch ? touch.clientX - startX : currentDx
-      const duration = Date.now() - startTime
-      const distance = Math.abs(dx)
-      const velocity = distance / (duration || 1)
-      const totalSessions = sessionsListRef.current.length
-      const currentIndex = activeSessionIndexRef.current
-
-      // Tap detection (< 6px movement)
-      if (!hasMovedFar || (distance < 6 && duration < 260)) {
-        const curSess = sessionsListRef.current[currentIndex]
-        if (curSess && curSess.media.length > 1) {
-          handleNextMediaRef.current(curSess.id, curSess.media.length)
-        }
-        if (trackRef.current) {
-          trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
-          trackRef.current.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`
-        }
-        return
-      }
-
-      // Swipe detection (quick flick or dragged > 28px)
-      const isFlick = velocity > 0.16 && distance > 8
-      const isDrag = distance > 28
-
-      let targetIndex = currentIndex
-      if (isFlick || isDrag) {
-        if (dx < 0 && currentIndex < totalSessions - 1) {
-          targetIndex = currentIndex + 1
-        } else if (dx > 0 && currentIndex > 0) {
-          targetIndex = currentIndex - 1
-        }
-      }
-
-      if (trackRef.current) {
-        trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
-        trackRef.current.style.transform = `translate3d(-${targetIndex * 100}%, 0, 0)`
-      }
-
-      if (targetIndex !== currentIndex) {
-        setActiveSessionIndex(targetIndex)
-      }
-    }
-
-    container.addEventListener('touchstart', onTouchStart, { passive: true })
-    container.addEventListener('touchmove', onTouchMove, { passive: true })
-    container.addEventListener('touchend', onTouchEnd, { passive: true })
-    container.addEventListener('touchcancel', onTouchEnd, { passive: true })
-
-    return () => {
-      container.removeEventListener('touchstart', onTouchStart)
-      container.removeEventListener('touchmove', onTouchMove)
-      container.removeEventListener('touchend', onTouchEnd)
-      container.removeEventListener('touchcancel', onTouchEnd)
-    }
-  }, [])
-
-  // Desktop mouse handlers (for testing with mouse)
-  const isMouseDown = useRef(false)
-  const mouseStartX = useRef(0)
-  const mouseStartTime = useRef(0)
-
-  const handleMouseDown = (e: React.MouseEvent) => {
+  // Direct 1:1 hardware drag handlers (works seamlessly on Mobile Touch and Desktop Mouse)
+  const handleDragStart = (clientX: number) => {
     if (isOverviewMode) return
-    isMouseDown.current = true
-    mouseStartX.current = e.clientX
-    mouseStartTime.current = Date.now()
+    isDragging.current = true
+    dragStartX.current = clientX
+    dragStartTime.current = Date.now()
+    hasMoved.current = false
+    currentDragDx.current = 0
+
+    if (showSwipeGuide) setShowSwipeGuide(false)
     if (trackRef.current) {
       trackRef.current.style.transition = 'none'
     }
   }
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isMouseDown.current || isOverviewMode) return
-    const dx = e.clientX - mouseStartX.current
+  const handleDragMove = (clientX: number) => {
+    if (!isDragging.current || isOverviewMode) return
+    const dx = clientX - dragStartX.current
+    currentDragDx.current = dx
+
+    if (Math.abs(dx) > 3) {
+      hasMoved.current = true
+    }
+
     if (trackRef.current) {
       trackRef.current.style.transform = `translate3d(calc(-${activeSessionIndex * 100}% + ${dx}px), 0, 0)`
     }
   }
 
-  const handleMouseUp = (e: React.MouseEvent) => {
-    if (!isMouseDown.current || isOverviewMode) return
-    isMouseDown.current = false
-    const dx = e.clientX - mouseStartX.current
-    const duration = Date.now() - mouseStartTime.current
+  const handleDragEnd = (clientX?: number) => {
+    if (!isDragging.current || isOverviewMode) return
+    isDragging.current = false
+
+    const dx = clientX !== undefined ? clientX - dragStartX.current : currentDragDx.current
+    const duration = Date.now() - dragStartTime.current
     const distance = Math.abs(dx)
     const velocity = distance / (duration || 1)
+    const totalSessions = sessionsList.length
+    const currentIndex = activeSessionIndex
 
-    if (distance < 6 && duration < 260) {
+    // ── TAP DETECTION (PHOTO STACK SHUFFLE) ──
+    if (!hasMoved.current || (distance < 8 && duration < 280)) {
       if (currentSession && currentSession.media.length > 1) {
         handleNextMedia(currentSession.id, currentSession.media.length)
       }
       if (trackRef.current) {
         trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
-        trackRef.current.style.transform = `translate3d(-${activeSessionIndex * 100}%, 0, 0)`
+        trackRef.current.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`
       }
       return
     }
 
-    const isFlick = velocity > 0.16 && distance > 8
-    const isDrag = distance > 28
+    // ── SWIPE GESTURE PROCESSING (INSTANT SWITCH SESSIONS) ──
+    const isFlick = velocity > 0.15 && distance > 8
+    const isDrag = distance > 25
 
-    let targetIndex = activeSessionIndex
+    let targetIndex = currentIndex
     if (isFlick || isDrag) {
-      if (dx < 0 && activeSessionIndex < sessionsList.length - 1) {
-        targetIndex = activeSessionIndex + 1
-      } else if (dx > 0 && activeSessionIndex > 0) {
-        targetIndex = activeSessionIndex - 1
+      if (dx < 0 && currentIndex < totalSessions - 1) {
+        targetIndex = currentIndex + 1
+      } else if (dx > 0 && currentIndex > 0) {
+        targetIndex = currentIndex - 1
       }
     }
 
@@ -356,7 +258,7 @@ export default function MyPhotosPage() {
       trackRef.current.style.transform = `translate3d(-${targetIndex * 100}%, 0, 0)`
     }
 
-    if (targetIndex !== activeSessionIndex) {
+    if (targetIndex !== currentIndex) {
       setActiveSessionIndex(targetIndex)
     }
   }
@@ -726,12 +628,25 @@ export default function MyPhotosPage() {
 
           {/* Gesture / Drag Tracking Area */}
           <div
-            ref={containerRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            className="relative w-full h-[72vh] xs:h-[75vh] sm:h-[78vh] md:h-[80vh] max-h-[640px] flex items-center justify-center touch-none cursor-grab active:cursor-grabbing overflow-visible select-none"
+            onTouchStart={(e) => {
+              if (e.touches.length === 1) {
+                handleDragStart(e.touches[0].clientX)
+              }
+            }}
+            onTouchMove={(e) => {
+              if (e.touches.length === 1) {
+                handleDragMove(e.touches[0].clientX)
+              }
+            }}
+            onTouchEnd={(e) => {
+              handleDragEnd(e.changedTouches[0]?.clientX)
+            }}
+            onTouchCancel={() => handleDragEnd()}
+            onMouseDown={(e) => handleDragStart(e.clientX)}
+            onMouseMove={(e) => handleDragMove(e.clientX)}
+            onMouseUp={(e) => handleDragEnd(e.clientX)}
+            onMouseLeave={() => handleDragEnd()}
+            className="relative w-full h-[72vh] xs:h-[75vh] sm:h-[78vh] md:h-[80vh] max-h-[640px] flex items-center justify-center touch-pan-y cursor-grab active:cursor-grabbing overflow-visible select-none"
           >
             {/* ── SEAMLESS ZOOMING SLIDER TRACK (DIRECT DOM HARDWARE-ACCELERATED TRANSFORMS) ── */}
             <div
