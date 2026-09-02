@@ -85,7 +85,7 @@ export async function fetchGalleryImages(
 
         if (mediaRows && mediaRows.length > 0) {
             items = mediaRows
-                .filter((m: any) => m.url && !m.url.match(/\.mp4$/i))
+                .filter((m: any) => m.url)
                 .map((m: any, i: number) => ({
                     id: i + 1,
                     name: `session_media_${m.id}`,

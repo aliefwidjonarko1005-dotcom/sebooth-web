@@ -73,14 +73,15 @@ export default function MyPhotosPage() {
     if (dbSessions.length > 0) {
       return dbSessions.map((s, idx) => {
         const mediaList = (s.media || []).map((m, mIdx) => {
-          const isStrip = (m as any).type === 'strip' || m.url?.toLowerCase().includes('strip')
-          const isGif = m.type === 'gif' || m.url?.toLowerCase().includes('gif')
+          const isVideo = m.type === 'video' || m.type === 'live' || !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+          const isStrip = !isVideo && ((m as any).type === 'strip' || m.url?.toLowerCase().includes('strip'))
+          const isGif = !isVideo && (m.type === 'gif' || m.url?.toLowerCase().includes('gif'))
           return {
             id: m.id || `m-${mIdx}`,
             url: m.url,
             hdUrl: m.url,
-            type: (isStrip ? 'strip' : isGif ? 'gif' : 'photo') as 'strip' | 'photo' | 'gif' | 'video',
-            label: isStrip ? 'Photostrip' : isGif ? 'Live GIF' : `Photo ${mIdx + 1}`
+            type: (isVideo ? 'video' : isStrip ? 'strip' : isGif ? 'gif' : 'photo') as 'strip' | 'photo' | 'gif' | 'video',
+            label: isVideo ? 'Live Video HD' : isStrip ? 'Photostrip' : isGif ? 'Live GIF' : `Photo ${mIdx + 1}`
           }
         })
 
@@ -485,7 +486,7 @@ export default function MyPhotosPage() {
                               pointerEvents: diff === 0 ? 'auto' : 'none'
                             }}
                           >
-                            {/* Card Body - Retaining 100% Pure Uncropped Photo (Zero Border / Outline, No Clutter) */}
+                            {/* Card Body - Supports Photos, Photostrips, GIFs & Live Videos */}
                             <div
                               className={`relative w-full h-full rounded-[22px] xs:rounded-[28px] sm:rounded-[32px] overflow-hidden bg-zinc-950 flex items-center justify-center transition-all duration-300 ${
                                 isOverviewMode && isCurrentSession
@@ -493,15 +494,28 @@ export default function MyPhotosPage() {
                                   : 'shadow-[0_22px_50px_-10px_rgba(0,0,0,0.25),0_10px_20px_-6px_rgba(0,0,0,0.12)]'
                               }`}
                             >
-                              <img
-                                src={med.url}
-                                alt={med.label}
-                                className={`w-full h-full object-cover pointer-events-none select-none transition-all duration-300 ${
-                                  diff > 0 ? 'brightness-[0.85] saturate-[0.9]' : 'brightness-100 saturate-100'
-                                }`}
-                                loading={diff <= 2 ? 'eager' : 'lazy'}
-                                decoding="async"
-                              />
+                              {med.type === 'video' || !!med.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i) ? (
+                                <video
+                                  src={med.url}
+                                  autoPlay
+                                  loop
+                                  muted
+                                  playsInline
+                                  className={`w-full h-full object-cover pointer-events-none select-none transition-all duration-300 ${
+                                    diff > 0 ? 'brightness-[0.85] saturate-[0.9]' : 'brightness-100 saturate-100'
+                                  }`}
+                                />
+                              ) : (
+                                <img
+                                  src={med.url}
+                                  alt={med.label}
+                                  className={`w-full h-full object-cover pointer-events-none select-none transition-all duration-300 ${
+                                    diff > 0 ? 'brightness-[0.85] saturate-[0.9]' : 'brightness-100 saturate-100'
+                                  }`}
+                                  loading={diff <= 2 ? 'eager' : 'lazy'}
+                                  decoding="async"
+                                />
+                              )}
 
                               {/* Dark tint overlay on background cards */}
                               {diff > 0 && (
@@ -822,11 +836,22 @@ export default function MyPhotosPage() {
               <X className="w-6 h-6" />
             </button>
 
-            <img
-              src={lightboxUrl}
-              alt="Sebooth HD Fullscreen"
-              className="max-w-full max-h-[78vh] w-auto h-auto object-contain rounded-2xl shadow-2xl border border-white/10"
-            />
+            {lightboxUrl.match(/\.(mp4|webm|mov)(\?.*)?$/i) ? (
+              <video
+                src={lightboxUrl}
+                autoPlay
+                loop
+                controls
+                playsInline
+                className="max-w-full max-h-[78vh] w-auto h-auto object-contain rounded-2xl shadow-2xl border border-white/10"
+              />
+            ) : (
+              <img
+                src={lightboxUrl}
+                alt="Sebooth HD Fullscreen"
+                className="max-w-full max-h-[78vh] w-auto h-auto object-contain rounded-2xl shadow-2xl border border-white/10"
+              />
+            )}
 
             <div className="mt-3 flex items-center gap-3">
               <button

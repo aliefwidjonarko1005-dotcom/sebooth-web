@@ -364,11 +364,14 @@ export default function SessionDetailPage() {
                   <div className="relative w-full rounded-2xl overflow-hidden flex items-center justify-center bg-slate-950" style={{ maxHeight: '68vh', aspectRatio: '9/16' }}>
                     <video
                       key={live.url}
-                      autoPlay loop muted playsInline
+                      src={live.url}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      controls
                       className="w-full h-full object-contain"
-                    >
-                      <source src={live.url} type="video/mp4" />
-                    </video>
+                    />
                   </div>
                   <button 
                     onClick={() => downloadFile(live.url, `live_photo_${liveIdx + 1}.mp4`)} 

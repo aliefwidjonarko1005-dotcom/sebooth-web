@@ -525,4 +525,8 @@ sebooth-website/
   - **Root Cause**: src/app/api/download/route.ts previously imported s and used path.join(process.cwd(), 'public', ...) to read local files, causing Next.js Node File Trace (NFT) on Vercel to bundle the entire public/ directory (378 MB of demo media) into the serverless function zip package.
   - **Solution**: Removed Node s and path dependencies completely, configured export const runtime = 'edge', and implemented lightweight Web Standard etch() streaming.
   - **Result**: Function bundle size plummeted from 378MB to <20KB, running globally on Vercel Edge with zero cold starts and passing Vercel deployment seamlessly.
+- **September 2026 (Phase 8DO - Full Live Video Rendering & Supabase MP4 Compatibility)**: Fixed live video display failure across production deployment:
+  - **Direct HTML5 Video Rendering**: Replaced <img> with <video src={...} autoPlay loop muted playsInline controls /> across centerpiece cards in src/app/profile/page.tsx, fullscreen Lightbox modal, SessionFeedCard.tsx, and src/app/profile/[sessionId]/page.tsx.
+  - **Live Video Detection**: Ensured .mp4, .webm, .mov and 	ype === 'live' / 'video' files are properly identified and categorized as live videos rather than static photos.
+  - **Supabase Gallery Filter Fix**: Removed accidental !m.url.match(/\.mp4$/i) exclusion filter in src/lib/serverSupabase.ts.
 

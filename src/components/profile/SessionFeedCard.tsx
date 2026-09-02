@@ -81,7 +81,8 @@ export default function SessionFeedCard({ session, index, showOwner = false }: S
   // Use strip as hero, fallback to first photo or any available media
   const heroMedia = strip || photos[0] || gif || session.media?.[0] || null
   const heroUrl = heroMedia?.url || null
-  const isGif = heroMedia?.type === 'gif' || heroUrl?.match(/\.gif(\?.*)?$/i)
+  const isGif = heroMedia?.type === 'gif' || !!heroUrl?.match(/\.gif(\?.*)?$/i)
+  const isVideo = heroMedia?.type === 'video' || heroMedia?.type === 'live' || !!heroUrl?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
 
   return (
     <motion.article
@@ -90,11 +91,20 @@ export default function SessionFeedCard({ session, index, showOwner = false }: S
       transition={{ delay: Math.min(index * 0.08, 0.4), duration: 0.4 }}
       className="bg-white border-2 border-black hard-shadow-black mb-6"
     >
-      {/* Hero Image */}
+      {/* Hero Image / Video */}
       {heroUrl ? (
         <Link href={`/profile/${session.id}`} className="block">
           <div className="relative w-full bg-gray-100 border-b-2 border-black overflow-hidden flex items-center justify-center" style={{ aspectRatio: '9/16', maxHeight: '70vh' }}>
-            {isGif || imgError ? (
+            {isVideo ? (
+              <video
+                src={heroUrl}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-contain"
+              />
+            ) : isGif || imgError ? (
               /* Fallback to native img tag to bypass Next.js image optimization errors */
               <img
                 src={heroUrl}
