@@ -14,7 +14,6 @@ import Link from 'next/link'
 import NextImage from 'next/image'
 import { createClient } from '@/lib/supabase'
 import { SessionData, MediaItem } from '@/types/database'
-import { DEMO_SESSIONS } from '@/data/demoSessions'
 
 /* ─── Frame Templates ─── */
 const FRAME_TEMPLATES = [
@@ -101,31 +100,11 @@ export default function SessionDetailPage() {
 
   useEffect(() => {
     async function init() {
-      // 1. Check if it's a demo session first
-      const demo = DEMO_SESSIONS.find(d => d.id === sessionId)
-      if (demo) {
-        setSession({
-          id: demo.id,
-          user_id: 'demo-user',
-          event_name: demo.title,
-          is_claimed: true,
-          created_at: new Date().toISOString(),
-          media: demo.media.map((m, idx) => ({
-            id: m.id || `m-${idx}`,
-            session_id: demo.id,
-            url: m.url,
-            type: (m.type === 'video' ? 'live' : m.type) as any,
-            created_at: new Date().toISOString(),
-            metadata: {}
-          }))
-        })
-        setLoading(false)
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push(`/login?redirect=/profile/${sessionId}`)
         return
       }
-
-      // 2. Fetch from Supabase for logged-in user
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.push('/login'); return }
 
       const { data, error } = await supabase
         .from('sessions')

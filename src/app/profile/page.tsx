@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState, useMemo, useRef } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
   X, LayoutGrid, Download, MoreHorizontal, Share2,
   Check, Maximize2, QrCode, ArrowRight, Camera,
@@ -11,9 +12,32 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 import { SessionData } from '@/types/database'
-import { DEMO_SESSIONS, DemoSessionItem } from '@/data/demoSessions'
+
+export interface SessionMediaItem {
+  id: string
+  url: string
+  hdUrl?: string
+  type: 'strip' | 'photo' | 'gif' | 'video'
+  label: string
+}
+
+export interface UserSessionDisplayItem {
+  id: string
+  title: string
+  author: string
+  location: string
+  dateStr: string
+  avatarUrl: string
+  badgeCount: number
+  category: string
+  likes: string
+  price: string
+  media: SessionMediaItem[]
+  attendees: string[]
+}
 
 export default function MyPhotosPage() {
+  const router = useRouter()
   const supabase = createClient()
 
   const [dbSessions, setDbSessions] = useState<SessionData[]>([])
@@ -48,21 +72,24 @@ export default function MyPhotosPage() {
   const touchStartPos = useRef<{ x: number; y: number } | null>(null)
   const dragAxis = useRef<'none' | 'x' | 'y'>('none')
 
-  // Fetch real sessions from Supabase if logged in
+  // Fetch real sessions from Supabase for logged-in user
   useEffect(() => {
     async function init() {
       try {
         const { data: { user } } = await supabase.auth.getUser()
-        if (user) {
-          const { data, error } = await supabase
-            .from('sessions')
-            .select('*, media(*)')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false })
+        if (!user) {
+          router.push('/login?redirect=/profile')
+          return
+        }
 
-          if (!error && data) {
-            setDbSessions(data)
-          }
+        const { data, error } = await supabase
+          .from('sessions')
+          .select('*, media(*)')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+
+        if (!error && data) {
+          setDbSessions(data)
         }
       } catch (err) {
         console.error('Error fetching profile data:', err)
@@ -71,53 +98,49 @@ export default function MyPhotosPage() {
       }
     }
     init()
-  }, [])
+  }, [router, supabase])
 
-  // Unified items
-  const sessionsList: DemoSessionItem[] = useMemo(() => {
-    if (dbSessions.length > 0) {
-      return dbSessions.map((s, idx) => {
-        const mediaList = (s.media || []).map((m, mIdx) => {
-          const isVideo = m.type === 'video' || m.type === 'live' || !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
-          const isStrip = !isVideo && ((m as any).type === 'strip' || m.url?.toLowerCase().includes('strip'))
-          const isGif = !isVideo && (m.type === 'gif' || m.url?.toLowerCase().includes('gif'))
-          return {
-            id: m.id || `m-${mIdx}`,
-            url: m.url,
-            hdUrl: m.url,
-            type: (isVideo ? 'video' : isStrip ? 'strip' : isGif ? 'gif' : 'photo') as 'strip' | 'photo' | 'gif' | 'video',
-            label: isVideo ? 'Live Video Frame' : isStrip ? 'Photostrip' : isGif ? 'Live GIF' : `Photo ${mIdx + 1}`
-          }
-        })
-
-        const date = s.created_at ? new Date(s.created_at) : new Date()
-        const formattedDate = date.toLocaleDateString('id-ID', {
-          day: 'numeric',
-          month: 'short',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-
+  // Transform Supabase sessions into UI items
+  const sessionsList: UserSessionDisplayItem[] = useMemo(() => {
+    return dbSessions.map((s, idx) => {
+      const mediaList: SessionMediaItem[] = (s.media || []).map((m, mIdx) => {
+        const isVideo = m.type === 'video' || m.type === 'live' || !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+        const isStrip = !isVideo && ((m as any).type === 'strip' || m.url?.toLowerCase().includes('strip'))
+        const isGif = !isVideo && (m.type === 'gif' || m.url?.toLowerCase().includes('gif'))
         return {
-          id: s.id,
-          title: `Sebooth #${s.id.slice(0, 6)}`,
-          author: 'sebooth.id',
-          location: 'Sebooth Studio',
-          dateStr: formattedDate,
-          avatarUrl: mediaList[0]?.url || '/images/products/photostrip.png',
-          badgeCount: mediaList.length || 1,
-          category: 'EVENT',
-          likes: `${1.1 + idx * 0.2}k`,
-          price: '$120',
-          media: mediaList.length > 0 ? mediaList : [
-            { id: 'def-1', url: '/images/products/photostrip.png', type: 'strip', label: 'Photostrip' }
-          ],
-          attendees: []
+          id: m.id || `m-${mIdx}`,
+          url: m.url,
+          hdUrl: m.url,
+          type: isVideo ? 'video' : isStrip ? 'strip' : isGif ? 'gif' : 'photo',
+          label: isVideo ? 'Live Video Frame' : isStrip ? 'Photostrip' : isGif ? 'Live GIF' : `Photo ${mIdx + 1}`
         }
       })
-    }
 
-    return DEMO_SESSIONS
+      const date = s.created_at ? new Date(s.created_at) : new Date()
+      const formattedDate = date.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+
+      return {
+        id: s.id,
+        title: s.event_name || `Sebooth #${s.id.slice(0, 6)}`,
+        author: 'sebooth.id',
+        location: 'Sebooth Studio',
+        dateStr: formattedDate,
+        avatarUrl: mediaList[0]?.url || '/images/products/photostrip.png',
+        badgeCount: mediaList.length || 1,
+        category: 'EVENT',
+        likes: `${1.1 + (idx % 5) * 0.2}k`,
+        price: 'Sebooth Softfile',
+        media: mediaList.length > 0 ? mediaList : [
+          { id: 'def-1', url: '/images/products/photostrip.png', type: 'strip', label: 'Photostrip' }
+        ],
+        attendees: []
+      }
+    })
   }, [dbSessions])
 
   const currentSession = sessionsList[activeSessionIndex] || sessionsList[0]
@@ -337,6 +360,137 @@ export default function MyPhotosPage() {
     } finally {
       setIsBundling(false)
     }
+  }
+
+  // ── LOADING STATE ──
+  if (loading) {
+    return (
+      <div className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-slate-900 flex flex-col items-center justify-center font-sans">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+          <span className="text-xs font-semibold text-slate-500 tracking-wide">Memuat galeri foto kamu...</span>
+        </div>
+      </div>
+    )
+  }
+
+  // ── EMPTY STATE (LOGGED IN USER WITHOUT SESSIONS) ──
+  if (sessionsList.length === 0) {
+    return (
+      <div className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-slate-900 overflow-hidden flex flex-col justify-between select-none font-sans">
+        <div className="w-full max-w-6xl mx-auto h-full flex flex-col justify-between px-4 sm:px-6 md:px-8 pt-3 pb-4">
+          {/* Header */}
+          <header className="w-full max-w-4xl mx-auto pt-1 pb-2 flex items-center justify-between shrink-0 z-20">
+            <Link
+              href="/"
+              className="w-10 h-10 flex items-center justify-start text-slate-800 hover:text-black transition-opacity active:scale-95 cursor-pointer"
+              title="Kembali ke Beranda"
+            >
+              <X className="w-6 h-6 stroke-[2.2]" />
+            </Link>
+
+            <div className="flex flex-col items-center">
+              <h1 className="text-[18px] sm:text-[20px] font-extrabold text-slate-900 tracking-tight font-sans">
+                My Photos
+              </h1>
+              <span className="text-[11px] font-medium text-slate-400 -mt-0.5">
+                0 Sesi Tersimpan
+              </span>
+            </div>
+
+            <button
+              onClick={() => setIsClaimModalOpen(true)}
+              className="w-9 h-9 flex items-center justify-center text-slate-800 hover:text-black transition-transform active:scale-90 cursor-pointer hover:bg-slate-100 rounded-xl"
+              title="Klaim Foto / Scan QR"
+            >
+              <Camera className="w-[22px] h-[22px] stroke-[2]" />
+            </button>
+          </header>
+
+          {/* Centerpiece: Empty State */}
+          <div className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-center my-auto py-6 text-center max-w-md mx-auto">
+            <div className="w-20 h-20 rounded-3xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500 mb-5 shadow-sm">
+              <Camera className="w-10 h-10 stroke-[1.8]" />
+            </div>
+
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mb-2">
+              Belum Ada Sesi Foto
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed mb-6 px-4">
+              Foto dan video dari photobooth Sebooth yang sudah kamu klaim akan otomatis muncul dan tersimpan di galeri ini.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">
+              <button
+                onClick={() => setIsClaimModalOpen(true)}
+                className="w-full py-3.5 px-6 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-orange-500/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <QrCode className="w-4 h-4" />
+                <span>Klaim Foto Sekarang</span>
+              </button>
+              <Link
+                href="/"
+                className="w-full py-3.5 px-6 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center"
+              >
+                Ke Beranda
+              </Link>
+            </div>
+          </div>
+
+          <footer className="w-full max-w-4xl mx-auto py-2 text-center text-[11px] text-slate-400">
+            Sebooth Photobooth &copy; {new Date().getFullYear()}
+          </footer>
+        </div>
+
+        {/* Claim Modal in Empty State */}
+        {isClaimModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4 animate-fade-in">
+            <div className="w-full max-w-[420px] bg-white border-t sm:border border-slate-200 rounded-t-[32px] sm:rounded-[32px] p-5 shadow-2xl flex flex-col gap-4 text-slate-900 animate-modal-pop">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center">
+                    <QrCode className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-sm font-bold text-slate-900 font-sans">
+                    Klaim Foto Photobooth
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setIsClaimModalOpen(false)}
+                  className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900 cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Scan QR code di layar kiosk photobooth atau masukkan Session ID di bawah ini untuk menambahkan foto ke galeri kamu:
+              </p>
+
+              <div className="flex flex-col gap-2">
+                <input
+                  type="text"
+                  value={claimInput}
+                  onChange={(e) => setClaimInput(e.target.value)}
+                  placeholder="Masukkan Session ID / UUID..."
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white"
+                />
+                <button
+                  onClick={() => {
+                    if (claimInput.trim()) {
+                      window.location.href = `/access/${claimInput.trim()}`
+                    }
+                  }}
+                  className="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                >
+                  Klaim Foto Sekarang
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    )
   }
 
   return (

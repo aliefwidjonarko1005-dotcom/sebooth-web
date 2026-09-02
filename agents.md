@@ -539,10 +539,11 @@ sebooth-website/
   - **JSZip Client-Side Archiver**: Installed `jszip` to bundle all photostrips, candid studio photos, Boomerang GIFs, and HD live videos into a single cleanly named `.zip` archive (`Sebooth_[EventName]_Bundle.zip`) with fallback to `/api/download` proxy for CORS-resilient streaming.
   - **Options Menu Integration & Toast**: Also added "Download 1 Bundle Semua File (.ZIP)" inside the session options modal (`•••`) and integrated floating toast notifications on completion.
   - **Verified Clean Build**: Tested and passed `npm run build` with 100% success.
-- **September 2026 (Phase 8DR - Live Video Photo Frame Compositing Architecture Alignment)**: Clarified and aligned the Live Video system model:
-  - **Live Motion Frame Definition**: Confirmed that the photobooth's Live Video output is an animated motion photo frame (`.mp4`), where video clips recorded before each shutter snapshot are arranged inside the corresponding frame photo slots (multi-clip composite).
-  - **Portal Playback & Naming**: Aligned media labels across `MyPhotosPage`, `SessionDetailPage`, `demoSessions.ts`, and bundle exporter to `"Live Video Frame"` / `"Live Motion Frame"`.
-  - **Direct HTML5 Playback**: The web portal renders the full composite video inside the 2:3 / 9:16 frame container with autoPlay, seamless looping, and fullscreen HD lightbox preview.
+- **September 2026 (Phase 8DS - Local Demo Fallback Removal & Strict Supabase User Gallery Integration)** 🔐: Removed dummy/offline demo sessions fallback from My Photos (`/profile`) and Session Detail (`/profile/[sessionId]`) per user direction:
+  - **Strict Supabase Database User Fetching**: `/profile` and `/profile/[sessionId]` now strictly fetch and display authenticated user sessions from Supabase (`sessions` joined with `media` where `user_id = user.id`). Unauthenticated visitors are cleanly redirected to `/login?redirect=/profile`.
+  - **Pragmatic Empty State**: Users with 0 claimed sessions see an elegant, high-contrast Empty State with camera badge, explanatory copy, and direct actions to claim sessions via QR/Session ID modal (`isClaimModalOpen`) or return to home.
+  - **Clean Repository & Asset Cleanup**: Completely removed temporary local dummy files (`public/images/sessions/`, `src/data/demoSessions.ts`, `scripts/prepareDemoSessions.mjs`), ensuring the web portal relies exclusively on dynamic cloud database persistence.
+  - **Verified Clean Build**: Verified `npm run build` compiled 100% cleanly with zero errors.
 
 
 
