@@ -4,11 +4,10 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState, useMemo, useRef } from 'react'
 import Link from 'next/link'
-import NextImage from 'next/image'
 import { useRouter } from 'next/navigation'
 import {
   X, LayoutGrid, Download, MoreHorizontal, Share2,
-  Check, Maximize2, QrCode, ArrowRight, Camera,
+  Check, Maximize2, QrCode, ArrowRight, Camera, LogOut,
   ChevronLeft, ChevronRight, Loader2, FolderDown, Package
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
@@ -43,6 +42,7 @@ export default function MyPhotosPage() {
 
   const [dbSessions, setDbSessions] = useState<SessionData[]>([])
   const [loading, setLoading] = useState(true)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [activeSessionIndex, setActiveSessionIndex] = useState(0)
   const [activeMediaIndices, setActiveMediaIndices] = useState<Record<string, number>>({})
   const [isOverviewMode, setIsOverviewMode] = useState(false)
@@ -59,6 +59,19 @@ export default function MyPhotosPage() {
   const [bundleProgress, setBundleProgress] = useState<{ current: number; total: number }>({ current: 0, total: 0 })
   const [bundleNotification, setBundleNotification] = useState<string | null>(null)
 
+  // Log Out Handler
+  const handleLogout = async () => {
+    if (isLoggingOut) return
+    setIsLoggingOut(true)
+    try {
+      await supabase.auth.signOut()
+      router.push('/login')
+    } catch (err) {
+      console.error('Logout error:', err)
+      window.location.href = '/login'
+    }
+  }
+
   // Auto-dismiss swipe guide after 5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -67,15 +80,6 @@ export default function MyPhotosPage() {
     return () => clearTimeout(timer)
   }, [])
 
-  // Live real-time finger drag tracking with RAF throttling
-  const touchStartTime = useRef<number>(0)
-  const hasMoved = useRef<boolean>(false)
-  const animFrameId = useRef<number | null>(null)
-  const pendingDragOffset = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
-  const [dragOffset, setDragOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
-  const [isDraggingState, setIsDraggingState] = useState(false)
-  const touchStartPos = useRef<{ x: number; y: number } | null>(null)
-  const dragAxis = useRef<'none' | 'x' | 'y'>('none')
 
   // Fetch real sessions from Supabase for logged-in user (instant session check)
   useEffect(() => {
@@ -165,92 +169,196 @@ export default function MyPhotosPage() {
     })
   }
 
-  // Live 1:1 tactile drag event handlers
-  const handleStart = (clientX: number, clientY: number) => {
-    if (showSwipeGuide) setShowSwipeGuide(false)
-    touchStartPos.current = { x: clientX, y: clientY }
-    touchStartTime.current = Date.now()
-    hasMoved.current = false
-    setIsDraggingState(true)
-    dragAxis.current = 'none'
-  }
+  // Direct DOM refs and native touch tracking for zero-latency 120 FPS mobile gestures
+  const containerRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const activeSessionIndexRef = useRef(activeSessionIndex)
+  const sessionsListRef = useRef(sessionsList)
+  const handleNextMediaRef = useRef(handleNextMedia)
+  const isOverviewModeRef = useRef(isOverviewMode)
 
-  const handleMove = (clientX: number, clientY: number) => {
-    if (!touchStartPos.current) return
-    const dx = clientX - touchStartPos.current.x
-    const dy = clientY - touchStartPos.current.y
+  activeSessionIndexRef.current = activeSessionIndex
+  sessionsListRef.current = sessionsList
+  handleNextMediaRef.current = handleNextMedia
+  isOverviewModeRef.current = isOverviewMode
 
-    if (Math.hypot(dx, dy) > 8) {
-      hasMoved.current = true
+  // Sync track position smoothly whenever activeSessionIndex or isOverviewMode changes
+  useEffect(() => {
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+      const baseCalc = isOverviewMode
+        ? `calc(50% - (${activeSessionIndex + 0.5} * min(48vw, 300px)))`
+        : `calc(-${activeSessionIndex * 100}%)`
+      trackRef.current.style.transform = `translate3d(${baseCalc}, 0, 0)`
     }
+  }, [activeSessionIndex, isOverviewMode])
 
-    if (dragAxis.current === 'none') {
-      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-        dragAxis.current = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
+  // Native touch listener attached directly to container element (bypasses React synthetic event queue)
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    let startX = 0
+    let startTime = 0
+    let isTouching = false
+    let currentDx = 0
+    let hasMovedFar = false
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (isOverviewModeRef.current) return
+      if (e.touches.length !== 1) return
+
+      startX = e.touches[0].clientX
+      startTime = Date.now()
+      isTouching = true
+      currentDx = 0
+      hasMovedFar = false
+
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'none'
       }
     }
 
-    const newOffset = dragAxis.current === 'x'
-      ? { x: dx * 0.75, y: 0 }
-      : dragAxis.current === 'y'
-        ? { x: 0, y: dy * 0.75 }
-        : { x: 0, y: 0 }
+    const onTouchMove = (e: TouchEvent) => {
+      if (!isTouching || isOverviewModeRef.current) return
+      if (e.touches.length !== 1) return
 
-    pendingDragOffset.current = newOffset
+      const clientX = e.touches[0].clientX
+      const dx = clientX - startX
+      currentDx = dx
 
-    if (animFrameId.current === null) {
-      animFrameId.current = requestAnimationFrame(() => {
-        setDragOffset(pendingDragOffset.current)
-        animFrameId.current = null
-      })
+      if (Math.abs(dx) > 3) {
+        hasMovedFar = true
+      }
+
+      if (trackRef.current) {
+        trackRef.current.style.transform = `translate3d(calc(-${activeSessionIndexRef.current * 100}% + ${dx}px), 0, 0)`
+      }
+    }
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!isTouching || isOverviewModeRef.current) return
+      isTouching = false
+
+      const touch = e.changedTouches[0]
+      const dx = touch ? touch.clientX - startX : currentDx
+      const duration = Date.now() - startTime
+      const distance = Math.abs(dx)
+      const velocity = distance / (duration || 1)
+      const totalSessions = sessionsListRef.current.length
+      const currentIndex = activeSessionIndexRef.current
+
+      // Tap detection (< 6px movement)
+      if (!hasMovedFar || (distance < 6 && duration < 260)) {
+        const curSess = sessionsListRef.current[currentIndex]
+        if (curSess && curSess.media.length > 1) {
+          handleNextMediaRef.current(curSess.id, curSess.media.length)
+        }
+        if (trackRef.current) {
+          trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+          trackRef.current.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`
+        }
+        return
+      }
+
+      // Swipe detection (quick flick or dragged > 28px)
+      const isFlick = velocity > 0.16 && distance > 8
+      const isDrag = distance > 28
+
+      let targetIndex = currentIndex
+      if (isFlick || isDrag) {
+        if (dx < 0 && currentIndex < totalSessions - 1) {
+          targetIndex = currentIndex + 1
+        } else if (dx > 0 && currentIndex > 0) {
+          targetIndex = currentIndex - 1
+        }
+      }
+
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+        trackRef.current.style.transform = `translate3d(-${targetIndex * 100}%, 0, 0)`
+      }
+
+      if (targetIndex !== currentIndex) {
+        setActiveSessionIndex(targetIndex)
+      }
+    }
+
+    container.addEventListener('touchstart', onTouchStart, { passive: true })
+    container.addEventListener('touchmove', onTouchMove, { passive: true })
+    container.addEventListener('touchend', onTouchEnd, { passive: true })
+    container.addEventListener('touchcancel', onTouchEnd, { passive: true })
+
+    return () => {
+      container.removeEventListener('touchstart', onTouchStart)
+      container.removeEventListener('touchmove', onTouchMove)
+      container.removeEventListener('touchend', onTouchEnd)
+      container.removeEventListener('touchcancel', onTouchEnd)
+    }
+  }, [])
+
+  // Desktop mouse handlers (for testing with mouse)
+  const isMouseDown = useRef(false)
+  const mouseStartX = useRef(0)
+  const mouseStartTime = useRef(0)
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (isOverviewMode) return
+    isMouseDown.current = true
+    mouseStartX.current = e.clientX
+    mouseStartTime.current = Date.now()
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'none'
     }
   }
 
-  const handleEnd = (clientX?: number, clientY?: number) => {
-    if (animFrameId.current !== null) {
-      cancelAnimationFrame(animFrameId.current)
-      animFrameId.current = null
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isMouseDown.current || isOverviewMode) return
+    const dx = e.clientX - mouseStartX.current
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translate3d(calc(-${activeSessionIndex * 100}% + ${dx}px), 0, 0)`
     }
+  }
 
-    if (!touchStartPos.current) return
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (!isMouseDown.current || isOverviewMode) return
+    isMouseDown.current = false
+    const dx = e.clientX - mouseStartX.current
+    const duration = Date.now() - mouseStartTime.current
+    const distance = Math.abs(dx)
+    const velocity = distance / (duration || 1)
 
-    const dx = clientX !== undefined ? clientX - touchStartPos.current.x : dragOffset.x
-    const dy = clientY !== undefined ? clientY - touchStartPos.current.y : dragOffset.y
-    const distance = Math.hypot(dx, dy)
-    const duration = Date.now() - touchStartTime.current
-
-    // ── TAP DETECTION (PHOTO STACK SHUFFLE) ──
-    if (!hasMoved.current || (distance < 12 && duration < 350)) {
+    if (distance < 6 && duration < 260) {
       if (currentSession && currentSession.media.length > 1) {
         handleNextMedia(currentSession.id, currentSession.media.length)
       }
-    } else {
-      // ── SWIPE GESTURE PROCESSING (LINEAR SLIDE SWITCH SESSIONS) ──
-      const threshold = 35
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+        trackRef.current.style.transform = `translate3d(-${activeSessionIndex * 100}%, 0, 0)`
+      }
+      return
+    }
 
-      if (dragAxis.current === 'y' || (dragAxis.current === 'none' && Math.abs(dy) > Math.abs(dx))) {
-        if (dy < -threshold) {
-          // Swipe Up -> Next session
-          setActiveSessionIndex(prev => (prev < sessionsList.length - 1 ? prev + 1 : prev))
-        } else if (dy > threshold) {
-          // Swipe Down -> Previous session
-          setActiveSessionIndex(prev => (prev > 0 ? prev - 1 : prev))
-        }
-      } else if (dragAxis.current === 'x' || (dragAxis.current === 'none' && Math.abs(dx) > Math.abs(dy))) {
-        if (dx < -threshold) {
-          // Swipe Left -> Next session
-          setActiveSessionIndex(prev => (prev < sessionsList.length - 1 ? prev + 1 : prev))
-        } else if (dx > threshold) {
-          // Swipe Right -> Previous session
-          setActiveSessionIndex(prev => (prev > 0 ? prev - 1 : prev))
-        }
+    const isFlick = velocity > 0.16 && distance > 8
+    const isDrag = distance > 28
+
+    let targetIndex = activeSessionIndex
+    if (isFlick || isDrag) {
+      if (dx < 0 && activeSessionIndex < sessionsList.length - 1) {
+        targetIndex = activeSessionIndex + 1
+      } else if (dx > 0 && activeSessionIndex > 0) {
+        targetIndex = activeSessionIndex - 1
       }
     }
 
-    touchStartPos.current = null
-    dragAxis.current = 'none'
-    setIsDraggingState(false)
-    setDragOffset({ x: 0, y: 0 })
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+      trackRef.current.style.transform = `translate3d(-${targetIndex * 100}%, 0, 0)`
+    }
+
+    if (targetIndex !== activeSessionIndex) {
+      setActiveSessionIndex(targetIndex)
+    }
   }
 
   // Keyboard navigation (Linear)
@@ -414,12 +522,18 @@ export default function MyPhotosPage() {
               </span>
             </div>
 
+            {/* Log Out */}
             <button
-              onClick={() => setIsClaimModalOpen(true)}
-              className="w-9 h-9 flex items-center justify-center text-slate-800 hover:text-black transition-transform active:scale-90 cursor-pointer hover:bg-slate-100 rounded-xl"
-              title="Klaim Foto / Scan QR"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="w-9 h-9 flex items-center justify-center text-slate-700 hover:text-rose-600 hover:bg-rose-50 transition-all active:scale-90 cursor-pointer rounded-xl"
+              title="Keluar / Log Out"
             >
-              <Camera className="w-[22px] h-[22px] stroke-[2]" />
+              {isLoggingOut ? (
+                <Loader2 className="w-5 h-5 animate-spin text-rose-500" />
+              ) : (
+                <LogOut className="w-[20px] h-[20px] stroke-[2.2]" />
+              )}
             </button>
           </header>
 
@@ -543,7 +657,7 @@ export default function MyPhotosPage() {
             {/* 4-Square Grid Icon (Toggles Zoom Out Overview) */}
             <button
               onClick={() => setIsOverviewMode(prev => !prev)}
-              className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all active:scale-90 cursor-pointer ${
+              className={`w-9 h-9 flex items-center justify-center rounded-xl transition-transform active:scale-90 cursor-pointer ${
                 isOverviewMode
                   ? 'bg-slate-900 text-white shadow-md'
                   : 'text-slate-800 hover:text-black hover:bg-slate-100'
@@ -558,13 +672,18 @@ export default function MyPhotosPage() {
               </div>
             </button>
 
-            {/* Camera / Claim */}
+            {/* Log Out */}
             <button
-              onClick={() => setIsClaimModalOpen(true)}
-              className="w-9 h-9 flex items-center justify-center text-slate-800 hover:text-black transition-transform active:scale-90 cursor-pointer hover:bg-slate-100 rounded-xl"
-              title="Klaim Foto / Scan QR"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="w-9 h-9 flex items-center justify-center text-slate-700 hover:text-rose-600 hover:bg-rose-50 transition-all active:scale-90 cursor-pointer rounded-xl"
+              title="Keluar / Log Out"
             >
-              <Camera className="w-[22px] h-[22px] stroke-[2]" />
+              {isLoggingOut ? (
+                <Loader2 className="w-5 h-5 animate-spin text-rose-500" />
+              ) : (
+                <LogOut className="w-[20px] h-[20px] stroke-[2.2]" />
+              )}
             </button>
           </div>
         </header>
@@ -607,45 +726,41 @@ export default function MyPhotosPage() {
 
           {/* Gesture / Drag Tracking Area */}
           <div
-            onTouchStart={(e) => {
-              if (!isOverviewMode) handleStart(e.touches[0].clientX, e.touches[0].clientY)
-            }}
-            onTouchMove={(e) => {
-              if (!isOverviewMode) handleMove(e.touches[0].clientX, e.touches[0].clientY)
-            }}
-            onTouchEnd={(e) => {
-              if (!isOverviewMode) handleEnd(e.changedTouches[0]?.clientX, e.changedTouches[0]?.clientY)
-            }}
-            onMouseDown={(e) => {
-              if (!isOverviewMode) handleStart(e.clientX, e.clientY)
-            }}
-            onMouseMove={(e) => {
-              if (!isOverviewMode && isDraggingState) handleMove(e.clientX, e.clientY)
-            }}
-            onMouseUp={(e) => {
-              if (!isOverviewMode) handleEnd(e.clientX, e.clientY)
-            }}
-            onMouseLeave={() => {
-              if (!isOverviewMode && isDraggingState) handleEnd()
-            }}
-            className="relative w-full h-[72vh] xs:h-[75vh] sm:h-[78vh] md:h-[80vh] max-h-[640px] flex items-center justify-center touch-none cursor-grab active:cursor-grabbing overflow-visible"
+            ref={containerRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            className="relative w-full h-[72vh] xs:h-[75vh] sm:h-[78vh] md:h-[80vh] max-h-[640px] flex items-center justify-center touch-none cursor-grab active:cursor-grabbing overflow-visible select-none"
           >
-            {/* ── SEAMLESS ZOOMING SLIDER TRACK (ORIGINATES DIRECTLY FROM SELECTED SESSION) ── */}
+            {/* ── SEAMLESS ZOOMING SLIDER TRACK (DIRECT DOM HARDWARE-ACCELERATED TRANSFORMS) ── */}
             <div
-              className={`h-full flex flex-row items-center will-change-transform ${
-                isDraggingState && dragAxis.current === 'x'
-                  ? 'transition-none'
-                  : 'transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]'
-              }`}
+              ref={trackRef}
+              className="h-full flex flex-row items-center will-change-transform [transform:translate3d(0,0,0)]"
               style={{
-                transform: `translate3d(calc(50% - (${activeSessionIndex + 0.5} * ${
-                  isOverviewMode ? 'min(48vw, 300px)' : '100%'
-                }) + ${dragAxis.current === 'x' ? dragOffset.x : 0}px), 0, 0)`
+                transform: `translate3d(${
+                  isOverviewMode
+                    ? `calc(50% - (${activeSessionIndex + 0.5} * min(48vw, 300px)))`
+                    : `calc(-${activeSessionIndex * 100}%)`
+                }, 0, 0)`,
+                transition: 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
               }}
             >
               {sessionsList.map((session, sIdx) => {
                 const isCurrentSession = sIdx === activeSessionIndex
+                const isNearby = Math.abs(sIdx - activeSessionIndex) <= 1
                 const mediaIdx = activeMediaIndices[session.id] || 0
+
+                // Virtualization: Skip rendering full cards for distant sessions in focus mode
+                if (!isOverviewMode && !isNearby) {
+                  return (
+                    <div
+                      key={session.id}
+                      style={{ width: '100%' }}
+                      className="h-full shrink-0 px-4 sm:px-12 md:px-24 lg:px-36 flex items-center justify-center pointer-events-none"
+                    />
+                  )
+                }
 
                 return (
                   <div
@@ -653,14 +768,10 @@ export default function MyPhotosPage() {
                     style={{
                       width: isOverviewMode ? 'min(48vw, 300px)' : '100%'
                     }}
-                    className={`h-full shrink-0 flex items-center justify-center select-none [transform:translate3d(0,0,0)] [backface-visibility:hidden] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    className={`h-full shrink-0 flex items-center justify-center select-none [transform:translate3d(0,0,0)] [backface-visibility:hidden] ${
                       isOverviewMode
-                        ? 'px-3 sm:px-6 cursor-pointer'
-                        : `px-4 sm:px-12 md:px-24 lg:px-36 ${
-                            isCurrentSession
-                              ? 'opacity-100 scale-100'
-                              : 'opacity-30 md:opacity-40 scale-90 cursor-pointer'
-                          }`
+                        ? 'px-3 sm:px-6 cursor-pointer transition-[opacity,transform] duration-250 ease-out'
+                        : 'px-4 sm:px-12 md:px-24 lg:px-36 opacity-100 scale-100'
                     }`}
                     onClick={() => {
                       if (isOverviewMode) {
@@ -673,7 +784,7 @@ export default function MyPhotosPage() {
                   >
                     {/* ── CARD CONTAINER: PROPORTIONAL JUSTIFIED MINI CARDS ── */}
                     <div
-                      className={`relative h-full aspect-[2/3] w-auto flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      className={`relative h-full aspect-[2/3] w-auto flex items-center justify-center transition-[max-height,transform] duration-250 ease-out ${
                         isOverviewMode
                           ? isCurrentSession
                             ? 'max-h-[260px] xs:max-h-[300px] sm:max-h-[340px] md:max-h-[380px] lg:max-h-[410px] scale-100'
@@ -681,61 +792,38 @@ export default function MyPhotosPage() {
                           : 'max-h-[560px] xs:max-h-[600px] sm:max-h-[630px] md:max-h-[660px] max-w-[390px] xs:max-w-[430px] sm:max-w-[460px] md:max-w-[490px]'
                       }`}
                     >
+                      {/* 1. Stack Media Cards (Streamlined to Active Front Card + 1 Peek Card) */}
                       {session.media.map((med, mIdx) => {
                         const totalMedia = session.media.length
                         const diff = (mIdx - mediaIdx + totalMedia) % totalMedia
 
-                        // Virtualization: Skip cards not visible in stack or background sessions
-                        if (diff > 2) return null
-                        if ((!isCurrentSession || isOverviewMode) && diff > 0) return null
+                        // For inactive sessions, only render front card (diff 0) to save mobile GPU VRAM
+                        // For active session, render front card (diff 0) and 1 peek card (diff 1)
+                        if (!isCurrentSession && diff > 0) return null
+                        if (isOverviewMode && diff > 0) return null
+                        if (diff > 1) return null
 
-                        let transformStyle = ''
-                        let zIndex = 10
-                        let opacity = 1
-
-                        if (diff === 0) {
-                          zIndex = 30
-                          opacity = 1
-                          transformStyle = 'translate3d(0, 0, 0) scale(1)'
-                        } else if (diff === 1) {
-                          zIndex = 20
-                          opacity = 0.95
-                          transformStyle = isOverviewMode
-                            ? 'translate3d(8px, -8px, 0) rotate(3deg) scale(0.96)'
-                            : 'translate3d(16px, -16px, 0) rotate(4.5deg) scale(0.96)'
-                        } else if (diff === 2) {
-                          zIndex = 15
-                          opacity = 0.85
-                          transformStyle = isOverviewMode
-                            ? 'translate3d(-8px, -6px, 0) rotate(-3deg) scale(0.92)'
-                            : 'translate3d(-14px, -12px, 0) rotate(-4deg) scale(0.92)'
-                        }
-
+                        const isFront = diff === 0
                         const isVideo = med.type === 'video' || !!med.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
-                        const shouldPlayVideo = isVideo && isCurrentSession && diff === 0
+                        const shouldPlayVideo = isVideo && isCurrentSession && isFront
 
                         return (
                           <div
                             key={med.id}
-                            className={`absolute inset-0 flex items-center justify-center will-change-transform [contain:paint] ${
-                              isDraggingState && isCurrentSession && dragAxis.current === 'x' && diff === 0
-                                ? 'transition-none'
-                                : 'transition-all duration-400 ease-[cubic-bezier(0.34,1.4,0.64,1)]'
+                            className={`absolute inset-0 flex items-center justify-center will-change-transform [contain:paint] transition-[transform,opacity] duration-200 ease-out ${
+                              isFront
+                                ? 'z-20 opacity-100 [transform:translate3d(0,0,0)_scale(1)_rotate(0deg)]'
+                                : 'z-10 opacity-70 [transform:translate3d(10px,-10px,0)_scale(0.96)_rotate(3.5deg)]'
                             }`}
                             style={{
-                              transform: transformStyle,
-                              transformOrigin: '50% 50%',
-                              zIndex,
-                              opacity,
-                              pointerEvents: diff === 0 ? 'auto' : 'none'
+                              pointerEvents: isFront ? 'auto' : 'none'
                             }}
                           >
-                            {/* Card Body - Supports Photos, Photostrips, GIFs & Live Videos */}
                             <div
-                              className={`relative w-full h-full rounded-[22px] xs:rounded-[28px] sm:rounded-[32px] overflow-hidden bg-zinc-950 flex items-center justify-center transition-all duration-300 ${
+                              className={`relative w-full h-full rounded-[22px] xs:rounded-[28px] sm:rounded-[32px] overflow-hidden bg-zinc-950 flex items-center justify-center [transform:translate3d(0,0,0)] [backface-visibility:hidden] ${
                                 isOverviewMode && isCurrentSession
-                                  ? 'shadow-[0_12px_30px_rgba(0,0,0,0.3)] ring-2 ring-orange-500/80'
-                                  : 'shadow-[0_14px_35px_rgba(0,0,0,0.22)]'
+                                  ? 'shadow-md ring-2 ring-orange-500/80'
+                                  : 'shadow-lg'
                               }`}
                             >
                               {shouldPlayVideo ? (
@@ -747,130 +835,116 @@ export default function MyPhotosPage() {
                                   playsInline
                                   className="w-full h-full object-cover pointer-events-none select-none brightness-100 saturate-100"
                                 />
-                              ) : med.url.startsWith('data:') || med.url.startsWith('blob:') || med.type === 'gif' || med.url.toLowerCase().includes('.gif') ? (
+                              ) : (
                                 <img
                                   src={med.url}
                                   alt={med.label}
-                                  className={`w-full h-full object-cover pointer-events-none select-none transition-opacity duration-200 ${
-                                    diff > 0 ? 'brightness-[0.85] saturate-[0.9]' : 'brightness-100 saturate-100'
-                                  }`}
-                                  loading={isCurrentSession && diff === 0 ? 'eager' : 'lazy'}
+                                  className="w-full h-full object-cover pointer-events-none select-none"
+                                  loading={isFront ? 'eager' : 'lazy'}
                                   decoding="async"
                                 />
-                              ) : (
-                                <NextImage
-                                  src={med.url}
-                                  alt={med.label}
-                                  fill
-                                  sizes="(max-width: 640px) 420px, 490px"
-                                  quality={75}
-                                  priority={isCurrentSession && diff === 0}
-                                  className={`object-cover pointer-events-none select-none transition-opacity duration-200 ${
-                                    diff > 0 ? 'brightness-[0.85] saturate-[0.9]' : 'brightness-100 saturate-100'
-                                  }`}
-                                />
                               )}
 
-                              {/* Dark tint overlay on background cards */}
-                              {diff > 0 && (
-                                <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+                              {!isFront && (
+                                <div className="absolute inset-0 bg-black/25 pointer-events-none" />
                               )}
-
-                              {/* Top-Right Quick Actions (Only in focus mode) */}
-                              {!isOverviewMode && diff === 0 && (
-                                <div
-                                  onMouseDown={(e) => e.stopPropagation()}
-                                  onTouchStart={(e) => e.stopPropagation()}
-                                  className="absolute top-3.5 right-3.5 z-40 flex items-center gap-1.5 pointer-events-auto"
-                                >
-                                  <button
-                                    onMouseDown={(e) => e.stopPropagation()}
-                                    onTouchStart={(e) => e.stopPropagation()}
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      e.preventDefault()
-                                      handleDownload(e)
-                                    }}
-                                    className="w-8.5 h-8.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-lg active:scale-90 transition-all cursor-pointer"
-                                    title="Download Foto Ini (HD)"
-                                  >
-                                    <Download className="w-4 h-4 stroke-[2.4]" />
-                                  </button>
-                                  <button
-                                    onMouseDown={(e) => e.stopPropagation()}
-                                    onTouchStart={(e) => e.stopPropagation()}
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      e.preventDefault()
-                                      setLightboxUrl(med.hdUrl || med.url)
-                                    }}
-                                    className="w-8.5 h-8.5 rounded-full bg-black/45 hover:bg-black/70 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-90 transition-all cursor-pointer"
-                                    title="Lihat Fullscreen HD"
-                                  >
-                                    <Maximize2 className="w-4 h-4 stroke-[2.2]" />
-                                  </button>
-                                  <button
-                                    onMouseDown={(e) => e.stopPropagation()}
-                                    onTouchStart={(e) => e.stopPropagation()}
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      e.preventDefault()
-                                      setIsOptionsModalOpen(true)
-                                    }}
-                                    className="w-8.5 h-8.5 rounded-full bg-black/45 hover:bg-black/70 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-90 transition-all cursor-pointer"
-                                    title="Opsi Sesi"
-                                  >
-                                    <MoreHorizontal className="w-4 h-4 stroke-[2.2]" />
-                                  </button>
-                                </div>
-                              )}
-
-                              {/* Mobile Initial Swipe Gesture Guide Overlay (Only in focus mode) */}
-                              {!isOverviewMode && showSwipeGuide && diff === 0 && isCurrentSession && (
-                                <div
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    setShowSwipeGuide(false)
-                                  }}
-                                  className="absolute inset-0 z-50 rounded-[24px] xs:rounded-[30px] sm:rounded-[34px] bg-black/65 backdrop-blur-[3px] flex flex-col items-center justify-center p-5 text-center text-white cursor-pointer transition-opacity duration-300 animate-fade-in md:hidden"
-                                >
-                                  <div className="relative mb-3.5 flex items-center justify-center">
-                                    <div className="absolute w-20 h-20 rounded-full bg-white/15 animate-ping" />
-                                    <div className="w-18 h-18 rounded-full bg-white/95 backdrop-blur-md shadow-[0_12px_30px_rgba(0,0,0,0.5)] flex items-center justify-center p-3.5 z-10">
-                                      <img
-                                        src="/images/swipe.png"
-                                        alt="Swipe Gesture"
-                                        className="w-full h-full object-contain animate-swipe-hand select-none pointer-events-none"
-                                      />
-                                    </div>
-                                  </div>
-
-                                  <span className="px-2.5 py-0.5 rounded-full bg-orange-500 text-white text-[10px] font-extrabold uppercase tracking-wider mb-2 shadow-sm font-sans">
-                                    PANDUAN GESTUR
-                                  </span>
-                                  <h4 className="text-[16px] font-black text-white tracking-tight mb-1 font-sans">
-                                    Geser / Swipe Layar
-                                  </h4>
-                                  <p className="text-[11px] text-white/85 max-w-[210px] leading-relaxed mb-4">
-                                    Swipe kiri / kanan untuk ganti sesi, atau tap foto untuk melihat pose lainnya
-                                  </p>
-
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      setShowSwipeGuide(false)
-                                    }}
-                                    className="px-5 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-[11px] font-bold border border-white/30 backdrop-blur-sm transition-all active:scale-95 cursor-pointer"
-                                  >
-                                    Mengerti
-                                  </button>
-                                </div>
-                              )}
-
                             </div>
                           </div>
                         )
                       })}
+
+                      {/* 2. Top-Right Quick Actions (Rendered with pure CSS visibility to prevent mount reflow) */}
+                      <div
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onTouchStart={(e) => e.stopPropagation()}
+                        className={`absolute top-3.5 right-3.5 z-40 flex items-center gap-1.5 transition-opacity duration-200 ${
+                          !isOverviewMode && isCurrentSession ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                        }`}
+                      >
+                        <button
+                          onMouseDown={(e) => e.stopPropagation()}
+                          onTouchStart={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            handleDownload(e)
+                          }}
+                          className="w-8.5 h-8.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-lg active:scale-90 transition-transform cursor-pointer"
+                          title="Download Foto Ini (HD)"
+                        >
+                          <Download className="w-4 h-4 stroke-[2.4]" />
+                        </button>
+                        <button
+                          onMouseDown={(e) => e.stopPropagation()}
+                          onTouchStart={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            const activeMed = session.media[mediaIdx]
+                            setLightboxUrl(activeMed?.hdUrl || activeMed?.url || null)
+                          }}
+                          className="w-8.5 h-8.5 rounded-full bg-black/50 hover:bg-black/75 backdrop-blur-sm border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-90 transition-transform cursor-pointer"
+                          title="Lihat Fullscreen HD"
+                        >
+                          <Maximize2 className="w-4 h-4 stroke-[2.2]" />
+                        </button>
+                        <button
+                          onMouseDown={(e) => e.stopPropagation()}
+                          onTouchStart={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            setIsOptionsModalOpen(true)
+                          }}
+                          className="w-8.5 h-8.5 rounded-full bg-black/50 hover:bg-black/75 backdrop-blur-sm border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-90 transition-transform cursor-pointer"
+                          title="Opsi Sesi"
+                        >
+                          <MoreHorizontal className="w-4 h-4 stroke-[2.2]" />
+                        </button>
+                      </div>
+
+                      {/* 3. Mobile Initial Swipe Gesture Guide Overlay */}
+                      {showSwipeGuide && (
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setShowSwipeGuide(false)
+                          }}
+                          className={`absolute inset-0 z-50 rounded-[24px] xs:rounded-[30px] sm:rounded-[34px] bg-black/75 flex flex-col items-center justify-center p-5 text-center text-white cursor-pointer transition-opacity duration-200 md:hidden select-none ${
+                            !isOverviewMode && isCurrentSession ? 'opacity-100 pointer-events-auto animate-fade-in' : 'opacity-0 pointer-events-none'
+                          }`}
+                        >
+                          <div className="relative mb-3 flex items-center justify-center">
+                            <div className="w-16 h-16 rounded-full bg-white/95 shadow-xl flex items-center justify-center p-3 z-10">
+                              <img
+                                src="/images/swipe.png"
+                                alt="Swipe Gesture"
+                                className="w-full h-full object-contain animate-swipe-hand select-none pointer-events-none"
+                              />
+                            </div>
+                          </div>
+
+                          <span className="px-2.5 py-0.5 rounded-full bg-orange-500 text-white text-[10px] font-extrabold uppercase tracking-wider mb-1.5 shadow-sm font-sans">
+                            PANDUAN GESTUR
+                          </span>
+                          <h4 className="text-[15px] font-black text-white tracking-tight mb-1 font-sans">
+                            Geser / Swipe Layar
+                          </h4>
+                          <p className="text-[11px] text-white/90 max-w-[210px] leading-relaxed mb-3">
+                            Swipe kiri / kanan untuk ganti sesi, atau tap foto untuk melihat pose lainnya
+                          </p>
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setShowSwipeGuide(false)
+                            }}
+                            className="px-5 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-[11px] font-bold border border-white/30 transition-transform active:scale-95 cursor-pointer"
+                          >
+                            Mengerti
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )

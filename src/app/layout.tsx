@@ -50,7 +50,7 @@ export default function RootLayout({
         <OrientationProvider>
           <SmoothScrollProvider>
             <CustomCursor />
-            <div id="root-app" className="w-full h-full relative transition-all duration-300">
+            <div id="root-app" className="w-full h-full relative">
               <LayoutShell>{children}</LayoutShell>
             </div>
           </SmoothScrollProvider>
