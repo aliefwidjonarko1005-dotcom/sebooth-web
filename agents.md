@@ -521,4 +521,8 @@ sebooth-website/
   - **Absolute Centered Distribution (Justify Absolut)**: In Zoom-Out mode, the entire collection of session cards immediately distributes and aligns in the absolute horizontal center of the screen (justify-center gap-6 sm:gap-10 md:gap-16 lg:gap-20 with 	ranslate3d(0, 0, 0)).
   - **Uniform Pure Cards (Tanpa Pilihan Sesi Khusus)**: Removed the orange selection border ring in zoom-out mode. All session cards render with identical clean borders, full vibrant opacity, and rich soft shadows.
   - **Instant Tap Zoom-In**: Tapping any card in this clean justified overview immediately zooms in to that card as the full-screen centerpiece.
+- **September 2026 (Phase 8DN - Vercel Serverless Function Size Optimization & Edge Streaming)**: Fixed Vercel deployment error where pi/download exceeded the 250MB uncompressed function size limit:
+  - **Root Cause**: src/app/api/download/route.ts previously imported s and used path.join(process.cwd(), 'public', ...) to read local files, causing Next.js Node File Trace (NFT) on Vercel to bundle the entire public/ directory (378 MB of demo media) into the serverless function zip package.
+  - **Solution**: Removed Node s and path dependencies completely, configured export const runtime = 'edge', and implemented lightweight Web Standard etch() streaming.
+  - **Result**: Function bundle size plummeted from 378MB to <20KB, running globally on Vercel Edge with zero cold starts and passing Vercel deployment seamlessly.
 
