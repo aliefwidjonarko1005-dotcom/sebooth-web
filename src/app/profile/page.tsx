@@ -160,9 +160,11 @@ export default function MyPhotosPage() {
     })
   }
 
-  // Live 1:1 tactile drag event handlers
+  // Live 1:1 tactile drag event handlers with RAF throttling
   const touchStartTime = useRef<number>(0)
   const hasMoved = useRef<boolean>(false)
+  const animFrameId = useRef<number | null>(null)
+  const pendingDragOffset = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
 
   const handleStart = (clientX: number, clientY: number) => {
     if (showSwipeGuide) setShowSwipeGuide(false)
@@ -188,14 +190,28 @@ export default function MyPhotosPage() {
       }
     }
 
-    if (dragAxis.current === 'x') {
-      setDragOffset({ x: dx * 0.75, y: 0 })
-    } else if (dragAxis.current === 'y') {
-      setDragOffset({ x: 0, y: dy * 0.75 })
+    const newOffset = dragAxis.current === 'x'
+      ? { x: dx * 0.75, y: 0 }
+      : dragAxis.current === 'y'
+        ? { x: 0, y: dy * 0.75 }
+        : { x: 0, y: 0 }
+
+    pendingDragOffset.current = newOffset
+
+    if (animFrameId.current === null) {
+      animFrameId.current = requestAnimationFrame(() => {
+        setDragOffset(pendingDragOffset.current)
+        animFrameId.current = null
+      })
     }
   }
 
   const handleEnd = (clientX?: number, clientY?: number) => {
+    if (animFrameId.current !== null) {
+      cancelAnimationFrame(animFrameId.current)
+      animFrameId.current = null
+    }
+
     if (!touchStartPos.current) return
 
     const dx = clientX !== undefined ? clientX - touchStartPos.current.x : dragOffset.x
@@ -637,13 +653,13 @@ export default function MyPhotosPage() {
                     style={{
                       width: isOverviewMode ? 'min(48vw, 300px)' : '100%'
                     }}
-                    className={`h-full shrink-0 flex items-center justify-center select-none transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    className={`h-full shrink-0 flex items-center justify-center select-none [transform:translate3d(0,0,0)] [backface-visibility:hidden] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                       isOverviewMode
                         ? 'px-3 sm:px-6 cursor-pointer'
                         : `px-4 sm:px-12 md:px-24 lg:px-36 ${
                             isCurrentSession
                               ? 'opacity-100 scale-100'
-                              : 'opacity-25 md:opacity-35 scale-90 blur-[0.5px] cursor-pointer'
+                              : 'opacity-30 md:opacity-40 scale-90 cursor-pointer'
                           }`
                     }`}
                     onClick={() => {
@@ -669,6 +685,10 @@ export default function MyPhotosPage() {
                         const totalMedia = session.media.length
                         const diff = (mIdx - mediaIdx + totalMedia) % totalMedia
 
+                        // Virtualization: Skip cards not visible in stack or background sessions
+                        if (diff > 2) return null
+                        if ((!isCurrentSession || isOverviewMode) && diff > 0) return null
+
                         let transformStyle = ''
                         let zIndex = 10
                         let opacity = 1
@@ -689,16 +709,15 @@ export default function MyPhotosPage() {
                           transformStyle = isOverviewMode
                             ? 'translate3d(-8px, -6px, 0) rotate(-3deg) scale(0.92)'
                             : 'translate3d(-14px, -12px, 0) rotate(-4deg) scale(0.92)'
-                        } else {
-                          zIndex = 5
-                          opacity = 0
-                          transformStyle = 'translate3d(0, 0, 0) scale(0.85)'
                         }
+
+                        const isVideo = med.type === 'video' || !!med.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+                        const shouldPlayVideo = isVideo && isCurrentSession && diff === 0
 
                         return (
                           <div
                             key={med.id}
-                            className={`absolute inset-0 flex items-center justify-center will-change-transform ${
+                            className={`absolute inset-0 flex items-center justify-center will-change-transform [contain:paint] ${
                               isDraggingState && isCurrentSession && dragAxis.current === 'x' && diff === 0
                                 ? 'transition-none'
                                 : 'transition-all duration-400 ease-[cubic-bezier(0.34,1.4,0.64,1)]'
@@ -715,29 +734,27 @@ export default function MyPhotosPage() {
                             <div
                               className={`relative w-full h-full rounded-[22px] xs:rounded-[28px] sm:rounded-[32px] overflow-hidden bg-zinc-950 flex items-center justify-center transition-all duration-300 ${
                                 isOverviewMode && isCurrentSession
-                                  ? 'shadow-[0_20px_45px_-8px_rgba(0,0,0,0.35)] ring-2 ring-orange-500/80'
-                                  : 'shadow-[0_22px_50px_-10px_rgba(0,0,0,0.25),0_10px_20px_-6px_rgba(0,0,0,0.12)]'
+                                  ? 'shadow-[0_12px_30px_rgba(0,0,0,0.3)] ring-2 ring-orange-500/80'
+                                  : 'shadow-[0_14px_35px_rgba(0,0,0,0.22)]'
                               }`}
                             >
-                              {med.type === 'video' || !!med.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i) ? (
+                              {shouldPlayVideo ? (
                                 <video
                                   src={med.url}
                                   autoPlay
                                   loop
                                   muted
                                   playsInline
-                                  className={`w-full h-full object-cover pointer-events-none select-none transition-all duration-300 ${
-                                    diff > 0 ? 'brightness-[0.85] saturate-[0.9]' : 'brightness-100 saturate-100'
-                                  }`}
+                                  className="w-full h-full object-cover pointer-events-none select-none brightness-100 saturate-100"
                                 />
                               ) : (
                                 <img
                                   src={med.url}
                                   alt={med.label}
-                                  className={`w-full h-full object-cover pointer-events-none select-none transition-all duration-300 ${
+                                  className={`w-full h-full object-cover pointer-events-none select-none transition-opacity duration-200 ${
                                     diff > 0 ? 'brightness-[0.85] saturate-[0.9]' : 'brightness-100 saturate-100'
                                   }`}
-                                  loading={diff <= 2 ? 'eager' : 'lazy'}
+                                  loading={isCurrentSession && diff === 0 ? 'eager' : 'lazy'}
                                   decoding="async"
                                 />
                               )}
