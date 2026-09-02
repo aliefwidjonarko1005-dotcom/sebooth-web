@@ -87,6 +87,30 @@ for (let i = 0; i < sessionDirs.length; i++) {
     });
   }
 
+  // 4. Live Video (MP4)
+  const srcFolder = path.join(SESSIONS_SRC, sess.folder);
+  if (fs.existsSync(srcFolder)) {
+    const srcFiles = fs.readdirSync(srcFolder);
+    const videoFile = srcFiles.find(f => f.toLowerCase().includes('live_video') && f.endsWith('.mp4')) 
+                   || srcFiles.find(f => f.endsWith('.mp4'));
+    if (videoFile) {
+      const srcVideoPath = path.join(srcFolder, videoFile);
+      const destVideoPath = path.join(destDir, 'video.mp4');
+      fs.copyFileSync(srcVideoPath, destVideoPath);
+      console.log(`Copied ${videoFile} -> ${destVideoPath}`);
+    }
+  }
+
+  if (fs.existsSync(path.join(destDir, 'video.mp4'))) {
+    mediaList.push({
+      id: `${sess.id}-video`,
+      url: `/images/sessions/${sess.id}/video.mp4`,
+      hdUrl: `/images/sessions/${sess.id}/video.mp4`,
+      type: 'video',
+      label: 'Live Video Frame'
+    });
+  }
+
   generatedSessions.push({
     id: sess.id,
     title: sess.title,

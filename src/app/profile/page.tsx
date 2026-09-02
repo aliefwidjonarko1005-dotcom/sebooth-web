@@ -7,7 +7,7 @@ import Link from 'next/link'
 import {
   X, LayoutGrid, Download, MoreHorizontal, Share2,
   Check, Maximize2, QrCode, ArrowRight, Camera,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, Loader2, FolderDown, Package
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 import { SessionData } from '@/types/database'
@@ -28,6 +28,11 @@ export default function MyPhotosPage() {
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false)
   const [claimInput, setClaimInput] = useState('')
   const [showSwipeGuide, setShowSwipeGuide] = useState(true)
+
+  // Bundle download state
+  const [isBundling, setIsBundling] = useState(false)
+  const [bundleProgress, setBundleProgress] = useState<{ current: number; total: number }>({ current: 0, total: 0 })
+  const [bundleNotification, setBundleNotification] = useState<string | null>(null)
 
   // Auto-dismiss swipe guide after 5 seconds
   useEffect(() => {
@@ -81,7 +86,7 @@ export default function MyPhotosPage() {
             url: m.url,
             hdUrl: m.url,
             type: (isVideo ? 'video' : isStrip ? 'strip' : isGif ? 'gif' : 'photo') as 'strip' | 'photo' | 'gif' | 'video',
-            label: isVideo ? 'Live Video HD' : isStrip ? 'Photostrip' : isGif ? 'Live GIF' : `Photo ${mIdx + 1}`
+            label: isVideo ? 'Live Video Frame' : isStrip ? 'Photostrip' : isGif ? 'Live GIF' : `Photo ${mIdx + 1}`
           }
         })
 
@@ -266,6 +271,72 @@ export default function MyPhotosPage() {
     document.body.removeChild(a)
 
     setIsOptionsModalOpen(false)
+  }
+
+  // ─── DOWNLOAD 1 BUNDLE (.ZIP OF ALL ACTIVE SESSION MEDIA) ───
+  const handleDownloadBundle = async (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.stopPropagation()
+    }
+    if (!currentSession || !currentSession.media || currentSession.media.length === 0) return
+    if (isBundling) return
+
+    setIsBundling(true)
+    const total = currentSession.media.length
+    setBundleProgress({ current: 0, total })
+
+    try {
+      const JSZip = (await import('jszip')).default
+      const zip = new JSZip()
+
+      for (let i = 0; i < total; i++) {
+        const item = currentSession.media[i]
+        const targetUrl = item.hdUrl || item.url
+        const ext = targetUrl.split('.').pop()?.split('?')[0] || (item.type === 'video' ? 'mp4' : item.type === 'gif' ? 'gif' : 'jpg')
+        
+        const labelSlug = item.label ? item.label.toLowerCase().replace(/[^a-z0-9]+/g, '_') : `file_${i + 1}`
+        const fileName = `${String(i + 1).padStart(2, '0')}_${labelSlug}.${ext}`
+
+        // Direct fetch with fallback to /api/download proxy
+        let response = await fetch(targetUrl).catch(() => null)
+        if (!response || !response.ok) {
+          response = await fetch(`/api/download?url=${encodeURIComponent(targetUrl)}&filename=${encodeURIComponent(fileName)}`)
+        }
+
+        if (response && response.ok) {
+          const blob = await response.blob()
+          zip.file(fileName, blob)
+        }
+        setBundleProgress({ current: i + 1, total })
+      }
+
+      const zipBlob = await zip.generateAsync({
+        type: 'blob',
+        compression: 'DEFLATE',
+        compressionOptions: { level: 6 }
+      })
+
+      const sessionSlug = currentSession.title?.replace(/[^a-zA-Z0-9_-]+/g, '_') || `Sebooth_${currentSession.id.slice(0, 8)}`
+      const zipFileName = `Sebooth_${sessionSlug}_Bundle.zip`
+
+      const downloadUrl = URL.createObjectURL(zipBlob)
+      const link = document.createElement('a')
+      link.href = downloadUrl
+      link.download = zipFileName
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      setTimeout(() => URL.revokeObjectURL(downloadUrl), 8000)
+
+      setBundleNotification(`Berhasil download 1 bundle (${total} file)!`)
+      setTimeout(() => setBundleNotification(null), 3500)
+    } catch (err) {
+      console.error('Bundle download failed:', err)
+      setBundleNotification('Gagal membuat bundle zip. Silakan coba lagi.')
+      setTimeout(() => setBundleNotification(null), 3500)
+    } finally {
+      setIsBundling(false)
+    }
   }
 
   return (
@@ -626,6 +697,40 @@ export default function MyPhotosPage() {
 
         </div>
 
+        {/* ─── 3. BOTTOM CENTER ACTION: DOWNLOAD 1 BUNDLE (ALL FILES IN ACTIVE SESSION) ─── */}
+        {!isOverviewMode && currentSession && (
+          <div className="w-full flex items-center justify-center pt-2 pb-2 sm:pb-3 z-40">
+            <button
+              onClick={handleDownloadBundle}
+              disabled={isBundling}
+              className={`group relative px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm tracking-wider flex items-center gap-2.5 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.25)] hover:shadow-[0_14px_30px_-5px_rgba(0,0,0,0.35)] active:scale-95 transition-all cursor-pointer border ${
+                isBundling
+                  ? 'bg-slate-800 text-slate-300 border-slate-700 cursor-wait'
+                  : 'bg-slate-950 hover:bg-slate-900 text-white border-slate-800 hover:border-slate-700'
+              }`}
+              title="Download 1 Bundle Semua File di Sesi Ini (.ZIP)"
+            >
+              {isBundling ? (
+                <>
+                  <Loader2 className="w-4 h-4 text-orange-400 animate-spin" />
+                  <span>
+                    Menyiapkan Bundle ({bundleProgress.current}/{bundleProgress.total})...
+                  </span>
+                </>
+              ) : (
+                <>
+                  <div className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+                  </div>
+                  <span>
+                    DOWNLOAD 1 BUNDLE ({currentSession.media.length} FILE)
+                  </span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
+
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════
@@ -744,6 +849,20 @@ export default function MyPhotosPage() {
               <div className="flex items-center gap-3">
                 <Download className="w-4 h-4 text-emerald-600" />
                 <span>Download Foto Ini (HD)</span>
+              </div>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+            </button>
+
+            <button
+              onClick={() => {
+                handleDownloadBundle()
+                setIsOptionsModalOpen(false)
+              }}
+              className="w-full py-3 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-800 flex items-center justify-between text-xs font-semibold cursor-pointer transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <Package className="w-4 h-4 text-orange-500" />
+                <span>Download 1 Bundle Semua File ({currentSession?.media.length} File .ZIP)</span>
               </div>
               <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
             </button>
@@ -871,6 +990,14 @@ export default function MyPhotosPage() {
         <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg border border-slate-700 flex items-center gap-1.5 animate-fade-in">
           <Check className="w-4 h-4 text-emerald-400" />
           <span>Link berhasil disalin!</span>
+        </div>
+      )}
+
+      {/* Bundle Download Toast */}
+      {bundleNotification && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-2xl border border-slate-700 flex items-center gap-2 animate-fade-in">
+          <Check className="w-4 h-4 text-emerald-400 stroke-[2.5]" />
+          <span>{bundleNotification}</span>
         </div>
       )}
 

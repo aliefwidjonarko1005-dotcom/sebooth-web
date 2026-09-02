@@ -28,7 +28,7 @@ export const DEMO_SESSIONS: DemoSessionItem[] = [
     "location": "guide, Paris",
     "dateStr": "2 June • 10:30 • 5 photos in this session",
     "avatarUrl": "/images/sessions/session-004a6bbb/photo_1.webp",
-    "badgeCount": 6,
+    "badgeCount": 7,
     "category": "CONCERT",
     "likes": "1.1k",
     "price": "$120",
@@ -74,6 +74,13 @@ export const DEMO_SESSIONS: DemoSessionItem[] = [
         "hdUrl": "/images/sessions/session-004a6bbb/gif.gif",
         "type": "gif",
         "label": "Live Boomerang GIF"
+      },
+      {
+        "id": "session-004a6bbb-video",
+        "url": "/images/sessions/session-004a6bbb/video.mp4",
+        "hdUrl": "/images/sessions/session-004a6bbb/video.mp4",
+        "type": "video",
+        "label": "Live Video Frame"
       }
     ],
     "attendees": [
@@ -88,7 +95,7 @@ export const DEMO_SESSIONS: DemoSessionItem[] = [
     "location": "creator, Bali",
     "dateStr": "15 July • 16:00 • 5 photos in this session",
     "avatarUrl": "/images/sessions/session-008d08da/photo_1.webp",
-    "badgeCount": 6,
+    "badgeCount": 7,
     "category": "WEDDING",
     "likes": "2.4k",
     "price": "$150",
@@ -134,6 +141,13 @@ export const DEMO_SESSIONS: DemoSessionItem[] = [
         "hdUrl": "/images/sessions/session-008d08da/gif.gif",
         "type": "gif",
         "label": "Live Boomerang GIF"
+      },
+      {
+        "id": "session-008d08da-video",
+        "url": "/images/sessions/session-008d08da/video.mp4",
+        "hdUrl": "/images/sessions/session-008d08da/video.mp4",
+        "type": "video",
+        "label": "Live Video Frame"
       }
     ],
     "attendees": [
@@ -148,7 +162,7 @@ export const DEMO_SESSIONS: DemoSessionItem[] = [
     "location": "photographer, Shibuya",
     "dateStr": "28 Aug • 19:30 • 5 photos in this session",
     "avatarUrl": "/images/sessions/session-031d39e4/photo_1.webp",
-    "badgeCount": 6,
+    "badgeCount": 7,
     "category": "STREET",
     "likes": "980",
     "price": "$95",
@@ -194,6 +208,13 @@ export const DEMO_SESSIONS: DemoSessionItem[] = [
         "hdUrl": "/images/sessions/session-031d39e4/gif.gif",
         "type": "gif",
         "label": "Live Boomerang GIF"
+      },
+      {
+        "id": "session-031d39e4-video",
+        "url": "/images/sessions/session-031d39e4/video.mp4",
+        "hdUrl": "/images/sessions/session-031d39e4/video.mp4",
+        "type": "video",
+        "label": "Live Video Frame"
       }
     ],
     "attendees": [

@@ -527,6 +527,23 @@ sebooth-website/
   - **Result**: Function bundle size plummeted from 378MB to <20KB, running globally on Vercel Edge with zero cold starts and passing Vercel deployment seamlessly.
 - **September 2026 (Phase 8DO - Full Live Video Rendering & Supabase MP4 Compatibility)**: Fixed live video display failure across production deployment:
   - **Direct HTML5 Video Rendering**: Replaced <img> with <video src={...} autoPlay loop muted playsInline controls /> across centerpiece cards in src/app/profile/page.tsx, fullscreen Lightbox modal, SessionFeedCard.tsx, and src/app/profile/[sessionId]/page.tsx.
-  - **Live Video Detection**: Ensured .mp4, .webm, .mov and 	ype === 'live' / 'video' files are properly identified and categorized as live videos rather than static photos.
+  - **Live Video Detection**: Ensured .mp4, .webm, .mov and type === 'live' / 'video' files are properly identified and categorized as live videos rather than static photos.
   - **Supabase Gallery Filter Fix**: Removed accidental !m.url.match(/\.mp4$/i) exclusion filter in src/lib/serverSupabase.ts.
+- **September 2026 (Phase 8DP - Local Live Video Extraction & Demo Session Integration Fix)**: Fixed missing live video in local demo sessions and gallery preview:
+  - **Root Cause**: `prepareDemoSessions.mjs` only copied `strip`, `photo_1..4`, and `gif.gif` from `picture_stocks/gallery-sebooth/gallery/Session_*`, completely omitting the `live_video_*.mp4` assets. Consequently, `src/data/demoSessions.ts` never registered `video` items.
+  - **Live Video MP4 Extraction**: Upgraded `prepareDemoSessions.mjs` to extract and copy `live_video_*.mp4` directly into `public/images/sessions/[sessionId]/video.mp4` and automatically populate `{ type: 'video', label: 'Live Video HD' }` in `DEMO_SESSIONS`.
+  - **Session Detail Demo Fallback**: Added `DEMO_SESSIONS` fallback lookup in `src/app/profile/[sessionId]/page.tsx` so demo sessions with live video play smoothly without requiring active database login.
+  - **Verified Clean Build**: Verified `npm run build` compiled 100% cleanly with zero errors.
+- **September 2026 (Phase 8DQ - 1-Bundle Session ZIP Download Action Integration)**: Added 1-click bundle download for all session files in [MyPhotosPage](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/src/app/profile/page.tsx) per user request:
+  - **Bottom Center Prominent Button**: Added a centered pill button directly below the active session photo card: `"DOWNLOAD 1 BUNDLE (X FILE)"` with orange download badge, active bounce animation, and real-time bundling progress spinner (`Menyiapkan Bundle (i/total)...`).
+  - **JSZip Client-Side Archiver**: Installed `jszip` to bundle all photostrips, candid studio photos, Boomerang GIFs, and HD live videos into a single cleanly named `.zip` archive (`Sebooth_[EventName]_Bundle.zip`) with fallback to `/api/download` proxy for CORS-resilient streaming.
+  - **Options Menu Integration & Toast**: Also added "Download 1 Bundle Semua File (.ZIP)" inside the session options modal (`•••`) and integrated floating toast notifications on completion.
+  - **Verified Clean Build**: Tested and passed `npm run build` with 100% success.
+- **September 2026 (Phase 8DR - Live Video Photo Frame Compositing Architecture Alignment)**: Clarified and aligned the Live Video system model:
+  - **Live Motion Frame Definition**: Confirmed that the photobooth's Live Video output is an animated motion photo frame (`.mp4`), where video clips recorded before each shutter snapshot are arranged inside the corresponding frame photo slots (multi-clip composite).
+  - **Portal Playback & Naming**: Aligned media labels across `MyPhotosPage`, `SessionDetailPage`, `demoSessions.ts`, and bundle exporter to `"Live Video Frame"` / `"Live Motion Frame"`.
+  - **Direct HTML5 Playback**: The web portal renders the full composite video inside the 2:3 / 9:16 frame container with autoPlay, seamless looping, and fullscreen HD lightbox preview.
+
+
+
 
