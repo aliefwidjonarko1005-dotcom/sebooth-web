@@ -139,13 +139,13 @@ export default function MyPhotosPage() {
         author: 'sebooth.id',
         location: 'Sebooth Studio',
         dateStr: formattedDate,
-        avatarUrl: mediaList[0]?.url || '/images/products/photostrip.png',
+        avatarUrl: mediaList[0]?.url || '/images/gallery/strip_004a6bbb.jpg',
         badgeCount: mediaList.length || 1,
         category: 'EVENT',
         likes: `${1.1 + (idx % 5) * 0.2}k`,
         price: 'Sebooth Softfile',
         media: mediaList.length > 0 ? mediaList : [
-          { id: 'def-1', url: '/images/products/photostrip.png', type: 'strip', label: 'Photostrip' }
+          { id: 'def-1', url: '/images/gallery/strip_004a6bbb.jpg', type: 'strip', label: 'Photostrip' }
         ],
         attendees: []
       }

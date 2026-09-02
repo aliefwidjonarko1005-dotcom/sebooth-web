@@ -17,7 +17,22 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000, // Cache optimized images for 1 year
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
+      {
+        // Universal HTTPS (Supabase Storage, Cloudflare, S3, GCS, CDNs)
+        protocol: "https",
+        hostname: "**",
+        pathname: "/**",
+      },
+      {
+        // Universal HTTP
+        protocol: "http",
+        hostname: "**",
+        pathname: "/**",
+      },
       {
         // Supabase Storage (all projects & buckets)
         protocol: "https",
@@ -48,11 +63,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "http",
-        hostname: "**",
         pathname: "/**",
       },
     ],
