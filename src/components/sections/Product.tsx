@@ -73,7 +73,7 @@ const PRODUCTS: ProductItem[] = [
   {
     id: 'sebooth-partner',
     num: '03',
-    title: 'Jadi Partner Loe',
+    title: 'Jadi Partner Sebooth',
     subtitle: 'Kemitraan & Kolaborasi Event Official',
     desc: 'Gabung sebagai partner resmi Sebooth untuk WO & EO. Dapatkan komisi profit sharing, prioritas operator support, dan fasilitas sponsorship event.',
     image: '/images/products/partner_sebooth.png',
@@ -160,7 +160,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
   return (
     <section 
       id="product" 
-      className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-gray-900 overflow-hidden select-none flex flex-col justify-center items-center px-3 sm:px-8 lg:px-16 pt-14 sm:pt-20 pb-4 sm:pb-8"
+      className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-gray-900 overflow-hidden select-none flex flex-col justify-between items-center px-3 sm:px-8 lg:px-16 pt-[76px] xs:pt-[82px] sm:pt-24 md:pt-28 pb-2 sm:pb-4"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -170,18 +170,18 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
       <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[35rem] h-[35rem] rounded-full bg-[#3B82F6]/20 blur-[130px] pointer-events-none z-0" />
 
       {/* ── PERFECTLY CENTERED VERTICAL & HORIZONTAL CONTENT WRAPPER ── */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col items-center justify-center text-center my-auto gap-2.5 sm:gap-6">
+      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col items-center justify-between flex-1 min-h-0 text-center gap-1 sm:gap-4 my-auto">
         
-        {/* ── SECTION TITLE (CENTERED) ── */}
-        <div className="flex flex-col items-center text-center w-full px-2">
-          <h2 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black font-bayon text-[#002366] uppercase tracking-tight leading-none drop-shadow-sm text-center">
-            SEBUTIN APA YANG LOE MAU!
+        {/* ── SECTION TITLE (CENTERED & SAFE TOP MARGIN) ── */}
+        <div className="flex flex-col items-center text-center w-full px-2 shrink-0 pt-0.5">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black font-bayon text-[#002366] uppercase tracking-tight leading-normal drop-shadow-sm text-center">
+            SEBUTIN APA YANG KAMU MAU!
           </h2>
         </div>
 
         {/* ── 3D COVERFLOW SPATIAL CAROUSEL (CENTERED, ULTRA SMOOTH 120FPS) ── */}
         <div 
-          className="relative w-full flex items-center justify-center min-h-[335px] xs:min-h-[375px] sm:min-h-[490px] md:min-h-[530px] py-1"
+          className="relative w-full flex-1 min-h-0 flex items-center justify-center py-1 sm:py-2"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           style={{ perspective: '1200px' }}
@@ -230,7 +230,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                     transition: 'transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.35s ease',
                     pointerEvents: isActive ? 'auto' : 'none'
                   }}
-                  className="w-[230px] xs:w-[260px] sm:w-[320px] md:w-[350px] lg:w-[360px] xl:w-[380px] h-[330px] xs:h-[370px] sm:h-[480px] md:h-[530px] lg:h-[540px] xl:h-[570px] cursor-pointer shrink-0 [backface-visibility:hidden]"
+                  className="w-[210px] xs:w-[240px] sm:w-[300px] md:w-[340px] lg:w-[360px] xl:w-[380px] h-[310px] xs:h-[350px] sm:h-[450px] md:h-[500px] lg:h-[520px] xl:h-[550px] cursor-pointer shrink-0 [backface-visibility:hidden]"
                 >
                   {/* ── CARD MODEL (PROPORTIONAL VERTICAL PORTRAIT + PROGRESSIVE BLUR) ── */}
                   <div className="relative w-full h-full rounded-[24px] sm:rounded-[36px] overflow-hidden border-2 border-white/35 shadow-[0_20px_50px_rgba(0,0,0,0.65)] bg-zinc-900 group flex flex-col justify-between">

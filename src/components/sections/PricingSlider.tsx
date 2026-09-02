@@ -56,7 +56,7 @@ const DETAILED_PACKAGES: Record<PackageType, DetailedPackage[]> = {
         "2 Crew Staff Professional On-Site",
         "Fun Funky Props Box & Accessories",
       ],
-      waText: "Halo Sebooth, gw mau nanya & pesen Paket All You Can Photo - Unlimited 2 Jam nih!",
+      waText: "Halo Sebooth, saya mau tanya & pesan Paket All You Can Photo - Unlimited 2 Jam nih!",
     },
     {
       id: "ayc-2",
@@ -72,7 +72,7 @@ const DETAILED_PACKAGES: Record<PackageType, DetailedPackage[]> = {
         "2 Crew Staff On-Site Full Support",
         "Fun Props Box & Premium Lighting",
       ],
-      waText: "Halo Sebooth, gw mau nanya & pesen Paket All You Can Photo - Unlimited 3 Jam nih!",
+      waText: "Halo Sebooth, saya mau tanya & pesan Paket All You Can Photo - Unlimited 3 Jam nih!",
     },
     {
       id: "ayc-3",
@@ -88,7 +88,7 @@ const DETAILED_PACKAGES: Record<PackageType, DetailedPackage[]> = {
         "VIP Dedicated Crew & Priority Queue",
         "Complete Props Collection",
       ],
-      waText: "Halo Sebooth, gw mau nanya & pesen Paket All You Can Photo - Unlimited 5 Jam nih!",
+      waText: "Halo Sebooth, saya mau tanya & pesan Paket All You Can Photo - Unlimited 5 Jam nih!",
     },
     {
       id: "ayc-4",
@@ -104,7 +104,7 @@ const DETAILED_PACKAGES: Record<PackageType, DetailedPackage[]> = {
         "VIP Dedicated Staff & Priority Queue",
         "Complete Props Collection",
       ],
-      waText: "Halo Sebooth, gw mau konsultasi paket All You Can Photo durasi custom / full day buat acara gw nih!",
+      waText: "Halo Sebooth, saya mau konsultasi paket All You Can Photo durasi custom / full day untuk acara saya nih!",
     },
   ],
   "batch-booking": [
@@ -121,7 +121,7 @@ const DETAILED_PACKAGES: Record<PackageType, DetailedPackage[]> = {
         "Free Custom Frame Design Event",
         "Crew On-Site & Fun Props Box",
       ],
-      waText: "Halo Sebooth, gw mau nanya & pesen Paket Batch Booking - 100 Prints nih!",
+      waText: "Halo Sebooth, saya mau tanya & pesan Paket Batch Booking - 100 Prints nih!",
     },
     {
       id: "batch-2",
@@ -136,7 +136,7 @@ const DETAILED_PACKAGES: Record<PackageType, DetailedPackage[]> = {
         "Free Custom Frame Design Event",
         "Crew On-Site & Fun Props Box",
       ],
-      waText: "Halo Sebooth, gw mau nanya & pesen Paket Batch Booking - 200 Prints nih!",
+      waText: "Halo Sebooth, saya mau tanya & pesan Paket Batch Booking - 200 Prints nih!",
     },
     {
       id: "batch-3",
@@ -151,7 +151,7 @@ const DETAILED_PACKAGES: Record<PackageType, DetailedPackage[]> = {
         "Free Custom Frame Design Event",
         "Crew On-Site & Fun Props Box",
       ],
-      waText: "Halo Sebooth, gw mau nanya & pesen Paket Batch Booking - 300 Prints nih!",
+      waText: "Halo Sebooth, saya mau tanya & pesan Paket Batch Booking - 300 Prints nih!",
     },
     {
       id: "batch-4",
@@ -166,8 +166,9 @@ const DETAILED_PACKAGES: Record<PackageType, DetailedPackage[]> = {
         "Free Custom Frame Design Event",
         "Crew On-Site & Fun Props Box",
       ],
-      waText: "Halo Sebooth, gw mau konsultasi kuota lebih dari 300 prints buat event gw nih!",
+      waText: "Halo Sebooth, saya mau konsultasi kuota lebih dari 300 prints untuk event saya nih!",
     },
+
   ],
 };
 
@@ -425,17 +426,17 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       All You Can Photo
                     </h3>
                     <p className="text-[9.5px] lg:text-[10.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[200px] lg:max-w-[215px]">
-                      Jepret sepuasnya tanpa mikir kuota! Bebas gaya ampe lemes, cocok banget buat acara yang tamunya doyan foto.
+                      Foto sepuasnya tanpa mikir kuota! Bebas berekspresi sepuasnya, cocok banget untuk acara yang tamunya suka foto.
                     </p>
 
                     <div className="w-full max-w-[190px] lg:max-w-[210px] space-y-0.5 my-1 lg:my-1.5 text-left">
                       <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
                         <InfinityIcon className="w-3.5 h-3.5 text-amber-500 stroke-[2.5] shrink-0" />
-                        <span>Jepret bebas tanpa batas</span>
+                        <span>Foto bebas tanpa batas</span>
                       </div>
                       <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
                         <Users className="w-3.5 h-3.5 text-rose-500 stroke-[2.5] shrink-0" />
-                        <span>Buat semua tamu lu</span>
+                        <span>Untuk semua tamu kamu</span>
                       </div>
                       <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
                         <Clock className="w-3.5 h-3.5 text-sky-500 stroke-[2.5] shrink-0" />
@@ -483,10 +484,10 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                   <div className="flex-1 flex flex-col justify-between px-3 lg:px-4 pt-3 pb-2 text-center">
                     <div>
                       <h3 className="text-2xl lg:text-3xl font-black font-bayon text-[#181B34] tracking-tight uppercase leading-tight">
-                        PILIH PAKET PHOTOBOOTH LU
+                        PILIH PAKET PHOTOBOOTH KAMU
                       </h3>
                       <p className="text-xs lg:text-[13px] text-slate-500 font-medium leading-snug mt-1 max-w-[270px] mx-auto">
-                        Mau jepret non-stop ampe puas apa sistem kuota buat ramean? Pilih dah paket yang paling klop buat acara lu!
+                        Mau foto non-stop sampai puas atau sistem kuota untuk seru-seruan? Pilih paket yang paling pas untuk acara kamu!
                       </p>
                     </div>
 
@@ -530,8 +531,9 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       Batch Booking
                     </h3>
                     <p className="text-[9.5px] lg:text-[10.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[200px] lg:max-w-[215px]">
-                      Sewa pake kuota cetak, lebih hemat & terkontrol. Pas banget buat acara kantor, gathering, atau komunitas lu.
+                      Sewa dengan kuota cetak, lebih hemat & terkontrol. Pas banget untuk acara kantor, gathering, atau komunitas kamu.
                     </p>
+
 
                     <div className="w-full max-w-[190px] lg:max-w-[210px] space-y-0.5 my-1 lg:my-1.5 text-left">
                       <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
@@ -616,8 +618,8 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                     </h3>
                     <p className="text-[9.5px] lg:text-[10.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[200px] lg:max-w-[215px]">
                       {isAllYouCan
-                        ? "Jepret sepuasnya tanpa mikir kuota! Bebas gaya ampe lemes, cocok banget buat acara yang tamunya doyan foto."
-                        : "Sewa pake kuota cetak, lebih hemat & terkontrol. Pas banget buat acara kantor, gathering, atau komunitas lu."}
+                        ? "Foto sepuasnya tanpa mikir kuota! Bebas berekspresi sepuasnya, cocok banget untuk acara yang tamunya suka foto."
+                        : "Sewa dengan kuota cetak, lebih hemat & terkontrol. Pas banget untuk acara kantor, gathering, atau komunitas kamu."}
                     </p>
 
                     <div className="w-full max-w-[190px] lg:max-w-[210px] space-y-0.5 my-1 lg:my-1.5 text-left">
@@ -625,11 +627,11 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         <>
                           <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
                             <InfinityIcon className="w-3.5 h-3.5 text-amber-500 stroke-[2.5] shrink-0" />
-                            <span>Jepret bebas tanpa batas</span>
+                            <span>Foto bebas tanpa batas</span>
                           </div>
                           <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
                             <Users className="w-3.5 h-3.5 text-rose-500 stroke-[2.5] shrink-0" />
-                            <span>Buat semua tamu lu</span>
+                            <span>Untuk semua tamu kamu</span>
                           </div>
                           <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
                             <Clock className="w-3.5 h-3.5 text-sky-500 stroke-[2.5] shrink-0" />
@@ -644,7 +646,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                           </div>
                           <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
                             <Users className="w-3.5 h-3.5 text-teal-600 stroke-[2.5] shrink-0" />
-                            <span>Pas buat rombongan</span>
+                            <span>Pas untuk rombongan</span>
                           </div>
                           <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
                             <Clock className="w-3.5 h-3.5 text-teal-600 stroke-[2.5] shrink-0" />
@@ -665,7 +667,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                     className="mb-3 text-left"
                   >
                     <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black font-bayon text-white uppercase tracking-tight leading-none drop-shadow-md">
-                      {isAllYouCan ? "PILIH DURASI UNLIMITED LU" : "PILIH KUOTA BATCH BOOKING LU"}
+                      {isAllYouCan ? "PILIH DURASI UNLIMITED KAMU" : "PILIH KUOTA BATCH BOOKING KAMU"}
                     </h2>
                     <div className="flex items-center gap-1.5 sm:gap-2 mt-2.5 text-white flex-nowrap overflow-x-auto no-scrollbar">
                       <span className="flex items-center gap-1.5 bg-[#0239A0] text-white px-2.5 sm:px-3 py-1.5 rounded-full border border-blue-300/30 text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-md hover:bg-[#022e85] transition-all shrink-0">
@@ -718,10 +720,11 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                               </div>
                               {pkg.id === "batch-4" && (
                                 <p className="text-xs sm:text-[12.5px] font-semibold text-slate-500 mt-1">
-                                  Bebas tentuin kuota cetak buat event gede / gathering akbar lu
+                                  Bebas tentukan kuota cetak untuk event besar / gathering akbar kamu
                                 </p>
                               )}
                             </div>
+
 
                             <div className="shrink-0">
                               <a
@@ -798,13 +801,13 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                     <span>Mau custom branding atau request khusus?</span>
                     <a
                       href={`${waBase}${encodeURIComponent(
-                        "Halo Sebooth, gw mau ngobrol konsultasi paket custom buat acara gw nih!"
+                        "Halo Sebooth, saya mau ngobrol konsultasi paket custom untuk acara saya nih!"
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="underline text-white hover:text-amber-200 flex items-center gap-1 font-extrabold"
                     >
-                      <span>Ngobrol Bareng Kita</span>
+                      <span>Ngobrol Bareng Kami</span>
                       <ArrowUpRight className="w-3 h-3 stroke-[3]" />
                     </a>
                   </motion.div>
@@ -849,16 +852,16 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                           All You Can Photo
                         </h3>
                         <p className="text-[9px] xs:text-[9.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[190px]">
-                          Jepret sepuasnya tanpa mikir kuota! Bebas gaya ampe lemes, cocok buat acara yang tamunya doyan foto.
+                          Foto sepuasnya tanpa mikir kuota! Bebas berekspresi sepuasnya, cocok untuk acara yang tamunya suka foto.
                         </p>
                         <div className="w-full max-w-[175px] space-y-0.5 my-1 text-left">
                           <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-700">
                             <InfinityIcon className="w-3.5 h-3.5 text-amber-500 stroke-[2.5]" />
-                            <span>Jepret bebas tanpa batas</span>
+                            <span>Foto bebas tanpa batas</span>
                           </div>
                           <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-700">
                             <Users className="w-3.5 h-3.5 text-rose-500 stroke-[2.5]" />
-                            <span>Buat semua tamu lu</span>
+                            <span>Untuk semua tamu kamu</span>
                           </div>
                           <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-700">
                             <Clock className="w-3.5 h-3.5 text-sky-500 stroke-[2.5]" />
@@ -903,10 +906,10 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       <div className="flex-1 flex flex-col justify-between px-2 pt-2.5 pb-1.5 text-center">
                         <div>
                           <h3 className="text-xl xs:text-2xl font-black font-bayon text-[#181B34] tracking-tight uppercase leading-tight">
-                            PILIH PAKET PHOTOBOOTH LU
+                            PILIH PAKET PHOTOBOOTH KAMU
                           </h3>
                           <p className="text-[11px] text-slate-500 font-medium leading-tight mt-1 max-w-[260px] mx-auto">
-                            Mau jepret non-stop ampe puas apa sistem kuota buat ramean? Pilih dah paket yang paling klop buat acara lu!
+                            Mau foto non-stop sampai puas atau sistem kuota untuk seru-seruan? Pilih paket yang paling pas untuk acara kamu!
                           </p>
                         </div>
                         <div className="mt-2 flex gap-2">
@@ -944,7 +947,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                           Batch Booking
                         </h3>
                         <p className="text-[9px] xs:text-[9.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[190px]">
-                          Sewa pake kuota cetak, lebih hemat & terkontrol. Pas banget buat acara kantor, gathering, atau komunitas lu.
+                          Sewa dengan kuota cetak, lebih hemat & terkontrol. Pas banget untuk acara kantor, gathering, atau komunitas kamu.
                         </p>
                         <div className="w-full max-w-[175px] space-y-0.5 my-1 text-left">
                           <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-700">
@@ -953,7 +956,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                           </div>
                           <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-700">
                             <Users className="w-3.5 h-3.5 text-teal-600 stroke-[2.5]" />
-                            <span>Pas buat rombongan</span>
+                            <span>Pas untuk rombongan</span>
                           </div>
                           <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-700">
                             <Clock className="w-3.5 h-3.5 text-teal-600 stroke-[2.5]" />
@@ -1013,8 +1016,9 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
 
                 <div className="text-left text-white px-1">
                   <h3 className="text-xl font-black font-bayon uppercase leading-tight">
-                    {isAllYouCan ? "PILIH DURASI UNLIMITED LU" : "PILIH KUOTA BATCH BOOKING LU"}
+                    {isAllYouCan ? "PILIH DURASI UNLIMITED KAMU" : "PILIH KUOTA BATCH BOOKING KAMU"}
                   </h3>
+
                   <div className="flex items-center gap-1.5 mt-2 text-white flex-nowrap overflow-x-auto no-scrollbar pb-0.5">
                     <span className="flex items-center gap-1 bg-[#0239A0] text-white px-2.5 py-1 rounded-full border border-blue-300/30 text-[10px] sm:text-[11px] font-bold whitespace-nowrap shadow-md shrink-0">
                       <QrCode className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-sky-300 shrink-0" />

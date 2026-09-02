@@ -13,15 +13,15 @@ const mobileNavItems = [
   { name: "GALLERY", href: "/#portfolio" },
   { name: "PRICING", href: "/#pricing" },
   { name: "FAQ", href: "/#faq" },
-  { name: "PARTNERSHIP", href: "/partnership" },
   { name: "MY PHOTOS", href: "/profile" },
 ];
 
 const desktopNavItems = [
   { name: "PRODUCT", href: "/#product" },
-  { name: "PRICING", href: "/#pricing" },
+  { name: "FRAMES", href: "/#frames" },
   { name: "GALLERY", href: "/#portfolio" },
-  { name: "PARTNERSHIP", href: "/partnership" },
+  { name: "PRICING", href: "/#pricing" },
+  { name: "FAQ", href: "/#faq" },
 ];
 
 export function Header() {
@@ -62,7 +62,11 @@ export function Header() {
     // If on homepage and linking to a slide hash, trigger smooth jump or hash change
     if (pathname === "/" && href.startsWith("/#")) {
       const hash = href.replace("/#", "");
-      const targetElement = document.getElementById(hash) || document.getElementById(`slide-${hash}`);
+      const targetElement =
+        document.getElementById(hash) ||
+        document.getElementById(`slide-${hash}`) ||
+        (hash === "product" ? document.getElementById("slide-services") : null) ||
+        (hash === "faq" ? document.getElementById("slide-contact") : null);
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: "smooth" });
       }
@@ -219,7 +223,7 @@ export function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  onClick={() => setActiveItem(item.name)}
+                  onClick={() => handleNavClick(item.href, item.name)}
                   className={`font-extrabold text-[0.82rem] uppercase tracking-wider px-4 py-2 rounded-full transition-all duration-200 ${
                     isActive
                       ? "bg-[#FF4500] text-white shadow-[0_0_16px_rgba(255,69,0,0.6)] scale-105"
@@ -230,6 +234,7 @@ export function Header() {
                 </Link>
               );
             })}
+
 
             {/* Vertical Divider */}
             <div className="h-4 w-[1px] bg-white/25 mx-2" />

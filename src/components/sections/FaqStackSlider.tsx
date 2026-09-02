@@ -222,9 +222,10 @@ export function FaqStackSlider({ isActive = true }: FaqStackSliderProps) {
           transition={{ duration: 0.2, delay: 0.05 }}
           className="text-[11px] xs:text-xs sm:text-sm md:text-base text-slate-600 font-semibold max-w-xl mx-auto mt-0.5 sm:mt-1 leading-snug"
         >
-          Kalo lu belum nemu jawabannya chat dulu aja ke admin
+          Belum menemukan jawaban? Yuk, ngobrol langsung dengan tim kami!
         </motion.p>
       </div>
+
 
       {/* ═══════════════════════════════════════════════════════════════════
           FLUSH & SEJAJAR RATA FOLDERS (SNUG TO BOTTOM & HEADER)

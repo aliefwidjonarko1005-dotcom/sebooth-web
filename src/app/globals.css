@@ -256,3 +256,143 @@ body {
 .animate-marquee-frames-reverse:hover {
   animation-play-state: paused;
 }
+
+/* ─── Floating Reaction Emoji Burst ─── */
+@keyframes emoji-float-burst {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    transform: translate3d(var(--tx, 0px), -25px, 0) scale(1.25);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--tx-end, 0px), -160px, 0) scale(0.85) rotate(var(--rot, 0deg));
+    opacity: 0;
+  }
+}
+
+.animate-emoji-burst {
+  animation: emoji-float-burst 1.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  pointer-events: none;
+}
+
+/* ─── Global Animation & GPU Performance Layer ─── */
+*, ::before, ::after {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg, video, canvas {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ─── Reusable GPU Animated Utilities ─── */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fade-in-down {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -10px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes modal-pop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-modal-pop {
+  animation: modal-pop 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* ─── Mobile Swipe Hand Gesture Guide ─── */
+@keyframes swipe-guide-hand {
+  0% {
+    transform: translate3d(35px, 0, 0) scale(0.92);
+    opacity: 0;
+  }
+  20% {
+    transform: translate3d(35px, 0, 0) scale(1);
+    opacity: 1;
+  }
+  65% {
+    transform: translate3d(-35px, 0, 0) scale(1);
+    opacity: 1;
+  }
+  85% {
+    transform: translate3d(-45px, 0, 0) scale(0.92);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(35px, 0, 0) scale(0.92);
+    opacity: 0;
+  }
+}
+
+.animate-swipe-hand {
+  animation: swipe-guide-hand 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform, opacity;
+}
+
+/* ─── Gallery Overview Zoom Out Animation ─── */
+@keyframes zoom-out-overview {
+  0% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes zoom-in-focus {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-zoom-out-overview {
+  animation: zoom-out-overview 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-zoom-in-focus {
+  animation: zoom-in-focus 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}

@@ -47,7 +47,7 @@ export const LANDING_SLIDES: LandingSlide[] = [
   {
     id: "services",
     slideNumber: "02",
-    title: "Sebutin Apa Yang Loe Mau!",
+    title: "Sebutin Apa Yang Kamu Mau!",
     subtitle: "Layanan Photobooth Fleksibel: Batch Booking, All You Can Photos & Partnership",
     desktopImage: "/images/slides/desktop/slide-02-services.svg",
     mobileImage: "/images/slides/mobile/slide-02-services.svg",
@@ -88,7 +88,7 @@ export const LANDING_SLIDES: LandingSlide[] = [
     id: "pricing",
     slideNumber: "05",
     title: "Pilihan Paket Sewa Sebooth",
-    subtitle: "Pilih paket yang paling pas buat acara lu, kagak pake ribet!",
+    subtitle: "Pilih paket yang paling pas untuk acara kamu, seru dan tanpa ribet!",
     desktopImage: "/images/slides/desktop/slide-04-pricing.svg",
     mobileImage: "/images/slides/mobile/slide-04-pricing.svg",
     alt: "Sebooth Pricing & Rental Packages",
@@ -99,11 +99,12 @@ export const LANDING_SLIDES: LandingSlide[] = [
     id: "contact",
     slideNumber: "06",
     title: "Frequently Ask Question",
-    subtitle: "Kalo lu belum nemu jawabannya chat dulu aja ke admin",
+    subtitle: "Belum menemukan jawaban? Yuk, ngobrol langsung dengan tim kami!",
     desktopImage: "/images/slides/desktop/slide-06-contact.svg",
     mobileImage: "/images/slides/mobile/slide-06-contact.svg",
     alt: "Sebooth Frequently Ask Question",
     bgFallbackColor: "#FFFFFF",
     ctas: [],
   },
+
 ];
