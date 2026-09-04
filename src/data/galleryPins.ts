@@ -5,6 +5,7 @@ export interface PortfolioPin {
   category: string;
   frameType: string;
   imageUrl: string;
+  hdUrl?: string;
   width: number;
   height: number;
   tags: string[];
@@ -18,7 +19,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Retro Vibe Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_004a6bbb.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_004a6bbb.webp",
+    "hdUrl": "/images/gallery/hd/strip_004a6bbb.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -35,7 +37,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "BFF Squad",
     "category": "CANDID POSE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_004a6bbb_2.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_004a6bbb_2.webp",
+    "hdUrl": "/images/gallery/hd/photo_004a6bbb_2.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -52,7 +55,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Endless Joy",
     "category": "WEDDING & ROMANCE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_008d08da_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_008d08da_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_008d08da_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -69,7 +73,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Urban Candid Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_008d08da.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_008d08da.webp",
+    "hdUrl": "/images/gallery/hd/strip_008d08da.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -86,7 +91,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "High School Glow Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_031d39e4.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_031d39e4.webp",
+    "hdUrl": "/images/gallery/hd/strip_031d39e4.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -103,7 +109,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Vintage Glamour",
     "category": "FRIENDS & SQUAD",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_031d39e4_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_031d39e4_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_031d39e4_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -120,7 +127,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Golden Hour Pose",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_08408b39_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_08408b39_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_08408b39_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -137,7 +145,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Chic Vibes Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_08408b39.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_08408b39.webp",
+    "hdUrl": "/images/gallery/hd/strip_08408b39.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -154,7 +163,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Classic Monochrome Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_0bf8667a.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_0bf8667a.webp",
+    "hdUrl": "/images/gallery/hd/strip_0bf8667a.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -171,7 +181,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Sweetheart Memories",
     "category": "CANDID POSE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_0bf8667a_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_0bf8667a_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_0bf8667a_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -188,7 +199,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Sweet Memories",
     "category": "WEDDING & ROMANCE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_0ebe2be8_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_0ebe2be8_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_0ebe2be8_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -205,7 +217,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Pop & Pose Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_0ebe2be8.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_0ebe2be8.webp",
+    "hdUrl": "/images/gallery/hd/strip_0ebe2be8.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -222,7 +235,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Bright Lights Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_1629d7e0.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_1629d7e0.webp",
+    "hdUrl": "/images/gallery/hd/strip_1629d7e0.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -239,7 +253,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Party Fever",
     "category": "FRIENDS & SQUAD",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_1629d7e0_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_1629d7e0_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_1629d7e0_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -256,7 +271,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Dazzling Smiles",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_208a9ab2_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_208a9ab2_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_208a9ab2_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -273,7 +289,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Celebration Night Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_208a9ab2.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_208a9ab2.webp",
+    "hdUrl": "/images/gallery/hd/strip_208a9ab2.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -290,7 +307,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Elegant Charm Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_225fd0b3.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_225fd0b3.webp",
+    "hdUrl": "/images/gallery/hd/strip_225fd0b3.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -307,7 +325,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Vibrant Joy",
     "category": "CANDID POSE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_225fd0b3_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_225fd0b3_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_225fd0b3_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -324,7 +343,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Festive Mood",
     "category": "WEDDING & ROMANCE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_35ab15b7_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_35ab15b7_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_35ab15b7_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -341,7 +361,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Studio Highlights Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_35ab15b7.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_35ab15b7.webp",
+    "hdUrl": "/images/gallery/hd/strip_35ab15b7.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -358,7 +379,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Neon Dream Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_49ab1cee.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_49ab1cee.webp",
+    "hdUrl": "/images/gallery/hd/strip_49ab1cee.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -375,7 +397,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Retro Glow",
     "category": "FRIENDS & SQUAD",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_49ab1cee_2.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_49ab1cee_2.webp",
+    "hdUrl": "/images/gallery/hd/photo_49ab1cee_2.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -392,7 +415,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Campus Reunion",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_4fccf949_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_4fccf949_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_4fccf949_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -409,7 +433,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Midnight Flash Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_4fccf949.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_4fccf949.webp",
+    "hdUrl": "/images/gallery/hd/strip_4fccf949.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -426,7 +451,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Unforgettable Day Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_5236219a.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_5236219a.webp",
+    "hdUrl": "/images/gallery/hd/strip_5236219a.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -443,7 +469,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Pure Euphoria",
     "category": "CANDID POSE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_5236219a_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_5236219a_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_5236219a_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -460,7 +487,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Lively Vibe",
     "category": "WEDDING & ROMANCE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_56a5cb7e_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_56a5cb7e_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_56a5cb7e_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -477,7 +505,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Radiant Spark Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_56a5cb7e.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_56a5cb7e.webp",
+    "hdUrl": "/images/gallery/hd/strip_56a5cb7e.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -494,7 +523,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Timeless Smiles Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_5b47bc90.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_5b47bc90.webp",
+    "hdUrl": "/images/gallery/hd/strip_5b47bc90.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -511,7 +541,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Funky Pose",
     "category": "FRIENDS & SQUAD",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_5b47bc90_2.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_5b47bc90_2.webp",
+    "hdUrl": "/images/gallery/hd/photo_5b47bc90_2.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -528,7 +559,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Sparkle & Shine",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_5d1e158b_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_5d1e158b_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_5d1e158b_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -545,7 +577,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Laughter & Joy Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_5d1e158b.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_5d1e158b.webp",
+    "hdUrl": "/images/gallery/hd/strip_5d1e158b.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -562,7 +595,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Velvet Night Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_61a3d975.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_61a3d975.webp",
+    "hdUrl": "/images/gallery/hd/strip_61a3d975.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -579,7 +613,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Best Friends Forever",
     "category": "CANDID POSE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_61a3d975_2.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_61a3d975_2.webp",
+    "hdUrl": "/images/gallery/hd/photo_61a3d975_2.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -596,7 +631,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Romantic Sunset",
     "category": "WEDDING & ROMANCE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_61ec0e86_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_61ec0e86_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_61ec0e86_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -613,7 +649,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Weekend Party Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_61ec0e86.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_61ec0e86.webp",
+    "hdUrl": "/images/gallery/hd/strip_61ec0e86.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -630,7 +667,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Glam Squad Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_65547b41.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_65547b41.webp",
+    "hdUrl": "/images/gallery/hd/strip_65547b41.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -647,7 +685,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Forever Friends",
     "category": "FRIENDS & SQUAD",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_65547b41_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_65547b41_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_65547b41_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -664,7 +703,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Golden Moments",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_6905e5ec_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_6905e5ec_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_6905e5ec_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -681,7 +721,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Aesthetic Moments Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_6905e5ec.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_6905e5ec.webp",
+    "hdUrl": "/images/gallery/hd/strip_6905e5ec.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -698,7 +739,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Retro Vibe Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_69650726.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_69650726.webp",
+    "hdUrl": "/images/gallery/hd/strip_69650726.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -715,7 +757,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "BFF Squad",
     "category": "CANDID POSE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_69650726_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_69650726_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_69650726_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -732,7 +775,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Endless Joy",
     "category": "WEDDING & ROMANCE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_6e34e142_2.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_6e34e142_2.webp",
+    "hdUrl": "/images/gallery/hd/photo_6e34e142_2.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -749,7 +793,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Urban Candid Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_6e34e142.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_6e34e142.webp",
+    "hdUrl": "/images/gallery/hd/strip_6e34e142.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -766,7 +811,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "High School Glow Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_8ab4d512.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_8ab4d512.webp",
+    "hdUrl": "/images/gallery/hd/strip_8ab4d512.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -783,7 +829,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Vintage Glamour",
     "category": "FRIENDS & SQUAD",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_8ab4d512_2.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_8ab4d512_2.webp",
+    "hdUrl": "/images/gallery/hd/photo_8ab4d512_2.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -800,7 +847,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Golden Hour Pose",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_8ad1eae7_3.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_8ad1eae7_3.webp",
+    "hdUrl": "/images/gallery/hd/photo_8ad1eae7_3.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -817,7 +865,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Chic Vibes Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_8ad1eae7.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_8ad1eae7.webp",
+    "hdUrl": "/images/gallery/hd/strip_8ad1eae7.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -834,7 +883,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Classic Monochrome Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_8c1fba89.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_8c1fba89.webp",
+    "hdUrl": "/images/gallery/hd/strip_8c1fba89.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -851,7 +901,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Sweetheart Memories",
     "category": "CANDID POSE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_8c1fba89_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_8c1fba89_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_8c1fba89_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -868,7 +919,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Sweet Memories",
     "category": "WEDDING & ROMANCE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_9e696fce_2.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_9e696fce_2.webp",
+    "hdUrl": "/images/gallery/hd/photo_9e696fce_2.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -885,7 +937,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Pop & Pose Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_9e696fce.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_9e696fce.webp",
+    "hdUrl": "/images/gallery/hd/strip_9e696fce.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -902,7 +955,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Bright Lights Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_9e831400.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_9e831400.webp",
+    "hdUrl": "/images/gallery/hd/strip_9e831400.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -919,7 +973,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Party Fever",
     "category": "FRIENDS & SQUAD",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_9e831400_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_9e831400_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_9e831400_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -936,7 +991,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Dazzling Smiles",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_a429b5f8_3.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_a429b5f8_3.webp",
+    "hdUrl": "/images/gallery/hd/photo_a429b5f8_3.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -953,7 +1009,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Celebration Night Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_a429b5f8.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_a429b5f8.webp",
+    "hdUrl": "/images/gallery/hd/strip_a429b5f8.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -970,7 +1027,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Elegant Charm Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_b1eb1fff.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_b1eb1fff.webp",
+    "hdUrl": "/images/gallery/hd/strip_b1eb1fff.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -987,7 +1045,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Vibrant Joy",
     "category": "CANDID POSE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_b1eb1fff_3.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_b1eb1fff_3.webp",
+    "hdUrl": "/images/gallery/hd/photo_b1eb1fff_3.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1004,7 +1063,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Festive Mood",
     "category": "WEDDING & ROMANCE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_b4b39393_3.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_b4b39393_3.webp",
+    "hdUrl": "/images/gallery/hd/photo_b4b39393_3.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1021,7 +1081,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Studio Highlights Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_b4b39393.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_b4b39393.webp",
+    "hdUrl": "/images/gallery/hd/strip_b4b39393.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1038,7 +1099,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Neon Dream Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_baaccba8.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_baaccba8.webp",
+    "hdUrl": "/images/gallery/hd/strip_baaccba8.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1055,7 +1117,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Retro Glow",
     "category": "FRIENDS & SQUAD",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_baaccba8_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_baaccba8_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_baaccba8_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1072,7 +1135,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Campus Reunion",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_bf990e9b_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_bf990e9b_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_bf990e9b_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1089,7 +1153,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Midnight Flash Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_bf990e9b.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_bf990e9b.webp",
+    "hdUrl": "/images/gallery/hd/strip_bf990e9b.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1106,7 +1171,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Unforgettable Day Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_c7b611a3.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_c7b611a3.webp",
+    "hdUrl": "/images/gallery/hd/strip_c7b611a3.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1123,7 +1189,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Pure Euphoria",
     "category": "CANDID POSE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_c7b611a3_3.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_c7b611a3_3.webp",
+    "hdUrl": "/images/gallery/hd/photo_c7b611a3_3.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1140,7 +1207,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Lively Vibe",
     "category": "WEDDING & ROMANCE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_d97ed82a_2.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_d97ed82a_2.webp",
+    "hdUrl": "/images/gallery/hd/photo_d97ed82a_2.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1157,7 +1225,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Radiant Spark Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_d97ed82a.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_d97ed82a.webp",
+    "hdUrl": "/images/gallery/hd/strip_d97ed82a.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1174,7 +1243,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Timeless Smiles Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_d98b0c3a.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_d98b0c3a.webp",
+    "hdUrl": "/images/gallery/hd/strip_d98b0c3a.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1191,7 +1261,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Funky Pose",
     "category": "FRIENDS & SQUAD",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_d98b0c3a_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_d98b0c3a_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_d98b0c3a_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1208,7 +1279,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Sparkle & Shine",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_dca48a8e_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_dca48a8e_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_dca48a8e_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1225,7 +1297,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Laughter & Joy Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_dca48a8e.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_dca48a8e.webp",
+    "hdUrl": "/images/gallery/hd/strip_dca48a8e.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1242,7 +1315,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Velvet Night Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_deb3d1cd.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_deb3d1cd.webp",
+    "hdUrl": "/images/gallery/hd/strip_deb3d1cd.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1259,7 +1333,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Best Friends Forever",
     "category": "CANDID POSE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_deb3d1cd_4.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_deb3d1cd_4.webp",
+    "hdUrl": "/images/gallery/hd/photo_deb3d1cd_4.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1276,7 +1351,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Romantic Sunset",
     "category": "WEDDING & ROMANCE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_e2484f42_2.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_e2484f42_2.webp",
+    "hdUrl": "/images/gallery/hd/photo_e2484f42_2.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1293,7 +1369,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Weekend Party Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_e2484f42.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_e2484f42.webp",
+    "hdUrl": "/images/gallery/hd/strip_e2484f42.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1310,7 +1387,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Glam Squad Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_e9ccd064.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_e9ccd064.webp",
+    "hdUrl": "/images/gallery/hd/strip_e9ccd064.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1327,7 +1405,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Forever Friends",
     "category": "FRIENDS & SQUAD",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_e9ccd064_2.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_e9ccd064_2.webp",
+    "hdUrl": "/images/gallery/hd/photo_e9ccd064_2.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1344,7 +1423,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Golden Moments",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_f0d9ed15_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_f0d9ed15_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_f0d9ed15_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1361,7 +1441,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Aesthetic Moments Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_f0d9ed15.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_f0d9ed15.webp",
+    "hdUrl": "/images/gallery/hd/strip_f0d9ed15.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1378,7 +1459,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Retro Vibe Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_f3daf0fd.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_f3daf0fd.webp",
+    "hdUrl": "/images/gallery/hd/strip_f3daf0fd.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1395,7 +1477,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "BFF Squad",
     "category": "CANDID POSE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_f3daf0fd_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_f3daf0fd_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_f3daf0fd_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1412,7 +1495,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Endless Joy",
     "category": "WEDDING & ROMANCE",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_f4968796_1.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_f4968796_1.webp",
+    "hdUrl": "/images/gallery/hd/photo_f4968796_1.webp",
     "width": 4160,
     "height": 6240,
     "tags": [
@@ -1429,7 +1513,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Urban Candid Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_f4968796.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_f4968796.webp",
+    "hdUrl": "/images/gallery/hd/strip_f4968796.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1446,7 +1531,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "High School Glow Strip",
     "category": "PHOTOSTRIP 2x6",
     "frameType": "Photostrip 2x6 Custom Frame",
-    "imageUrl": "/images/gallery/strip_fd610837.jpg",
+    "imageUrl": "/images/gallery/thumbs/strip_fd610837.webp",
+    "hdUrl": "/images/gallery/hd/strip_fd610837.webp",
     "width": 1200,
     "height": 1800,
     "tags": [
@@ -1463,7 +1549,8 @@ export const GALLERY_PINS: PortfolioPin[] = [
     "title": "Vintage Glamour",
     "category": "FRIENDS & SQUAD",
     "frameType": "High-Res Pose Studio Capture",
-    "imageUrl": "/images/gallery/photo_fd610837_3.jpg",
+    "imageUrl": "/images/gallery/thumbs/photo_fd610837_3.webp",
+    "hdUrl": "/images/gallery/hd/photo_fd610837_3.webp",
     "width": 4160,
     "height": 6240,
     "tags": [

@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X, ZoomIn, Heart, MessageCircle, Tag, MoreHorizontal, ChevronDown } from "lucide-react";
+import { Sparkles, X, ZoomIn, Heart, MessageCircle, Tag, MoreHorizontal, ChevronDown, Loader2 } from "lucide-react";
 import { GALLERY_PINS, PortfolioPin } from "@/data/galleryPins";
 
 const PINS: PortfolioPin[] = GALLERY_PINS;
@@ -17,9 +17,13 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
   const [likesState, setLikesState] = useState<Record<string, number>>({});
   const [savedPins, setSavedPins] = useState<Record<string, boolean>>({});
   const [columnsCount, setColumnsCount] = useState(2);
+  // Progressive batch loading: load 24 pins initially, append 16 more on scroll for ultra-low initial data usage
+  const [visibleCount, setVisibleCount] = useState(24);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef<number | null>(null);
+
+  const visiblePins = useMemo(() => PINS.slice(0, visibleCount), [visibleCount]);
 
   // Responsive dynamic columns count detection
   useEffect(() => {
@@ -36,12 +40,30 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
     return () => window.removeEventListener("resize", updateCols);
   }, []);
 
+  // Infinite scroll listener: dynamically appends photos as user scrolls near bottom
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      if (visibleCount >= PINS.length) return;
+      const threshold = 450;
+      const nearBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - threshold;
+      if (nearBottom) {
+        setVisibleCount((prev) => Math.min(PINS.length, prev + 16));
+      }
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [visibleCount]);
+
   // Greedy Height Balancing: Distributes pins across columns to eliminate any empty holes or blank spaces
   const columns = useMemo(() => {
     const cols: PortfolioPin[][] = Array.from({ length: columnsCount }, () => []);
     const heights = new Array(columnsCount).fill(0);
 
-    PINS.forEach((pin) => {
+    visiblePins.forEach((pin) => {
       // Find the column with the minimum accumulated height
       let minIdx = 0;
       for (let i = 1; i < columnsCount; i++) {
@@ -56,7 +78,7 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
     });
 
     return cols;
-  }, [columnsCount]);
+  }, [columnsCount, visiblePins]);
 
   const handleLike = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -136,17 +158,23 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
                       className="group cursor-pointer block will-change-transform"
                     >
                       {/* ── PINTEREST PIN IMAGE CARD (ROUNDED-2XL FULL BLEED) ── */}
-                      <div className="relative w-full overflow-hidden rounded-2xl bg-slate-100 shadow-sm hover:shadow-md transition-shadow duration-200">
+                      <div
+                        className="relative w-full overflow-hidden rounded-2xl bg-slate-100 shadow-sm hover:shadow-md transition-shadow duration-200"
+                        style={{
+                          aspectRatio: `${pin.width || 800} / ${pin.height || 1200}`,
+                        }}
+                      >
                         <Image
                           src={pin.imageUrl}
                           alt={pin.title}
-                          width={pin.width}
-                          height={pin.height}
+                          width={pin.width || 600}
+                          height={pin.height || 900}
                           unoptimized
                           sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, (max-width: 1536px) 20vw, 15vw"
-                          className="w-full h-auto block object-cover transition-transform duration-300 group-hover:scale-[1.015]"
-                          loading={idx < 4 ? "eager" : "lazy"}
-                          priority={colIdx === 0 && idx < 2}
+                          className="w-full h-full block object-cover transition-transform duration-300 group-hover:scale-[1.015]"
+                          loading={colIdx === 0 && idx < 2 ? "eager" : "lazy"}
+                          decoding="async"
+                          priority={colIdx === 0 && idx < 1}
                         />
 
                         {/* Subtle Hover Gradient Mask */}
@@ -206,7 +234,15 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
             ))}
           </div>
 
-          {/* Bottom Next Slide CTA Card (Positioned after all 86 gallery photos) */}
+          {/* Subtle Infinite Scroll Loading Indicator */}
+          {visibleCount < PINS.length && (
+            <div className="w-full py-4 flex items-center justify-center text-slate-400 text-xs font-semibold gap-2 animate-pulse">
+              <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+              <span>Memuat foto lainnya ({visibleCount}/{PINS.length})...</span>
+            </div>
+          )}
+
+          {/* Bottom Next Slide CTA Card (Positioned after all gallery photos) */}
           <div className="w-full py-8 sm:py-10 pb-16 flex flex-col items-center justify-center gap-2.5 text-center mt-4 mb-8 bg-slate-50 border border-slate-200/80 rounded-2xl p-6 shadow-sm max-w-xl mx-auto">
             <span className="text-xs font-extrabold uppercase tracking-widest text-slate-500">
               Tertarik dengan hasil cetak Sebooth?
@@ -247,11 +283,13 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
               {/* Left Image Area */}
               <div className="relative w-full md:w-1/2 h-[320px] md:h-auto bg-slate-950 flex items-center justify-center p-4">
                 <Image
-                  src={selectedPin.imageUrl}
+                  src={selectedPin.hdUrl || selectedPin.imageUrl}
                   alt={selectedPin.title}
                   width={selectedPin.width}
                   height={selectedPin.height}
                   unoptimized
+                  decoding="async"
+                  priority
                   className="max-w-full max-h-[75vh] w-auto h-auto object-contain rounded-xl shadow-2xl border border-white/10"
                 />
               </div>

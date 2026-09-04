@@ -607,6 +607,13 @@ sebooth-website/
   - **Desktop Flank Navigation**: Added sleek circular navigation arrows (`ChevronLeft` / `ChevronRight`) for desktop & tablet browsing.
   - **Verified Clean Production Build**: Verified `npm run build` compiled 100% cleanly in 15.8s with zero errors.
 - **September 2026 (Phase 8EH - GitHub Repository Synchronization)** 🚀: Staged, committed, and pushed all recent Expand mode touch gesture improvements, hardware GPU transforms, multi-session navigation, and documentation updates to the GitHub repository on the `main` branch.
+- **September 2026 (Phase 8EI - Landing Page Pinterest Gallery Photo Load & Data Usage Optimization)** ⚡: Overhauled the landing page Pinterest gallery ([PortfolioSlider.tsx](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/src/components/sections/PortfolioSlider.tsx), [galleryPins.ts](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/src/data/galleryPins.ts)) per user request ("pas di section gallery pada landing page, gw pengen lu optimalin load photonya, biar ringan dan loading tidak lama serta minim data usage"):
+  - **96% WebP Asset Compression Pipeline**: Created automated Sharp script (`scripts/optimizeGalleryPhotos.mjs`) compressing 86 raw 2.5–3.5MB camera JPEGs down to 600px WebP thumbnails (average ~35KB, total 6.16MB down from 154.97MB, 96% reduction) and 1400px WebP HD assets for the Lightbox modal (average ~140KB, 85% reduction). Removed 155MB of raw JPEGs from `public/images/gallery/`.
+  - **Progressive Batch Rendering & Infinite Scroll**: Replaced all-at-once 86 DOM element mount with an initial 24-item batch. Added scroll listener on `scrollContainerRef` to dynamically append 16 items seamlessly when within 450px of the bottom. Reduces initial page data usage from 155MB to ~800KB (99.5% reduction on first view!).
+  - **Zero Layout Shift (CLS = 0) & Async Image Decoding**: Injected exact intrinsic aspect ratio (`aspectRatio: width / height`) and `decoding="async"` on every pin card container to eliminate browser reflow and frame drops during scrolling.
+  - **Lightbox HD WebP Integration**: Lightbox modal now loads `selectedPin.hdUrl` (1400px WebP, ~130KB) instead of the heavy 3.5MB raw photo.
+  - **Verified Clean Production Build**: Verified `npm run build` compiled 100% cleanly in 7.6s with zero errors.
+
 
 
 
