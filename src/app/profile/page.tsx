@@ -46,7 +46,7 @@ export default function MyPhotosPage() {
   const [activeSessionIndex, setActiveSessionIndex] = useState(0)
   const [activeMediaIndices, setActiveMediaIndices] = useState<Record<string, number>>({})
   const [isOverviewMode, setIsOverviewMode] = useState(false)
-  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null)
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [copiedNotification, setCopiedNotification] = useState(false)
   const [isGridModalOpen, setIsGridModalOpen] = useState(false)
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false)
@@ -263,6 +263,94 @@ export default function MyPhotosPage() {
     }
   }
 
+  // ── EXPAND / LIGHTBOX MODAL DRAG & SWIPE ENGINE (MOBILE & DESKTOP) ──
+  const expandTrackRef = useRef<HTMLDivElement>(null)
+  const isExpandDragging = useRef<boolean>(false)
+  const expandDragStartX = useRef<number>(0)
+  const expandDragStartTime = useRef<number>(0)
+  const expandHasMoved = useRef<boolean>(false)
+  const expandCurrentDragDx = useRef<number>(0)
+
+  // Sync expand modal track position whenever activeSessionIndex or isLightboxOpen changes
+  useEffect(() => {
+    if (isLightboxOpen && expandTrackRef.current) {
+      expandTrackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+      expandTrackRef.current.style.transform = `translate3d(-${activeSessionIndex * 100}%, 0, 0)`
+    }
+  }, [activeSessionIndex, isLightboxOpen])
+
+  const handleExpandDragStart = (clientX: number) => {
+    isExpandDragging.current = true
+    expandDragStartX.current = clientX
+    expandDragStartTime.current = Date.now()
+    expandHasMoved.current = false
+    expandCurrentDragDx.current = 0
+
+    if (expandTrackRef.current) {
+      expandTrackRef.current.style.transition = 'none'
+    }
+  }
+
+  const handleExpandDragMove = (clientX: number) => {
+    if (!isExpandDragging.current) return
+    const dx = clientX - expandDragStartX.current
+    expandCurrentDragDx.current = dx
+
+    if (Math.abs(dx) > 3) {
+      expandHasMoved.current = true
+    }
+
+    if (expandTrackRef.current) {
+      expandTrackRef.current.style.transform = `translate3d(calc(-${activeSessionIndex * 100}% + ${dx}px), 0, 0)`
+    }
+  }
+
+  const handleExpandDragEnd = (clientX?: number) => {
+    if (!isExpandDragging.current) return
+    isExpandDragging.current = false
+
+    const dx = clientX !== undefined ? clientX - expandDragStartX.current : expandCurrentDragDx.current
+    const duration = Date.now() - expandDragStartTime.current
+    const distance = Math.abs(dx)
+    const velocity = distance / (duration || 1)
+    const totalSessions = sessionsList.length
+    const currentIndex = activeSessionIndex
+
+    // ── TAP: CYCLE TO NEXT PHOTO IN CURRENT SESSION ──
+    if (!expandHasMoved.current || (distance < 8 && duration < 280)) {
+      if (currentSession && currentSession.media.length > 1) {
+        handleNextMedia(currentSession.id, currentSession.media.length)
+      }
+      if (expandTrackRef.current) {
+        expandTrackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+        expandTrackRef.current.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`
+      }
+      return
+    }
+
+    // ── SWIPE GESTURE: SWITCH SESSIONS IN EXPAND MODE ──
+    const isFlick = velocity > 0.15 && distance > 8
+    const isDrag = distance > 25
+
+    let targetIndex = currentIndex
+    if (isFlick || isDrag) {
+      if (dx < 0 && currentIndex < totalSessions - 1) {
+        targetIndex = currentIndex + 1
+      } else if (dx > 0 && currentIndex > 0) {
+        targetIndex = currentIndex - 1
+      }
+    }
+
+    if (expandTrackRef.current) {
+      expandTrackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+      expandTrackRef.current.style.transform = `translate3d(-${targetIndex * 100}%, 0, 0)`
+    }
+
+    if (targetIndex !== currentIndex) {
+      setActiveSessionIndex(targetIndex)
+    }
+  }
+
   // Keyboard navigation (Linear)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -275,7 +363,7 @@ export default function MyPhotosPage() {
           handleNextMedia(currentSession.id, currentSession.media.length)
         }
       } else if (e.key === 'Escape') {
-        setLightboxUrl(null)
+        setIsLightboxOpen(false)
         setIsOverviewMode(false)
         setIsGridModalOpen(false)
         setIsOptionsModalOpen(false)
@@ -795,11 +883,12 @@ export default function MyPhotosPage() {
                           onClick={(e) => {
                             e.stopPropagation()
                             e.preventDefault()
-                            const activeMed = session.media[mediaIdx]
-                            setLightboxUrl(activeMed?.hdUrl || activeMed?.url || null)
+                            setActiveSessionIndex(sIdx)
+                            setActiveMediaIndices(prev => ({ ...prev, [session.id]: mediaIdx }))
+                            setIsLightboxOpen(true)
                           }}
                           className="w-8.5 h-8.5 rounded-full bg-black/50 hover:bg-black/75 backdrop-blur-sm border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-90 transition-transform cursor-pointer"
-                          title="Lihat Fullscreen HD"
+                          title="Lihat Fullscreen HD (Mode Expand)"
                         >
                           <Maximize2 className="w-4 h-4 stroke-[2.2]" />
                         </button>
@@ -1002,7 +1091,7 @@ export default function MyPhotosPage() {
 
             <button
               onClick={() => {
-                setLightboxUrl(currentSession?.media[currentMediaIndex]?.hdUrl || currentSession?.media[currentMediaIndex]?.url || null)
+                setIsLightboxOpen(true)
                 setIsOptionsModalOpen(false)
               }}
               className="w-full py-3 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-800 flex items-center justify-between text-xs font-semibold cursor-pointer transition-colors"
@@ -1115,45 +1204,193 @@ export default function MyPhotosPage() {
       )}
 
       {/* ═══════════════════════════════════════════════════════════════════
-          MODAL 4: FULLSCREEN HD LIGHTBOX
+          MODAL 4: FULLSCREEN HD EXPAND LIGHTBOX (WITH TOUCH SWIPE & NAVIGATION)
          ═══════════════════════════════════════════════════════════════════ */}
-      {lightboxUrl && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/95 animate-fade-in">
-          <div className="relative max-w-4xl max-h-[90vh] flex flex-col items-center animate-modal-pop">
+      {isLightboxOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-between bg-black/95 select-none animate-fade-in overflow-hidden font-sans">
+          
+          {/* Top Header Bar */}
+          <div className="w-full max-w-5xl mx-auto px-4 pt-3 sm:pt-4 pb-2 flex items-center justify-between z-30 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="px-2.5 py-1 rounded-full bg-white/10 text-white text-[11px] font-extrabold uppercase tracking-wider border border-white/15">
+                SESI {activeSessionIndex + 1}/{sessionsList.length}
+              </span>
+              <span className="text-xs sm:text-sm font-bold text-white/90 truncate max-w-[170px] xs:max-w-[220px] sm:max-w-xs font-sans">
+                {currentSession?.title}
+              </span>
+            </div>
+
             <button
-              onClick={() => setLightboxUrl(null)}
-              className="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-rose-600 transition-colors cursor-pointer"
+              onClick={() => setIsLightboxOpen(false)}
+              className="w-9 h-9 rounded-full bg-white/10 hover:bg-rose-600 text-white flex items-center justify-center transition-colors cursor-pointer active:scale-95"
+              title="Tutup Fullscreen"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5 stroke-[2.2]" />
+            </button>
+          </div>
+
+          {/* Center Stage: Swipeable Slider Track */}
+          <div
+            onTouchStart={(e) => {
+              if (e.touches.length === 1) {
+                handleExpandDragStart(e.touches[0].clientX)
+              }
+            }}
+            onTouchMove={(e) => {
+              if (e.touches.length === 1) {
+                handleExpandDragMove(e.touches[0].clientX)
+              }
+            }}
+            onTouchEnd={(e) => {
+              handleExpandDragEnd(e.changedTouches[0]?.clientX)
+            }}
+            onTouchCancel={() => handleExpandDragEnd()}
+            onMouseDown={(e) => handleExpandDragStart(e.clientX)}
+            onMouseMove={(e) => handleExpandDragMove(e.clientX)}
+            onMouseUp={(e) => handleExpandDragEnd(e.clientX)}
+            onMouseLeave={() => handleExpandDragEnd()}
+            className="relative w-full flex-1 min-h-0 flex items-center justify-center touch-pan-y cursor-grab active:cursor-grabbing overflow-hidden"
+          >
+            {/* Desktop Left/Right Navigation Flanks */}
+            <button
+              onMouseDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation()
+                setActiveSessionIndex(prev => (prev > 0 ? prev - 1 : 0))
+              }}
+              disabled={activeSessionIndex === 0}
+              className={`hidden sm:flex absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 text-white border border-white/20 transition-all items-center justify-center ${
+                activeSessionIndex === 0
+                  ? 'opacity-20 cursor-not-allowed pointer-events-none'
+                  : 'active:scale-90 cursor-pointer shadow-lg'
+              }`}
+              title="Sesi Sebelumnya"
+            >
+              <ChevronLeft className="w-6 h-6 stroke-[2.4]" />
             </button>
 
-            {lightboxUrl.match(/\.(mp4|webm|mov)(\?.*)?$/i) ? (
-              <video
-                src={lightboxUrl}
-                autoPlay
-                loop
-                controls
-                playsInline
-                className="max-w-full max-h-[78vh] w-auto h-auto object-contain rounded-2xl shadow-2xl border border-white/10"
-              />
-            ) : (
-              <img
-                src={lightboxUrl}
-                alt="Sebooth HD Fullscreen"
-                className="max-w-full max-h-[78vh] w-auto h-auto object-contain rounded-2xl shadow-2xl border border-white/10"
-              />
-            )}
+            <button
+              onMouseDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation()
+                setActiveSessionIndex(prev => (prev < sessionsList.length - 1 ? prev + 1 : prev))
+              }}
+              disabled={activeSessionIndex === sessionsList.length - 1}
+              className={`hidden sm:flex absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 text-white border border-white/20 transition-all items-center justify-center ${
+                activeSessionIndex === sessionsList.length - 1
+                  ? 'opacity-20 cursor-not-allowed pointer-events-none'
+                  : 'active:scale-90 cursor-pointer shadow-lg'
+              }`}
+              title="Sesi Berikutnya"
+            >
+              <ChevronRight className="w-6 h-6 stroke-[2.4]" />
+            </button>
 
-            <div className="mt-3 flex items-center gap-3">
-              <button
-                onClick={handleDownload}
-                className="px-6 py-2.5 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center gap-2 shadow-lg cursor-pointer active:scale-95 transition-transform"
-              >
-                <Download className="w-4 h-4" />
-                <span>DOWNLOAD ORIGINAL HD</span>
-              </button>
+            {/* Slider Track with all sessions side-by-side */}
+            <div
+              ref={expandTrackRef}
+              className="h-full flex flex-row items-center will-change-transform [transform:translate3d(0,0,0)]"
+              style={{
+                transform: `translate3d(-${activeSessionIndex * 100}%, 0, 0)`,
+                transition: 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+              }}
+            >
+              {sessionsList.map((session, sIdx) => {
+                const isCurrent = sIdx === activeSessionIndex
+                const isNearby = Math.abs(sIdx - activeSessionIndex) <= 1
+                const sMedIdx = activeMediaIndices[session.id] || 0
+                const activeMed = session.media[sMedIdx] || session.media[0]
+                const targetUrl = activeMed?.hdUrl || activeMed?.url
+                const isVideo = activeMed?.type === 'video' || !!targetUrl?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+
+                if (!isNearby) {
+                  return (
+                    <div
+                      key={session.id}
+                      style={{ width: '100vw' }}
+                      className="h-full shrink-0 flex items-center justify-center pointer-events-none"
+                    />
+                  )
+                }
+
+                return (
+                  <div
+                    key={session.id}
+                    style={{ width: '100vw' }}
+                    className="h-full shrink-0 flex flex-col items-center justify-center px-3 sm:px-6 py-1 select-none"
+                  >
+                    <div className="relative max-h-[72vh] xs:max-h-[75vh] sm:max-h-[78vh] max-w-[92vw] sm:max-w-3xl flex items-center justify-center">
+                      {isVideo ? (
+                        <video
+                          src={targetUrl}
+                          autoPlay={isCurrent}
+                          loop
+                          controls
+                          playsInline
+                          className="max-w-full max-h-[72vh] xs:max-h-[75vh] sm:max-h-[78vh] w-auto h-auto object-contain rounded-2xl shadow-2xl border border-white/10 pointer-events-auto"
+                        />
+                      ) : (
+                        <img
+                          src={targetUrl}
+                          alt={session.title}
+                          className="max-w-full max-h-[72vh] xs:max-h-[75vh] sm:max-h-[78vh] w-auto h-auto object-contain rounded-2xl shadow-2xl border border-white/10 pointer-events-none select-none"
+                          decoding="async"
+                          loading={isCurrent ? 'eager' : 'lazy'}
+                        />
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
+
+          {/* Bottom Action HUD: Media Dots / Label + Download Button */}
+          <div
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            className="w-full max-w-md mx-auto px-4 pb-3 sm:pb-4 pt-2 flex flex-col items-center gap-2 z-30 shrink-0"
+          >
+            {/* Media Pagination Dots & Label */}
+            {currentSession && currentSession.media.length > 1 && (
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15">
+                <span className="text-[10.5px] font-bold text-white/90">
+                  {currentSession.media[currentMediaIndex]?.label || `Foto ${currentMediaIndex + 1}`} ({currentMediaIndex + 1}/{currentSession.media.length})
+                </span>
+                <div className="flex items-center gap-1 ml-1">
+                  {currentSession.media.map((_, dotIdx) => (
+                    <button
+                      key={dotIdx}
+                      onClick={() => {
+                        setActiveMediaIndices(prev => ({
+                          ...prev,
+                          [currentSession.id]: dotIdx
+                        }))
+                      }}
+                      className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                        dotIdx === currentMediaIndex
+                          ? 'w-4 bg-orange-400'
+                          : 'w-1.5 bg-white/40 hover:bg-white/75'
+                      }`}
+                      title={`Pilih foto ${dotIdx + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Download HD Button */}
+            <button
+              onClick={handleDownload}
+              className="px-6 py-2.5 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white font-black font-bayon uppercase text-xs sm:text-sm tracking-wider flex items-center gap-2 shadow-lg cursor-pointer active:scale-95 transition-transform"
+            >
+              <Download className="w-4 h-4 stroke-[2.5]" />
+              <span>DOWNLOAD ORIGINAL HD</span>
+            </button>
+          </div>
+
         </div>
       )}
 
