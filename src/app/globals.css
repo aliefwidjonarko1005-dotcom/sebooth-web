@@ -14,14 +14,16 @@
   --color-blue-light: #eef2ff;
 
   /* ─── Font Tokens ─── */
-  --font-headline: var(--font-bayon);
-  --font-marker: var(--font-poppins);
-  --font-sebooth: var(--font-bayon);
-  --font-poppins: var(--font-poppins);
-  --font-bayon: var(--font-bayon);
+  --font-headline: "Bayon", sans-serif;
+  --font-marker: "Poppins", sans-serif;
+  --font-sebooth: "Bayon", sans-serif;
+  --font-poppins: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-bayon: "Bayon", Impact, sans-serif;
 }
 
 :root {
+  --font-poppins: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-bayon: "Bayon", Impact, sans-serif;
   --c-blue: #002366;
   --c-dark-blue: #00113a;
   --c-orange: #ff4500;

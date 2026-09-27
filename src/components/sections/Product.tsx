@@ -48,8 +48,8 @@ const PRODUCTS: ProductItem[] = [
     title: 'Mini Studio Photobooth',
     subtitle: 'Studio Lighting & Professional Backdrop',
     desc: 'Pengalaman mini studio foto profesional lengkap dengan lighting studio, backdrop kustom, dan pilihan properti foto seru untuk setiap momen spesialmu.',
-    image: '/images/products/mini_studio_booth.png',
-    avatar: '/images/products/mini_studio_booth.png',
+    image: '/images/products/mini_studio_booth.webp',
+    avatar: '/images/products/mini_studio_booth.webp',
     ctaText: 'Mau ini dong',
     waText: 'Halo Sebooth, saya berminat dengan Mini Studio Photobooth!',
     features: ['Professional Studio Lighting', 'Custom Backdrop Selection', 'High Res Digital Softfiles', 'Instant QR Scan Access', 'Cetak Strip High Quality'],
@@ -62,8 +62,8 @@ const PRODUCTS: ProductItem[] = [
     title: 'Vending Machine Photobooth',
     subtitle: 'Self-Service Kiosk & Futuristic Experience',
     desc: 'Konsep photobooth mandiri bergaya Vending Machine interaktif modern. Solusi estetik & futuristik untuk event, mall, cafe, dan brand activation.',
-    image: '/images/products/vending_machine_booth.png',
-    avatar: '/images/products/vending_machine_booth.png',
+    image: '/images/products/vending_machine_booth.webp',
+    avatar: '/images/products/vending_machine_booth.webp',
     ctaText: 'Mau ini dong',
     waText: 'Halo Sebooth, saya tertarik dengan Vending Machine Photobooth!',
     features: ['Self-Service Interactive Touchscreen', 'Custom Branding Wrap', 'Instant High-Speed Printing', 'QR Softfile & GIF Download', 'Compact Futuristic Design'],
@@ -76,8 +76,8 @@ const PRODUCTS: ProductItem[] = [
     title: 'Jadi Partner Sebooth',
     subtitle: 'Kemitraan & Kolaborasi Event Official',
     desc: 'Gabung sebagai partner resmi Sebooth untuk WO & EO. Dapatkan komisi profit sharing, prioritas operator support, dan fasilitas sponsorship event.',
-    image: '/images/products/partner_sebooth.png',
-    avatar: '/images/products/partner_sebooth.png',
+    image: '/images/products/partner_sebooth.webp',
+    avatar: '/images/products/partner_sebooth.webp',
     ctaText: 'Mau ini dong',
     waText: 'Halo Sebooth, saya mau join sebagai Partner resmi Sebooth!',
     features: ['Komisi & Profit Sharing', 'Priority Operator Support', 'Marketing Assets Support', 'Sponsorship Event Partner', 'Co-Branding Options'],
@@ -87,12 +87,12 @@ const PRODUCTS: ProductItem[] = [
 ]
 
 const PARTNER_LOGOS = [
-  { id: 'logo-1', src: '/images/partners/logo_1.png', alt: 'Partner Logo 1' },
-  { id: 'logo-2', src: '/images/partners/logo_2.png', alt: 'Partner Logo 2' },
-  { id: 'logo-3', src: '/images/partners/logo_3.png', alt: 'Partner Logo 3' },
-  { id: 'logo-4', src: '/images/partners/logo_4.png', alt: 'Partner Logo 4' },
-  { id: 'logo-5', src: '/images/partners/logo_5.png', alt: 'Partner Logo 5' },
-  { id: 'logo-6', src: '/images/partners/logo_6.png', alt: 'Partner Logo 6', scaleClass: 'scale-[1.45] sm:scale-[1.55]' },
+  { id: 'logo-1', src: '/images/partners/logo_1.webp', alt: 'Partner Logo 1' },
+  { id: 'logo-2', src: '/images/partners/logo_2.webp', alt: 'Partner Logo 2' },
+  { id: 'logo-3', src: '/images/partners/logo_3.webp', alt: 'Partner Logo 3' },
+  { id: 'logo-4', src: '/images/partners/logo_4.webp', alt: 'Partner Logo 4' },
+  { id: 'logo-5', src: '/images/partners/logo_5.webp', alt: 'Partner Logo 5' },
+  { id: 'logo-6', src: '/images/partners/logo_6.webp', alt: 'Partner Logo 6', scaleClass: 'scale-[1.45] sm:scale-[1.55]' },
 ]
 
 interface ProductProps {
@@ -160,7 +160,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
   return (
     <section 
       id="product" 
-      className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-gray-900 overflow-hidden select-none flex flex-col justify-between items-center px-3 sm:px-8 lg:px-16 pt-[76px] xs:pt-[82px] sm:pt-24 md:pt-28 pb-2 sm:pb-4"
+      className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-gray-900 overflow-hidden select-none flex flex-col justify-between items-center px-3 sm:px-8 lg:px-16 pt-16 sm:pt-20 md:pt-22 pb-2 sm:pb-3"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -170,11 +170,11 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
       <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[35rem] h-[35rem] rounded-full bg-[#3B82F6]/20 blur-[130px] pointer-events-none z-0" />
 
       {/* ── PERFECTLY CENTERED VERTICAL & HORIZONTAL CONTENT WRAPPER ── */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col items-center justify-between flex-1 min-h-0 text-center gap-1 sm:gap-4 my-auto">
+      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col items-center justify-between flex-1 min-h-0 text-center gap-1 sm:gap-2 my-auto">
         
         {/* ── SECTION TITLE (CENTERED & SAFE TOP MARGIN) ── */}
         <div className="flex flex-col items-center text-center w-full px-2 shrink-0 pt-0.5">
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black font-bayon text-[#002366] uppercase tracking-tight leading-normal drop-shadow-sm text-center">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black font-bayon text-[#002366] uppercase tracking-tight leading-none sm:leading-tight drop-shadow-sm text-center mb-0.5">
             SEBUTIN APA YANG KAMU MAU!
           </h2>
         </div>
@@ -199,7 +199,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
               // 3D Perspective Transformations for Spatial Coverflow
               // Scaled for desktop & mobile
               let rotateY = diff * -18
-              let translateX = diff * 210
+              let translateX = diff * 185
               let translateZ = -Math.abs(diff) * 110
               let scale = isActive ? 1 : Math.max(0.78, 1 - Math.abs(diff) * 0.15)
               let opacity = isActive ? 1 : Math.max(0.35, 1 - Math.abs(diff) * 0.3)
@@ -207,7 +207,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
 
               // On mobile screens (< 640px), calculate hardware-composited 2D transforms
               if (typeof window !== 'undefined' && window.innerWidth < 640) {
-                translateX = diff * 90
+                translateX = diff * 85
                 rotateY = diff * -8
                 translateZ = -Math.abs(diff) * 50
                 scale = isActive ? 1 : 0.85
@@ -217,7 +217,12 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
               return (
                 <div
                   key={prod.id}
-                  onClick={() => setActiveIdx((prev) => prev + diff)}
+                  onClick={(e) => {
+                    if (!isActive) {
+                      e.stopPropagation()
+                      setActiveIdx((prev) => prev + diff)
+                    }
+                  }}
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                   style={{
@@ -228,12 +233,23 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                     position: 'absolute',
                     willChange: 'transform, opacity',
                     transition: 'transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.35s ease',
-                    pointerEvents: isActive ? 'auto' : 'none'
+                    pointerEvents: isDirectNeighbor || isActive ? 'auto' : 'none',
+                    cursor: isActive ? 'default' : 'pointer'
                   }}
-                  className="w-[210px] xs:w-[240px] sm:w-[300px] md:w-[340px] lg:w-[360px] xl:w-[380px] h-[310px] xs:h-[350px] sm:h-[450px] md:h-[500px] lg:h-[520px] xl:h-[550px] cursor-pointer shrink-0 [backface-visibility:hidden]"
+                  className="w-[200px] xs:w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] xl:w-[320px] h-[280px] xs:h-[310px] sm:h-[360px] md:h-[390px] lg:h-[410px] xl:h-[430px] max-h-[50vh] shrink-0 [backface-visibility:hidden] select-none"
                 >
                   {/* ── CARD MODEL (PROPORTIONAL VERTICAL PORTRAIT + PROGRESSIVE BLUR) ── */}
-                  <div className="relative w-full h-full rounded-[24px] sm:rounded-[36px] overflow-hidden border-2 border-white/35 shadow-[0_20px_50px_rgba(0,0,0,0.65)] bg-zinc-900 group flex flex-col justify-between">
+                  <div className={`relative w-full h-full rounded-[24px] sm:rounded-[36px] overflow-hidden border-2 border-white/35 shadow-[0_20px_50px_rgba(0,0,0,0.65)] bg-zinc-900 group flex flex-col justify-between ${
+                    !isActive ? 'hover:brightness-110 transition-all cursor-pointer' : ''
+                  }`}>
+                    {/* Inactive card transparent click interceptor shield */}
+                    {!isActive && (
+                      <div 
+                        className="absolute inset-0 z-30 bg-black/15 hover:bg-black/0 transition-colors cursor-pointer"
+                        title="Klik untuk memilih layanan ini"
+                      />
+                    )}
+
                     {/* Full Card Background Image */}
                     <Image
                       src={prod.image}
@@ -282,21 +298,21 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                     <div className="absolute inset-x-0 bottom-0 h-[65%] pointer-events-none overflow-hidden rounded-b-[24px] sm:rounded-b-[36px] z-10 bg-gradient-to-t from-black/95 via-black/75 via-black/35 to-transparent" />
 
                     {/* Card Bottom Content Container */}
-                    <div className="relative z-20 inset-x-0 p-3 sm:p-6 pt-6 sm:pt-10 flex flex-col justify-end text-left">
+                    <div className="relative z-20 inset-x-0 p-2.5 xs:p-3 sm:p-4 md:p-5 pt-3 sm:pt-4 flex flex-col justify-end text-left">
                       {/* Badge Pill */}
-                      <div className="mb-1">
-                        <span className="text-[8px] sm:text-[10px] font-extrabold uppercase tracking-widest text-orange-300 bg-black/60 border border-orange-400/40 px-2 py-0.5 rounded-full">
+                      <div className="mb-0.5 sm:mb-1">
+                        <span className="text-[7.5px] sm:text-[9px] font-extrabold uppercase tracking-widest text-orange-300 bg-black/60 border border-orange-400/40 px-2 py-0.5 rounded-full">
                           {prod.badge}
                         </span>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-base xs:text-lg sm:text-2xl font-extrabold text-white leading-tight mb-1 tracking-tight drop-shadow-md">
+                      <h3 className="text-sm xs:text-base sm:text-xl font-extrabold text-white leading-tight mb-0.5 sm:mb-1 tracking-tight drop-shadow-md">
                         {prod.title}
                       </h3>
 
                       {/* Subtitle / Description */}
-                      <p className="line-clamp-2 text-[10.5px] xs:text-[11px] sm:text-xs text-white/85 leading-tight mb-2.5 sm:mb-4 font-medium">
+                      <p className="line-clamp-2 text-[9.5px] xs:text-[10px] sm:text-[11.5px] text-white/85 leading-tight mb-2 sm:mb-3 font-medium">
                         {prod.desc}
                       </p>
 
@@ -306,10 +322,10 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="w-full rounded-full py-2 xs:py-2.5 sm:py-3.5 px-3.5 sm:px-5 bg-gradient-to-r from-[#FF5E00] via-[#FF3900] to-[#551286] text-white font-extrabold text-xs sm:text-base text-center tracking-wide border border-white/25 shadow-[0_4px_16px_rgba(255,94,0,0.35)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer pointer-events-auto"
+                        className="w-full rounded-full py-1.5 xs:py-2 sm:py-2.5 px-3 sm:px-4 bg-gradient-to-r from-[#FF5E00] via-[#FF3900] to-[#551286] text-white font-extrabold text-xs sm:text-sm text-center tracking-wide border border-white/25 shadow-[0_4px_16px_rgba(255,94,0,0.35)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer pointer-events-auto"
                       >
                         <span>{prod.ctaText}</span>
-                        <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <ArrowRight className="w-3.5 h-3.5" />
                       </a>
                     </div>
                   </div>
@@ -320,8 +336,8 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
         </div>
 
         {/* ── TRUSTED BY SECTION WITH INFINITE AUTO-SLIDING LOGO MARQUEE (CENTERED) ── */}
-        <div className="w-full max-w-md mx-auto pt-1 sm:pt-4 border-t border-black/10 flex flex-col items-center text-center">
-          <span className="text-[8px] sm:text-[10px] font-extrabold uppercase tracking-widest text-[#002366]/60 block mb-1 text-center">
+        <div className="w-full max-w-md mx-auto pt-1.5 sm:pt-2 border-t border-black/10 flex flex-col items-center text-center shrink-0 relative z-30 mt-auto mb-11 sm:mb-1">
+          <span className="text-[8px] sm:text-[9.5px] font-extrabold uppercase tracking-widest text-[#002366]/60 block mb-1 text-center">
             TRUSTED BY
           </span>
 
@@ -337,14 +353,14 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
               {[...PARTNER_LOGOS, ...PARTNER_LOGOS].map((logo, lIdx) => (
                 <div 
                   key={lIdx} 
-                  className="relative h-6 sm:h-12 w-14 sm:w-28 shrink-0 flex items-center justify-center opacity-85 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+                  className="relative h-6 sm:h-9 w-14 sm:w-22 shrink-0 flex items-center justify-center opacity-85 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
                 >
                   <Image
                     src={logo.src}
                     alt={logo.alt}
                     fill
                     unoptimized
-                    sizes="150px"
+                    sizes="120px"
                     className={`object-contain object-center ${logo.scaleClass || ''}`}
                   />
                 </div>

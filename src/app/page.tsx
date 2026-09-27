@@ -2,9 +2,9 @@ import { SlideDeckLanding } from "@/components/slides/SlideDeckLanding";
 import { LANDING_SLIDES } from "@/config/landingSlides";
 
 // ═══════════════════════════════════════════════════════
-// ISR: Revalidate every 60 seconds
+// ISR: Revalidate every 60 seconds (Instant Edge Caching)
 // ═══════════════════════════════════════════════════════
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata = {
   title: "Sebooth | The Most Favorite Photobooth in Semarang",

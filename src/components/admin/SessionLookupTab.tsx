@@ -57,18 +57,31 @@ interface MediaSummary {
 interface DetailedResult {
   session: SessionItem
   user: UserInfo | null
+  userTotalClaims?: number
   queueTicket: QueueTicketInfo | null
   mediaSummary: MediaSummary
 }
 
-export default function SessionLookupTab() {
-  const [searchQuery, setSearchQuery] = useState('')
+interface SessionLookupTabProps {
+  initialSessionId?: string
+}
+
+export default function SessionLookupTab({ initialSessionId }: SessionLookupTabProps = {}) {
+  const [searchQuery, setSearchQuery] = useState(initialSessionId || '')
   const [loading, setLoading] = useState(false)
   const [recentLoading, setRecentLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [recentSessions, setRecentSessions] = useState<SessionItem[]>([])
   const [result, setResult] = useState<DetailedResult | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+
+  // Auto-lookup if initialSessionId is provided
+  useEffect(() => {
+    if (initialSessionId) {
+      setSearchQuery(initialSessionId)
+      handleLookup(initialSessionId)
+    }
+  }, [initialSessionId])
 
   // Fetch recent sessions on mount
   useEffect(() => {
@@ -351,6 +364,22 @@ export default function SessionLookupTab() {
 
               {result.session.is_claimed && result.user ? (
                 <div className="p-5 rounded-2xl bg-[#F9F9F9] border border-[#1A1A1A]/10 space-y-4">
+                  {/* Total Sesi Terklaim Badge */}
+                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-emerald-700 flex-shrink-0" />
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">Total Klaim User Ini</span>
+                        <p className="text-xs font-bold text-emerald-950">
+                          {result.userTotalClaims ? `${result.userTotalClaims} Sesi telah diklaim` : '1 Sesi telah diklaim'}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-black text-emerald-700 bg-white px-2.5 py-1 rounded-lg border border-emerald-200 shadow-xs">
+                      {result.userTotalClaims || 1} Sesi
+                    </span>
+                  </div>
+
                   {/* Nama Lengkap */}
                   <div>
                     <span className="text-[11px] font-semibold text-[#1A1A1A]/50 block">Nama Lengkap</span>

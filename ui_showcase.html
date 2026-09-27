@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEBOOTH — Complete UI/UX Showcase & Video Demonstration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #07090E;
+      color: #E2E8F0;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #07090E; }
+    ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+    /* Floating Navigation Header */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(7, 9, 14, 0.85);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 16px 24px;
+    }
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .brand-logo {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+    }
+    .brand-logo span { color: #FF5500; }
+    .badge-pill {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(255, 85, 0, 0.15);
+      color: #FF7733;
+      border: 1px solid rgba(255, 85, 0, 0.3);
+    }
+    .nav-stats {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 13px;
+      color: #94A3B8;
+    }
+    .nav-stats strong { color: #F1F5F9; font-weight: 600; }
+
+    /* Quick Jump Nav Bar */
+    .quick-nav {
+      background: rgba(15, 23, 42, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 10px 24px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .quick-nav-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+    }
+    .quick-pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94A3B8;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      transition: all 0.2s ease;
+    }
+    .quick-pill:hover {
+      background: rgba(255, 85, 0, 0.15);
+      color: #FF7733;
+      border-color: rgba(255, 85, 0, 0.4);
+    }
+    .quick-pill.featured {
+      background: rgba(255, 85, 0, 0.2);
+      color: #FF5500;
+      border-color: rgba(255, 85, 0, 0.5);
+      font-weight: 700;
+    }
+
+    /* Main Container */
+    .main-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 24px 80px 24px;
+    }
+
+    /* Intro Hero Banner */
+    .intro-banner {
+      background: linear-gradient(135deg, rgba(255, 85, 0, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 1px solid rgba(255, 85, 0, 0.25);
+      border-radius: 24px;
+      padding: 40px 48px;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .intro-banner::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -120px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 85, 0, 0.25) 0%, transparent 70%);
+      filter: blur(40px);
+      pointer-events: none;
+    }
+    .intro-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+    .intro-desc {
+      font-size: 16px;
+      color: #94A3B8;
+      max-width: 860px;
+      line-height: 1.7;
+    }
+    .intro-metrics {
+      display: flex;
+      gap: 32px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .metric-val {
+      font-family: 'Poppins', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: #FF5500;
+      line-height: 1.1;
+    }
+    .metric-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Video Showcase Section Card */
+    .video-showcase-card {
+      background: linear-gradient(180deg, rgba(255, 85, 0, 0.05) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 1px solid rgba(255, 85, 0, 0.35);
+      border-radius: 24px;
+      padding: 36px 40px;
+      margin-bottom: 56px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+    .video-container-wrapper {
+      margin-top: 24px;
+    }
+    .video-window {
+      background: #141C2B;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.85);
+    }
+    .video-player-box {
+      position: relative;
+      width: 100%;
+      background: #000000;
+      aspect-ratio: 16 / 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .video-player-box video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .video-action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .video-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .download-video-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FF5500;
+      color: #FFFFFF;
+      font-size: 13.5px;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 10px 22px;
+      border-radius: 9999px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(255, 85, 0, 0.4);
+    }
+    .download-video-btn:hover {
+      background: #FF6611;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(255, 85, 0, 0.6);
+    }
+
+    /* Section Card */
+    .section-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 36px 40px;
+      margin-bottom: 56px;
+      transition: border-color 0.2s;
+    }
+    .section-card:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .section-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .section-category {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .section-route {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      color: #64748B;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .section-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+    }
+    .section-desc {
+      font-size: 14.5px;
+      color: #94A3B8;
+      max-width: 900px;
+      line-height: 1.65;
+      margin-top: 6px;
+    }
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .tag-pill {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: #CBD5E1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    /* Comparison Stage (Side-by-Side) */
+    .comparison-stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 380px;
+      gap: 32px;
+      align-items: start;
+      margin-top: 28px;
+    }
+    @media (max-width: 1080px) {
+      .comparison-stage {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Desktop Window Mockup */
+    .desktop-window {
+      background: #141C2B;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      position: relative;
+    }
+    .window-header {
+      background: #0F1622;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #EF4444; }
+    .dot-yellow { background: #F59E0B; }
+    .dot-green { background: #10B981; }
+    .window-address {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 11.5px;
+      color: #94A3B8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .address-lock {
+      font-size: 11px;
+      color: #10B981;
+    }
+    .window-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .window-body {
+      position: relative;
+      background: #0B0F17;
+      cursor: zoom-in;
+      overflow: hidden;
+    }
+    .window-body img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .window-body:hover img {
+      transform: scale(1.015);
+    }
+    .zoom-hint {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: all 0.2s ease;
+    }
+    .window-body:hover .zoom-hint,
+    .phone-screen:hover .zoom-hint {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Mobile Phone Mockup */
+    .mobile-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .phone-frame {
+      width: 100%;
+      max-width: 380px;
+      background: #181E29;
+      border: 4px solid #2B3545;
+      border-radius: 46px;
+      padding: 10px 10px 14px 10px;
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+      position: relative;
+    }
+    .phone-speaker-island {
+      width: 110px;
+      height: 22px;
+      background: #000000;
+      border-radius: 12px;
+      margin: 0 auto 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .phone-camera-dot {
+      width: 8px;
+      height: 8px;
+      background: #111827;
+      border: 1px solid #1F2937;
+      border-radius: 50%;
+    }
+    .phone-speaker-slit {
+      width: 36px;
+      height: 3px;
+      background: #1F2937;
+      border-radius: 2px;
+    }
+    .phone-screen {
+      border-radius: 36px;
+      overflow: hidden;
+      background: #000000;
+      position: relative;
+      cursor: zoom-in;
+    }
+    .phone-screen img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .phone-screen:hover img {
+      transform: scale(1.02);
+    }
+    .phone-home-indicator {
+      width: 100px;
+      height: 4px;
+      background: #475569;
+      border-radius: 9999px;
+      margin: 10px auto 0 auto;
+    }
+    .device-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    /* Lightbox Modal */
+    .lightbox-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.94);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .lightbox-modal.active {
+      display: flex;
+    }
+    .lightbox-img-wrapper {
+      max-width: 94vw;
+      max-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .lightbox-img-wrapper img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 12px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+      object-fit: contain;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFFFFF;
+      font-size: 24px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .lightbox-close:hover {
+      background: rgba(255, 85, 0, 0.5);
+    }
+    .lightbox-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px 20px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #FFFFFF;
+      white-space: nowrap;
+    }
+
+    /* Footer */
+    .page-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 40px 24px;
+      text-align: center;
+      color: #64748B;
+      font-size: 13px;
+    }
+    .page-footer strong { color: #CBD5E1; }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Header -->
+  <header class="sticky-header">
+    <div class="header-inner">
+      <a href="#" class="brand">
+        <span class="brand-logo">SEBOOTH<span>.</span></span>
+        <span class="badge-pill">UI/UX & VIDEO SHOWCASE</span>
+      </a>
+      <div class="nav-stats">
+        <span>Video: <strong>MP4 & WebM HD (1440×900 24FPS)</strong></span>
+        <span>Screenshots: <strong>14 View / 28 Tangkapan Layar</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Navigation Pills -->
+  <nav class="quick-nav">
+    <div class="quick-nav-inner">
+      <a href="#video-demo" class="quick-pill featured">📹 VIDEO DEMO SLIDE DECK</a>
+      <a href="#01_slide_hero" class="quick-pill">01. Slide 01</a><a href="#02_slide_services" class="quick-pill">02. Slide 02</a><a href="#03_slide_frames" class="quick-pill">03. Slide 03</a><a href="#04_slide_gallery" class="quick-pill">04. Slide 04</a><a href="#05_slide_pricing" class="quick-pill">05. Slide 05</a><a href="#06_slide_faq" class="quick-pill">06. Slide 06</a><a href="#07_myphotos_focus" class="quick-pill">07. My Photos</a><a href="#08_myphotos_overview" class="quick-pill">08. My Photos</a><a href="#09_frames_catalog" class="quick-pill">09. Frames Catalog</a><a href="#10_login" class="quick-pill">10. Login Page</a><a href="#11_register" class="quick-pill">11. Register Page</a><a href="#12_admin" class="quick-pill">12. Admin CMS</a><a href="#13_access_claim" class="quick-pill">13. QR Kiosk Access</a><a href="#14_queue_display" class="quick-pill">14. Digital Queue TV Display</a>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- Intro Banner -->
+    <div class="intro-banner">
+      <h1 class="intro-title">Dokumentasi Video & Visual UI/UX Seluruh Halaman Website Sebooth</h1>
+      <p class="intro-desc">
+        Arsip video demonstrasi dan galeri tangkapan layar lengkap berdampingan (Side-by-Side) untuk setiap halaman, modul slide deck, dan portal aplikasi Sebooth. 
+        Mencakup rekaman navigasi dinamis beresolusi <strong>1440×900 px 24 FPS</strong> serta screenshot per-halaman dalam mode <strong>Desktop Web (1440×900)</strong> dan <strong>Mobile Phone (390×844)</strong>.
+      </p>
+      <div class="intro-metrics">
+        <div class="metric-item">
+          <span class="metric-val">1 Video</span>
+          <span class="metric-label">Demonstrasi Slide Deck HD</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-val">14 View</span>
+          <span class="metric-label">Halaman & Modul Lengkap</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-val">28 SS</span>
+          <span class="metric-label">Desktop + Mobile Mockup</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-val">100%</span>
+          <span class="metric-label">Kecocokan Layout UI/UX</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video Demonstration Feature Section -->
+    <section id="video-demo" class="video-showcase-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: rgba(255,85,0,0.18); color: #FF5500; border: 1px solid rgba(255,85,0,0.35);">
+              VIDEO DEMONSTRASI SLIDE DECK
+            </span>
+            <span class="section-route">MP4 (H.264) & WebM (VP9) • 1440×900 px • 24 FPS</span>
+          </div>
+          <h2 class="section-title">Rekaman Video Demonstrasi Navigasi Slide Deck Landing Page</h2>
+          <p class="section-desc">
+            Video demonstrasi transisi interaktif berurutan di landing page: Slide 01 (Hero Panning & WhatsApp Booking CTA) &rarr; Slide 02 (Our Services 3D Coverflow & Partner Logo Marquee) &rarr; Slide 03 (Frames 2-Tier Infinite Marquee) &rarr; Slide 04 (Pinterest Wall Real Photos) &rarr; Slide 05 (Pricing & Packages) &rarr; Slide 06 (3D FAQ Folders & Fast Accordion).
+          </p>
+        </div>
+      </div>
+      
+      <div class="video-container-wrapper">
+        <div class="video-window">
+          <div class="window-header">
+            <div class="window-dots">
+              <div class="dot dot-red"></div>
+              <div class="dot dot-yellow"></div>
+              <div class="dot dot-green"></div>
+            </div>
+            <div class="window-address">
+              <span class="address-lock">🔒</span>
+              <span>sebooth.id/demo-slidedeck.mp4</span>
+            </div>
+            <div class="window-badge">24 FPS • 1440×900</div>
+          </div>
+          <div class="video-player-box">
+            <video id="slidedeck-video" controls autoplay loop muted playsinline>
+              <source src="./public/videos/sebooth_slidedeck_demo.mp4" type="video/mp4">
+              <source src="./public/videos/sebooth_slidedeck_demo.webm" type="video/webm">
+              Browser kamu tidak mendukung pemutaran video HTML5.
+            </video>
+          </div>
+        </div>
+        <div class="video-action-bar">
+          <div class="video-tags">
+            <span class="tag-pill">Slide 01 Hero</span>
+            <span class="tag-pill">Slide 02 3D Coverflow</span>
+            <span class="tag-pill">Slide 03 Frames Marquee</span>
+            <span class="tag-pill">Slide 04 Pinterest Wall</span>
+            <span class="tag-pill">Slide 05 Pricing</span>
+            <span class="tag-pill">Slide 06 FAQ 3D Folders</span>
+          </div>
+          <a href="./public/videos/sebooth_slidedeck_demo.mp4" download="sebooth_slidedeck_demo.mp4" class="download-video-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download File Video MP4 (6.09 MB)
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Cards Flow (Linear Document) -->
+    
+    <article id="01_slide_hero" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #FF550025; color: #FF5500; border: 1px solid #FF550040;">
+              01 / LANDING SLIDE DECK
+            </span>
+            <span class="section-route">GET / (Slide 01)</span>
+          </div>
+          <h2 class="section-title">Slide 01 — Hero Banner & Instant Booking CTA</h2>
+          <p class="section-desc">Tampilan pembuka landing page cinematic full-screen 100dvh dengan dynamic visual headline "Seboothkan Momenmu Bersama Sebooth", floating glassmorphism navigation header dengan active dot indicator, dan tombol CTA "SEBOOTH-IN SEKARANG" dengan link WhatsApp interaktif.</p>
+          <div class="tag-list">
+            <span class="tag-pill">Full-Screen 100dvh Lock</span><span class="tag-pill">Floating Glass Nav Header</span><span class="tag-pill">Pulsating WhatsApp CTA</span><span class="tag-pill">Native Scroll Snap Cue</span><span class="tag-pill">Hero Overlay Composition</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/01_slide_hero_desktop.png', 'Slide 01 — Hero Banner & Instant Booking CTA — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/01_slide_hero_desktop.png" alt="Slide 01 — Hero Banner & Instant Booking CTA Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/01_slide_hero_mobile.png', 'Slide 01 — Hero Banner & Instant Booking CTA — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/01_slide_hero_mobile.png" alt="Slide 01 — Hero Banner & Instant Booking CTA Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="02_slide_services" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #0F3D2E25; color: #0F3D2E; border: 1px solid #0F3D2E40;">
+              02 / LANDING SLIDE DECK
+            </span>
+            <span class="section-route">GET /#services (Slide 02)</span>
+          </div>
+          <h2 class="section-title">Slide 02 — Services & 3D Coverflow Equipment Showcase</h2>
+          <p class="section-desc">Showcase varian produk photobooth Sebooth (Standard Booth, Deluxe Booth, Glamour Booth) dalam format 3D Coverflow kartu melayang dengan efek rotasi spatial dan pop-up modal spesifikasi detail hardware pro (DSLR, studio lighting, dye-sublimation printer).</p>
+          <div class="tag-list">
+            <span class="tag-pill">3D Spatial Coverflow</span><span class="tag-pill">Pop-up Modal Spesifikasi</span><span class="tag-pill">Dual Ambient Glow Blobs</span><span class="tag-pill">Touch Swipe & Drag Navigation</span><span class="tag-pill">Poppins Editorial Typography</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/#services</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/02_slide_services_desktop.png', 'Slide 02 — Services & 3D Coverflow Equipment Showcase — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/02_slide_services_desktop.png" alt="Slide 02 — Services & 3D Coverflow Equipment Showcase Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/02_slide_services_mobile.png', 'Slide 02 — Services & 3D Coverflow Equipment Showcase — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/02_slide_services_mobile.png" alt="Slide 02 — Services & 3D Coverflow Equipment Showcase Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="03_slide_frames" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #D9770625; color: #D97706; border: 1px solid #D9770640;">
+              03 / LANDING SLIDE DECK
+            </span>
+            <span class="section-route">GET /#frames (Slide 03)</span>
+          </div>
+          <h2 class="section-title">Slide 03 — Exclusive Frames Dual-Tier Marquee Showcase</h2>
+          <p class="section-desc">Katalog display template frame photostrip 2x6 dan postcard 4R dengan animasi dual-tier continuous infinite marquee yang meluncur mulus tanpa henti. Dilengkapi fitur hover-pause dan modal zoom untuk mengecek detail grafis setiap frame.</p>
+          <div class="tag-list">
+            <span class="tag-pill">Dual-Tier Infinite Marquee</span><span class="tag-pill">Dynamic Aspect Detection</span><span class="tag-pill">Auto Hover-Pause</span><span class="tag-pill">Frame Lightbox Preview</span><span class="tag-pill">Zero-Shift Smooth Sliding</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/#frames</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/03_slide_frames_desktop.png', 'Slide 03 — Exclusive Frames Dual-Tier Marquee Showcase — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/03_slide_frames_desktop.png" alt="Slide 03 — Exclusive Frames Dual-Tier Marquee Showcase Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/03_slide_frames_mobile.png', 'Slide 03 — Exclusive Frames Dual-Tier Marquee Showcase — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/03_slide_frames_mobile.png" alt="Slide 03 — Exclusive Frames Dual-Tier Marquee Showcase Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="04_slide_gallery" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #EF444425; color: #EF4444; border: 1px solid #EF444440;">
+              04 / LANDING SLIDE DECK
+            </span>
+            <span class="section-route">GET /#portfolio (Slide 04)</span>
+          </div>
+          <h2 class="section-title">Slide 04 — Pinterest-Style Masonry Wall & Real Feed</h2>
+          <p class="section-desc">Galeri portofolio hasil cetak dan softfile nyata mengadopsi layout authentic Pinterest masonry wall. Ditenagai algoritma greedy height-balanced multi-column (2 kolom mobile s/d 6 kolom desktop), 86 foto nyata, tombol hover Pinterest merah "SIMPAN", dan penghematan data WebP 96%.</p>
+          <div class="tag-list">
+            <span class="tag-pill">Pinterest Native 2-Column Mobile</span><span class="tag-pill">Greedy Height-Balanced Multi-Column</span><span class="tag-pill">86 Real Session Photos</span><span class="tag-pill">WebP 96% Data Saving (35KB/img)</span><span class="tag-pill">Progressive Infinite Scroll</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/#portfolio</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/04_slide_gallery_desktop.png', 'Slide 04 — Pinterest-Style Masonry Wall & Real Feed — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/04_slide_gallery_desktop.png" alt="Slide 04 — Pinterest-Style Masonry Wall & Real Feed Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/04_slide_gallery_mobile.png', 'Slide 04 — Pinterest-Style Masonry Wall & Real Feed — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/04_slide_gallery_mobile.png" alt="Slide 04 — Pinterest-Style Masonry Wall & Real Feed Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="05_slide_pricing" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #2563EB25; color: #2563EB; border: 1px solid #2563EB40;">
+              05 / LANDING SLIDE DECK
+            </span>
+            <span class="section-route">GET /#pricing (Slide 05)</span>
+          </div>
+          <h2 class="section-title">Slide 05 — Pricing Plans & Rental Package Tables</h2>
+          <p class="section-desc">Tabel paket sewa photobooth transparan tanpa biaya tersembunyi dengan pilihan Paket Unlimited (2 Jam & 3 Jam) dan Paket Quota. Dilengkapi badge highlight paket terfavorit, daftar fasilitas lengkap dengan centang checklist, dan tombol booking cepat.</p>
+          <div class="tag-list">
+            <span class="tag-pill">Unlimited & Quota Switcher</span><span class="tag-pill">Most Favorite Badge Highlight</span><span class="tag-pill">Checklist Fasilitas Lengkap</span><span class="tag-pill">Direct WhatsApp Reservation</span><span class="tag-pill">High-Contrast Card Depth</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/#pricing</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/05_slide_pricing_desktop.png', 'Slide 05 — Pricing Plans & Rental Package Tables — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/05_slide_pricing_desktop.png" alt="Slide 05 — Pricing Plans & Rental Package Tables Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/05_slide_pricing_mobile.png', 'Slide 05 — Pricing Plans & Rental Package Tables — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/05_slide_pricing_mobile.png" alt="Slide 05 — Pricing Plans & Rental Package Tables Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="06_slide_faq" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #8B5CF625; color: #8B5CF6; border: 1px solid #8B5CF640;">
+              06 / LANDING SLIDE DECK
+            </span>
+            <span class="section-route">GET /#contact (Slide 06)</span>
+          </div>
+          <h2 class="section-title">Slide 06 — Vector 3D Folder Tabs & Fast Accordion FAQ</h2>
+          <p class="section-desc">Pusat bantuan interaktif berbentuk tab folder berkas 3D nyata dengan kurva vektor Bezier (Frame & Props, Teknis & Venue, Umum & Booking). Dropdown accordion ditenagai CSS Grid row transition (0fr -> 1fr) berkecepatan tinggi tanpa layout recalculation lag.</p>
+          <div class="tag-list">
+            <span class="tag-pill">Vector Bezier 3D Folder Tabs</span><span class="tag-pill">Ultra-Fast CSS Grid Accordion</span><span class="tag-pill">Direct Q&A Structure</span><span class="tag-pill">Zero-Lag 120 FPS Response</span><span class="tag-pill">Snug Snapping Proximity</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/#contact</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/06_slide_faq_desktop.png', 'Slide 06 — Vector 3D Folder Tabs & Fast Accordion FAQ — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/06_slide_faq_desktop.png" alt="Slide 06 — Vector 3D Folder Tabs & Fast Accordion FAQ Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/06_slide_faq_mobile.png', 'Slide 06 — Vector 3D Folder Tabs & Fast Accordion FAQ — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/06_slide_faq_mobile.png" alt="Slide 06 — Vector 3D Folder Tabs & Fast Accordion FAQ Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="07_myphotos_focus" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #10B98125; color: #10B981; border: 1px solid #10B98140;">
+              07 / USER PORTAL APPLICATION
+            </span>
+            <span class="section-route">GET /profile (Focus Mode)</span>
+          </div>
+          <h2 class="section-title">My Photos — Focus 3D Polaroid Photo Stack View</h2>
+          <p class="section-desc">Antarmuka portal softfile pengguna mengadopsi estetika Instagram Stories Polaroid Stack. Kartu foto tampil bertumpuk 3D melayang di layar. Pengguna dapat me-tap foto untuk mengocok (shuffle) pose dan men-swipe horizontal antar sesi foto dengan respon 1:1 tanpa jeda.</p>
+          <div class="tag-list">
+            <span class="tag-pill">Instagram Polaroid 3D Stack</span><span class="tag-pill">Tap-to-Shuffle Spring Easing</span><span class="tag-pill">1:1 Native Touch Drag Slider</span><span class="tag-pill">Quick HD Single Download</span><span class="tag-pill">1-Click ZIP Archive Bundler</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/profile</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/07_myphotos_focus_desktop.png', 'My Photos — Focus 3D Polaroid Photo Stack View — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/07_myphotos_focus_desktop.png" alt="My Photos — Focus 3D Polaroid Photo Stack View Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/07_myphotos_focus_mobile.png', 'My Photos — Focus 3D Polaroid Photo Stack View — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/07_myphotos_focus_mobile.png" alt="My Photos — Focus 3D Polaroid Photo Stack View Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="08_myphotos_overview" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #05966925; color: #059669; border: 1px solid #05966940;">
+              08 / USER PORTAL APPLICATION
+            </span>
+            <span class="section-route">GET /profile (Overview Mode)</span>
+          </div>
+          <h2 class="section-title">My Photos — Optical Zoom-Out Matrix Overview</h2>
+          <p class="section-desc">Mode overview bird's-eye view seluruh sesi yang dimiliki pengguna. Ketika tombol grid 00 00 ditekan, kartu sesi aktif mengecil secara terpusat (justified center) tanpa pergeseran horizontal canggung, memudahkan pemilihan sesi secara visual.</p>
+          <div class="tag-list">
+            <span class="tag-pill">Optical In-Place Zoom-Out</span><span class="tag-pill">Justified Symmetric Centering</span><span class="tag-pill">Tap-to-Focus Smooth Glide</span><span class="tag-pill">Zero Horizontal Shift</span><span class="tag-pill">Feather-Light DOM Virtualization</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/profile</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/08_myphotos_overview_desktop.png', 'My Photos — Optical Zoom-Out Matrix Overview — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/08_myphotos_overview_desktop.png" alt="My Photos — Optical Zoom-Out Matrix Overview Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/08_myphotos_overview_mobile.png', 'My Photos — Optical Zoom-Out Matrix Overview — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/08_myphotos_overview_mobile.png" alt="My Photos — Optical Zoom-Out Matrix Overview Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="09_frames_catalog" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #F59E0B25; color: #F59E0B; border: 1px solid #F59E0B40;">
+              09 / PUBLIC FEATURE SUBPAGE
+            </span>
+            <span class="section-route">GET /frames</span>
+          </div>
+          <h2 class="section-title">Frames Catalog — Dedicated Template Gallery Subpage</h2>
+          <p class="section-desc">Halaman katalog galeri mandiri untuk mengeksplorasi seluruh koleksi template frame Sebooth. Dilengkapi pencarian instan (search bar), filter kategori (All, Wedding, Birthday, Corporate, Minimalist), dan modal lightbox untuk melihat detail grafis frame.</p>
+          <div class="tag-list">
+            <span class="tag-pill">Category Filter Pills</span><span class="tag-pill">Instant Search Filtering</span><span class="tag-pill">Dynamic Aspect Ratio Cards</span><span class="tag-pill">High-Definition Lightbox Modal</span><span class="tag-pill">Direct WhatsApp Frame Request</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/frames</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/09_frames_catalog_desktop.png', 'Frames Catalog — Dedicated Template Gallery Subpage — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/09_frames_catalog_desktop.png" alt="Frames Catalog — Dedicated Template Gallery Subpage Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/09_frames_catalog_mobile.png', 'Frames Catalog — Dedicated Template Gallery Subpage — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/09_frames_catalog_mobile.png" alt="Frames Catalog — Dedicated Template Gallery Subpage Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="10_login" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #3B82F625; color: #3B82F6; border: 1px solid #3B82F640;">
+              10 / AUTHENTICATION SYSTEM
+            </span>
+            <span class="section-route">GET /login</span>
+          </div>
+          <h2 class="section-title">Login Page — User Auth & Photobooth Session Claim</h2>
+          <p class="section-desc">Gerbang autentikasi aman bagi pengunjung untuk masuk ke portal My Photos. Dilengkapi integrasi auto-redirect setelah login, tombol registrasi akun baru, dan petunjuk pengambilan softfile.</p>
+          <div class="tag-list">
+            <span class="tag-pill">Clean Brutalist Container</span><span class="tag-pill">Auto-Redirect Handler</span><span class="tag-pill">Supabase Auth Integration</span><span class="tag-pill">Softfile Access Notice</span><span class="tag-pill">Error State Banners</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/login</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/10_login_desktop.png', 'Login Page — User Auth & Photobooth Session Claim — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/10_login_desktop.png" alt="Login Page — User Auth & Photobooth Session Claim Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/10_login_mobile.png', 'Login Page — User Auth & Photobooth Session Claim — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/10_login_mobile.png" alt="Login Page — User Auth & Photobooth Session Claim Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="11_register" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #6366F125; color: #6366F1; border: 1px solid #6366F140;">
+              11 / AUTHENTICATION SYSTEM
+            </span>
+            <span class="section-route">GET /register</span>
+          </div>
+          <h2 class="section-title">Register Page — New Account Registration</h2>
+          <p class="section-desc">Form pendaftaran akun baru dengan field nomor WhatsApp aktif untuk kebutuhan sinkronisasi otomatis notifikasi antrean fisik, konfirmasi booking, dan pengiriman link unduhan softfile acara.</p>
+          <div class="tag-list">
+            <span class="tag-pill">WhatsApp Number Field</span><span class="tag-pill">Inline Validation</span><span class="tag-pill">Password Confirmation Guard</span><span class="tag-pill">Smooth Navigation to Login</span><span class="tag-pill">Mobile-Ergonomic Form Layout</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/register</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/11_register_desktop.png', 'Register Page — New Account Registration — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/11_register_desktop.png" alt="Register Page — New Account Registration Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/11_register_mobile.png', 'Register Page — New Account Registration — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/11_register_mobile.png" alt="Register Page — New Account Registration Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="12_admin" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #DC262625; color: #DC2626; border: 1px solid #DC262640;">
+              12 / MANAGEMENT DASHBOARD
+            </span>
+            <span class="section-route">GET /admin</span>
+          </div>
+          <h2 class="section-title">Admin CMS — Live Operator & Session Inspector Panel</h2>
+          <p class="section-desc">Pusat kendali operator booth dan administrator: Tab Live Booth Monitor untuk memantau status operasional kamera & printer, Session Lookup untuk mengecek data pengklaim sesi, dan manajemen upload frame template.</p>
+          <div class="tag-list">
+            <span class="tag-pill">Real-Time Live Booth Monitor</span><span class="tag-pill">Session Claim Lookup Inspector</span><span class="tag-pill">Zero Heavy Image Bandwidth Guard</span><span class="tag-pill">Frame CMS Management</span><span class="tag-pill">Super Admin Permission Shield</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/admin</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/12_admin_desktop.png', 'Admin CMS — Live Operator & Session Inspector Panel — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/12_admin_desktop.png" alt="Admin CMS — Live Operator & Session Inspector Panel Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/12_admin_mobile.png', 'Admin CMS — Live Operator & Session Inspector Panel — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/12_admin_mobile.png" alt="Admin CMS — Live Operator & Session Inspector Panel Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="13_access_claim" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #EC489925; color: #EC4899; border: 1px solid #EC489940;">
+              13 / HARDWARE QR INTEGRATION
+            </span>
+            <span class="section-route">GET /access/[sessionId]</span>
+          </div>
+          <h2 class="section-title">QR Kiosk Access — Guest Photo Claim Screen</h2>
+          <p class="section-desc">Titik akses scan QR code fisik yang terpampang di layar kiosk photobooth setelah sesi foto berakhir. Tamu diarahkan ke halaman ini untuk mengklaim dan menautkan foto ke akun Sebooth mereka secara instan.</p>
+          <div class="tag-list">
+            <span class="tag-pill">Hardware Kiosk QR Point</span><span class="tag-pill">Instant Session ID Linking</span><span class="tag-pill">Real-Time Auto Claim Handler</span><span class="tag-pill">Guest Download Access</span><span class="tag-pill">Tactile Claim CTA Button</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/access/[sessionId]</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/13_access_claim_desktop.png', 'QR Kiosk Access — Guest Photo Claim Screen — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/13_access_claim_desktop.png" alt="QR Kiosk Access — Guest Photo Claim Screen Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/13_access_claim_mobile.png', 'QR Kiosk Access — Guest Photo Claim Screen — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/13_access_claim_mobile.png" alt="QR Kiosk Access — Guest Photo Claim Screen Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+    <article id="14_queue_display" class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-meta">
+            <span class="section-category" style="background: #14B8A625; color: #14B8A6; border: 1px solid #14B8A640;">
+              14 / EVENT DISPLAY MONITOR
+            </span>
+            <span class="section-route">GET /queue/[eventId]/display</span>
+          </div>
+          <h2 class="section-title">Digital Queue TV Display — On-Site Queue Monitor</h2>
+          <p class="section-desc">Antarmuka visual layar TV monitor besar untuk ditempatkan di lokasi acara/venue. Menampilkan nomor antrean yang sedang dipanggil (Now Calling), nomor berikutnya, indikator booth aktif, dan banner QR registrasi antrean.</p>
+          <div class="tag-list">
+            <span class="tag-pill">10-Foot UI TV Display Scale</span><span class="tag-pill">Real-Time Audio-Visual Chime Cues</span><span class="tag-pill">Multi-Booth Concurrent Support</span><span class="tag-pill">High-Contrast Ambient Dark Mode</span><span class="tag-pill">SSE Live Stream Sync</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison -->
+      <div class="comparison-stage">
+        
+        <!-- Desktop Mockup (1440x900) -->
+        <div class="desktop-wrapper">
+          <div class="desktop-window">
+            <div class="window-header">
+              <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+              </div>
+              <div class="window-address">
+                <span class="address-lock">🔒</span>
+                <span>sebooth.id/queue/[eventId]/display</span>
+              </div>
+              <div class="window-badge">Desktop (1440×900)</div>
+            </div>
+            <div class="window-body" onclick="openLightbox('./public/screenshots/14_queue_display_desktop.png', 'Digital Queue TV Display — On-Site Queue Monitor — Desktop Mode (1440×900)')">
+              <img src="./public/screenshots/14_queue_display_desktop.png" alt="Digital Queue TV Display — On-Site Queue Monitor Desktop" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik untuk Zoom HD</div>
+            </div>
+          </div>
+          <div class="device-label">Desktop Widescreen (1440×900 px)</div>
+        </div>
+
+        <!-- Mobile Mockup (390x844) -->
+        <div class="mobile-wrapper">
+          <div class="phone-frame">
+            <div class="phone-speaker-island">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-camera-dot"></div>
+            </div>
+            <div class="phone-screen" onclick="openLightbox('./public/screenshots/14_queue_display_mobile.png', 'Digital Queue TV Display — On-Site Queue Monitor — Mobile Mode (390×844)')">
+              <img src="./public/screenshots/14_queue_display_mobile.png" alt="Digital Queue TV Display — On-Site Queue Monitor Mobile" loading="lazy" />
+              <div class="zoom-hint">🔍 Klik Zoom HD</div>
+            </div>
+            <div class="phone-home-indicator"></div>
+          </div>
+          <div class="device-label">Mobile Handheld (390×844 px)</div>
+        </div>
+      </div>
+    </article>
+    
+
+  </main>
+
+  <!-- Lightbox Zoom Modal -->
+  <div id="lightbox" class="lightbox-modal" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <div class="lightbox-img-wrapper" onclick="event.stopPropagation()">
+      <img id="lightbox-img" src="" alt="Zoom Preview" />
+      <div id="lightbox-caption" class="lightbox-caption"></div>
+    </div>
+  </div>
+
+  <!-- Page Footer -->
+  <footer class="page-footer">
+    <p>Dibuat secara otomatis untuk <strong>Sebooth Website Project</strong> &bull; &copy; 2026 Sebooth Indonesia. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    function openLightbox(src, caption) {
+      const modal = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      const cap = document.getElementById('lightbox-caption');
+      img.src = src;
+      cap.textContent = caption;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      const modal = document.getElementById('lightbox');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+</body>
+</html>

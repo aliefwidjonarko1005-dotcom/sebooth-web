@@ -1,36 +1,9 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Permanent_Marker, Poppins, Bayon } from "next/font/google";
-import localFont from "next/font/local";
 import "./globals.css";
 import { LayoutShell } from "@/components/layout/LayoutShell";
 import { OrientationProvider } from "@/components/layout/OrientationProvider";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-headline",
-  weight: ["300", "400", "500", "600", "700"],
-});
-const permanentMarker = Permanent_Marker({
-  subsets: ["latin"],
-  variable: "--font-marker",
-  weight: "400",
-});
-const seboothFont = localFont({
-  src: "./fonts/Sebooth.otf",
-  variable: "--font-sebooth",
-});
-const poppins = Poppins({
-  subsets: ["latin"],
-  variable: "--font-poppins",
-  weight: ["400", "500", "600", "700", "800", "900"],
-});
-const bayon = Bayon({
-  subsets: ["latin"],
-  variable: "--font-bayon",
-  weight: "400",
-});
 
 export const metadata: Metadata = {
   title: "Sebooth | The Most Favorite Photobooth in Semarang",
@@ -44,8 +17,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Bayon&family=Poppins:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body
-        className={`${spaceGrotesk.variable} ${permanentMarker.variable} ${seboothFont.variable} ${poppins.variable} ${bayon.variable} antialiased paper-texture`}
+        className="antialiased paper-texture"
       >
         <OrientationProvider>
           <SmoothScrollProvider>

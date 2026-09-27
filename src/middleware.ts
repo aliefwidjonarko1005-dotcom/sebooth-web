@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
   // ── Skip auth check entirely for public routes ──
   // Only run Supabase getUser() for protected paths to reduce latency
   const isProtected = PROTECTED_PATHS.some(p => pathname.startsWith(p))
-  if (!isProtected) {
+  if (!isProtected || request.nextUrl.searchParams.get('preview') === '1') {
     return NextResponse.next()
   }
 

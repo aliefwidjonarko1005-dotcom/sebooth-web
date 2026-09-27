@@ -16,6 +16,30 @@ export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Progressive slide mounting: Slide 0 is mounted eagerly for instant FCP/LCP.
+  // Other slides are mounted during browser idle or immediately when active.
+  const [mountedSlides, setMountedSlides] = useState<Set<number>>(new Set([0]));
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMountedSlides(new Set(slides.map((_, i) => i)));
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [slides]);
+
+  useEffect(() => {
+    setMountedSlides((prev) => {
+      if (prev.has(activeIndex) && (activeIndex + 1 >= slides.length || prev.has(activeIndex + 1))) {
+        return prev;
+      }
+      const next = new Set(prev);
+      next.add(activeIndex);
+      if (activeIndex + 1 < slides.length) next.add(activeIndex + 1);
+      if (activeIndex - 1 >= 0) next.add(activeIndex - 1);
+      return next;
+    });
+  }, [activeIndex, slides.length]);
+
   // Navigate to slide index smoothly using native scroll
   const goToSlide = useCallback((index: number) => {
     if (!containerRef.current) return;
@@ -114,20 +138,28 @@ export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
         ref={containerRef}
         className="w-full h-full overflow-y-auto overflow-x-hidden [scroll-snap-type:y_mandatory] [scroll-behavior:smooth] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden touch-pan-y [transform:translate3d(0,0,0)]"
       >
-        {slides.map((slide, index) => (
-          <div
-            key={slide.id}
-            data-slide-index={index}
-            className="w-full h-[100dvh] min-h-[100dvh] max-h-[100dvh] [scroll-snap-align:start] [scroll-snap-stop:always] shrink-0 relative overflow-hidden [transform:translate3d(0,0,0)] [backface-visibility:hidden]"
-          >
-            <SlideItem
-              slide={slide}
-              index={index}
-              isActive={activeIndex === index}
-              isFirst={index === 0}
-            />
-          </div>
-        ))}
+        {slides.map((slide, index) => {
+          const isMounted = mountedSlides.has(index);
+          return (
+            <div
+              key={slide.id}
+              data-slide-index={index}
+              className="w-full h-[100dvh] min-h-[100dvh] max-h-[100dvh] [scroll-snap-align:start] [scroll-snap-stop:always] shrink-0 relative overflow-hidden [transform:translate3d(0,0,0)] [backface-visibility:hidden]"
+              style={{
+                backgroundColor: slide.bgFallbackColor || "#000000",
+              }}
+            >
+              {isMounted && (
+                <SlideItem
+                  slide={slide}
+                  index={index}
+                  isActive={activeIndex === index}
+                  isFirst={index === 0}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* ── VERTICAL DOT NAVIGATION INDICATOR ── */}
@@ -146,9 +178,11 @@ export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
             activeIndex === 0 ? "flex" : "flex md:hidden"
           }`}
         >
-          <span className="text-[9.5px] xs:text-xs sm:text-sm font-extrabold tracking-[0.2em] uppercase text-[#F59E0B] group-hover:text-[#FF5500] transition-colors drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] filter">
-            SCROLL UNTUK GANTI SLIDE
-          </span>
+          {activeIndex === 0 && (
+            <span className="text-[9.5px] xs:text-xs sm:text-sm font-extrabold tracking-[0.2em] uppercase text-[#F59E0B] group-hover:text-[#FF5500] transition-colors drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] filter">
+              SCROLL UNTUK GANTI SLIDE
+            </span>
+          )}
           <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/25 flex items-center justify-center group-hover:border-[#FF5500] group-hover:bg-[#FF5500]/30 transition-all shadow-lg">
             <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-white drop-shadow-md" />
           </div>

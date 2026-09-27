@@ -130,7 +130,8 @@ export const SlideItem: React.FC<SlideItemProps> = ({
                   src={slide.heroBackground}
                   alt="Sebooth Compilation Photos 2"
                   fill
-                  priority
+                  priority={false}
+                  loading="lazy"
                   quality={65}
                   sizes="(max-width: 768px) 180vw, 150vw"
                   className="object-cover object-center w-full h-full brightness-90 saturate-[1.1]"

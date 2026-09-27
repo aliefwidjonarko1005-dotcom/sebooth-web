@@ -158,7 +158,18 @@ export async function GET(req: NextRequest) {
                 };
             }
 
-            // 4. Fetch Media Count Summary (NO HEAVY IMAGES LOADED TO SAVE BANDWIDTH)
+            // 4. Fetch total claims count for this user
+            let userTotalClaims = 0;
+            if (session.user_id) {
+                const { count } = await supabase
+                    .from("sessions")
+                    .select("id", { count: "exact", head: true })
+                    .eq("user_id", session.user_id)
+                    .eq("is_claimed", true);
+                userTotalClaims = count || 1;
+            }
+
+            // 5. Fetch Media Count Summary (NO HEAVY IMAGES LOADED TO SAVE BANDWIDTH)
             const { data: mediaRows } = await supabase
                 .from("media")
                 .select("type")
@@ -176,6 +187,7 @@ export async function GET(req: NextRequest) {
                 data: {
                     session,
                     user: userInfo,
+                    userTotalClaims,
                     queueTicket,
                     mediaSummary,
                 },

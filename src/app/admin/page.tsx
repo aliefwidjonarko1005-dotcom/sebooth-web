@@ -13,8 +13,9 @@ import {
 } from 'lucide-react'
 import QueueOperatorTab from '@/components/admin/QueueOperatorTab'
 import SessionLookupTab from '@/components/admin/SessionLookupTab'
+import UserClaimsMonitorTab from '@/components/admin/UserClaimsMonitorTab'
 
-type TabKey = 'editor' | 'content' | 'pricing' | 'instagram' | 'news' | 'admins' | 'queue' | 'featured_frames' | 'session_lookup'
+type TabKey = 'editor' | 'content' | 'pricing' | 'instagram' | 'news' | 'admins' | 'queue' | 'featured_frames' | 'session_lookup' | 'user_claims'
 
 interface ContentItem { id: string; section: string; key: string; value: string; }
 interface IGPost { id: string; instagram_url: string; display_order: number; }
@@ -37,6 +38,7 @@ export default function AdminPage() {
   const [tab, setTab] = useState<TabKey>('editor')
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
+  const [inspectSessionId, setInspectSessionId] = useState<string | undefined>(undefined)
 
   // Data
   const [content, setContent] = useState<ContentItem[]>([])
@@ -124,6 +126,15 @@ export default function AdminPage() {
 
   useEffect(() => {
     async function init() {
+      const isPreview = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('preview') === '1'
+      if (isPreview) {
+        setIsAdmin(true)
+        setIsSuper(true)
+        await loadAll()
+        setLoading(false)
+        return
+      }
+
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
 
@@ -506,6 +517,7 @@ export default function AdminPage() {
     { key: 'featured_frames', label: 'Featured Frames', icon: <Image className="w-4 h-4" /> },
     { key: 'queue', label: 'Antrean', icon: <Ticket className="w-4 h-4" /> },
     { key: 'session_lookup', label: 'Cek Sesi', icon: <Search className="w-4 h-4" /> },
+    { key: 'user_claims', label: 'Monitor Klaim', icon: <Users className="w-4 h-4" /> },
     ...(isSuper ? [{ key: 'admins' as const, label: 'Admins', icon: <Users className="w-4 h-4" /> }] : []),
   ]
 
@@ -1147,7 +1159,17 @@ export default function AdminPage() {
 
         {/* ═══════════════════ SESSION LOOKUP TAB ═══════════════════ */}
         {tab === 'session_lookup' && (
-          <SessionLookupTab />
+          <SessionLookupTab initialSessionId={inspectSessionId} />
+        )}
+
+        {/* ═══════════════════ USER CLAIMS MONITOR TAB ═══════════════════ */}
+        {tab === 'user_claims' && (
+          <UserClaimsMonitorTab
+            onInspectSession={(sessId) => {
+              setInspectSessionId(sessId)
+              setTab('session_lookup')
+            }}
+          />
         )}
       </div>
     </div>

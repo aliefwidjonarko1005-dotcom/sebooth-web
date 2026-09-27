@@ -523,6 +523,14 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
     touchStartX.current = null
   }
 
+  const getThumbUrl = (imgPath: string) => {
+    return imgPath.replace('/images/frames/', '/images/frames/thumb/').replace(/\.(png|jpg|jpeg)$/i, '.webp');
+  }
+
+  const getModalUrl = (imgPath: string) => {
+    return imgPath.replace('/images/frames/', '/images/frames/modal/').replace(/\.(png|jpg|jpeg)$/i, '.webp');
+  }
+
   return (
     <section
       id="frames"
@@ -583,11 +591,12 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
                 </div>
                 <div className="relative w-full h-[120px] xs:h-[135px] rounded-lg overflow-hidden border border-white/25 bg-black/20 flex items-center justify-center group/img">
                   <Image
-                    src={item.image}
+                    src={getThumbUrl(item.image)}
                     alt={item.title}
                     fill
                     unoptimized
                     draggable={false}
+                    loading="lazy"
                     sizes="240px"
                     className="object-cover object-center select-none pointer-events-none"
                   />
@@ -625,11 +634,12 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
                 </div>
                 <div className="relative w-full h-[120px] xs:h-[135px] rounded-lg overflow-hidden border border-white/25 bg-black/20 flex items-center justify-center group/img">
                   <Image
-                    src={item.image}
+                    src={getThumbUrl(item.image)}
                     alt={item.title}
                     fill
                     unoptimized
                     draggable={false}
+                    loading="lazy"
                     sizes="240px"
                     className="object-cover object-center select-none pointer-events-none"
                   />
@@ -675,11 +685,12 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
               {/* Photostrip Frame Image Display */}
               <div className="relative w-full h-[245px] md:h-[270px] rounded-xl overflow-hidden shadow-xs border border-white/25 bg-black/20 flex items-center justify-center group/img">
                 <Image
-                  src={item.image}
+                  src={getThumbUrl(item.image)}
                   alt={item.title}
                   fill
                   unoptimized
                   draggable={false}
+                  loading="lazy"
                   sizes="450px"
                   className="object-cover object-center select-none pointer-events-none transition-transform duration-500 group-hover/img:scale-105"
                   style={{
@@ -746,7 +757,7 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
                 >
                   {/* Photo Frame Display (Full Uncropped Display) */}
                   <Image
-                    src={selectedFrame.image}
+                    src={getModalUrl(selectedFrame.image)}
                     alt={selectedFrame.title}
                     fill
                     unoptimized
