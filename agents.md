@@ -712,6 +712,10 @@ sebooth-website/
   - **Prioritized Hero Overlay over Background**: Configured `heroOverlay` as the sole prioritized asset with exact natural aspect ratio (`1200x355`), while setting background Copy 1 to `loading="eager"` with `priority={false}` and `quality={60}`. This eliminates bandwidth competition on mobile 4G.
   - **Compressed Hero WebP Assets on Disk**: Re-encoded `bg_slide_1.webp` (1440x810, 106 KB down from 235 KB) and `overlay_slide_1.webp` (1200w, 94 KB) using Sharp effort 6, cutting initial hero payload by ~55%.
   - **Verified Clean Build**: Passed `npm run build` with 100% success in 7.1s.
+- **September 2026 (Phase 8FA - Footer Hydration Flash Elimination & Strict Subpage Scoping)** 🛡️: Resolved the visual glitch where "SIAP ABADIKAN MOMEN SERUMU?" (the website Footer) flashed on screen between 1.2s and 2.1s before the hero slide hydrated:
+  - **Root Cause Identified**: In [LayoutShell.tsx](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/src/components/layout/LayoutShell.tsx), the footer condition `!isHomepage` relied on `pathname === "/"`. During initial SSR or prior to client hydration, `pathname` is not yet matched to `"/"`, causing the server to render `<Footer />` into the initial HTML. Because `<SlideDeckLanding>` was waiting for hydration, the Footer's giant H1 "SIAP ABADIKAN MOMEN SERUMU?" was painted first at the top of the viewport.
+  - **Strict Whitelist Inclusion**: Changed Footer condition to explicit inclusion: `PAGES_WITH_FOOTER = ["/partnership", "/frames", "/about", "/news"]`. Under NO circumstances is the Footer rendered on the homepage (`/`) or during SSR hydration, eliminating the pre-hydration footer flash completely.
+  - **Verified Clean Build**: Passed `npm run build` in 8.1s with 100% success.
 
 
 
