@@ -17,15 +17,21 @@ export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Progressive slide mounting: Slide 0 is mounted eagerly for instant FCP/LCP.
-  // Other slides are mounted during browser idle or immediately when active.
+  // Adjacent slides mount on-demand when approaching or during idle time.
   const [mountedSlides, setMountedSlides] = useState<Set<number>>(new Set([0]));
 
+  // Idle warmup: warm up Slide 1 after 4 seconds of idle to ensure instant scrolling without choking LCP
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMountedSlides(new Set(slides.map((_, i) => i)));
-    }, 800);
-    return () => clearTimeout(timer);
-  }, [slides]);
+    const idleTimer = setTimeout(() => {
+      setMountedSlides((prev) => {
+        if (prev.has(1)) return prev;
+        const next = new Set(prev);
+        next.add(1);
+        return next;
+      });
+    }, 4000);
+    return () => clearTimeout(idleTimer);
+  }, []);
 
   useEffect(() => {
     setMountedSlides((prev) => {

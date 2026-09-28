@@ -3,13 +3,30 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { LandingSlide, SlideCta } from "@/config/landingSlides";
 import { ArrowUpRight, MessageCircle, Sparkles } from "lucide-react";
-import { Product } from "@/components/sections/Product";
-import { FramesSlider } from "@/components/sections/FramesSlider";
-import { PortfolioSlider } from "@/components/sections/PortfolioSlider";
-import { PricingSlider } from "@/components/sections/PricingSlider";
-import { FaqStackSlider } from "@/components/sections/FaqStackSlider";
+
+// Code-split heavy interactive slide components so their JS and data catalogs only load when active
+const Product = dynamic(() => import("@/components/sections/Product").then((mod) => mod.Product), {
+  loading: () => <div className="w-full h-full bg-black/40 flex items-center justify-center" />,
+});
+
+const FramesSlider = dynamic(() => import("@/components/sections/FramesSlider").then((mod) => mod.FramesSlider), {
+  loading: () => <div className="w-full h-full bg-[#ff4500]/20 flex items-center justify-center" />,
+});
+
+const PortfolioSlider = dynamic(() => import("@/components/sections/PortfolioSlider").then((mod) => mod.PortfolioSlider), {
+  loading: () => <div className="w-full h-full bg-black/40 flex items-center justify-center" />,
+});
+
+const PricingSlider = dynamic(() => import("@/components/sections/PricingSlider").then((mod) => mod.PricingSlider), {
+  loading: () => <div className="w-full h-full bg-black/40 flex items-center justify-center" />,
+});
+
+const FaqStackSlider = dynamic(() => import("@/components/sections/FaqStackSlider").then((mod) => mod.FaqStackSlider), {
+  loading: () => <div className="w-full h-full bg-black/40 flex items-center justify-center" />,
+});
 
 interface SlideItemProps {
   slide: LandingSlide;
@@ -119,8 +136,8 @@ export const SlideItem: React.FC<SlideItemProps> = ({
                   alt="Sebooth Compilation Photos 1"
                   fill
                   priority
-                  quality={65}
-                  sizes="(max-width: 768px) 180vw, 150vw"
+                  quality={60}
+                  sizes="(max-width: 768px) 100vw, 140vw"
                   className="object-cover object-center w-full h-full brightness-90 saturate-[1.1]"
                 />
               </div>
@@ -132,8 +149,8 @@ export const SlideItem: React.FC<SlideItemProps> = ({
                   fill
                   priority={false}
                   loading="lazy"
-                  quality={65}
-                  sizes="(max-width: 768px) 180vw, 150vw"
+                  quality={60}
+                  sizes="(max-width: 768px) 100vw, 140vw"
                   className="object-cover object-center w-full h-full brightness-90 saturate-[1.1]"
                 />
               </div>
@@ -144,16 +161,17 @@ export const SlideItem: React.FC<SlideItemProps> = ({
           <div className="absolute inset-0 bg-black/35 pointer-events-none" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/40 pointer-events-none" />
 
-          {/* Centered Graphic Overlay Element */}
+          {/* Centered Graphic Overlay Element (Target LCP Image) */}
           <div className="relative z-10 flex flex-col items-center justify-center w-full h-full pointer-events-none">
             <div className="relative w-full max-w-[92vw] sm:max-w-[88vw] md:max-w-[1050px] lg:max-w-[1250px] xl:max-w-[1400px] max-h-[76vh] flex items-center justify-center p-2 sm:p-4">
               <Image
                 src={slide.heroOverlay}
                 alt={slide.alt || "Sebooth Hero Overlay"}
-                width={2000}
-                height={1200}
+                width={1200}
+                height={720}
                 priority
                 quality={75}
+                sizes="(max-width: 640px) 92vw, (max-width: 1024px) 85vw, 1200px"
                 className="w-auto h-auto max-w-full max-h-[76vh] object-contain scale-100 sm:scale-105 md:scale-115 lg:scale-120 drop-shadow-2xl md:drop-shadow-[0_28px_65px_rgba(0,0,0,0.92)] select-none"
               />
             </div>
@@ -163,6 +181,7 @@ export const SlideItem: React.FC<SlideItemProps> = ({
         <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
           <Product isActive={isActive} />
         </div>
+
       ) : slide.id === "frames" ? (
         <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
           <FramesSlider isActive={isActive} />

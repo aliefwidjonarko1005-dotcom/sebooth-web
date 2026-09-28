@@ -2,9 +2,6 @@
 
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import Lenis from 'lenis'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -24,27 +21,47 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     )
     if (isMobile) return
 
-    gsap.registerPlugin(ScrollTrigger)
+    let isDestroyed = false
+    let updateTicker: ((time: number) => void) | null = null
+    let lenisInstance: any = null
+    let gsapInstance: any = null
 
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      touchMultiplier: 1.5,
+    Promise.all([
+      import('lenis'),
+      import('gsap'),
+      import('gsap/ScrollTrigger')
+    ]).then(([{ default: Lenis }, { default: gsap }, { ScrollTrigger }]) => {
+      if (isDestroyed) return
+
+      gsap.registerPlugin(ScrollTrigger)
+      gsapInstance = gsap
+
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        touchMultiplier: 1.5,
+      })
+      lenisInstance = lenis
+
+      lenis.on('scroll', ScrollTrigger.update)
+
+      updateTicker = (time: number) => {
+        lenis.raf(time * 1000)
+      }
+
+      gsap.ticker.add(updateTicker)
+      gsap.ticker.lagSmoothing(0)
     })
 
-    lenis.on('scroll', ScrollTrigger.update)
-
-    const updateTicker = (time: number) => {
-      lenis.raf(time * 1000)
-    }
-
-    gsap.ticker.add(updateTicker)
-    gsap.ticker.lagSmoothing(0)
-
     return () => {
-      gsap.ticker.remove(updateTicker)
-      lenis.destroy()
+      isDestroyed = true
+      if (gsapInstance && updateTicker) {
+        gsapInstance.ticker.remove(updateTicker)
+      }
+      if (lenisInstance) {
+        lenisInstance.destroy()
+      }
     }
   }, [isExcluded])
 

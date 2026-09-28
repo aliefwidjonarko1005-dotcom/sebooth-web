@@ -1,11 +1,27 @@
 import type { Metadata } from "next";
+import { Poppins, Bayon } from "next/font/google";
 import "./globals.css";
 import { LayoutShell } from "@/components/layout/LayoutShell";
 import { OrientationProvider } from "@/components/layout/OrientationProvider";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
+const bayon = Bayon({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-bayon",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://sebooth.id"),
   title: "Sebooth | The Most Favorite Photobooth in Semarang",
   description: "Capture Every Moment, Create Infinite Memories with sebooth.",
 };
@@ -16,15 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bayon&family=Poppins:wght@400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={`scroll-smooth ${poppins.variable} ${bayon.variable}`}>
       <body
         className="antialiased paper-texture"
       >
@@ -40,4 +48,5 @@ export default function RootLayout({
     </html>
   );
 }
+
 
