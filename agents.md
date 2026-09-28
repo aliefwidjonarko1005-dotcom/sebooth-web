@@ -721,6 +721,10 @@ sebooth-website/
   - **Synchronized Global Head Preloads**: Added `<link rel="preload">` tags in [layout.tsx](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/src/app/layout.tsx) with identical static URLs. The browser preload scanner fetches both hero assets in parallel with HTML/CSS download, ensuring both images are already present in memory cache before initial paint.
   - **Ultra-Compact Hero Re-encoding**: Re-encoded `bg_slide_1.webp` (77 KB) and `overlay_slide_1.webp` (72 KB) using Sharp effort 6, bringing total initial image payload down to ~149 KB.
   - **Verified Clean Build**: Passed `npm run build` with 100% success in 29.1s.
+- **September 2026 (Phase 8FC - Complete Old Website Footer Purge)** 🗑️: Completely purged the old website footer per user request ("kenapa masih ada tampilan website lama? apus aja"):
+  - **Excised Footer from LayoutShell**: Removed `<Footer />` import and rendering entirely from [LayoutShell.tsx](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/src/components/layout/LayoutShell.tsx).
+  - **Neutralized Footer Component**: Replaced [Footer.tsx](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/src/components/layout/Footer.tsx) with a no-op component returning `null`, permanently eliminating the "SIAP ABADIKAN MOMEN SERUMU?" banner, floating decorative balls, and old footer markup from all bundles and server responses.
+  - **Verified Clean Build**: Passed `npm run build` in 30.8s with 100% success.
 
 
 
