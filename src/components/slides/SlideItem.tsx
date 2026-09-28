@@ -135,10 +135,8 @@ export const SlideItem: React.FC<SlideItemProps> = ({
                   src={slide.heroBackground}
                   alt="Sebooth Compilation Photos 1"
                   fill
-                  priority={false}
-                  loading="eager"
-                  quality={60}
-                  sizes="(max-width: 640px) 70vw, (max-width: 1024px) 100vw, 140vw"
+                  unoptimized
+                  priority
                   className="object-cover object-center w-full h-full brightness-90 saturate-[1.1]"
                 />
               </div>
@@ -148,10 +146,9 @@ export const SlideItem: React.FC<SlideItemProps> = ({
                   src={slide.heroBackground}
                   alt="Sebooth Compilation Photos 2"
                   fill
+                  unoptimized
                   priority={false}
                   loading="lazy"
-                  quality={60}
-                  sizes="(max-width: 640px) 70vw, (max-width: 1024px) 100vw, 140vw"
                   className="object-cover object-center w-full h-full brightness-90 saturate-[1.1]"
                 />
               </div>
@@ -170,9 +167,8 @@ export const SlideItem: React.FC<SlideItemProps> = ({
                 alt={slide.alt || "Sebooth Hero Overlay"}
                 width={1200}
                 height={355}
+                unoptimized
                 priority
-                quality={75}
-                sizes="(max-width: 640px) 92vw, (max-width: 1024px) 85vw, 1200px"
                 className="w-auto h-auto max-w-full max-h-[76vh] object-contain scale-100 sm:scale-105 md:scale-115 lg:scale-120 drop-shadow-2xl md:drop-shadow-[0_28px_65px_rgba(0,0,0,0.92)] select-none"
               />
             </div>

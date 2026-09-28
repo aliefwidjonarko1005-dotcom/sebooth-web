@@ -33,6 +33,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`scroll-smooth ${poppins.variable} ${bayon.variable}`}>
+      <head>
+        <link
+          rel="preload"
+          as="image"
+          href="/images/slides/hero/bg_slide_1.webp"
+          type="image/webp"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/images/slides/hero/overlay_slide_1.webp"
+          type="image/webp"
+        />
+      </head>
       <body
         className="antialiased paper-texture"
       >

@@ -19,15 +19,5 @@ export const metadata = {
 };
 
 export default function Home() {
-  return (
-    <>
-      <link
-        rel="preload"
-        as="image"
-        href="/images/slides/hero/overlay_slide_1.webp"
-        type="image/webp"
-      />
-      <SlideDeckLanding slides={LANDING_SLIDES} />
-    </>
-  );
+  return <SlideDeckLanding slides={LANDING_SLIDES} />;
 }
