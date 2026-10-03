@@ -41,7 +41,7 @@ export interface UserSessionDisplayItem {
  * Animated GIFs and video MP4s remain untouched.
  * The original uncompressed master file is preserved in `hdUrl` for pristine downloads.
  */
-function getOptimizedDisplayUrl(rawUrl: string, width = 720, quality = 75): string {
+function getOptimizedDisplayUrl(rawUrl: string, width = 640, quality = 70): string {
   if (!rawUrl) return ''
   // If already an /api/image URL, do not double-wrap
   if (rawUrl.includes('/api/image')) return rawUrl
@@ -179,6 +179,20 @@ export default function MyPhotosPage() {
   const currentSession = sessionsList[activeSessionIndex] || sessionsList[0]
   const currentMediaIndex = activeMediaIndices[currentSession?.id] || 0
 
+  // Idle prefetch: Pre-warm remaining photos of the active session in browser & server cache
+  useEffect(() => {
+    if (!currentSession || !currentSession.media) return
+    const timer = setTimeout(() => {
+      currentSession.media.forEach((item, idx) => {
+        if (idx > 1 && item.type !== 'video' && item.url) {
+          const img = new Image()
+          img.src = item.url
+        }
+      })
+    }, 600)
+    return () => clearTimeout(timer)
+  }, [currentSession?.id])
+
   // Switch to next/prev photo within current active session with strict debounce
   const lastTapTime = useRef<number>(0)
 
@@ -205,10 +219,9 @@ export default function MyPhotosPage() {
   useEffect(() => {
     if (trackRef.current) {
       trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
-      const total = sessionsList.length || 1
       const baseCalc = isOverviewMode
         ? `calc(50% - (${activeSessionIndex + 0.5} * min(48vw, 300px)))`
-        : `calc(-${(activeSessionIndex * 100) / total}%)`
+        : `calc(-${activeSessionIndex * 100}%)`
       trackRef.current.style.transform = `translate3d(${baseCalc}, 0, 0)`
     }
   }, [activeSessionIndex, isOverviewMode, loading, sessionsList.length])
@@ -238,8 +251,7 @@ export default function MyPhotosPage() {
     }
 
     if (trackRef.current) {
-      const total = sessionsList.length || 1
-      trackRef.current.style.transform = `translate3d(calc(-${(activeSessionIndex * 100) / total}% + ${dx}px), 0, 0)`
+      trackRef.current.style.transform = `translate3d(calc(-${activeSessionIndex * 100}% + ${dx}px), 0, 0)`
     }
   }
 
@@ -260,9 +272,8 @@ export default function MyPhotosPage() {
         handleNextMedia(currentSession.id, currentSession.media.length)
       }
       if (trackRef.current) {
-        const total = totalSessions || 1
         trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
-        trackRef.current.style.transform = `translate3d(-${(currentIndex * 100) / total}%, 0, 0)`
+        trackRef.current.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`
       }
       return
     }
@@ -281,9 +292,8 @@ export default function MyPhotosPage() {
     }
 
     if (trackRef.current) {
-      const total = totalSessions || 1
       trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
-      trackRef.current.style.transform = `translate3d(-${(targetIndex * 100) / total}%, 0, 0)`
+      trackRef.current.style.transform = `translate3d(-${targetIndex * 100}%, 0, 0)`
     }
 
     if (targetIndex !== currentIndex) {
@@ -674,17 +684,17 @@ export default function MyPhotosPage() {
             onMouseMove={(e) => handleDragMove(e.clientX)}
             onMouseUp={(e) => handleDragEnd(e.clientX)}
             onMouseLeave={() => handleDragEnd()}
-            className="relative w-full h-[72vh] xs:h-[75vh] sm:h-[78vh] md:h-[80vh] max-h-[640px] flex items-center justify-center touch-pan-y cursor-grab active:cursor-grabbing overflow-visible select-none"
+            className="relative w-full h-[72vh] xs:h-[75vh] sm:h-[78vh] md:h-[80vh] max-h-[640px] flex items-center justify-start touch-pan-y cursor-grab active:cursor-grabbing overflow-visible select-none"
           >
             {/* ── SEAMLESS ZOOMING SLIDER TRACK (DIRECT DOM HARDWARE-ACCELERATED TRANSFORMS) ── */}
             <div
               ref={trackRef}
-              className="h-full flex flex-row items-center will-change-transform [transform:translate3d(0,0,0)]"
+              className="w-full h-full flex flex-row items-center will-change-transform [transform:translate3d(0,0,0)]"
               style={{
                 transform: `translate3d(${
                   isOverviewMode
                     ? `calc(50% - (${activeSessionIndex + 0.5} * min(48vw, 300px)))`
-                    : `calc(-${(activeSessionIndex * 100) / (sessionsList.length || 1)}%)`
+                    : `calc(-${activeSessionIndex * 100}%)`
                 }, 0, 0)`,
                 transition: 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
               }}
@@ -699,7 +709,7 @@ export default function MyPhotosPage() {
                   return (
                     <div
                       key={session.id}
-                      style={{ width: '100%' }}
+                      style={{ width: isOverviewMode ? 'min(48vw, 300px)' : '100%' }}
                       className="h-full shrink-0 px-4 sm:px-12 md:px-24 lg:px-36 flex items-center justify-center pointer-events-none"
                     />
                   )
@@ -783,11 +793,13 @@ export default function MyPhotosPage() {
                                   src={med.url}
                                   alt={med.label}
                                   className="w-full h-full object-cover pointer-events-none select-none"
-                                  loading={isFront ? 'eager' : 'lazy'}
+                                  loading={isCurrentSession || isNearby ? 'eager' : 'lazy'}
                                   decoding="async"
                                   onError={(e) => {
                                     if (med.hdUrl && e.currentTarget.src !== med.hdUrl) {
                                       e.currentTarget.src = med.hdUrl
+                                    } else {
+                                      e.currentTarget.src = '/images/gallery/hd/strip_004a6bbb.webp'
                                     }
                                   }}
                                 />
