@@ -11,6 +11,7 @@ const mobileNavItems = [
   { name: "PRODUCT", href: "/#product" },
   { name: "FRAMES", href: "/#frames" },
   { name: "GALLERY", href: "/#portfolio" },
+  { name: "AKTIVITAS", href: "/#activities" },
   { name: "PRICING", href: "/#pricing" },
   { name: "FAQ", href: "/#faq" },
   { name: "MY PHOTOS", href: "/profile" },
@@ -20,6 +21,7 @@ const desktopNavItems = [
   { name: "PRODUCT", href: "/#product" },
   { name: "FRAMES", href: "/#frames" },
   { name: "GALLERY", href: "/#portfolio" },
+  { name: "AKTIVITAS", href: "/#activities" },
   { name: "PRICING", href: "/#pricing" },
   { name: "FAQ", href: "/#faq" },
 ];
@@ -66,6 +68,7 @@ export function Header() {
         document.getElementById(hash) ||
         document.getElementById(`slide-${hash}`) ||
         (hash === "product" ? document.getElementById("slide-services") : null) ||
+        (hash === "activities" ? document.getElementById("slide-activities") : null) ||
         (hash === "faq" ? document.getElementById("slide-contact") : null);
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: "smooth" });

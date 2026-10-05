@@ -29,6 +29,19 @@ function getOptimizedDisplayUrl(rawUrl: string, width = 720, quality = 75): stri
   return `/api/image?url=${encodeURIComponent(rawUrl)}&w=${width}&q=${quality}`
 }
 
+function getRawOriginalUrl(url: string | undefined): string {
+  if (!url) return ''
+  if (url.includes('/api/image')) {
+    try {
+      const match = url.match(/[?&]url=([^&]+)/)
+      if (match && match[1]) {
+        return decodeURIComponent(match[1])
+      }
+    } catch {}
+  }
+  return url
+}
+
 export default function AccessSessionClient({ session: initialSession, sessionId }: AccessSessionClientProps) {
   const router = useRouter()
   const supabase = createClient()
@@ -41,6 +54,15 @@ export default function AccessSessionClient({ session: initialSession, sessionId
   const [claimSuccess, setClaimSuccess] = useState(false)
   const [alreadyClaimedByOther, setAlreadyClaimedByOther] = useState(false)
   const [isClaimedByMe, setIsClaimedByMe] = useState(false)
+
+  // Mobile viewport detection for lightweight 60% quality preview
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Download bundle state
   const [isBundling, setIsBundling] = useState(false)
@@ -184,12 +206,12 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       return {
         id: item.id || `m-${idx}`,
         url: item.url, // Original uncompressed master camera file (100% resolution for downloads)
-        displayUrl: getOptimizedDisplayUrl(item.url, 720, 75), // Fast compressed WebP for instant UI display
+        displayUrl: getOptimizedDisplayUrl(item.url, isMobile ? 480 : 720, isMobile ? 60 : 75), // Fast compressed WebP (60% on HP)
         type: isVideo ? 'video' : isGif ? 'gif' : isStrip ? 'strip' : 'photo',
         label
       }
     })
-  }, [session.media])
+  }, [session.media, isMobile])
 
 
   // 5. Handle Claim
@@ -239,8 +261,9 @@ export default function AccessSessionClient({ session: initialSession, sessionId
     const sessionSlug = session.event_name?.replace(/[^a-zA-Z0-9_-]+/g, '_') || `Sebooth_${sessionId.slice(0, 6)}`
     const fileName = `Sebooth_${sessionSlug}_${item.label.replace(/\s+/g, '_')}_${index + 1}.${ext}`
 
+    const rawTarget = getRawOriginalUrl(item.url)
     const link = document.createElement('a')
-    link.href = `/api/download?url=${encodeURIComponent(item.url)}&filename=${encodeURIComponent(fileName)}`
+    link.href = `/api/download?url=${encodeURIComponent(rawTarget)}&filename=${encodeURIComponent(fileName)}`
     link.download = fileName
     document.body.appendChild(link)
     link.click()
@@ -281,10 +304,11 @@ export default function AccessSessionClient({ session: initialSession, sessionId
         const labelSlug = item.label.replace(/\s+/g, '_')
         const fileName = `Sebooth_${sessionSlug}_${labelSlug}.${ext}`
 
-        // Direct fetch or API proxy fallback
+        // Direct fetch or API proxy fallback (100% original uncompressed master file)
+        const targetUrl = getRawOriginalUrl(item.url)
         let blob: Blob | null = null
         try {
-          const res = await fetch(item.url)
+          const res = await fetch(targetUrl)
           if (res.ok) {
             blob = await res.blob()
           }
@@ -293,7 +317,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
         }
 
         if (!blob) {
-          const proxyRes = await fetch(`/api/download?url=${encodeURIComponent(item.url)}&filename=${encodeURIComponent(fileName)}`)
+          const proxyRes = await fetch(`/api/download?url=${encodeURIComponent(targetUrl)}&filename=${encodeURIComponent(fileName)}`)
           if (proxyRes.ok) {
             blob = await proxyRes.blob()
           }

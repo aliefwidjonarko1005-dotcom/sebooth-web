@@ -24,6 +24,8 @@ const PricingSlider = dynamic(() => import("@/components/sections/PricingSlider"
   loading: () => <div className="w-full h-full bg-black/40 flex items-center justify-center" />,
 });
 
+import { ActivitiesSlider } from "@/components/sections/ActivitiesSlider";
+
 const FaqStackSlider = dynamic(() => import("@/components/sections/FaqStackSlider").then((mod) => mod.FaqStackSlider), {
   loading: () => <div className="w-full h-full bg-black/40 flex items-center justify-center" />,
 });
@@ -186,6 +188,10 @@ export const SlideItem: React.FC<SlideItemProps> = ({
       ) : slide.id === "portfolio" ? (
         <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
           <PortfolioSlider isActive={isActive} />
+        </div>
+      ) : slide.id === "activities" || slide.id === "articles" ? (
+        <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
+          <ActivitiesSlider />
         </div>
       ) : slide.id === "pricing" ? (
         <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">

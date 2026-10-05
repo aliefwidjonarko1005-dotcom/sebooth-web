@@ -149,6 +149,7 @@ export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
           return (
             <div
               key={slide.id}
+              id={`slide-${slide.id}`}
               data-slide-index={index}
               className="w-full h-[100dvh] min-h-[100dvh] max-h-[100dvh] [scroll-snap-align:start] [scroll-snap-stop:always] shrink-0 relative overflow-hidden [transform:translate3d(0,0,0)] [backface-visibility:hidden]"
               style={{

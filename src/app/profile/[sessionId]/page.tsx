@@ -24,17 +24,32 @@ const FRAME_TEMPLATES = [
 
 type TabKey = 'strip' | 'gif' | 'live' | 'photos'
 
+/* ─── Helper: Ensure downloads strictly target original uncompressed file ─── */
+function getRawOriginalUrl(url: string | undefined): string {
+  if (!url) return ''
+  if (url.includes('/api/image')) {
+    try {
+      const match = url.match(/[?&]url=([^&]+)/)
+      if (match && match[1]) {
+        return decodeURIComponent(match[1])
+      }
+    } catch {}
+  }
+  return url
+}
+
 /* ─── Helper: Download a file via API proxy ─── */
 async function downloadFile(url: string, filename: string) {
-  if (url.startsWith('data:') || url.startsWith('blob:')) {
+  const cleanUrl = getRawOriginalUrl(url)
+  if (cleanUrl.startsWith('data:') || cleanUrl.startsWith('blob:')) {
     const link = document.createElement('a')
-    link.href = url
+    link.href = cleanUrl
     link.download = filename
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
   } else {
-    window.location.href = `/api/download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`
+    window.location.href = `/api/download?url=${encodeURIComponent(cleanUrl)}&filename=${encodeURIComponent(filename)}`
   }
 }
 
@@ -326,7 +341,17 @@ export default function SessionDetailPage() {
               {strip ? (
                 <div className="relative w-full rounded-3xl overflow-hidden shadow-2xl bg-slate-900 border border-slate-200/80 p-2 flex flex-col items-center">
                   <div className="relative w-full rounded-2xl overflow-hidden flex items-center justify-center bg-slate-950" style={{ maxHeight: '68vh', aspectRatio: '9/16' }}>
-                    <img src={strip.url} alt="Photo Strip" className="w-full h-full object-contain" />
+                    <img 
+                      src={isMobile ? `/api/image?url=${encodeURIComponent(strip.url)}&w=480&q=60` : strip.url} 
+                      alt="Photo Strip" 
+                      className="w-full h-full object-contain" 
+                      loading="lazy"
+                      onError={(e) => {
+                        if (e.currentTarget.src !== strip.url) {
+                          e.currentTarget.src = strip.url
+                        }
+                      }}
+                    />
                   </div>
 
                   <div className="w-full mt-3 flex items-center justify-between gap-2 px-1">
@@ -423,7 +448,7 @@ export default function SessionDetailPage() {
                 {photos.map((p, i) => (
                   <div key={p.id} className="relative group aspect-square bg-slate-900 rounded-2xl overflow-hidden shadow-md border border-slate-200/80">
                     <img 
-                      src={`/api/image?url=${encodeURIComponent(p.url)}&w=640&q=70`} 
+                      src={isMobile ? `/api/image?url=${encodeURIComponent(p.url)}&w=480&q=60` : `/api/image?url=${encodeURIComponent(p.url)}&w=640&q=70`} 
                       alt={`Photo ${i + 1}`} 
                       className="w-full h-full object-cover" 
                       loading="lazy" 

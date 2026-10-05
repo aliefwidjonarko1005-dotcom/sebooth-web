@@ -59,9 +59,35 @@ function getOptimizedDisplayUrl(rawUrl: string, width = 640, quality = 70): stri
   return `/api/image?url=${encodeURIComponent(rawUrl)}&w=${width}&q=${quality}`
 }
 
+/**
+ * Ensures single and bundle downloads always target the 100% uncompressed master resolution camera file,
+ * stripping any proxy /api/image query strings if present.
+ */
+function getRawOriginalUrl(url: string | undefined): string {
+  if (!url) return ''
+  if (url.includes('/api/image')) {
+    try {
+      const match = url.match(/[?&]url=([^&]+)/)
+      if (match && match[1]) {
+        return decodeURIComponent(match[1])
+      }
+    } catch {}
+  }
+  return url
+}
+
 export default function MyPhotosPage() {
   const router = useRouter()
   const supabase = createClient()
+
+  // Responsive HP / Mobile viewport detection (< 768px)
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const [dbSessions, setDbSessions] = useState<SessionData[]>([])
   const [loading, setLoading] = useState(true)
@@ -418,9 +444,10 @@ export default function MyPhotosPage() {
         return !isVideo && (m.type === 'strip' || m.url?.toLowerCase().includes('strip'))
       }) || rawMediaList[0]
 
-      const isMobileDevice = typeof window !== 'undefined' ? window.innerWidth < 768 : false
+      const isMobileDevice = isMobile || (typeof window !== 'undefined' ? window.innerWidth < 768 : false)
       const rawStripUrl = stripMedia?.url || '/images/gallery/hd/strip_004a6bbb.webp'
-      const stripThumbUrl = getOptimizedDisplayUrl(rawStripUrl, isMobileDevice ? 360 : 420, isMobileDevice ? 65 : 75)
+      // HP/Mobile Mode: compress photostrip preview to 60% quality (w=360, q=60) for minimal load
+      const stripThumbUrl = getOptimizedDisplayUrl(rawStripUrl, isMobileDevice ? 360 : 420, isMobileDevice ? 60 : 75)
 
       const date = s.created_at ? new Date(s.created_at) : new Date()
       const formattedDate = date.toLocaleDateString('id-ID', {
@@ -457,7 +484,7 @@ export default function MyPhotosPage() {
         attendees: []
       }
     })
-  }, [dbSessions])
+  }, [dbSessions, isMobile])
 
   const currentSession = sessionsList[activeSessionIndex] || sessionsList[0]
 
@@ -478,7 +505,7 @@ export default function MyPhotosPage() {
       ]
     }
 
-    const isMobileDevice = typeof window !== 'undefined' ? window.innerWidth < 768 : false
+    const isMobileDevice = isMobile || (typeof window !== 'undefined' ? window.innerWidth < 768 : false)
 
     return rawList.map((m: any, mIdx: number) => {
       const isVideo = m.type === 'video' || m.type === 'live' || !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
@@ -486,24 +513,25 @@ export default function MyPhotosPage() {
       const isGif = !isVideo && (m.type === 'gif' || m.url?.toLowerCase().includes('gif'))
       const isIndividualPhoto = !isVideo && !isStrip && !isGif
 
-      // Mobile phone screens: 480px @ q66 saves 70% data & RAM, instant decoding
+      // Mobile phone screens (HP Mode): 60% quality (q=60, w=480 for photos, w=360 for strips)
+      // Saves 80-85% data & RAM, instant decoding and lightweight rendering
       // Laptops / tablets: 640-720px @ q72
       // Animated GIFs and videos remain in original format
-      const targetWidth = isMobileDevice ? 480 : (isIndividualPhoto ? 640 : 720)
-      const targetQuality = isMobileDevice ? 66 : (isIndividualPhoto ? 68 : 72)
+      const targetWidth = isMobileDevice ? (isStrip ? 360 : 480) : (isIndividualPhoto ? 640 : 720)
+      const targetQuality = isMobileDevice ? 60 : (isIndividualPhoto ? 68 : 72)
       const displayUrl = isVideo || isGif 
         ? m.url 
         : getOptimizedDisplayUrl(m.url, targetWidth, targetQuality)
 
       return {
         id: m.id || `m-${mIdx}`,
-        url: displayUrl, // Compressed display image (saves 85-90% data & RAM)
+        url: displayUrl, // Compressed display image (saves 85-90% data & RAM, 60% quality on mobile)
         hdUrl: m.url, // Original raw master camera file (100% full original resolution for downloads)
         type: isVideo ? 'video' : isStrip ? 'strip' : isGif ? 'gif' : 'photo',
         label: isVideo ? 'Live Video Frame' : isStrip ? 'Photostrip' : isGif ? 'Live GIF' : `Photo ${mIdx + 1}`
       }
     })
-  }, [currentSession?.id, isOverviewMode])
+  }, [currentSession?.id, isOverviewMode, isMobile])
 
   const currentMediaIndex = activeMediaIndices[currentSession?.id] || 0
 
@@ -795,7 +823,8 @@ export default function MyPhotosPage() {
       type: 'strip',
       label: 'Photostrip'
     }
-    const targetUrl = activeMedia?.hdUrl || activeMedia?.url
+    // Strictly download 100% original uncompressed master camera file (never proxy/compressed display URL)
+    const targetUrl = getRawOriginalUrl(activeMedia?.hdUrl || activeMedia?.url)
     if (!targetUrl) return
     const ext = targetUrl.split('.').pop()?.split('?')[0] || (activeMedia.type === 'video' ? 'mp4' : activeMedia.type === 'gif' ? 'gif' : 'jpg')
     const filename = `Sebooth_${currentSession?.id || 'photo'}_${currentMediaIndex + 1}.${ext}`
@@ -835,7 +864,8 @@ export default function MyPhotosPage() {
       for (let i = 0; i < total; i++) {
         const item = mediaItems[i]
         setBundleProgress({ current: i + 1, total })
-        const targetUrl = item.hdUrl || item.url
+        // Strictly download 100% original uncompressed master camera file (never proxy/compressed display URL)
+        const targetUrl = getRawOriginalUrl(item.hdUrl || item.url)
 
         let ext = 'jpg'
         let mimeType = 'image/jpeg'
