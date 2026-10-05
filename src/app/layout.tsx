@@ -3,7 +3,6 @@ import { Poppins, Bayon } from "next/font/google";
 import "./globals.css";
 import { LayoutShell } from "@/components/layout/LayoutShell";
 import { OrientationProvider } from "@/components/layout/OrientationProvider";
-import { CustomCursor } from "@/components/ui/CustomCursor";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 
 const poppins = Poppins({
@@ -52,7 +51,6 @@ export default function RootLayout({
       >
         <OrientationProvider>
           <SmoothScrollProvider>
-            <CustomCursor />
             <div id="root-app" className="w-full h-full relative">
               <LayoutShell>{children}</LayoutShell>
             </div>

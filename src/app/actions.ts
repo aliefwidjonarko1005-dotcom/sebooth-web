@@ -27,6 +27,8 @@ export async function revalidateSpecificPage(path: string) {
     revalidatePath(path, "page");
 }
 
+import { checkSessionExpiry } from "@/lib/sessionExpiryPolicy";
+
 /**
  * Atomically claim a session for the currently authenticated user.
  * Runs securely on the server.
@@ -56,7 +58,33 @@ export async function claimSession(sessionId: string): Promise<{ success: boolea
         return { success: false, error: "Unauthorized" };
     }
 
-    // Atomic claim with WHERE is_claimed = false
+    // 1. Fetch session to verify existence and check expiry policy
+    const { data: sessionRow } = await supabase
+        .from("sessions")
+        .select("id, created_at, is_claimed")
+        .eq("id", sessionId)
+        .single();
+
+    if (!sessionRow) {
+        return { success: false, error: "Sesi tidak ditemukan." };
+    }
+
+    if (sessionRow.is_claimed) {
+        return { success: false, error: "Sesi ini sudah diklaim oleh pengguna lain." };
+    }
+
+    // 2. Validate expiration policy:
+    // Kebijakan 3 hari HANYA berlaku untuk sesi yang dibuat setelah tanggal kebijakan (UNCLAIMED_EXPIRY_POLICY_START_DATE).
+    // Sesi sebelum tanggal tersebut tidak kedaluwarsa (dapat diklaim kapan saja).
+    const expiryStatus = checkSessionExpiry(sessionRow.created_at, sessionRow.is_claimed);
+    if (expiryStatus.isSubjectToPolicy && expiryStatus.isExpired) {
+        return {
+            success: false,
+            error: "Sesi ini telah kedaluwarsa karena tidak diklaim dalam batas waktu 3 hari sejak sesi dibuat."
+        };
+    }
+
+    // 3. Atomic claim with WHERE is_claimed = false
     const { data, error } = await supabase
         .from("sessions")
         .update({ user_id: user.id, is_claimed: true })

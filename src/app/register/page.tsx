@@ -3,7 +3,7 @@
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { UserPlus, Mail, Lock, Loader2, ArrowRight, User, Phone } from 'lucide-react'
+import { UserPlus, Mail, Lock, Loader2, ArrowRight, User, Phone, Instagram, Compass, ChevronDown } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 
 function RegisterContent() {
@@ -15,6 +15,8 @@ function RegisterContent() {
 
   const [fullName, setFullName] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
+  const [instagram, setInstagram] = useState('')
+  const [referralSource, setReferralSource] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -38,6 +40,7 @@ function RegisterContent() {
     }
 
     try {
+      const cleanInstagram = instagram.trim().replace(/^@/, '')
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -45,6 +48,9 @@ function RegisterContent() {
           data: {
             full_name: fullName.trim(),
             phone_number: phoneNumber.trim(),
+            instagram: cleanInstagram || null,
+            referral_source: referralSource || null,
+            heard_from: referralSource || null,
           },
         },
       })
@@ -153,6 +159,42 @@ function RegisterContent() {
                 className="w-full rounded-2xl border-none bg-gray-100 py-4 pl-12 pr-4 font-medium transition-shadow focus:ring-2 focus:ring-blue-600"
                 placeholder="08xx xxxx xxxx"
               />
+            </div>
+          </div>
+
+          {/* Instagram */}
+          <div>
+            <label className="text-sm font-bold text-gray-700">Instagram</label>
+            <div className="relative mt-2">
+              <Instagram className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+              <input 
+                type="text"
+                maxLength={35}
+                value={instagram}
+                onChange={(e) => setInstagram(e.target.value)}
+                className="w-full rounded-2xl border-none bg-gray-100 py-4 pl-12 pr-4 font-medium transition-shadow focus:ring-2 focus:ring-blue-600"
+                placeholder="@username (opsional)"
+              />
+            </div>
+          </div>
+
+          {/* Tahu Sebooth dari Mana */}
+          <div>
+            <label className="text-sm font-bold text-gray-700">Tahu Sebooth dari Mana?</label>
+            <div className="relative mt-2">
+              <Compass className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <select
+                value={referralSource}
+                onChange={(e) => setReferralSource(e.target.value)}
+                className="w-full appearance-none rounded-2xl border-none bg-gray-100 py-4 pl-12 pr-10 font-medium text-gray-800 transition-shadow focus:ring-2 focus:ring-blue-600 cursor-pointer"
+              >
+                <option value="">Pilih sumber informasi...</option>
+                <option value="Instagram">Instagram</option>
+                <option value="TikTok">TikTok</option>
+                <option value="Google">Google</option>
+                <option value="Postingan Teman">Postingan Teman</option>
+              </select>
+              <ChevronDown className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 pointer-events-none" />
             </div>
           </div>
 

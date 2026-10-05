@@ -398,3 +398,635 @@ img, svg, video, canvas {
   animation: zoom-in-focus 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   will-change: transform, opacity;
 }
+
+/* ─── Hardware-Accelerated Smooth Spin ─── */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 0.85s linear infinite !important;
+  transform-origin: center center;
+  display: inline-block;
+}
+
+/* ════════════════════════════════════════════════════
+   INTERACTIVE TOUR GESTURE ANIMATIONS
+   ════════════════════════════════════════════════════ */
+
+/* 1. Swipe Gesture Keyframes */
+@keyframes gesture-swipe-puck {
+  0% {
+    transform: translate3d(-36px, 0, 0) scale(1);
+    opacity: 0.9;
+  }
+  15% {
+    transform: translate3d(-36px, 0, 0) scale(0.94);
+    opacity: 1;
+  }
+  45% {
+    transform: translate3d(36px, 0, 0) scale(1.05);
+    opacity: 1;
+  }
+  60% {
+    transform: translate3d(36px, 0, 0) scale(0.94);
+    opacity: 1;
+  }
+  90% {
+    transform: translate3d(-36px, 0, 0) scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-36px, 0, 0) scale(1);
+    opacity: 0.9;
+  }
+}
+
+.animate-gesture-swipe {
+  animation: gesture-swipe-puck 2.4s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+  will-change: transform, opacity;
+}
+
+/* 2. Pinch Gesture Keyframes (2 fingers) */
+@keyframes gesture-pinch-finger-1 {
+  0% {
+    transform: translate3d(-28px, -20px, 0) scale(1);
+  }
+  45% {
+    transform: translate3d(-7px, -5px, 0) scale(0.9);
+  }
+  60% {
+    transform: translate3d(-7px, -5px, 0) scale(0.9);
+  }
+  95% {
+    transform: translate3d(-28px, -20px, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(-28px, -20px, 0) scale(1);
+  }
+}
+
+@keyframes gesture-pinch-finger-2 {
+  0% {
+    transform: translate3d(28px, 20px, 0) scale(1);
+  }
+  45% {
+    transform: translate3d(7px, 5px, 0) scale(0.9);
+  }
+  60% {
+    transform: translate3d(7px, 5px, 0) scale(0.9);
+  }
+  95% {
+    transform: translate3d(28px, 20px, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(28px, 20px, 0) scale(1);
+  }
+}
+
+.animate-gesture-pinch-1 {
+  animation: gesture-pinch-finger-1 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+.animate-gesture-pinch-2 {
+  animation: gesture-pinch-finger-2 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+/* 3. Hold (Long-Press) Keyframes */
+@keyframes gesture-hold-ring-progress {
+  0% {
+    stroke-dashoffset: 188;
+    opacity: 0.6;
+  }
+  10% {
+    stroke-dashoffset: 188;
+    opacity: 1;
+  }
+  65% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  85% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 188;
+    opacity: 0.6;
+  }
+}
+
+@keyframes gesture-hold-pulse-wave {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  75% {
+    transform: scale(1.6);
+    opacity: 0.9;
+  }
+  90% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+@keyframes gesture-hold-press-puck {
+  0% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(0.88);
+  }
+  65% {
+    transform: scale(0.86);
+  }
+  75% {
+    transform: scale(1.08);
+  }
+  85% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-gesture-hold-ring {
+  animation: gesture-hold-ring-progress 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-gesture-hold-pulse {
+  animation: gesture-hold-pulse-wave 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.animate-gesture-hold-press {
+  animation: gesture-hold-press-puck 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+/* 4. Tap Keyframes */
+@keyframes gesture-tap-puck {
+  0%, 100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(0.85);
+  }
+  45% {
+    transform: scale(1.05);
+  }
+  60% {
+    transform: scale(1);
+  }
+}
+
+@keyframes gesture-tap-ripple-wave {
+  0%, 25% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.animate-gesture-tap-puck {
+  animation: gesture-tap-puck 1.6s cubic-bezier(0.3, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+.animate-gesture-tap-ripple {
+  animation: gesture-tap-ripple-wave 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  will-change: transform, opacity;
+}
+
+/* ─── Direct On-Photo Hand Gesture Tutorial Animations ─── */
+/* 1. Hand Swipe Gesture (Glides across the photo horizontally) */
+@keyframes hand-swipe-gesture {
+  0% {
+    transform: translate3d(55px, 0, 0) scale(0.95) rotate(-10deg);
+    opacity: 0;
+  }
+  15% {
+    transform: translate3d(55px, 0, 0) scale(1) rotate(-12deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translate3d(55px, 0, 0) scale(0.92) rotate(-12deg);
+    opacity: 1;
+  }
+  65% {
+    transform: translate3d(-55px, 0, 0) scale(0.92) rotate(-15deg);
+    opacity: 1;
+  }
+  80% {
+    transform: translate3d(-55px, 0, 0) scale(0.85) rotate(-15deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(55px, 0, 0) scale(0.95) rotate(-10deg);
+    opacity: 0;
+  }
+}
+
+.animate-hand-swipe {
+  animation: hand-swipe-gesture 1.9s cubic-bezier(0.2, 0.9, 0.3, 1) infinite;
+  will-change: transform, opacity;
+}
+
+/* 2. Hand Tap Gesture (Touches down on photo with ripple) */
+@keyframes hand-tap-gesture {
+  0% {
+    transform: translate3d(0, -18px, 0) scale(1.06) rotate(-12deg);
+    opacity: 0;
+  }
+  20% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(-12deg);
+    opacity: 1;
+  }
+  35% {
+    transform: translate3d(0, 5px, 0) scale(0.88) rotate(-12deg);
+    opacity: 1;
+  }
+  55% {
+    transform: translate3d(0, -10px, 0) scale(1) rotate(-12deg);
+    opacity: 1;
+  }
+  80% {
+    transform: translate3d(0, -18px, 0) scale(1.06) rotate(-12deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, -18px, 0) scale(1.06) rotate(-12deg);
+    opacity: 0;
+  }
+}
+
+.animate-hand-tap {
+  animation: hand-tap-gesture 1.6s cubic-bezier(0.2, 0.9, 0.3, 1) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes hand-tap-ripple {
+  0%, 30% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.animate-hand-tap-ripple {
+  animation: hand-tap-ripple 1.6s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+  will-change: transform, opacity;
+}
+
+/* 3. Hand Hold Gesture (Presses and holds with 360 ring) */
+@keyframes hand-hold-gesture {
+  0% {
+    transform: translate3d(0, -14px, 0) scale(1.05) rotate(-12deg);
+    opacity: 0;
+  }
+  15% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(-12deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translate3d(0, 4px, 0) scale(0.9) rotate(-12deg);
+    opacity: 1;
+  }
+  75% {
+    transform: translate3d(0, 4px, 0) scale(0.9) rotate(-12deg);
+    opacity: 1;
+  }
+  85% {
+    transform: translate3d(0, -14px, 0) scale(1.05) rotate(-12deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, -14px, 0) scale(1.05) rotate(-12deg);
+    opacity: 0;
+  }
+}
+
+.animate-hand-hold {
+  animation: hand-hold-gesture 2.2s cubic-bezier(0.2, 0.9, 0.3, 1) infinite;
+  will-change: transform, opacity;
+}
+
+/* 4. Hand Point Down Gesture (Points to bottom nav bar) */
+@keyframes hand-point-down-gesture {
+  0% {
+    transform: translate3d(0, -10px, 0) scale(0.95) rotate(-12deg);
+    opacity: 0;
+  }
+  20% {
+    transform: translate3d(0, 15px, 0) scale(1) rotate(-12deg);
+    opacity: 1;
+  }
+  45% {
+    transform: translate3d(0, 32px, 0) scale(0.94) rotate(-12deg);
+    opacity: 1;
+  }
+  65% {
+    transform: translate3d(0, 20px, 0) scale(1) rotate(-12deg);
+    opacity: 1;
+  }
+  85% {
+    transform: translate3d(0, 36px, 0) scale(0.9) rotate(-12deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, -10px, 0) scale(0.95) rotate(-12deg);
+    opacity: 0;
+  }
+}
+
+.animate-hand-point-down {
+  animation: hand-point-down-gesture 1.8s cubic-bezier(0.2, 0.9, 0.3, 1) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes nav-button-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.6), 0 0 15px rgba(249, 115, 22, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(249, 115, 22, 0), 0 0 25px rgba(249, 115, 22, 0.6);
+  }
+}
+
+.animate-nav-button-glow {
+  animation: nav-button-glow-pulse 1.8s ease-in-out infinite;
+}
+
+
+/* 2. Real Swipe Simulation */
+@keyframes real-touch-swipe-finger {
+  0% {
+    transform: translate3d(55px, 0, 0) scale(0.9);
+    opacity: 0;
+  }
+  15% {
+    transform: translate3d(55px, 0, 0) scale(1.05);
+    opacity: 1;
+  }
+  25% {
+    transform: translate3d(55px, 0, 0) scale(0.96);
+    opacity: 1;
+  }
+  65% {
+    transform: translate3d(-55px, 0, 0) scale(0.95);
+    opacity: 1;
+  }
+  80% {
+    transform: translate3d(-55px, 0, 0) scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(55px, 0, 0) scale(0.9);
+    opacity: 0;
+  }
+}
+
+@keyframes real-touch-swipe-card {
+  0%, 15% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  65% {
+    transform: translate3d(-38px, 0, 0) rotate(-2.5deg);
+  }
+  85% {
+    transform: translate3d(8px, 0, 0) rotate(0.6deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+}
+
+.animate-real-swipe-finger {
+  animation: real-touch-swipe-finger 1.6s cubic-bezier(0.2, 0.9, 0.3, 1) infinite;
+  will-change: transform, opacity;
+}
+
+/* 3. Real Hold Simulation */
+@keyframes real-touch-hold-finger {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  15% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(0.92);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(0.92);
+    opacity: 1;
+  }
+  85% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+}
+
+@keyframes real-touch-hold-card {
+  0%, 15% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(0.98);
+  }
+  75% {
+    transform: scale(0.98);
+  }
+  85% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-real-hold-finger {
+  animation: real-touch-hold-finger 2s cubic-bezier(0.2, 0.9, 0.3, 1) infinite;
+  will-change: transform, opacity;
+}
+
+/* ════════════════════════════════════════════════════
+   LIQUID GLASS DOCK (lightweight bottom navigation)
+   - Only the capsule uses backdrop-filter (small radius on mobile)
+   - Indicator has NO blur: inset shadows fake the recessed depth
+   - Own compositor layer + paint containment to isolate repaints
+   ════════════════════════════════════════════════════ */
+.liquid-dock {
+  transform: translate3d(0, 0, 0);
+  contain: layout paint style;
+  isolation: isolate;
+  border-radius: 9999px !important;
+  background: rgba(18, 26, 38, 0.65) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow:
+    0 16px 36px -6px rgba(0, 0, 0, 0.45),
+    0 4px 14px rgba(0, 0, 0, 0.25),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+@media (min-width: 768px) {
+  .liquid-dock {
+    -webkit-backdrop-filter: blur(28px) saturate(190%);
+    backdrop-filter: blur(28px) saturate(190%);
+  }
+}
+
+.liquid-dock--light,
+.liquid-dock--dark {
+  border-radius: 9999px !important;
+}
+
+/* Fallback when backdrop-filter is unsupported or user prefers less transparency */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .liquid-dock { background: rgba(15, 23, 42, 0.95) !important; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .liquid-dock { background: rgba(15, 23, 42, 0.96) !important; }
+}
+
+.liquid-dock__indicator {
+  will-change: transform;
+  transform-origin: center center;
+  contain: layout paint;
+}
+
+/* Authentic iOS Depth Recessed Cavity (Sunken Pill) */
+.liquid-dock__blob {
+  position: absolute !important;
+  inset: 1px !important;
+  display: block !important;
+  border-radius: 9999px !important;
+  background: rgba(0, 0, 0, 0.34) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.45),
+    inset 0 1px 2px rgba(0, 0, 0, 0.55),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.15) !important;
+  transform-origin: center center;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+
+/* Subtle top curvature specular highlight */
+.liquid-dock__blob::before {
+  content: "";
+  position: absolute;
+  top: 1.5px;
+  left: 7px;
+  right: 7px;
+  height: 35%;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+/* Subtle bottom ambient light catch */
+.liquid-dock__blob::after {
+  content: "";
+  position: absolute;
+  bottom: 1.5px;
+  left: 9px;
+  right: 9px;
+  height: 25%;
+  border-radius: 9999px;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+.liquid-dock--dark .liquid-dock__blob {
+  background: rgba(0, 0, 0, 0.46);
+}
+
+.liquid-dock__blob--danger {
+  background: rgba(88, 12, 28, 0.65);
+  border-color: rgba(244, 63, 94, 0.3);
+  border-top-color: rgba(0, 0, 0, 0.6);
+  border-bottom-color: rgba(251, 113, 133, 0.35);
+  box-shadow:
+    inset 0 2.5px 5px rgba(0, 0, 0, 0.75),
+    inset 0 1px 2px rgba(0, 0, 0, 0.8),
+    inset 0 -1px 2px rgba(251, 113, 133, 0.3);
+}
+
+.liquid-dock__blob--danger::before {
+  background: linear-gradient(180deg, rgba(254, 205, 211, 0.25) 0%, rgba(254, 205, 211, 0) 100%);
+}
+
+.liquid-dock__content {
+  will-change: transform;
+  transform-origin: center center;
+  transition: transform 140ms cubic-bezier(0.16, 1, 0.3, 1), opacity 140ms ease;
+}
+
+.liquid-dock__content--active {
+  color: #FFFFFF !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+}
+
+.liquid-dock__content--pressed,
+button:active > .liquid-dock__content,
+a:active > .liquid-dock__content {
+  transform: scale(0.9) !important;
+  transition: transform 60ms ease-out !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-dock span[aria-hidden="true"] {
+    transition: opacity 150ms ease-out !important;
+  }
+}

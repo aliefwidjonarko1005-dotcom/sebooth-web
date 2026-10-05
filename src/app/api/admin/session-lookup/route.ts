@@ -101,6 +101,8 @@ export async function GET(req: NextRequest) {
                 email: string | null;
                 full_name: string | null;
                 phone_number: string | null;
+                instagram?: string | null;
+                referral_source?: string | null;
                 created_at: string | null;
             } | null = null;
 
@@ -114,6 +116,8 @@ export async function GET(req: NextRequest) {
                             email: u.email || null,
                             full_name: (u.user_metadata?.full_name as string) || null,
                             phone_number: (u.user_metadata?.phone_number as string) || (u.phone as string) || null,
+                            instagram: (u.user_metadata?.instagram as string) || null,
+                            referral_source: (u.user_metadata?.referral_source as string) || (u.user_metadata?.heard_from as string) || null,
                             created_at: u.created_at || null,
                         };
                     }
@@ -123,6 +127,8 @@ export async function GET(req: NextRequest) {
                         email: null,
                         full_name: null,
                         phone_number: null,
+                        instagram: null,
+                        referral_source: null,
                         created_at: null,
                     };
                 }

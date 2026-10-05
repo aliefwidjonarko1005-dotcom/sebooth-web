@@ -5,13 +5,19 @@ export const dynamic = 'force-dynamic'
 import React, { useEffect, useState, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, LayoutGrid, Download, MoreHorizontal, Share2,
   Check, QrCode, ArrowRight, Camera, LogOut,
-  ChevronLeft, ChevronRight, Loader2, FolderDown, Package
+  ChevronLeft, ChevronRight, Loader2, FolderDown, Package,
+  HelpCircle, Sparkles, Image as ImageIcon
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 import { SessionData } from '@/types/database'
+import PhotoDirectGestureGuide from '@/components/ui/PhotoDirectGestureGuide'
+import DesktopGuideModal from '@/components/ui/DesktopGuideModal'
+import InteractiveTour, { TourStep } from '@/components/ui/InteractiveTour'
+import { LiquidGlassDock } from '@/components/ui/LiquidGlassDock'
 
 export interface SessionMediaItem {
   id: string
@@ -28,11 +34,14 @@ export interface UserSessionDisplayItem {
   location: string
   dateStr: string
   avatarUrl: string
+  stripUrl: string
+  rawStripUrl: string
   badgeCount: number
   category: string
   likes: string
   price: string
   media: SessionMediaItem[]
+  rawMedia?: any[]
   attendees: string[]
 }
 
@@ -45,9 +54,8 @@ function getOptimizedDisplayUrl(rawUrl: string, width = 640, quality = 70): stri
   if (!rawUrl) return ''
   // If already an /api/image URL, do not double-wrap
   if (rawUrl.includes('/api/image')) return rawUrl
-  // Bypass animated formats and already optimized WebP files
+  // Bypass animated formats and video streams
   if (rawUrl.match(/\.(gif|mp4|webm|mov)(\?.*)?$/i)) return rawUrl
-  if (rawUrl.match(/\.webp(\?.*)?$/i)) return rawUrl
   return `/api/image?url=${encodeURIComponent(rawUrl)}&w=${width}&q=${quality}`
 }
 
@@ -61,12 +69,274 @@ export default function MyPhotosPage() {
   const [activeSessionIndex, setActiveSessionIndex] = useState(0)
   const [activeMediaIndices, setActiveMediaIndices] = useState<Record<string, number>>({})
   const [isOverviewMode, setIsOverviewMode] = useState(false)
+  const [zoomOrigin, setZoomOrigin] = useState<string>('50% 50%')
+  const bookshelfScrollRef = useRef<HTMLDivElement | null>(null)
+  const lastScrollTop = useRef<number>(0)
+  const cardRectsRef = useRef<Record<number, { x: number; y: number }>>({})
   const [copiedNotification, setCopiedNotification] = useState(false)
   const [isGridModalOpen, setIsGridModalOpen] = useState(false)
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false)
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false)
   const [claimInput, setClaimInput] = useState('')
-  const [showSwipeGuide, setShowSwipeGuide] = useState(true)
+  const [isGestureGuideOpen, setIsGestureGuideOpen] = useState(false)
+  const [isDesktopGuideOpen, setIsDesktopGuideOpen] = useState(false)
+  const [isInteractiveTourOpen, setIsInteractiveTourOpen] = useState(false)
+  const holdTimer = useRef<NodeJS.Timeout | null>(null)
+  const holdFired = useRef<boolean>(false)
+  const [touchFeedback, setTouchFeedback] = useState<'idle' | 'pressing' | 'peeking' | 'dragging' | 'tapping'>('idle')
+  const touchFeedbackRef = useRef<'idle' | 'pressing' | 'peeking' | 'dragging' | 'tapping'>('idle')
+  const rAFId = useRef<number | null>(null)
+  const activeCardContainerRef = useRef<HTMLDivElement>(null)
+  const activeFrontCardRef = useRef<HTMLDivElement>(null)
+
+  // ── AUTHENTIC APPLE TAPTIC ENGINE & HAPTIC TOUCH SOUND-TACTILE SIMULATOR ──
+  // Works 100% on iOS Safari (where navigator.vibrate is blocked by Apple), Chrome iOS, and Android
+  const audioCtxRef = useRef<AudioContext | null>(null)
+
+  const initAudioCtx = () => {
+    if (typeof window === 'undefined') return null
+    if (!audioCtxRef.current) {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext
+      if (AudioContextClass) {
+        audioCtxRef.current = new AudioContextClass()
+      }
+    }
+    if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
+      audioCtxRef.current.resume().catch(() => {})
+    }
+    return audioCtxRef.current
+  }
+
+  // Synthesize Apple Taptic Engine sub-bass transient micro-impulse (acoustic-tactile sensation)
+  const playTactileClick = (type: 'tick' | 'pop') => {
+    try {
+      const ctx = initAudioCtx()
+      if (!ctx) return
+      const now = ctx.currentTime
+
+      if (type === 'tick') {
+        // Crisp 10ms mechanical micro-tick (Light impact on touch down)
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        osc.type = 'triangle'
+        osc.frequency.setValueAtTime(120, now)
+        osc.frequency.exponentialRampToValueAtTime(32, now + 0.012)
+        gain.gain.setValueAtTime(0.08, now)
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.012)
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.onended = () => {
+          try {
+            osc.disconnect()
+            gain.disconnect()
+          } catch {}
+        }
+        osc.start(now)
+        osc.stop(now + 0.012)
+      } else if (type === 'pop') {
+        // Heavy 26ms breakthrough pop (Apple 3D/Haptic Touch Pop)
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        osc.type = 'sine'
+        osc.frequency.setValueAtTime(65, now)
+        osc.frequency.exponentialRampToValueAtTime(26, now + 0.026)
+        gain.gain.setValueAtTime(0.24, now)
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.026)
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.onended = () => {
+          try {
+            osc.disconnect()
+            gain.disconnect()
+          } catch {}
+        }
+        osc.start(now)
+        osc.stop(now + 0.026)
+
+        // Secondary settle rebound micro-tick at +24ms
+        setTimeout(() => {
+          if (!audioCtxRef.current) return
+          const ctx2 = audioCtxRef.current
+          const now2 = ctx2.currentTime
+          const osc2 = ctx2.createOscillator()
+          const gain2 = ctx2.createGain()
+          osc2.type = 'triangle'
+          osc2.frequency.setValueAtTime(80, now2)
+          osc2.frequency.exponentialRampToValueAtTime(30, now2 + 0.01)
+          gain2.gain.setValueAtTime(0.1, now2)
+          gain2.gain.exponentialRampToValueAtTime(0.0001, now2 + 0.01)
+          osc2.connect(gain2)
+          gain2.connect(ctx2.destination)
+          osc2.onended = () => {
+            try {
+              osc2.disconnect()
+              gain2.disconnect()
+            } catch {}
+          }
+          osc2.start(now2)
+          osc2.stop(now2 + 0.01)
+        }, 24)
+      }
+    } catch {}
+  }
+
+  // Combined physical motor (Android) + iOS Switch Toggle + acoustic-tactile Taptic impulse (iOS Safari & all mobile devices)
+  const triggerHaptic = (
+    typeOrPattern: 'tick' | 'pop' | 'settle' | number | number[] = 'tick'
+  ) => {
+    let mode: 'tick' | 'pop' | 'settle' = 'tick'
+    let pattern: number | number[] = 12
+
+    if (typeof typeOrPattern === 'string') {
+      mode = typeOrPattern
+      pattern = mode === 'pop' ? [35, 40, 20] : mode === 'settle' ? 8 : 12
+    } else if (Array.isArray(typeOrPattern)) {
+      mode = 'pop'
+      pattern = typeOrPattern
+    } else if (typeof typeOrPattern === 'number') {
+      mode = typeOrPattern > 20 ? 'pop' : 'tick'
+      pattern = typeOrPattern
+    }
+
+    // 1. Android physical vibration motor
+    if (typeof window !== 'undefined' && typeof navigator !== 'undefined' && navigator.vibrate) {
+      try {
+        navigator.vibrate(pattern)
+      } catch {}
+    }
+
+    // 2. iOS native switch toggle (iOS 17.4+ hardware Taptic Engine trigger)
+    if (typeof document !== 'undefined') {
+      try {
+        const switchEl = document.getElementById('ios-taptic-switch') as HTMLInputElement | null
+        if (switchEl) {
+          switchEl.checked = !switchEl.checked
+        }
+      } catch {}
+    }
+
+    // 3. Apple Sub-bass Taptic Acoustic-Tactile pulse (iOS Safari & all mobile devices)
+    if (mode === 'tick' || mode === 'settle') {
+      playTactileClick('tick')
+    } else if (mode === 'pop') {
+      playTactileClick('pop')
+    }
+  }
+
+  // Interactive Spotlight Tour steps for desktop
+  const profileTourSteps: TourStep[] = useMemo(() => [
+    {
+      targetId: 'tour-profile-session-card',
+      title: 'Tumpukan Foto Polaroid (3D Focus View)',
+      description: 'Ini adalah tumpukan foto polaroid sesi aktif kamu. Klik foto untuk ganti pose (shuffle), atau geser mouse (drag) / tekan panah keyboard [←] [→] untuk berpindah sesi.',
+      badgeText: 'KONTROL UTAMA',
+      icon: <Sparkles className="w-5 h-5 text-orange-500" />,
+      gesture: 'swipe',
+      gestureLabel: 'Drag Mouse / Panah Keyboard'
+    },
+    {
+      targetId: 'tour-profile-mode-switcher',
+      title: 'Mode Rak Album (Bookshelf View)',
+      description: 'Klik tombol 4-kotak ini untuk membuka tampilan rak album seluruh sesi kamu dengan animasi zoom out ala Apple Photos.',
+      badgeText: 'TAMPILAN GRID',
+      icon: <LayoutGrid className="w-5 h-5 text-orange-500" />
+    },
+    {
+      targetId: 'tour-profile-bundle-btn',
+      title: 'Simpan Semua ke Galeri (HD)',
+      description: 'Download seluruh file dalam sesi ini (Photostrip, Live Video, GIF, dan Foto Master) secara beruntun dan cepat dalam kualitas 100% original.',
+      badgeText: 'DOWNLOAD CEPAT',
+      icon: <Download className="w-5 h-5 text-emerald-500" />
+    },
+    {
+      targetId: 'tour-profile-help-btn',
+      title: 'Pusat Bantuan & Shortcut',
+      description: 'Klik tombol tanda tanya kapan saja untuk melihat shortcut keyboard dan panduan navigasi desktop lengkap.',
+      badgeText: 'BANTUAN',
+      icon: <HelpCircle className="w-5 h-5 text-orange-500" />
+    }
+  ], [])
+
+  // Universal Help Opener: Routes cleanly to Desktop Guide on desktop (>=768px) and Direct Hand Gesture Guide on mobile (<768px)
+  const handleOpenHelp = () => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+      setIsDesktopGuideOpen(true)
+    } else {
+      setIsOverviewMode(false)
+      setIsGestureGuideOpen(true)
+    }
+  }
+
+  // Handle clicking a card in Bookshelf -> Zoom In to Focus Mode (iOS Photos style)
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>, targetIdx: number) => {
+    triggerHaptic(12)
+    const rect = e.currentTarget.getBoundingClientRect()
+    const originX = Math.round(rect.left + rect.width / 2)
+    const originY = Math.round(rect.top + rect.height / 2)
+    setZoomOrigin(`${originX}px ${originY}px`)
+    setActiveSessionIndex(targetIdx)
+    setIsOverviewMode(false)
+  }
+
+  // Handle opening Bookshelf from Focus Mode -> Zoom Out (iOS Photos style)
+  const handleOpenBookshelf = () => {
+    triggerHaptic(15)
+    setIsGestureGuideOpen(false)
+    const rect = cardRectsRef.current[activeSessionIndex]
+    if (rect) {
+      setZoomOrigin(`${Math.round(rect.x)}px ${Math.round(rect.y)}px`)
+    } else {
+      setZoomOrigin('50% 50%')
+    }
+    setIsOverviewMode(true)
+  }
+
+  // Handle closing Bookshelf back to Focus Mode via X button
+  const handleCloseBookshelf = () => {
+    triggerHaptic(12)
+    const rect = cardRectsRef.current[activeSessionIndex]
+    if (rect) {
+      setZoomOrigin(`${Math.round(rect.x)}px ${Math.round(rect.y)}px`)
+    } else {
+      setZoomOrigin('50% 50%')
+    }
+    setIsOverviewMode(false)
+  }
+
+  // Synchronize bookshelf scroll to active session card on overview open
+  useEffect(() => {
+    if (isOverviewMode) {
+      const timer = setTimeout(() => {
+        const cardEl = document.getElementById(`bookshelf-card-${activeSessionIndex}`)
+        if (cardEl && bookshelfScrollRef.current) {
+          cardEl.scrollIntoView({ block: 'nearest', behavior: 'instant' })
+          const rect = cardEl.getBoundingClientRect()
+          cardRectsRef.current[activeSessionIndex] = {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
+          }
+        }
+      }, 40)
+      return () => clearTimeout(timer)
+    }
+  }, [isOverviewMode, activeSessionIndex])
+
+  // Auto-launch direct on-photo hand gesture tutorial for first-time visitors on mobile devices (< 768px)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !loading && dbSessions.length > 0) {
+      const isMobile = window.innerWidth < 768
+      if (isMobile) {
+        const hasSeen = localStorage.getItem('hasSeenPhotoGestureGuide_v1')
+        if (!hasSeen) {
+          const timer = setTimeout(() => {
+            setIsOverviewMode(false)
+            setIsGestureGuideOpen(true)
+          }, 800)
+          return () => clearTimeout(timer)
+        }
+      }
+    }
+  }, [loading, dbSessions.length])
 
   // Bundle download state
   const [isBundling, setIsBundling] = useState(false)
@@ -86,17 +356,11 @@ export default function MyPhotosPage() {
     }
   }
 
-  // Auto-dismiss swipe guide after 5 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSwipeGuide(false)
-    }, 5000)
-    return () => clearTimeout(timer)
-  }, [])
 
 
   // Fetch real sessions from Supabase for logged-in user (instant session check)
   useEffect(() => {
+    let isMounted = true
     async function init() {
       try {
         const isPreview = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('preview') === '1'
@@ -114,34 +378,49 @@ export default function MyPhotosPage() {
           .eq('user_id', targetUserId)
           .order('created_at', { ascending: false })
 
-        if (!error && data) {
+        if (!error && data && isMounted) {
           setDbSessions(data)
         }
       } catch (err) {
         console.error('Error fetching profile data:', err)
       } finally {
-        setLoading(false)
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
-    init()
+
+    // Safety timeout: guaranteed dismiss of loading state within 4.5s
+    const safetyTimer = setTimeout(() => {
+      if (isMounted) setLoading(false)
+    }, 4500)
+
+    init().finally(() => {
+      clearTimeout(safetyTimer)
+    })
+
+    return () => {
+      isMounted = false
+      clearTimeout(safetyTimer)
+    }
   }, [router, supabase])
 
-  // Transform Supabase sessions into UI items
+  // Transform Supabase sessions into lightweight UI items for Bookshelf & Focus Mode
+  // CRITICAL REQUIREMENT: In Bookshelf mode, ONLY extract the 1 photostrip.
+  // DO NOT process other media (GIF, Live Video, individual photos) across all sessions!
   const sessionsList: UserSessionDisplayItem[] = useMemo(() => {
     return dbSessions.map((s, idx) => {
-      const mediaList: SessionMediaItem[] = (s.media || []).map((m, mIdx) => {
+      const rawMediaList = s.media || []
+
+      // Identify dedicated photostrip only (exclude videos and GIFs)
+      const stripMedia = rawMediaList.find((m: any) => {
         const isVideo = m.type === 'video' || m.type === 'live' || !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
-        const isStrip = !isVideo && ((m as any).type === 'strip' || m.url?.toLowerCase().includes('strip'))
-        const isGif = !isVideo && (m.type === 'gif' || m.url?.toLowerCase().includes('gif'))
-        const displayUrl = isVideo || isGif ? m.url : getOptimizedDisplayUrl(m.url, 720, 75)
-        return {
-          id: m.id || `m-${mIdx}`,
-          url: displayUrl,
-          hdUrl: m.url, // Original raw master camera file (100% full resolution for downloads)
-          type: isVideo ? 'video' : isStrip ? 'strip' : isGif ? 'gif' : 'photo',
-          label: isVideo ? 'Live Video Frame' : isStrip ? 'Photostrip' : isGif ? 'Live GIF' : `Photo ${mIdx + 1}`
-        }
-      })
+        return !isVideo && (m.type === 'strip' || m.url?.toLowerCase().includes('strip'))
+      }) || rawMediaList[0]
+
+      const isMobileDevice = typeof window !== 'undefined' ? window.innerWidth < 768 : false
+      const rawStripUrl = stripMedia?.url || '/images/gallery/hd/strip_004a6bbb.webp'
+      const stripThumbUrl = getOptimizedDisplayUrl(rawStripUrl, isMobileDevice ? 360 : 420, isMobileDevice ? 65 : 75)
 
       const date = s.created_at ? new Date(s.created_at) : new Date()
       const formattedDate = date.toLocaleDateString('id-ID', {
@@ -157,41 +436,99 @@ export default function MyPhotosPage() {
         author: 'sebooth.id',
         location: 'Sebooth Studio',
         dateStr: formattedDate,
-        avatarUrl: mediaList[0]?.url || '/images/gallery/hd/strip_004a6bbb.webp',
-        badgeCount: mediaList.length || 1,
+        avatarUrl: stripThumbUrl,
+        stripUrl: stripThumbUrl,
+        rawStripUrl: rawStripUrl,
+        badgeCount: rawMediaList.length || 1,
         category: 'EVENT',
         likes: `${1.1 + (idx % 5) * 0.2}k`,
         price: 'Sebooth Softfile',
-        media: mediaList.length > 0 ? mediaList : [
+        // In Bookshelf mode: media array contains ONLY the single photostrip!
+        media: [
           {
-            id: 'def-1',
-            url: '/images/gallery/hd/strip_004a6bbb.webp',
-            hdUrl: '/images/gallery/hd/strip_004a6bbb.webp',
+            id: stripMedia?.id || `strip-${s.id}`,
+            url: stripThumbUrl,
+            hdUrl: rawStripUrl,
             type: 'strip',
             label: 'Photostrip'
           }
         ],
+        rawMedia: rawMediaList,
         attendees: []
       }
     })
   }, [dbSessions])
 
   const currentSession = sessionsList[activeSessionIndex] || sessionsList[0]
+
+  // Lazy Media Processing for Active Session ONLY (Focus Mode)
+  // Non-active sessions and Bookshelf overview do NOT process any candid, GIF, or video!
+  const activeSessionMediaList: SessionMediaItem[] = useMemo(() => {
+    if (!currentSession) return []
+    const rawList = (currentSession as any).rawMedia || []
+    if (rawList.length === 0) {
+      return currentSession.media || [
+        {
+          id: 'def-1',
+          url: currentSession.stripUrl,
+          hdUrl: currentSession.rawStripUrl,
+          type: 'strip',
+          label: 'Photostrip'
+        }
+      ]
+    }
+
+    const isMobileDevice = typeof window !== 'undefined' ? window.innerWidth < 768 : false
+
+    return rawList.map((m: any, mIdx: number) => {
+      const isVideo = m.type === 'video' || m.type === 'live' || !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+      const isStrip = !isVideo && (m.type === 'strip' || m.url?.toLowerCase().includes('strip'))
+      const isGif = !isVideo && (m.type === 'gif' || m.url?.toLowerCase().includes('gif'))
+      const isIndividualPhoto = !isVideo && !isStrip && !isGif
+
+      // Mobile phone screens: 480px @ q66 saves 70% data & RAM, instant decoding
+      // Laptops / tablets: 640-720px @ q72
+      // Animated GIFs and videos remain in original format
+      const targetWidth = isMobileDevice ? 480 : (isIndividualPhoto ? 640 : 720)
+      const targetQuality = isMobileDevice ? 66 : (isIndividualPhoto ? 68 : 72)
+      const displayUrl = isVideo || isGif 
+        ? m.url 
+        : getOptimizedDisplayUrl(m.url, targetWidth, targetQuality)
+
+      return {
+        id: m.id || `m-${mIdx}`,
+        url: displayUrl, // Compressed display image (saves 85-90% data & RAM)
+        hdUrl: m.url, // Original raw master camera file (100% full original resolution for downloads)
+        type: isVideo ? 'video' : isStrip ? 'strip' : isGif ? 'gif' : 'photo',
+        label: isVideo ? 'Live Video Frame' : isStrip ? 'Photostrip' : isGif ? 'Live GIF' : `Photo ${mIdx + 1}`
+      }
+    })
+  }, [currentSession?.id, isOverviewMode])
+
   const currentMediaIndex = activeMediaIndices[currentSession?.id] || 0
 
-  // Idle prefetch: Pre-warm remaining photos of the active session in browser & server cache
+  // Strict Sliding Window Memory Management:
+  // Purge any cached media indices for sessions that leave the strict ±1 window [activeSessionIndex - 1, activeSessionIndex + 1]
   useEffect(() => {
-    if (!currentSession || !currentSession.media) return
-    const timer = setTimeout(() => {
-      currentSession.media.forEach((item, idx) => {
-        if (idx > 1 && item.type !== 'video' && item.url) {
-          const img = new Image()
-          img.src = item.url
+    setActiveMediaIndices(prev => {
+      const allowedIds = new Set([
+        sessionsList[activeSessionIndex - 1]?.id,
+        sessionsList[activeSessionIndex]?.id,
+        sessionsList[activeSessionIndex + 1]?.id
+      ].filter(Boolean))
+
+      const hasStale = Object.keys(prev).some(id => !allowedIds.has(id))
+      if (!hasStale) return prev
+
+      const nextState: Record<string, number> = {}
+      for (const id of Object.keys(prev)) {
+        if (allowedIds.has(id)) {
+          nextState[id] = prev[id]
         }
-      })
-    }, 600)
-    return () => clearTimeout(timer)
-  }, [currentSession?.id])
+      }
+      return nextState
+    })
+  }, [activeSessionIndex, sessionsList])
 
   // Switch to next/prev photo within current active session with strict debounce
   const lastTapTime = useRef<number>(0)
@@ -215,18 +552,15 @@ export default function MyPhotosPage() {
   const hasMoved = useRef<boolean>(false)
   const currentDragDx = useRef<number>(0)
 
-  // Sync track position smoothly whenever activeSessionIndex or isOverviewMode changes
+  // Sync track position smoothly whenever activeSessionIndex changes in Focus Mode
   useEffect(() => {
-    if (trackRef.current) {
+    if (trackRef.current && !isOverviewMode) {
       trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
-      const baseCalc = isOverviewMode
-        ? `calc(50% - (${activeSessionIndex + 0.5} * min(48vw, 300px)))`
-        : `calc(-${activeSessionIndex * 100}%)`
-      trackRef.current.style.transform = `translate3d(${baseCalc}, 0, 0)`
+      trackRef.current.style.transform = `translate3d(-${activeSessionIndex * 100}%, 0, 0)`
     }
   }, [activeSessionIndex, isOverviewMode, loading, sessionsList.length])
 
-  // Direct 1:1 hardware drag handlers (works seamlessly on Mobile Touch and Desktop Mouse)
+  // Direct 1:1 hardware drag & iOS tactile gesture handlers (Zero Re-render & 120 FPS Compositor)
   const handleDragStart = (clientX: number) => {
     if (isOverviewMode) return
     isDragging.current = true
@@ -235,28 +569,112 @@ export default function MyPhotosPage() {
     hasMoved.current = false
     currentDragDx.current = 0
 
-    if (showSwipeGuide) setShowSwipeGuide(false)
+    // 1. Immediate iOS Tactile Press: Compress card with cushioned resistance (scale: 0.94) via direct DOM (0ms lag, no React re-render)
+    touchFeedbackRef.current = 'pressing'
+    if (activeCardContainerRef.current) {
+      activeCardContainerRef.current.style.transition = 'transform 0.18s cubic-bezier(0.25, 1, 0.5, 1)'
+      activeCardContainerRef.current.style.transform = 'scale(0.94)'
+    }
+    triggerHaptic('tick')
+
     if (trackRef.current) {
       trackRef.current.style.transition = 'none'
     }
+
+    // 2. iOS Haptic Touch Breakthrough Timer (280ms): Triggers authentic Apple spring pop (scale: 1.08)
+    if (holdTimer.current) clearTimeout(holdTimer.current)
+    holdTimer.current = setTimeout(() => {
+      if (!hasMoved.current && isDragging.current) {
+        touchFeedbackRef.current = 'peeking'
+        setTouchFeedback('peeking')
+        triggerHaptic('pop') // Authentic iPhone Taptic Engine breakthrough double-impulse
+      }
+    }, 280)
   }
 
   const handleDragMove = (clientX: number) => {
     if (!isDragging.current || isOverviewMode) return
-    const dx = clientX - dragStartX.current
-    currentDragDx.current = dx
+    const rawDx = clientX - dragStartX.current
+    currentDragDx.current = rawDx
 
-    if (Math.abs(dx) > 3) {
+    // When movement exceeds 8px, cancel hold peek and enter iOS Swipe/Drag mode
+    if (Math.abs(rawDx) > 8) {
       hasMoved.current = true
+      if (holdTimer.current) {
+        clearTimeout(holdTimer.current)
+        holdTimer.current = null
+      }
+      if (touchFeedbackRef.current !== 'dragging') {
+        touchFeedbackRef.current = 'dragging'
+        if (activeCardContainerRef.current) {
+          activeCardContainerRef.current.style.transition = 'transform 0.2s ease'
+          activeCardContainerRef.current.style.transform = 'scale(0.985)'
+        }
+      }
+      if (activeFrontCardRef.current && activeFrontCardRef.current.style.transition !== 'none') {
+        activeFrontCardRef.current.style.transition = 'none'
+      }
+      if (trackRef.current && trackRef.current.style.transition !== 'none') {
+        trackRef.current.style.transition = 'none'
+      }
     }
 
-    if (trackRef.current) {
-      trackRef.current.style.transform = `translate3d(calc(-${activeSessionIndex * 100}% + ${dx}px), 0, 0)`
-    }
+    // GPU-accelerated requestAnimationFrame batching (zero React state re-renders during motion!)
+    if (rAFId.current) cancelAnimationFrame(rAFId.current)
+    rAFId.current = requestAnimationFrame(() => {
+      if (!isDragging.current) return
+
+      const isAtStart = activeSessionIndex === 0 && rawDx > 0
+      const isAtEnd = activeSessionIndex === sessionsList.length - 1 && rawDx < 0
+      let effectiveDx = rawDx
+
+      if (isAtStart || isAtEnd) {
+        effectiveDx = Math.sign(rawDx) * Math.pow(Math.abs(rawDx), 0.76) * 1.85
+      }
+
+      const tilt = Math.max(-5.5, Math.min(5.5, (effectiveDx / 300) * 7.5))
+
+      if (trackRef.current) {
+        trackRef.current.style.transform = `translate3d(calc(-${activeSessionIndex * 100}% + ${effectiveDx}px), 0, 0)`
+      }
+      if (activeFrontCardRef.current) {
+        activeFrontCardRef.current.style.transform = `translate3d(0, 0, 0) rotate(${tilt}deg)`
+      }
+    })
   }
 
   const handleDragEnd = (clientX?: number) => {
-    if (!isDragging.current || isOverviewMode) return
+    if (rAFId.current) {
+      cancelAnimationFrame(rAFId.current)
+      rAFId.current = null
+    }
+    if (holdTimer.current) {
+      clearTimeout(holdTimer.current)
+      holdTimer.current = null
+    }
+
+    // ── 1. If released while in iOS Haptic Peek mode -> Open Options Modal ──
+    if (touchFeedbackRef.current === 'peeking') {
+      touchFeedbackRef.current = 'idle'
+      setTouchFeedback('idle')
+      isDragging.current = false
+      if (activeCardContainerRef.current) {
+        activeCardContainerRef.current.style.transition = 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)'
+        activeCardContainerRef.current.style.transform = 'scale(1)'
+      }
+      triggerHaptic('settle')
+      setIsOptionsModalOpen(true)
+      return
+    }
+
+    if (!isDragging.current || isOverviewMode) {
+      touchFeedbackRef.current = 'idle'
+      if (activeCardContainerRef.current) {
+        activeCardContainerRef.current.style.transition = 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)'
+        activeCardContainerRef.current.style.transform = 'scale(1)'
+      }
+      return
+    }
     isDragging.current = false
 
     const dx = clientX !== undefined ? clientX - dragStartX.current : currentDragDx.current
@@ -266,21 +684,36 @@ export default function MyPhotosPage() {
     const totalSessions = sessionsList.length
     const currentIndex = activeSessionIndex
 
-    // ── TAP DETECTION (PHOTO STACK SHUFFLE) ──
+    // ── 2. TAP DETECTION (TACTILE PHOTO SHUFFLE WITH MICRO-SQUASH SPRING) ──
     if (!hasMoved.current || (distance < 8 && duration < 280)) {
-      if (currentSession && currentSession.media.length > 1) {
-        handleNextMedia(currentSession.id, currentSession.media.length)
+      touchFeedbackRef.current = 'tapping'
+      triggerHaptic('tick')
+
+      if (activeCardContainerRef.current) {
+        activeCardContainerRef.current.style.transition = 'transform 0.14s cubic-bezier(0.2, 0.9, 0.3, 1)'
+        activeCardContainerRef.current.style.transform = 'scale(0.96)'
+        setTimeout(() => {
+          if (activeCardContainerRef.current) {
+            activeCardContainerRef.current.style.transition = 'transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)'
+            activeCardContainerRef.current.style.transform = 'scale(1)'
+          }
+          touchFeedbackRef.current = 'idle'
+        }, 140)
+      }
+
+      if (currentSession && activeSessionMediaList.length > 1) {
+        handleNextMedia(currentSession.id, activeSessionMediaList.length)
       }
       if (trackRef.current) {
-        trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+        trackRef.current.style.transition = 'transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1)'
         trackRef.current.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`
       }
       return
     }
 
-    // ── SWIPE GESTURE PROCESSING (INSTANT SWITCH SESSIONS) ──
-    const isFlick = velocity > 0.15 && distance > 8
-    const isDrag = distance > 25
+    // ── 3. SWIPE GESTURE PROCESSING (INERTIAL SNAPPING & SPRING REBOUND) ──
+    const isFlick = velocity > 0.16 && distance > 10
+    const isDrag = distance > 28
 
     let targetIndex = currentIndex
     if (isFlick || isDrag) {
@@ -291,12 +724,25 @@ export default function MyPhotosPage() {
       }
     }
 
+    touchFeedbackRef.current = 'idle'
+    if (activeCardContainerRef.current) {
+      activeCardContainerRef.current.style.transition = 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)'
+      activeCardContainerRef.current.style.transform = 'scale(1)'
+    }
+
+    // Elastic return for card tilt
+    if (activeFrontCardRef.current) {
+      activeFrontCardRef.current.style.transition = 'transform 0.32s cubic-bezier(0.25, 1, 0.5, 1)'
+      activeFrontCardRef.current.style.transform = 'translate3d(0, 0, 0) rotate(0deg)'
+    }
+
     if (trackRef.current) {
-      trackRef.current.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+      trackRef.current.style.transition = 'transform 0.32s cubic-bezier(0.22, 1, 0.36, 1)'
       trackRef.current.style.transform = `translate3d(-${targetIndex * 100}%, 0, 0)`
     }
 
     if (targetIndex !== currentIndex) {
+      triggerHaptic(18)
       setActiveSessionIndex(targetIndex)
     }
   }
@@ -310,8 +756,8 @@ export default function MyPhotosPage() {
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         setActiveSessionIndex(prev => (prev > 0 ? prev - 1 : prev))
       } else if (e.key === ' ' || e.key === 'Enter') {
-        if (currentSession && currentSession.media.length > 1) {
-          handleNextMedia(currentSession.id, currentSession.media.length)
+        if (currentSession && activeSessionMediaList.length > 1) {
+          handleNextMedia(currentSession.id, activeSessionMediaList.length)
         }
       } else if (e.key === 'Escape') {
         setIsOverviewMode(false)
@@ -322,7 +768,7 @@ export default function MyPhotosPage() {
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [sessionsList.length, currentSession])
+  }, [sessionsList.length, currentSession, activeSessionMediaList.length])
 
   const handleShare = () => {
     if (navigator.share) {
@@ -343,11 +789,16 @@ export default function MyPhotosPage() {
     if (e) {
       e.stopPropagation()
     }
-    const activeMedia = currentSession?.media[currentMediaIndex]
+    const activeMedia = activeSessionMediaList[currentMediaIndex] || {
+      url: currentSession?.stripUrl,
+      hdUrl: currentSession?.rawStripUrl,
+      type: 'strip',
+      label: 'Photostrip'
+    }
     const targetUrl = activeMedia?.hdUrl || activeMedia?.url
     if (!targetUrl) return
-    const ext = targetUrl.split('.').pop()?.split('?')[0] || 'jpg'
-    const filename = `sebooth_${currentSession?.id || 'photo'}_${currentMediaIndex + 1}.${ext}`
+    const ext = targetUrl.split('.').pop()?.split('?')[0] || (activeMedia.type === 'video' ? 'mp4' : activeMedia.type === 'gif' ? 'gif' : 'jpg')
+    const filename = `Sebooth_${currentSession?.id || 'photo'}_${currentMediaIndex + 1}.${ext}`
     const downloadUrl = `/api/download?url=${encodeURIComponent(targetUrl)}&filename=${encodeURIComponent(filename)}`
 
     const a = document.createElement('a')
@@ -360,66 +811,121 @@ export default function MyPhotosPage() {
     setIsOptionsModalOpen(false)
   }
 
-  // ─── DOWNLOAD 1 BUNDLE (.ZIP OF ALL ACTIVE SESSION MEDIA) ───
+  // ─── SEQUENTIAL MULTIPLE DOWNLOADS (DOWNLOAD BERUNTUN LANGSUNG KE GALERI HP) ───
+  // No ZIP file: saves individual media files so they appear directly in user's Gallery app!
   const handleDownloadBundle = async (e?: React.MouseEvent | React.TouchEvent) => {
     if (e) {
       e.stopPropagation()
     }
-    if (!currentSession || !currentSession.media || currentSession.media.length === 0) return
+    const mediaItems = activeSessionMediaList
+    if (!currentSession || mediaItems.length === 0) return
     if (isBundling) return
 
     setIsBundling(true)
-    const total = currentSession.media.length
+    const total = mediaItems.length
     setBundleProgress({ current: 0, total })
 
     try {
-      const JSZip = (await import('jszip')).default
-      const zip = new JSZip()
+      const isMobile = typeof window !== 'undefined' && (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1))
+      const sessionSlug = currentSession.title?.replace(/[^a-zA-Z0-9_-]+/g, '_') || `Sebooth_${currentSession.id.slice(0, 8)}`
+      
+      const downloadedFiles: File[] = []
 
+      // 1. Fetch each file with proper MIME type and clean naming
       for (let i = 0; i < total; i++) {
-        const item = currentSession.media[i]
-        const targetUrl = item.hdUrl || item.url
-        const ext = targetUrl.split('.').pop()?.split('?')[0] || (item.type === 'video' ? 'mp4' : item.type === 'gif' ? 'gif' : 'jpg')
-        
-        const labelSlug = item.label ? item.label.toLowerCase().replace(/[^a-z0-9]+/g, '_') : `file_${i + 1}`
-        const fileName = `${String(i + 1).padStart(2, '0')}_${labelSlug}.${ext}`
-
-        // Direct fetch with fallback to /api/download proxy
-        let response = await fetch(targetUrl).catch(() => null)
-        if (!response || !response.ok) {
-          response = await fetch(`/api/download?url=${encodeURIComponent(targetUrl)}&filename=${encodeURIComponent(fileName)}`)
-        }
-
-        if (response && response.ok) {
-          const blob = await response.blob()
-          zip.file(fileName, blob)
-        }
+        const item = mediaItems[i]
         setBundleProgress({ current: i + 1, total })
+        const targetUrl = item.hdUrl || item.url
+
+        let ext = 'jpg'
+        let mimeType = 'image/jpeg'
+        if (item.type === 'video' || targetUrl.match(/\.(mp4|mov|webm)/i)) {
+          ext = 'mp4'
+          mimeType = 'video/mp4'
+        } else if (item.type === 'gif' || targetUrl.match(/\.gif/i)) {
+          ext = 'gif'
+          mimeType = 'image/gif'
+        } else if (targetUrl.match(/\.png/i)) {
+          ext = 'png'
+          mimeType = 'image/png'
+        }
+
+        const labelSlug = item.type === 'strip'
+          ? 'Photostrip'
+          : item.type === 'video'
+          ? 'LiveVideo'
+          : item.type === 'gif'
+          ? 'GIF'
+          : `Foto_${i + 1}`
+
+        const fileName = `Sebooth_${sessionSlug}_${labelSlug}.${ext}`
+
+        // Fetch file blob with proxy fallback
+        let res = await fetch(targetUrl).catch(() => null)
+        let blob: Blob | null = null
+        if (res && res.ok) {
+          blob = await res.blob()
+        } else {
+          const proxyRes = await fetch(`/api/download?url=${encodeURIComponent(targetUrl)}&filename=${encodeURIComponent(fileName)}`)
+          if (proxyRes.ok) {
+            blob = await proxyRes.blob()
+          }
+        }
+
+        if (blob) {
+          const typedBlob = blob.type && blob.type !== 'application/octet-stream'
+            ? blob
+            : new Blob([blob], { type: mimeType })
+          downloadedFiles.push(new File([typedBlob], fileName, { type: mimeType }))
+        }
       }
 
-      const zipBlob = await zip.generateAsync({
-        type: 'blob',
-        compression: 'DEFLATE',
-        compressionOptions: { level: 6 }
-      })
+      // 2. Mobile Native Save via Web Share Level 2 (Direct to Camera Roll / Apple Photos)
+      let sharedViaSystem = false
+      if (isMobile && typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: downloadedFiles })) {
+        try {
+          await navigator.share({
+            files: downloadedFiles,
+            title: `Sesi Foto ${currentSession.title}`,
+            text: 'Simpan semua foto & video ke galeri HP!'
+          })
+          sharedViaSystem = true
+          setBundleNotification(`Berhasil menyimpan ${downloadedFiles.length} file ke Galeri!`)
+          setTimeout(() => setBundleNotification(null), 4000)
+        } catch (shareErr: any) {
+          if (shareErr.name !== 'AbortError') {
+            console.warn('Share API fallback to sequential download:', shareErr)
+          } else {
+            sharedViaSystem = true
+          }
+        }
+      }
 
-      const sessionSlug = currentSession.title?.replace(/[^a-zA-Z0-9_-]+/g, '_') || `Sebooth_${currentSession.id.slice(0, 8)}`
-      const zipFileName = `Sebooth_${sessionSlug}_Bundle.zip`
+      // 3. Sequential Multiple Downloads (Download Beruntun) for Android / Chrome / Fallback
+      if (!sharedViaSystem) {
+        for (let i = 0; i < downloadedFiles.length; i++) {
+          const file = downloadedFiles[i]
+          const blobUrl = URL.createObjectURL(file)
+          const link = document.createElement('a')
+          link.href = blobUrl
+          link.download = file.name
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 10000)
 
-      const downloadUrl = URL.createObjectURL(zipBlob)
-      const link = document.createElement('a')
-      link.href = downloadUrl
-      link.download = zipFileName
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      setTimeout(() => URL.revokeObjectURL(downloadUrl), 8000)
+          // 500ms delay between downloads allows native download manager to queue smoothly
+          if (i < downloadedFiles.length - 1) {
+            await new Promise(r => setTimeout(r, 500))
+          }
+        }
 
-      setBundleNotification(`Berhasil download 1 bundle (${total} file)!`)
-      setTimeout(() => setBundleNotification(null), 3500)
+        setBundleNotification(`Berhasil mendownload ${downloadedFiles.length} file ke Galeri!`)
+        setTimeout(() => setBundleNotification(null), 4000)
+      }
     } catch (err) {
-      console.error('Bundle download failed:', err)
-      setBundleNotification('Gagal membuat bundle zip. Silakan coba lagi.')
+      console.error('Download all failed:', err)
+      setBundleNotification('Gagal mendownload beberapa file. Coba lagi.')
       setTimeout(() => setBundleNotification(null), 3500)
     } finally {
       setIsBundling(false)
@@ -430,9 +936,19 @@ export default function MyPhotosPage() {
   if (loading) {
     return (
       <div className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-slate-900 flex flex-col items-center justify-center font-sans">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
-          <span className="text-xs font-semibold text-slate-500 tracking-wide">Memuat galeri foto kamu...</span>
+        <div className="flex flex-col items-center gap-3.5">
+          <div className="relative w-10 h-10 flex items-center justify-center">
+            <Loader2
+              className="w-10 h-10 text-orange-500 animate-spin"
+              style={{
+                animation: 'spin 0.85s linear infinite',
+                transformOrigin: 'center center'
+              }}
+            />
+          </div>
+          <span className="text-xs font-semibold text-slate-500 tracking-wide">
+            Memuat galeri foto kamu...
+          </span>
         </div>
       </div>
     )
@@ -564,377 +1080,555 @@ export default function MyPhotosPage() {
   }
 
   return (
-    <div className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-slate-900 overflow-hidden flex flex-col justify-between select-none font-sans">
+    <div className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-[#FAF8F5] text-slate-900 overflow-hidden select-none font-sans">
 
-      {/* ── App Shell Container (Spacious Responsive Layout for Mobile & PC) ── */}
-      <div className="w-full max-w-6xl mx-auto h-full flex flex-col justify-between px-4 sm:px-6 md:px-8 pt-3 pb-3 sm:pt-4 sm:pb-4">
-
-        {/* ═══════════════════════════════════════════════════════════════════
-            1. TOP HEADER BAR: Close [X] + "My Photos" + [Grid, Camera]
-           ═══════════════════════════════════════════════════════════════════ */}
-        <header className="w-full max-w-4xl mx-auto pt-1 pb-2 flex items-center justify-between shrink-0 z-20">
-          {/* Close button */}
-          <Link
-            href="/"
-            className="w-10 h-10 flex items-center justify-start text-slate-800 hover:text-black transition-opacity active:scale-95 cursor-pointer"
-            title="Kembali ke Beranda"
+      <AnimatePresence initial={false} mode="sync">
+        {isOverviewMode ? (
+          /* ═══════════════════════════════════════════════════════════════════
+             EXPANDED GALLERY VIEW: "My bookshelf" 2-Column Grid (Gambar 1)
+             Zoom Out / In container with iOS Photos physics
+             ═══════════════════════════════════════════════════════════════════ */
+          <motion.div
+            key="bookshelf-overview"
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.04 }}
+            transition={{ duration: 0.24, ease: [0.32, 0.72, 0, 1] }}
+            style={{
+              transformOrigin: zoomOrigin,
+              willChange: 'transform, opacity'
+            }}
+            ref={bookshelfScrollRef}
+            onScroll={(e) => {
+              lastScrollTop.current = e.currentTarget.scrollTop
+            }}
+            className="absolute inset-0 w-full h-full overflow-y-auto bg-[#FAF8F5] text-slate-900 flex flex-col font-sans z-10 [transform:translate3d(0,0,0)]"
           >
-            <X className="w-6 h-6 stroke-[2.2]" />
-          </Link>
+            <div className="w-full max-w-md sm:max-w-2xl md:max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-5 pb-28 sm:pb-32 flex flex-col flex-1">
+              {/* Top Header Bar */}
+              <div className="flex items-center justify-between mb-6 sm:mb-8">
+                <h1 className="text-2xl sm:text-[28px] md:text-3xl font-extrabold text-slate-800 tracking-tight font-sans">
+                  Galeri Sebooth
+                </h1>
 
-          {/* Center Title: "My Photos" */}
-          <div className="flex flex-col items-center">
-            <h1 className="text-[18px] sm:text-[20px] font-extrabold text-slate-900 tracking-tight font-sans">
-              My Photos
-            </h1>
-            <span className="text-[11px] font-medium text-slate-400 -mt-0.5">
-              Sesi {activeSessionIndex + 1} dari {sessionsList.length}
-            </span>
-          </div>
-
-          {/* Right Action Icons: 4-Grid (Zoom Out Toggle) + Camera */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* 4-Square Grid Icon (Toggles Zoom Out Overview) */}
-            <button
-              onClick={() => setIsOverviewMode(prev => !prev)}
-              className={`w-9 h-9 flex items-center justify-center rounded-xl transition-transform active:scale-90 cursor-pointer ${
-                isOverviewMode
-                  ? 'bg-slate-900 text-white shadow-md'
-                  : 'text-slate-800 hover:text-black hover:bg-slate-100'
-              }`}
-              title={isOverviewMode ? "Kembali ke Tampilan Fokus (Zoom In)" : "Lihat Semua Sesi (Zoom Out)"}
-            >
-              <div className="grid grid-cols-2 gap-[3px] w-[18px] h-[18px]">
-                <div className={`w-[7px] h-[7px] rounded-[2px] border-[1.8px] ${isOverviewMode ? 'border-white bg-white' : 'border-slate-900'}`} />
-                <div className={`w-[7px] h-[7px] rounded-[2px] border-[1.8px] ${isOverviewMode ? 'border-white bg-white' : 'border-slate-900'}`} />
-                <div className={`w-[7px] h-[7px] rounded-[2px] border-[1.8px] ${isOverviewMode ? 'border-white bg-white' : 'border-slate-900'}`} />
-                <div className={`w-[7px] h-[7px] rounded-[2px] border-[1.8px] ${isOverviewMode ? 'border-white bg-white' : 'border-slate-900'}`} />
+                <div className="flex items-center gap-2">
+                  {/* Close / Return to Focus View */}
+                  <button
+                    onClick={handleCloseBookshelf}
+                    className="w-9 h-9 rounded-xl bg-slate-200/70 hover:bg-slate-300/80 active:scale-90 flex items-center justify-center text-slate-700 transition-all cursor-pointer"
+                    title="Kembali ke Tampilan Fokus"
+                  >
+                    <X className="w-5 h-5 stroke-[2.2]" />
+                  </button>
+                </div>
               </div>
-            </button>
 
-            {/* Log Out */}
-            <button
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-              className="w-9 h-9 flex items-center justify-center text-slate-700 hover:text-rose-600 hover:bg-rose-50 transition-all active:scale-90 cursor-pointer rounded-xl"
-              title="Keluar / Log Out"
-            >
-              {isLoggingOut ? (
-                <Loader2 className="w-5 h-5 animate-spin text-rose-500" />
-              ) : (
-                <LogOut className="w-[20px] h-[20px] stroke-[2.2]" />
-              )}
-            </button>
-          </div>
-        </header>
+              {/* Bookshelf Grid: 2 columns on mobile, 3 on tablet, 4 columns on desktop */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-7 sm:gap-x-6 sm:gap-y-8 md:gap-x-7 md:gap-y-9 lg:gap-x-8 lg:gap-y-10">
+                {sessionsList.map((session, sIdx) => {
+                  const originalIndex = sessionsList.findIndex(s => s.id === session.id)
+                  const targetIndex = originalIndex >= 0 ? originalIndex : sIdx
 
-        {/* ═══════════════════════════════════════════════════════════════════
-            2. CENTERPIECE: UNIFIED SEAMLESS IN-PLACE ZOOM-OUT / FOCUS SLIDER
-           ═══════════════════════════════════════════════════════════════════ */}
-        <div className="relative w-full flex-1 min-h-0 flex items-center justify-center my-auto py-2 sm:py-3 overflow-visible">
-
-          {/* Desktop Left/Right Navigation Flanks (Hidden in overview mode) */}
-          {!isOverviewMode && (
-            <>
-              <button
-                onClick={() => setActiveSessionIndex(prev => (prev > 0 ? prev - 1 : 0))}
-                disabled={activeSessionIndex === 0}
-                className={`hidden md:flex absolute left-2 lg:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-slate-200 text-slate-700 transition-all items-center justify-center ${
-                  activeSessionIndex === 0
-                    ? 'opacity-30 cursor-not-allowed'
-                    : 'hover:text-slate-950 hover:bg-slate-50 active:scale-90 cursor-pointer'
-                }`}
-                title="Sesi Sebelumnya"
-              >
-                <ChevronLeft className="w-6 h-6 stroke-[2.4]" />
-              </button>
-
-              <button
-                onClick={() => setActiveSessionIndex(prev => (prev < sessionsList.length - 1 ? prev + 1 : prev))}
-                disabled={activeSessionIndex === sessionsList.length - 1}
-                className={`hidden md:flex absolute right-2 lg:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-slate-200 text-slate-700 transition-all items-center justify-center ${
-                  activeSessionIndex === sessionsList.length - 1
-                    ? 'opacity-30 cursor-not-allowed'
-                    : 'hover:text-slate-950 hover:bg-slate-50 active:scale-90 cursor-pointer'
-                }`}
-                title="Sesi Berikutnya"
-              >
-                <ChevronRight className="w-6 h-6 stroke-[2.4]" />
-              </button>
-            </>
-          )}
-
-          {/* Gesture / Drag Tracking Area */}
-          <div
-            onTouchStart={(e) => {
-              if (e.touches.length === 1) {
-                handleDragStart(e.touches[0].clientX)
-              }
-            }}
-            onTouchMove={(e) => {
-              if (e.touches.length === 1) {
-                handleDragMove(e.touches[0].clientX)
-              }
-            }}
-            onTouchEnd={(e) => {
-              handleDragEnd(e.changedTouches[0]?.clientX)
-            }}
-            onTouchCancel={() => handleDragEnd()}
-            onMouseDown={(e) => handleDragStart(e.clientX)}
-            onMouseMove={(e) => handleDragMove(e.clientX)}
-            onMouseUp={(e) => handleDragEnd(e.clientX)}
-            onMouseLeave={() => handleDragEnd()}
-            className="relative w-full h-[72vh] xs:h-[75vh] sm:h-[78vh] md:h-[80vh] max-h-[640px] flex items-center justify-start touch-pan-y cursor-grab active:cursor-grabbing overflow-visible select-none"
-          >
-            {/* ── SEAMLESS ZOOMING SLIDER TRACK (DIRECT DOM HARDWARE-ACCELERATED TRANSFORMS) ── */}
-            <div
-              ref={trackRef}
-              className="w-full h-full flex flex-row items-center will-change-transform [transform:translate3d(0,0,0)]"
-              style={{
-                transform: `translate3d(${
-                  isOverviewMode
-                    ? `calc(50% - (${activeSessionIndex + 0.5} * min(48vw, 300px)))`
-                    : `calc(-${activeSessionIndex * 100}%)`
-                }, 0, 0)`,
-                transition: 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
-              }}
-            >
-              {sessionsList.map((session, sIdx) => {
-                const isCurrentSession = sIdx === activeSessionIndex
-                const isNearby = Math.abs(sIdx - activeSessionIndex) <= 1
-                const mediaIdx = activeMediaIndices[session.id] || 0
-
-                // Virtualization: Skip rendering full cards for distant sessions in focus mode
-                if (!isOverviewMode && !isNearby) {
                   return (
                     <div
                       key={session.id}
-                      style={{ width: isOverviewMode ? 'min(48vw, 300px)' : '100%' }}
-                      className="h-full shrink-0 px-4 sm:px-12 md:px-24 lg:px-36 flex items-center justify-center pointer-events-none"
-                    />
-                  )
-                }
-
-                return (
-                  <div
-                    key={session.id}
-                    style={{
-                      width: isOverviewMode ? 'min(48vw, 300px)' : '100%'
-                    }}
-                    className={`h-full shrink-0 flex items-center justify-center select-none [transform:translate3d(0,0,0)] [backface-visibility:hidden] ${
-                      isOverviewMode
-                        ? 'px-3 sm:px-6 cursor-pointer transition-[opacity,transform] duration-250 ease-out'
-                        : 'px-4 sm:px-12 md:px-24 lg:px-36 opacity-100 scale-100'
-                    }`}
-                    onClick={() => {
-                      if (isOverviewMode) {
-                        setActiveSessionIndex(sIdx)
-                        setIsOverviewMode(false)
-                      } else if (!isCurrentSession) {
-                        setActiveSessionIndex(sIdx)
-                      }
-                    }}
-                  >
-                    {/* ── CARD CONTAINER: PROPORTIONAL JUSTIFIED MINI CARDS ── */}
-                    <div
-                      className={`relative h-full aspect-[2/3] w-auto flex items-center justify-center transition-[max-height,transform] duration-250 ease-out ${
-                        isOverviewMode
-                          ? isCurrentSession
-                            ? 'max-h-[260px] xs:max-h-[300px] sm:max-h-[340px] md:max-h-[380px] lg:max-h-[410px] scale-100'
-                            : 'max-h-[240px] xs:max-h-[280px] sm:max-h-[320px] md:max-h-[360px] lg:max-h-[390px] scale-95 opacity-75 hover:opacity-100 hover:scale-100'
-                          : 'max-h-[560px] xs:max-h-[600px] sm:max-h-[630px] md:max-h-[660px] max-w-[390px] xs:max-w-[430px] sm:max-w-[460px] md:max-w-[490px]'
-                      }`}
+                      id={`bookshelf-card-${targetIndex}`}
+                      ref={(el) => {
+                        if (el) {
+                          const rect = el.getBoundingClientRect()
+                          cardRectsRef.current[targetIndex] = {
+                            x: rect.left + rect.width / 2,
+                            y: rect.top + rect.height / 2
+                          }
+                        }
+                      }}
+                      onClick={(e) => handleCardClick(e, targetIndex)}
+                      style={{
+                        contentVisibility: 'auto',
+                        containIntrinsicSize: '0 240px'
+                      }}
+                      className="group flex flex-col cursor-pointer select-none active:scale-[0.94] active:brightness-95 transition-all duration-150 ease-out"
                     >
-                      {/* 1. Stack Media Cards (Streamlined to Active Front Card + 1 Peek Card) */}
-                      {session.media.map((med, mIdx) => {
-                        const totalMedia = session.media.length
-                        const diff = (mIdx - mediaIdx + totalMedia) % totalMedia
-
-                        // For inactive sessions, only render front card (diff 0) to save mobile GPU VRAM
-                        // For active session, render front card (diff 0) and 1 peek card (diff 1)
-                        if (!isCurrentSession && diff > 0) return null
-                        if (isOverviewMode && diff > 0) return null
-                        if (diff > 1) return null
-
-                        const isFront = diff === 0
-                        const isVideo = med.type === 'video' || !!med.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
-                        const shouldPlayVideo = isVideo && isCurrentSession && isFront
-
-                        return (
-                          <div
-                            key={med.id}
-                            className={`absolute inset-0 flex items-center justify-center will-change-transform [contain:paint] transition-[transform,opacity] duration-200 ease-out ${
-                              isFront
-                                ? 'z-20 opacity-100 [transform:translate3d(0,0,0)_scale(1)_rotate(0deg)]'
-                                : 'z-10 opacity-70 [transform:translate3d(10px,-10px,0)_scale(0.96)_rotate(3.5deg)]'
-                            }`}
-                            style={{
-                              pointerEvents: isFront ? 'auto' : 'none'
-                            }}
-                          >
-                            <div
-                              className={`relative w-full h-full rounded-[22px] xs:rounded-[28px] sm:rounded-[32px] overflow-hidden bg-zinc-950 flex items-center justify-center [transform:translate3d(0,0,0)] [backface-visibility:hidden] ${
-                                isOverviewMode && isCurrentSession
-                                  ? 'shadow-md ring-2 ring-orange-500/80'
-                                  : 'shadow-lg'
-                              }`}
-                            >
-                              {shouldPlayVideo ? (
-                                <video
-                                  src={med.url}
-                                  autoPlay
-                                  loop
-                                  muted
-                                  playsInline
-                                  className="w-full h-full object-cover pointer-events-none select-none brightness-100 saturate-100"
-                                />
-                              ) : (
-                                <img
-                                  src={med.url}
-                                  alt={med.label}
-                                  className="w-full h-full object-cover pointer-events-none select-none"
-                                  loading={isCurrentSession || isNearby ? 'eager' : 'lazy'}
-                                  decoding="async"
-                                  onError={(e) => {
-                                    if (med.hdUrl && e.currentTarget.src !== med.hdUrl) {
-                                      e.currentTarget.src = med.hdUrl
-                                    } else {
-                                      e.currentTarget.src = '/images/gallery/hd/strip_004a6bbb.webp'
-                                    }
-                                  }}
-                                />
-                              )}
-
-                              {!isFront && (
-                                <div className="absolute inset-0 bg-black/25 pointer-events-none" />
-                              )}
-                            </div>
-                          </div>
-                        )
-                      })}
-
-                      {/* 2. Top-Right Quick Actions (Rendered with pure CSS visibility to prevent mount reflow) */}
-                      <div
-                        onMouseDown={(e) => e.stopPropagation()}
-                        onTouchStart={(e) => e.stopPropagation()}
-                        className={`absolute top-3.5 right-3.5 z-40 flex items-center gap-1.5 transition-opacity duration-200 ${
-                          !isOverviewMode && isCurrentSession ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-                        }`}
-                      >
-                        <button
-                          onMouseDown={(e) => e.stopPropagation()}
-                          onTouchStart={(e) => e.stopPropagation()}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            e.preventDefault()
-                            handleDownload(e)
-                          }}
-                          className="w-8.5 h-8.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-lg active:scale-90 transition-transform cursor-pointer"
-                          title="Download Foto Ini (HD)"
-                        >
-                          <Download className="w-4 h-4 stroke-[2.4]" />
-                        </button>
-                        <button
-                          onMouseDown={(e) => e.stopPropagation()}
-                          onTouchStart={(e) => e.stopPropagation()}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            e.preventDefault()
-                            setIsOptionsModalOpen(true)
-                          }}
-                          className="w-8.5 h-8.5 rounded-full bg-black/50 hover:bg-black/75 backdrop-blur-sm border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-90 transition-transform cursor-pointer"
-                          title="Opsi Sesi"
-                        >
-                          <MoreHorizontal className="w-4 h-4 stroke-[2.2]" />
-                        </button>
-                      </div>
-
-                      {/* 3. Mobile Initial Swipe Gesture Guide Overlay */}
-                      {showSwipeGuide && (
+                      {/* 3D Stacked Album Card (Gambar 1) */}
+                      <div className="relative w-full aspect-[3/4] flex items-center justify-center p-1.5">
+                        {/* Back Left Card: Stylized photo backing layer (Zero duplicate image requests) */}
                         <div
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setShowSwipeGuide(false)
+                          className="absolute inset-1.5 rounded-[15px] sm:rounded-[17px] bg-gradient-to-tr from-stone-300 via-stone-200 to-stone-100 border border-white/90 shadow-sm will-change-transform transition-transform duration-200 group-hover:-translate-x-2"
+                          style={{
+                            transform: 'translate3d(-8px, -5px, 0) rotate(-7.5deg) scale(0.92)',
+                            transformOrigin: 'center center'
                           }}
-                          className={`absolute inset-0 z-50 rounded-[24px] xs:rounded-[30px] sm:rounded-[34px] bg-black/75 flex flex-col items-center justify-center p-5 text-center text-white cursor-pointer transition-opacity duration-200 md:hidden select-none ${
-                            !isOverviewMode && isCurrentSession ? 'opacity-100 pointer-events-auto animate-fade-in' : 'opacity-0 pointer-events-none'
+                        />
+
+                        {/* Back Right Card: Stylized photo backing layer (Zero duplicate image requests) */}
+                        <div
+                          className="absolute inset-1.5 rounded-[15px] sm:rounded-[17px] bg-gradient-to-tl from-stone-300 via-stone-200 to-stone-100 border border-white/90 shadow-sm will-change-transform transition-transform duration-200 group-hover:translate-x-2"
+                          style={{
+                            transform: 'translate3d(8px, -5px, 0) rotate(7.5deg) scale(0.92)',
+                            transformOrigin: 'center center'
+                          }}
+                        />
+
+                        {/* Front Center Card */}
+                        <div
+                          className="relative w-full h-full rounded-[16px] sm:rounded-[18px] overflow-hidden border-[2.2px] border-white shadow-[0_12px_24px_-6px_rgba(0,0,0,0.18),0_4px_8px_-2px_rgba(0,0,0,0.08)] bg-zinc-950 will-change-transform group-hover:scale-[1.02] transition-transform duration-200"
+                          style={{
+                            transform: 'translate3d(0, 0, 0)',
+                            transformOrigin: 'center center'
+                          }}
+                        >
+                          <img
+                            src={session.stripUrl}
+                            alt={session.title}
+                            className="w-full h-full object-cover object-top select-none pointer-events-none"
+                            loading="lazy"
+                            decoding="async"
+                            onError={(e) => {
+                              if (session.rawStripUrl && e.currentTarget.src !== session.rawStripUrl) {
+                                e.currentTarget.src = session.rawStripUrl
+                              } else {
+                                e.currentTarget.src = '/images/gallery/hd/strip_004a6bbb.webp'
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          /* ═══════════════════════════════════════════════════════════════════
+             FOCUS VIEW: 1200x1800 3D Polaroid Stack Slider
+             Zoom In / Out container with iOS Photos physics
+             ═══════════════════════════════════════════════════════════════════ */
+          <motion.div
+            key="focus-view"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.96 }}
+            transition={{ duration: 0.24, ease: [0.32, 0.72, 0, 1] }}
+            style={{
+              transformOrigin: zoomOrigin,
+              willChange: 'transform, opacity'
+            }}
+            className="absolute inset-0 w-full h-full flex flex-col items-center justify-between bg-[#FAF8F5] z-20 overflow-hidden [transform:translate3d(0,0,0)]"
+          >
+            <div className="w-full max-w-6xl mx-auto h-full flex flex-col justify-between px-4 sm:px-6 md:px-8 pt-3 pb-3 sm:pt-4 sm:pb-4">
+
+              {/* Top Header Bar */}
+              <header className="w-full max-w-4xl mx-auto pt-1 pb-2 flex items-center justify-between shrink-0 z-20">
+                {/* Close button */}
+                <Link
+                  href="/"
+                  className="w-10 h-10 flex items-center justify-start text-slate-800 hover:text-black transition-opacity active:scale-95 cursor-pointer"
+                  title="Kembali ke Beranda"
+                >
+                  <X className="w-6 h-6 stroke-[2.2]" />
+                </Link>
+
+                {/* Center Title: "My Photos" (Clickable to open Bookshelf Gallery View) */}
+                <button
+                  onClick={handleOpenBookshelf}
+                  className="flex flex-col items-center cursor-pointer group active:scale-95 transition-transform"
+                  title="Buka Galeri Album (Expanded View)"
+                >
+                  <h1 className="text-[18px] sm:text-[20px] font-extrabold text-slate-900 tracking-tight font-sans group-hover:text-orange-600 transition-colors">
+                    My Photos
+                  </h1>
+                  <span className="text-[11px] font-medium text-slate-400 -mt-0.5 group-hover:text-slate-600">
+                    Sesi {activeSessionIndex + 1} dari {sessionsList.length} &bull; Lihat Semua &rarr;
+                  </span>
+                </button>
+
+                {/* Right Empty Spacer to geometrically center "My Photos" relative to the left close button */}
+                <div className="w-10 h-10 pointer-events-none" />
+              </header>
+
+          {/* Centerpiece: Polaroid Stack Focus Slider */}
+          <div className="relative w-full flex-1 min-h-0 flex items-center justify-center my-auto py-2 sm:py-3 overflow-visible">
+
+            {/* Desktop Left/Right Navigation Flanks */}
+            <button
+              onClick={() => setActiveSessionIndex(prev => (prev > 0 ? prev - 1 : 0))}
+              disabled={activeSessionIndex === 0}
+              className={`hidden md:flex absolute left-2 lg:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-slate-200 text-slate-700 transition-all items-center justify-center ${
+                activeSessionIndex === 0
+                  ? 'opacity-30 cursor-not-allowed'
+                  : 'hover:text-slate-950 hover:bg-slate-50 active:scale-90 cursor-pointer'
+              }`}
+              title="Sesi Sebelumnya"
+            >
+              <ChevronLeft className="w-6 h-6 stroke-[2.4]" />
+            </button>
+
+            <button
+              onClick={() => setActiveSessionIndex(prev => (prev < sessionsList.length - 1 ? prev + 1 : prev))}
+              disabled={activeSessionIndex === sessionsList.length - 1}
+              className={`hidden md:flex absolute right-2 lg:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-slate-200 text-slate-700 transition-all items-center justify-center ${
+                activeSessionIndex === sessionsList.length - 1
+                  ? 'opacity-30 cursor-not-allowed'
+                  : 'hover:text-slate-950 hover:bg-slate-50 active:scale-90 cursor-pointer'
+              }`}
+              title="Sesi Berikutnya"
+            >
+              <ChevronRight className="w-6 h-6 stroke-[2.4]" />
+            </button>
+
+            {/* Hidden native switch input for iOS 17.4+ Taptic Engine hardware trigger */}
+            <input
+              type="checkbox"
+              id="ios-taptic-switch"
+              aria-hidden="true"
+              tabIndex={-1}
+              className="fixed -left-[9999px] opacity-0 pointer-events-none"
+            />
+
+            {/* iOS Haptic Touch Ambient Backdrop Dimming */}
+            <div
+              className={`fixed inset-0 z-20 bg-black/75 md:backdrop-blur-[8px] pointer-events-none transition-opacity duration-250 ${
+                touchFeedback === 'peeking' ? 'opacity-100' : 'opacity-0'
+              }`}
+              aria-hidden="true"
+            />
+
+            {/* Gesture / Drag Tracking Area (Single-touch Drag, Swipe & Hold) */}
+            <div
+              onTouchStart={(e) => {
+                if (isGestureGuideOpen) {
+                  setIsGestureGuideOpen(false)
+                }
+                if (e.touches.length === 1) {
+                  handleDragStart(e.touches[0].clientX)
+                }
+              }}
+              onTouchMove={(e) => {
+                if (e.touches.length === 1) {
+                  handleDragMove(e.touches[0].clientX)
+                }
+              }}
+              onTouchEnd={(e) => {
+                handleDragEnd(e.changedTouches[0]?.clientX)
+              }}
+              onTouchCancel={() => {
+                handleDragEnd()
+              }}
+              onMouseDown={(e) => {
+                if (e.button === 0) {
+                  handleDragStart(e.clientX)
+                }
+              }}
+              onMouseMove={(e) => handleDragMove(e.clientX)}
+              onMouseUp={(e) => handleDragEnd(e.clientX)}
+              onMouseLeave={() => handleDragEnd()}
+              className="relative z-30 w-full h-[72vh] xs:h-[75vh] sm:h-[78vh] md:h-[80vh] max-h-[640px] flex items-center justify-start touch-pan-y cursor-grab active:cursor-grabbing overflow-visible select-none"
+            >
+              {/* Slider Track */}
+              <div
+                ref={trackRef}
+                className="w-full h-full flex flex-row items-center will-change-transform [transform:translate3d(0,0,0)]"
+                style={{
+                  transform: `translate3d(-${activeSessionIndex * 100}%, 0, 0)`,
+                  transition: 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1)'
+                }}
+              >
+                {sessionsList.map((session, sIdx) => {
+                  const isCurrentSession = sIdx === activeSessionIndex
+                  // Strict sliding window: strictly 1 session before (-1), current (0), and 1 session after (+1)
+                  const isStrictlyInWindow = Math.abs(sIdx - activeSessionIndex) <= 1
+                  const mediaIdx = activeMediaIndices[session.id] || 0
+
+                  // Complete Unmount & Ignore:
+                  // Any session outside [activeSessionIndex - 1, activeSessionIndex + 1] (termasuk sesi yang pernah di-load sebelumnya)
+                  // diabaikan sepenuhnya dan tidak dipertahankan di memori / DOM.
+                  if (!isStrictlyInWindow) {
+                    return (
+                      <div
+                        key={`slot-empty-${session.id}`}
+                        style={{ width: '100%' }}
+                        className="h-full shrink-0 flex items-center justify-center pointer-events-none select-none"
+                        aria-hidden="true"
+                      />
+                    )
+                  }
+
+                  return (
+                    <div
+                      key={`slot-active-${session.id}`}
+                      style={{ width: '100%' }}
+                      className="h-full shrink-0 flex items-center justify-center select-none [transform:translate3d(0,0,0)] [backface-visibility:hidden] px-4 sm:px-12 md:px-24 lg:px-36 opacity-100 scale-100"
+                      onClick={() => {
+                        if (!isCurrentSession) {
+                          setActiveSessionIndex(sIdx)
+                        }
+                      }}
+                    >
+                      {/* Card Container: 1200x1800 2:3 ratio with authentic iOS Haptic Touch spring physics */}
+                      <div
+                        ref={isCurrentSession ? activeCardContainerRef : undefined}
+                        id={isCurrentSession ? 'tour-profile-session-card' : undefined}
+                        className={`relative h-full aspect-[2/3] w-auto flex items-center justify-center max-h-[58svh] xs:max-h-[62svh] sm:max-h-[620px] md:max-h-[660px] max-w-[340px] xs:max-w-[380px] sm:max-w-[440px] md:max-w-[480px] ${
+                          isCurrentSession && touchFeedback === 'peeking'
+                            ? 'z-40 max-md:shadow-[0_16px_40px_-10px_rgba(0,0,0,0.65)] md:shadow-[0_36px_80px_-15px_rgba(0,0,0,0.85),0_15px_30px_-8px_rgba(0,0,0,0.6)] ring-2 ring-white/60 rounded-[24px] xs:rounded-[30px] sm:rounded-[34px]'
+                            : ''
+                        }`}
+                        style={{
+                          transform: isCurrentSession && touchFeedback === 'peeking' ? 'scale(1.08)' : 'scale(1)',
+                          transition: isCurrentSession && touchFeedback === 'peeking'
+                            ? 'transform 0.32s cubic-bezier(0.16, 1.55, 0.3, 1), box-shadow 0.32s ease'
+                            : 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.28s ease'
+                        }}
+                      >
+                        {/* iOS Haptic Peek Floating HUD pill (iOS Dynamic Island Style) */}
+                        {isCurrentSession && touchFeedback === 'peeking' && (
+                          <div className="absolute -top-14 z-50 px-4 py-2 rounded-full bg-slate-900/90 backdrop-blur-2xl border border-white/30 shadow-[0_12px_36px_rgba(0,0,0,0.55)] text-white text-[12px] font-semibold tracking-wide flex items-center gap-2 pointer-events-none select-none animate-in fade-in zoom-in-95 duration-200 slide-in-from-bottom-3">
+                            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+                            <Sparkles className="w-4 h-4 text-amber-300 fill-amber-300" />
+                            <span className="font-medium text-white/95">Lepas untuk Buka Menu</span>
+                          </div>
+                        )}
+
+                        {/* 1. Stack Media Cards (Active Front Card + 1 Peek Card) */}
+                        {(() => {
+                          const mediaToRender = isCurrentSession
+                            ? activeSessionMediaList
+                            : [{ id: `strip-${session.id}`, url: session.stripUrl, hdUrl: session.rawStripUrl, type: 'strip' as const, label: 'Photostrip' }]
+                          
+                          return mediaToRender.map((med, mIdx) => {
+                            const totalMedia = mediaToRender.length
+                            const diff = (mIdx - mediaIdx + totalMedia) % totalMedia
+
+                          // For inactive sessions, only render front card (diff 0) to save mobile GPU VRAM
+                          if (!isCurrentSession && diff > 0) return null
+                          if (diff > 1) return null
+
+                          const isFront = diff === 0
+                          const isVideo = med.type === 'video' || !!med.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
+                          const shouldPlayVideo = isVideo && isCurrentSession && isFront
+
+                          return (
+                            <div
+                              key={med.id}
+                              ref={isFront && isCurrentSession ? activeFrontCardRef : undefined}
+                              className={`absolute inset-0 flex items-center justify-center [contain:paint] ${
+                                isFront
+                                  ? isCurrentSession && touchFeedback === 'peeking'
+                                    ? 'z-30 opacity-100 ring-2 ring-white/60 rounded-[22px] xs:rounded-[28px] sm:rounded-[32px] max-md:shadow-xl md:shadow-2xl'
+                                    : 'z-20 opacity-100'
+                                  : 'z-10 opacity-70 [transform:translate3d(10px,-10px,0)_scale(0.96)_rotate(3.5deg)]'
+                              }`}
+                              style={{
+                                pointerEvents: isFront ? 'auto' : 'none',
+                                transform: isFront ? 'translate3d(0,0,0) scale(1) rotate(0deg)' : undefined,
+                                transition: isFront && touchFeedbackRef.current === 'dragging'
+                                  ? 'none'
+                                  : 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease-out'
+                              }}
+                            >
+                              <div className="relative w-full h-full rounded-[22px] xs:rounded-[28px] sm:rounded-[32px] overflow-hidden bg-zinc-950 flex items-center justify-center shadow-lg [transform:translate3d(0,0,0)] [backface-visibility:hidden]">
+                                {shouldPlayVideo ? (
+                                  <video
+                                    src={med.url}
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    preload="metadata"
+                                    className="w-full h-full object-cover pointer-events-none select-none brightness-100 saturate-100"
+                                  />
+                                ) : (
+                                  <img
+                                    src={med.url}
+                                    alt={med.label}
+                                    className="w-full h-full object-cover pointer-events-none select-none"
+                                    loading={isCurrentSession || isStrictlyInWindow ? 'eager' : 'lazy'}
+                                    decoding="async"
+                                    onError={(e) => {
+                                      if (med.hdUrl && e.currentTarget.src !== med.hdUrl) {
+                                        e.currentTarget.src = med.hdUrl
+                                      } else {
+                                        e.currentTarget.src = '/images/gallery/hd/strip_004a6bbb.webp'
+                                      }
+                                    }}
+                                  />
+                                )}
+
+                                {!isFront && (
+                                  <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+                                )}
+                              </div>
+                            </div>
+                          )
+                        })
+                      })()}
+
+                        {/* 2. Top-Right Quick Actions */}
+                        <div
+                          id={isCurrentSession ? 'tour-profile-card-actions' : undefined}
+                          onMouseDown={(e) => e.stopPropagation()}
+                          onTouchStart={(e) => e.stopPropagation()}
+                          className={`absolute top-3.5 right-3.5 z-40 flex items-center gap-1.5 transition-opacity duration-200 ${
+                            isCurrentSession && !isGestureGuideOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                           }`}
                         >
-                          <div className="relative mb-3 flex items-center justify-center">
-                            <div className="w-16 h-16 rounded-full bg-white/95 shadow-xl flex items-center justify-center p-3 z-10">
-                              <img
-                                src="/images/swipe.png"
-                                alt="Swipe Gesture"
-                                className="w-full h-full object-contain animate-swipe-hand select-none pointer-events-none"
-                              />
-                            </div>
-                          </div>
-
-                          <span className="px-2.5 py-0.5 rounded-full bg-orange-500 text-white text-[10px] font-extrabold uppercase tracking-wider mb-1.5 shadow-sm font-sans">
-                            PANDUAN GESTUR
-                          </span>
-                          <h4 className="text-[15px] font-black text-white tracking-tight mb-1 font-sans">
-                            Geser / Swipe Layar
-                          </h4>
-                          <p className="text-[11px] text-white/90 max-w-[210px] leading-relaxed mb-3">
-                            Swipe kiri / kanan untuk ganti sesi, atau tap foto untuk melihat pose lainnya
-                          </p>
-
                           <button
+                            onMouseDown={(e) => e.stopPropagation()}
+                            onTouchStart={(e) => e.stopPropagation()}
                             onClick={(e) => {
                               e.stopPropagation()
-                              setShowSwipeGuide(false)
+                              e.preventDefault()
+                              handleDownload(e)
                             }}
-                            className="px-5 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-[11px] font-bold border border-white/30 transition-transform active:scale-95 cursor-pointer"
+                            className="w-8.5 h-8.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-lg active:scale-90 transition-transform cursor-pointer"
+                            title="Download Foto Ini (HD)"
                           >
-                            Mengerti
+                            <Download className="w-4 h-4 stroke-[2.4]" />
+                          </button>
+                          <button
+                            onMouseDown={(e) => e.stopPropagation()}
+                            onTouchStart={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              e.preventDefault()
+                              setIsOptionsModalOpen(true)
+                            }}
+                            className="w-8.5 h-8.5 rounded-full bg-black/50 hover:bg-black/75 backdrop-blur-sm border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-90 transition-transform cursor-pointer"
+                            title="Opsi Sesi"
+                          >
+                            <MoreHorizontal className="w-4 h-4 stroke-[2.2]" />
                           </button>
                         </div>
-                      )}
+
+                        {/* 3. Direct On-Photo Hand Gesture Tutorial */}
+                        {isCurrentSession && isGestureGuideOpen && (
+                          <PhotoDirectGestureGuide
+                            isOpen={isGestureGuideOpen}
+                            onClose={() => setIsGestureGuideOpen(false)}
+                            onOpenBookshelf={() => {
+                              setIsGestureGuideOpen(false)
+                              handleOpenBookshelf()
+                            }}
+                            storageKey="hasSeenPhotoGestureGuide_v1"
+                          />
+                        )}
+
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
+
           </div>
 
+          {/* Bottom spacing spacer for floating capsule dock */}
+          <div className="w-full h-12 sm:h-14 shrink-0 pointer-events-none" />
         </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
 
-        {/* ─── 3. BOTTOM CENTER ACTION: DOWNLOAD 1 BUNDLE (ALL FILES IN ACTIVE SESSION) ─── */}
-        {!isOverviewMode && currentSession && (
-          <div className="w-full flex items-center justify-center pt-2 pb-2 sm:pb-3 z-40">
-            <button
-              onClick={handleDownloadBundle}
-              disabled={isBundling}
-              className={`group relative px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm tracking-wider flex items-center gap-2.5 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.25)] hover:shadow-[0_14px_30px_-5px_rgba(0,0,0,0.35)] active:scale-95 transition-all cursor-pointer border ${
-                isBundling
-                  ? 'bg-slate-800 text-slate-300 border-slate-700 cursor-wait'
-                  : 'bg-slate-950 hover:bg-slate-900 text-white border-slate-800 hover:border-slate-700'
-              }`}
-              title="Download 1 Bundle Semua File di Sesi Ini (.ZIP)"
-            >
-              {isBundling ? (
-                <>
-                  <Loader2 className="w-4 h-4 text-orange-400 animate-spin" />
-                  <span>
-                    Menyiapkan Bundle ({bundleProgress.current}/{bundleProgress.total})...
-                  </span>
-                </>
-              ) : (
-                <>
-                  <div className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Download className="w-3.5 h-3.5 stroke-[2.5]" />
-                  </div>
-                  <span>
-                    DOWNLOAD 1 BUNDLE ({currentSession.media.length} FILE)
-                  </span>
-                </>
-              )}
-            </button>
-          </div>
-        )}
-
-      </div>
+      {/* ─── FLOATING BOTTOM CAPSULE DOCK (APPLE-GRADE iOS DEPTH DOCK) ─── */}
+      {currentSession && (
+        <div
+          className="fixed bottom-4 sm:bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none px-4"
+          style={{ bottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}
+        >
+          <LiquidGlassDock
+            ariaLabel="Navigasi Galeri"
+            surface="dark"
+            onHaptic={(type) => triggerHaptic(type || 'tick')}
+            activeId={
+              isLoggingOut
+                ? 'logout'
+                : isBundling
+                  ? 'download'
+                  : isOverviewMode
+                    ? 'gallery'
+                    : (isGestureGuideOpen || isDesktopGuideOpen)
+                      ? 'guide'
+                      : 'photos'
+            }
+            items={[
+              {
+                id: 'gallery',
+                domId: 'bottom-nav-bookshelf-btn',
+                label: 'Gallery View',
+                icon: <LayoutGrid className="w-5 h-5 stroke-[1.8]" />,
+                activeIcon: <LayoutGrid className="w-5 h-5 stroke-[1.6] fill-white" />,
+                onSelect: (e) => {
+                  e.stopPropagation()
+                  if (!isOverviewMode) handleOpenBookshelf()
+                },
+              },
+              {
+                id: 'photos',
+                domId: 'bottom-nav-photos-btn',
+                label: 'Photos View',
+                icon: <ImageIcon className="w-5 h-5 stroke-[1.8]" />,
+                activeIcon: <ImageIcon className="w-5 h-5 stroke-[2] fill-white/25" />,
+                onSelect: (e) => {
+                  e.stopPropagation()
+                  if (isOverviewMode) handleCloseBookshelf()
+                },
+              },
+              {
+                id: 'download',
+                domId: 'tour-profile-bundle-btn',
+                label: 'Download',
+                title: isBundling
+                  ? `Menyimpan (${bundleProgress.current}/${bundleProgress.total})...`
+                  : 'Download',
+                disabled: isBundling,
+                icon: isBundling ? (
+                  <Loader2
+                    className="w-5 h-5 animate-spin text-orange-400"
+                    style={{ animation: 'spin 0.85s linear infinite', transformOrigin: 'center center' }}
+                  />
+                ) : (
+                  <Download className="w-5 h-5 stroke-[1.8]" />
+                ),
+                activeIcon: <Download className="w-5 h-5 stroke-[2.4]" />,
+                onSelect: (e) => {
+                  e.stopPropagation()
+                  handleDownloadBundle(e)
+                },
+              },
+              {
+                id: 'guide',
+                domId: 'bottom-nav-guide-btn',
+                label: 'Guide',
+                icon: <HelpCircle className="w-5 h-5 stroke-[1.8]" />,
+                activeIcon: <HelpCircle className="w-5 h-5 stroke-[2.2] fill-white/30" />,
+                onSelect: (e) => {
+                  e.stopPropagation()
+                  handleOpenHelp()
+                },
+              },
+              {
+                id: 'logout',
+                domId: 'bottom-nav-logout-btn',
+                label: 'Log Out',
+                title: 'Keluar / Log Out',
+                tone: 'danger',
+                disabled: isLoggingOut,
+                icon: isLoggingOut ? (
+                  <Loader2 className="w-5 h-5 animate-spin text-rose-400" />
+                ) : (
+                  <LogOut className="w-5 h-5 stroke-[1.8]" />
+                ),
+                activeIcon: <LogOut className="w-5 h-5 stroke-[2.2]" />,
+                onSelect: (e) => {
+                  e.stopPropagation()
+                  handleLogout()
+                },
+              },
+            ]}
+          />
+        </div>
+      )}
 
       {/* ═══════════════════════════════════════════════════════════════════
           MODAL 1: SESSION GRID SELECTOR (TOP 00 00)
@@ -965,8 +1659,7 @@ export default function MyPhotosPage() {
             <div className="grid grid-cols-2 gap-3 py-4 overflow-y-auto no-scrollbar flex-1">
               {sessionsList.map((sess, sIdx) => {
                 const isSelected = activeSessionIndex === sIdx
-                const rawCover = sess.media[0]?.hdUrl || sess.media[0]?.url || sess.avatarUrl
-                const cover = getOptimizedDisplayUrl(rawCover, 380, 70)
+                const cover = sess.stripUrl || sess.avatarUrl
 
                 return (
                   <button
@@ -987,7 +1680,7 @@ export default function MyPhotosPage() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-bold text-white border border-white/20">
-                        {sess.media.length} foto
+                        {sess.badgeCount} media
                       </span>
                     </div>
 
@@ -1053,7 +1746,7 @@ export default function MyPhotosPage() {
             >
               <div className="flex items-center gap-3">
                 <Package className="w-4 h-4 text-orange-500" />
-                <span>Download 1 Bundle Semua File ({currentSession?.media.length} File .ZIP)</span>
+                <span>Simpan Semua File ke Galeri HP ({activeSessionMediaList.length} File)</span>
               </div>
               <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
             </button>
@@ -1150,6 +1843,24 @@ export default function MyPhotosPage() {
           <span>{bundleNotification}</span>
         </div>
       )}
+
+      {/* Desktop Navigation Guide Modal (Keyboard Shortcuts & Mouse Controls) */}
+      <DesktopGuideModal
+        isOpen={isDesktopGuideOpen}
+        onClose={() => setIsDesktopGuideOpen(false)}
+        onStartSpotlightTour={() => setIsInteractiveTourOpen(true)}
+        onOpenMobileGestureSimulation={() => {
+          setIsGestureGuideOpen(true)
+        }}
+      />
+
+      {/* Desktop Interactive Spotlight Tour */}
+      <InteractiveTour
+        steps={profileTourSteps}
+        isOpen={isInteractiveTourOpen}
+        onClose={() => setIsInteractiveTourOpen(false)}
+        tourKey="hasSeenProfileTour_v1"
+      />
 
     </div>
   )

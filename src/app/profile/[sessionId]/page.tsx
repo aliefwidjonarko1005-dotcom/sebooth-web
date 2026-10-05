@@ -273,23 +273,43 @@ export default function SessionDetailPage() {
       {/* ── Main Media Stage ── */}
       <main className="mx-auto max-w-md w-full px-4 pt-4 pb-28 flex-1 flex flex-col items-center">
         
-        {/* Segmented Media Tab Filter */}
+        {/* Liquid Glass Media Tab Filter */}
         {tabs.length > 1 && (
-          <div className="w-full bg-slate-200/70 p-1 rounded-full flex items-center gap-1 mb-4 shadow-inner">
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex-1 py-1.5 rounded-full flex items-center justify-center gap-1.5 text-xs font-black font-bayon uppercase tracking-wider transition-all ${
-                  activeTab === tab.key
-                    ? 'bg-white text-[#FF5500] shadow-md scale-[1.02]'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-              </button>
-            ))}
+          <div className="w-full bg-slate-900/18 max-md:backdrop-blur-md md:backdrop-blur-2xl max-md:backdrop-saturate-150 md:backdrop-saturate-180 border border-white/35 shadow-[0_12px_36px_rgba(0,0,0,0.18),inset_0_1.5px_2px_rgba(255,255,255,0.45),inset_0_-1px_1px_rgba(0,0,0,0.15)] p-1.5 rounded-full flex items-center gap-1 mb-5">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.key
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`relative flex-1 py-2 rounded-full flex items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-wider transition-all active:scale-95 cursor-pointer ${
+                    isActive
+                      ? 'text-white'
+                      : 'text-slate-700/80 hover:text-slate-950'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="liquid-session-tab-indicator"
+                      className="absolute inset-0 rounded-full bg-black/45 md:backdrop-blur-sm border border-white/15 border-t-black/40 border-b-white/25 shadow-[inset_0_2px_5px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(0,0,0,0.75),inset_0_-1px_1px_rgba(255,255,255,0.2)] overflow-hidden"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 440,
+                        damping: 30,
+                        mass: 0.8
+                      }}
+                    >
+                      <div className="absolute top-[1.5px] inset-x-2 h-[38%] rounded-full bg-gradient-to-b from-white/25 to-transparent pointer-events-none" />
+                      <div className="absolute bottom-[1.5px] inset-x-2.5 h-[25%] rounded-full bg-gradient-to-t from-white/15 to-transparent pointer-events-none" />
+                    </motion.div>
+                  )}
+                  <span className="relative z-10 flex items-center justify-center gap-1.5">
+                    {tab.icon}
+                    <span>{tab.label}</span>
+                  </span>
+                </button>
+              )
+            })}
           </div>
         )}
 
@@ -402,11 +422,21 @@ export default function SessionDetailPage() {
               <div className="grid grid-cols-2 gap-3 w-full">
                 {photos.map((p, i) => (
                   <div key={p.id} className="relative group aspect-square bg-slate-900 rounded-2xl overflow-hidden shadow-md border border-slate-200/80">
-                    <img src={p.url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                    <img 
+                      src={`/api/image?url=${encodeURIComponent(p.url)}&w=640&q=70`} 
+                      alt={`Photo ${i + 1}`} 
+                      className="w-full h-full object-cover" 
+                      loading="lazy" 
+                      onError={(e) => {
+                        if (e.currentTarget.src !== p.url) {
+                          e.currentTarget.src = p.url
+                        }
+                      }}
+                    />
                     <button
                       onClick={() => downloadFile(p.url, `photo_${i + 1}.jpg`)}
-                      className="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-black/75 backdrop-blur-md flex items-center justify-center text-white hover:bg-orange-600 active:scale-90 transition-all shadow-md"
-                      title="Download"
+                      className="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-black/75 backdrop-blur-md flex items-center justify-center text-white hover:bg-orange-600 active:scale-90 transition-all shadow-md cursor-pointer"
+                      title="Download (Ukuran Asli)"
                     >
                       <Download className="w-3.5 h-3.5" />
                     </button>

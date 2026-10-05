@@ -18,8 +18,11 @@ import {
   RefreshCw,
   MessageCircle,
   Layers,
-  Sparkles
+  Sparkles,
+  ShieldCheck,
+  Clock
 } from 'lucide-react'
+import { checkSessionExpiry } from '@/lib/sessionExpiryPolicy'
 
 interface SessionItem {
   id: string
@@ -305,7 +308,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                 </div>
               )}
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span
                     className={`text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full ${
                       result.session.is_claimed
@@ -315,6 +318,25 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                   >
                     {result.session.is_claimed ? 'SUDAH DIKLAIM' : 'BELUM DIKLAIM'}
                   </span>
+                  {!result.session.is_claimed && (() => {
+                    const expiry = checkSessionExpiry(result.session.created_at, result.session.is_claimed);
+                    if (!expiry.isSubjectToPolicy) {
+                      return (
+                        <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                          <ShieldCheck className="w-3 h-3 text-emerald-600" /> Bebas Batas Waktu (Sesi Sebelum Kebijakan)
+                        </span>
+                      );
+                    }
+                    return (
+                      <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                        expiry.isExpired
+                          ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                          : 'bg-amber-100 text-amber-800 border border-amber-300'
+                      }`}>
+                        <Clock className="w-3 h-3" /> {expiry.isExpired ? 'Kedaluwarsa (3 Hari)' : `Batas 3 Hari: ${expiry.timeString}`}
+                      </span>
+                    );
+                  })()}
                   <span className="text-xs text-black/60 font-mono">
                     ID: {result.session.id}
                   </span>

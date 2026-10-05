@@ -30,10 +30,29 @@ export async function GET(request: Request) {
       })
     }
 
-    const contentType = response.headers.get('content-type') || 'application/octet-stream'
+    // Infer proper media MIME type so mobile Gallery apps (Android Photos / Apple Photos) immediately index it
+    const lowerFilename = filename.toLowerCase()
+    let contentType = response.headers.get('content-type') || ''
+    if (!contentType || contentType === 'application/octet-stream') {
+      if (lowerFilename.endsWith('.jpg') || lowerFilename.endsWith('.jpeg')) {
+        contentType = 'image/jpeg'
+      } else if (lowerFilename.endsWith('.png')) {
+        contentType = 'image/png'
+      } else if (lowerFilename.endsWith('.gif')) {
+        contentType = 'image/gif'
+      } else if (lowerFilename.endsWith('.mp4') || lowerFilename.endsWith('.mov')) {
+        contentType = 'video/mp4'
+      } else if (lowerFilename.endsWith('.webp')) {
+        contentType = 'image/webp'
+      } else {
+        contentType = 'image/jpeg'
+      }
+    }
+
+    const safeFilename = filename.replace(/[^a-zA-Z0-9._-]/g, '_')
     const headers = new Headers()
     headers.set('Content-Type', contentType)
-    headers.set('Content-Disposition', `attachment; filename="${encodeURIComponent(filename)}"`)
+    headers.set('Content-Disposition', `attachment; filename="${safeFilename}"; filename*=UTF-8''${encodeURIComponent(filename)}"`)
     headers.set('Cache-Control', 'public, max-age=31536000, immutable')
 
     return new NextResponse(response.body, {
