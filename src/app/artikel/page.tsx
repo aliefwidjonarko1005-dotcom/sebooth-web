@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   keywords: [
     'Photobooth Semarang',
     'Photobooth Tembalang',
+    'Photobooth Konser Semarang',
+    'Kerjasama Photobooth Konser',
+    'Photobooth Stasiun Tawang',
+    'Pop-up Photobooth Widya Puraya Undip',
+    'Photobooth Sekolah Politik BEM FSM Undip',
+    'Photobooth Dipoxpo Undip',
+    'Photobooth Pekan Ekonomi Teknik Undip',
     'Tips Sewa Photobooth Semarang',
     'Photobooth Wisuda UNDIP',
     'Photobooth Event Semarang Murah',

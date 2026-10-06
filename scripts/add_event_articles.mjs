@@ -1,363 +1,23 @@
-export interface ArticleSection {
-  heading: string
-  subheading?: string
-  paragraphs: string[]
-  table?: {
-    headers: string[]
-    rows: string[][]
-  }
+import fs from 'fs'
+import path from 'path'
+
+const articlesFilePath = path.join(process.cwd(), 'src', 'data', 'articles.ts')
+
+// We will read the existing file up to artikel-3, and append artikel-4 to artikel-9
+const existingContent = fs.readFileSync(articlesFilePath, 'utf8')
+
+// Check if artikel-4 already exists
+if (existingContent.includes('artikel-4')) {
+  console.log('artikel-4 already exists in articles.ts!')
+  process.exit(0)
 }
 
-export interface ArticleItem {
-  id: string
-  slug: string
-  title: string
-  metaTitle: string
-  metaDescription: string
-  targetKeyword: string
-  secondaryKeywords: string[]
-  category: 'EVENT SEMARANG' | 'TIPS & PANDUAN' | 'KAMPUS & WISUDA' | 'WEDDING' | 'KONSER & FESTIVAL'
-  date: string
-  readTime: string
-  author: string
-  coverImage: string
-  excerpt: string
-  content: string[]
-  sections?: ArticleSection[]
-  highlights: string[]
-  faqs: { question: string; answer: string }[]
-  igLink?: string
-}
-
-export const ARTICLES_DATA: ArticleItem[] = [
-  {
-    id: 'artikel-1',
-    slug: 'rekomendasi-photobooth-tembalang-event-kampus-wisuda-undip',
-    title: 'Rekomendasi Photobooth Tembalang Murah untuk Event Kampus & Wisuda UNDIP',
-    metaTitle: 'Photobooth Tembalang Murah | Wisuda UNDIP & Event Kampus',
-    metaDescription: 'Cari vendor photobooth Tembalang murah untuk wisuda UNDIP & event kampus? Sebooth hadir dengan cetak kilat, live video, & softfile langsung ke galeri HP.',
-    targetKeyword: 'Photobooth Tembalang',
-    secondaryKeywords: [
-      'Photobooth Wisuda UNDIP',
-      'Photobooth Semarang Murah',
-      'Sewa Photobooth Tembalang',
-      'Photobooth Mahasiswa Semarang'
-    ],
-    category: 'KAMPUS & WISUDA',
-    date: '5 Oktober 2026',
-    readTime: '6 menit baca',
-    author: 'Tim Editorial Sebooth',
-    coverImage: '/images/products/mini_studio_booth.webp',
-    excerpt: 'Tembalang sebagai pusat mahasiswa di Semarang kini punya vendor photobooth aesthetic dengan harga bersahabat untuk BEM, dies natalis, expo, hingga selebrasi wisuda UNDIP & Polines.',
-    highlights: [
-      'Lokasi strategis di area Tembalang, bebas ongkir transport untuk event sekitar kampus UNDIP',
-      'Paket sewa photobooth Tembalang fleksibel, pas di kantong anggaran organisasi mahasiswa',
-      'Cetak strip foto instan kualitas lab kilat < 15 detik dengan softfile live video langsung ke HP',
-      'Pilihan backdrop estetik dan kustomisasi template frame wisuda gratis tanpa biaya tambahan'
-    ],
-    content: [
-      'Momen kelulusan dan event kampus adalah perayaan yang pantas diabadikan dengan cara terbaik. Di kawasan Tembalang, Semarang, antusiasme mahasiswa Universitas Diponegoro (UNDIP) dan Politeknik Negeri Semarang (Polines) terhadap tren photobooth aesthetic semakin meningkat drastis.',
-      'Banyak panitia acara kampus mencari layanan Photobooth Tembalang yang tidak hanya menyajikan kualitas visual modern, tapi juga menawarkan harga sewa Photobooth Semarang Murah yang masuk akal bagi kantong mahasiswa tanpa memangkas kualitas perangkat.',
-      'Sebooth hadir menjawab kebutuhan tersebut dengan menghadirkan Mini Studio Photobooth Tembalang berlampu studio profesional dan kamera DSLR/Mirrorless beresolusi tinggi. Bukan sekadar foto biasa, Sebooth juga menyertakan fitur Live GIF dan video frame vertikal yang langsung bisa diunduh oleh para tamu ke galeri smartphone mereka.',
-      'Bagi para wisudawan yang merayakan kelulusan bersama orang tua, sahabat, dan pasangan, paket Photobooth Wisuda UNDIP dari Sebooth menyediakan photostrip 2x6 dan postcard 4R tahan air, anti pudar, dan siap dipajang di meja belajar atau dinding kamar kos.',
-      'Untuk event organizer kampus seperti konser musik BEM, pameran UMKM, maupun festival budaya di Gedung Prof. Soedarto, paket sewa Photobooth Tembalang dari Sebooth memungkinkan panitia mengatur kuota sesi secara terstruktur tanpa antrean berdesakan berkat sistem tiket digital QR Sebooth.'
-    ],
-    sections: [
-      {
-        heading: 'Fenomena Tren Photobooth Tembalang di Kalangan Mahasiswa UNDIP & Polines',
-        paragraphs: [
-          'Kawasan Tembalang telah lama dikenal sebagai episentrum kehidupan mahasiswa di Kota Semarang. Setiap semester, ribuan wisudawan memadati area kampus atas bersama sanak keluarga untuk merayakan kelulusan. Tidak heran jika permintaan akan vendor Photobooth Tembalang melonjak tajam menjelang periode wisuda kampus.',
-          'Generasi muda saat ini mendambakan dokumentasi instan yang estetis, interaktif, dan langsung bisa diunggah ke media sosial seperti Instagram Stories dan TikTok. Memilih layanan Photobooth Tembalang dari Sebooth memberikan solusi dokumentasi modern yang melampaui foto studio konvensional. Mahasiswa tidak perlu lagi menunggu berhari-hari untuk mendapatkan file foto hasil jepretan acara.',
-          'Sebagai pelopor Photobooth Mahasiswa Semarang di Tembalang, Sebooth menerapkan alur foto otomatis. Setiap sesi Photobooth Tembalang menghasilkan QR code unik yang dicetak pada strip foto. Para wisudawan dan tamu undangan cukup memindai kode tersebut menggunakan kamera HP untuk mengunduh foto beresolusi tinggi, animasi GIF bergerak, hingga video momen seru.'
-        ]
-      },
-      {
-        heading: 'Mengapa Memilih Sewa Photobooth Tembalang dari Sebooth?',
-        subheading: 'Keunggulan Fasilitas & Pelayanan Khusus Komunitas Mahasiswa',
-        paragraphs: [
-          'Sebooth didirikan dengan pemahaman mendalam mengenai kebutuhan event di Semarang atas. Ketika Anda memutuskan sewa Photobooth Tembalang, kepraktisan logistik dan efisiensi waktu adalah prioritas utama panitia.',
-          'Berikut adalah beberapa keunggulan utama layanan Photobooth Tembalang yang membuat Sebooth menjadi pilihan nomor satu organisasi mahasiswa dan panitia wisuda:',
-          '1. Bebas Biaya Transportasi: Tim Sebooth beroperasi langsung di wilayah Tembalang Semarang. Ini berarti seluruh pemesanan Photobooth Tembalang di sekitar kampus UNDIP Tembalang, Tirto Agung, Sirojudin, Banjarsari, hingga Bulusan bebas dari biaya transport tambahan.',
-          '2. Kecepatan Cetak Kilat Lab-Grade: Menggunakan printer thermal dye-sublimation mutakhir kelas dunia, cetakan foto Photobooth Tembalang selesai dalam waktu kurang dari 12 detik per sesi. Kertas foto dilapisi lapisan pelindung anti air, anti sidik jari, dan tidak pudar hingga puluhan tahun.',
-          '3. Lighting Studio Lembut: Kamera mirrorless beresolusi tinggi dipadukan dengan beauty-dish dan softbox diffuser studio, memastikan skin tone wajah cerah merata, glowing, dan bebas bayangan tajam pada setiap sesi Photobooth Tembalang.',
-          '4. Kustomisasi Template Frame Gratis: Desainer Sebooth siap merancang template strip foto bertema Photobooth Wisuda UNDIP, logo BEM, atau identitas fakultas tanpa pungutan biaya desain tambahan.',
-          '5. Pilihan Paket Photobooth Semarang Murah: Kami merancang skema harga terjangkau agar seluruh organisasi mahasiswa dapat menghadirkan hiburan berkelas dunia tanpa membebani kas kepanitiaan.'
-        ]
-      },
-      {
-        heading: 'Perbandingan Paket Photobooth Wisuda UNDIP & Event Kampus Tembalang',
-        paragraphs: [
-          'Agar panitia acara dapat menyesuaikan alokasi dana secara tepat, Sebooth menghadirkan skema paket sewa Photobooth Tembalang yang sangat transparan dan kompetitif di Semarang:',
-          'Tabel berikut merangkum pilihan paket Photobooth Tembalang yang paling banyak diminati oleh mahasiswa, panitia expo, dan wisudawan:',
-          'Setiap pemesanan paket Photobooth Tembalang telah dilengkapi kru operator berpengalaman yang siap mendampingi sesi foto dari awal hingga selesai.'
-        ],
-        table: {
-          headers: ['Fitur Layanan', 'Paket Wisuda Mini (Batch)', 'Paket Event Unlimited 2 Jam', 'Paket Expo Unlimited 4 Jam'],
-          rows: [
-            ['Durasi Operasional', 'Sesuai kuota sesi (20-50 sesi)', '2 Jam nonstop', '4 Jam nonstop'],
-            ['Jumlah Cetak Foto', '1 strip per tamu / sesi', 'Unlimited cetak lab-grade', 'Unlimited cetak lab-grade'],
-            ['Kamera & Lighting', 'Mirrorless + Softbox Studio', 'Mirrorless + Dual Studio Light', 'Mirrorless + Dual Studio Light'],
-            ['Softfile & Live GIF', 'QR Scan Instan ke HP', 'QR Scan Instan ke HP', 'QR Scan Instan ke HP'],
-            ['Kustom Frame', 'Desain Wisuda Gratis', 'Full Custom Desain Event', 'Full Custom Desain Event'],
-            ['Biaya Ongkir Tembalang', 'GRATIS / Bebas Transport', 'GRATIS / Bebas Transport', 'GRATIS / Bebas Transport']
-          ]
-        }
-      },
-      {
-        heading: 'Lokasi Populer Penggunaan Photobooth di Area Tembalang Semarang',
-        paragraphs: [
-          'Layanan Photobooth Tembalang dari Sebooth telah dipercaya di berbagai lokasi strategis di sekitar Semarang bagian atas. Beberapa venue yang sering memesan layanan sewa Photobooth Tembalang antara lain:',
-          '• Gedung Prof. Soedarto, S.H. UNDIP Tembalang: Tempat utama penyelenggaraan upacara wisuda sarjana dan pascasarjana, di mana booth Photobooth Tembalang Sebooth selalu ramai dikunjungi wisudawan dan keluarga.',
-          '• Gedung Muladi Dome UNDIP: Gedung serbaguna megah yang sering menjadi panggung konser musik mahasiswa, job fair akbar, dan pameran seni kampus yang dilengkapi Photobooth Tembalang.',
-          '• Gedung SA MWA UNDIP: Lokasi favorit untuk seminar nasional, workshop ilmiah, dan rapat kerja tahunan civitas akademika dengan fasilitas Photobooth Tembalang.',
-          '• Cafe & Community Space Tembalang: Seperti kawasan Jalan Tirto Agung, Banjarsari, dan Prof. Soedarto yang kerap mengadakan perayaan intimate birthday party, farewell party, dan temu alumni bersama Photobooth Tembalang Sebooth.',
-          'Keberadaan Photobooth Tembalang di tempat-tempat tersebut senantiasa menciptakan suasana meriah dan memberikan cenderamata fisik berharga bagi para pengunjung.'
-        ]
-      },
-      {
-        heading: 'Tips Sukses Mempersiapkan Photobooth Event Kampus agar Bebas Antrean',
-        paragraphs: [
-          'Mengelola kerumunan mahasiswa yang antusias berfoto memerlukan strategi matang. Panitia disarankan memesan Photobooth Tembalang minimal 2 minggu sebelum hari H untuk mengamankan slot jadwal, terutama saat musim wisuda UNDIP.',
-          'Selain itu, pastikan area instalasi Photobooth Tembalang memiliki ruang minimal 2x2 meter dengan akses colokan listrik mandiri. Tim Sebooth akan menyediakan kru berpengalaman yang memandu tamu berpose dengan cepat dan rapi sehingga antrean Photobooth Tembalang tetap mengalir lancar.',
-          'Jangan ragu untuk berkonsultasi mengenai kebutuhan sewa Photobooth Tembalang Anda bersama tim customer service Sebooth melalui WhatsApp untuk mendapatkan promo diskon spesial Photobooth Semarang Murah!'
-        ]
-      }
-    ],
-    faqs: [
-      {
-        question: 'Apakah ada biaya transportasi tambahan untuk event di Tembalang?',
-        answer: 'Untuk seluruh wilayah Tembalang (area kampus UNDIP Tembalang, Tirto Agung, Banjarsari, Bulusan, Sirojudin, hingga Baskoro), Sebooth memberikan fasilitas khusus bebas biaya transportasi atau gratis ongkir pengantaran alat.'
-      },
-      {
-        question: 'Berapa lama waktu pemasangan (load-in) photobooth di venue event Tembalang?',
-        answer: 'Tim teknis Sebooth hanya memerlukan waktu 30 hingga 45 menit sebelum acara dimulai untuk perakitan booth, instalasi backdrop, kalibrasi pencahayaan studio, dan uji coba mesin cetak.'
-      },
-      {
-        question: 'Bagaimana cara booking photobooth Tembalang untuk wisuda atau acara kampus?',
-        answer: 'Anda cukup menghubungi tim Sebooth via WhatsApp di nomor 0812-3456-7890, menginformasikan tanggal dan lokasi acara di Tembalang, memilih paket sewa, dan mengonfirmasi reservasi dengan DP yang bersahabat.'
-      }
-    ],
-    igLink: 'https://instagram.com/sebooth.id'
-  },
-  {
-    id: 'artikel-2',
-    slug: 'vendor-photobooth-semarang-murah-terbaik-untuk-wedding-event',
-    title: 'Vendor Photobooth Semarang Murah Terbaik untuk Wedding & Event Spektakuler',
-    metaTitle: 'Photobooth Semarang Murah & Aesthetic | Wedding & Event',
-    metaDescription: 'Vendor photobooth Semarang terpercaya untuk wedding, gathering kantor, & sweet 17. Cetak unlimited lab-grade, softfile instan, & 35+ template frame aesthetic.',
-    targetKeyword: 'Photobooth Semarang',
-    secondaryKeywords: [
-      'Photobooth Event Semarang Murah',
-      'Photobooth Wedding Semarang',
-      'Sewa Photobooth Semarang',
-      'Vendor Photobooth Semarang'
-    ],
-    category: 'WEDDING',
-    date: '3 Oktober 2026',
-    readTime: '6 menit baca',
-    author: 'Tim Editorial Sebooth',
-    coverImage: '/images/products/partner_sebooth.webp',
-    excerpt: 'Ingin tamu pernikahan atau pesta ulang tahunmu di Semarang terkesan? Simak panduan memilih vendor photobooth aesthetic dengan cetak tanpa batas dan frame elegan.',
-    highlights: [
-      'Cetak unlimited photostrip & postcard 4R tanpa batasan sesi selama durasi sewa di Semarang',
-      'Koleksi 35+ template frame premium yang bisa disesuaikan dengan tema dekorasi pernikahan',
-      'Integrasi QR code instan untuk softfile HD, Live Boomerang GIF, dan video momen seru',
-      'Peralatan kamera mirrorless dan lighting beauty-dish studio berstandar komersial profesional'
-    ],
-    content: [
-      'Menyelenggarakan pesta pernikahan (wedding reception), perayaan ulang tahun sweet 17, ataupun gathering perusahaan di Semarang membutuhkan hiburan yang interaktif sekaligus berkesan jangka panjang bagi setiap tamu undangan.',
-      'Dalam beberapa tahun terakhir, kehadiran Photobooth Semarang telah bertransformasi dari sekadar suvenir pelengkap menjadi atraksi utama di area foyer gedung maupun ballroom hotel berbintang di kawasan Simpang Lima, Gajahmungkur, hingga Semarang Barat.',
-      'Sebooth dirancang untuk memberikan standar estetika baru bagi pesta pernikahan melalui paket Photobooth Wedding Semarang. Dengan lighting beauty-dish studio yang lembut, skin-tone para tamu terlihat glowing alami tanpa bayangan tajam. Tamu dari segala usia, mulai dari anak-anak hingga kakek-nenek, dapat menikmati keseruan berfoto bersama secara intuitif.',
-      'Keunggulan utama yang membuat Sebooth menjadi pilihan favorit pengantin di Semarang adalah kecepatan cetak thermal lab grade berkecepatan tinggi di bawah 12 detik, didukung dengan teknologi cloud portal pribadi di mana tamu tinggal scan QR code di kertas foto untuk menyimpan file aslinya ke ponsel.',
-      'Tersedia pilihan paket sewa Photobooth Semarang All You Can Photos (Unlimited) dengan durasi 2 jam, 3 jam, hingga seharian penuh, dilengkapi kru ramah berseragam rapi yang mendampingi dan memandu pose para tamu sepanjang acara.'
-    ],
-    sections: [
-      {
-        heading: 'Mengapa Photobooth Semarang Menjadi Primadona Hiburan Pesta Modern?',
-        paragraphs: [
-          'Pesta pernikahan dan gathering corporate di Kota Semarang saat ini menuntut hiburan yang tidak monoton. Jika suvenir konvensional sering kali tertinggal atau terlupakan, cenderamata cetak dari Photobooth Semarang justru selalu disimpan rapi oleh tamu di dompet, album kenangan, atau ditempel di kulkas rumah.',
-          'Keberadaan Photobooth Semarang menciptakan suasana akrab dan mencairkan suasana di antara para undangan. Sambil menunggu giliran menyalami mempelai di pelaminan, tamu dapat bersenang-senang mengekspresikan pose terbaik mereka di depan lensa kamera Photobooth Wedding Semarang.',
-          'Sebooth memadukan estetika visual minimalis kontemporer dengan performa mesin cetak berkecepatan tinggi. Setiap hasil cetak Photobooth Semarang menjadi cerminan prestise dan kehangatan tuan rumah dalam menyambut para tamu terhormat dengan sentuhan Vendor Photobooth Semarang terpercaya.'
-        ]
-      },
-      {
-        heading: 'Keunggulan Layanan Vendor Photobooth Semarang dari Sebooth',
-        subheading: 'Standar Kualitas Tertinggi untuk Resepsi & Acara Resmi Anda',
-        paragraphs: [
-          'Dalam memilih Vendor Photobooth Semarang, kepastian performa alat dan kerapian kru adalah hal krusial yang tidak boleh dipertaruhkan. Sebooth berkomitmen memberikan pengalaman tanpa cela dengan berbagai keunggulan eksklusif:',
-          '1. Kualitas Cetak Thermal Lab-Grade: Layanan Photobooth Semarang kami menggunakan mesin cetak sublimasi profesional standar laboratorium fotografi. Hasil foto tidak luntur saat terkena cipratan air dan memiliki ketajaman warna luar biasa.',
-          '2. Studio Lighting Berkualitas Tinggi: Kami tidak menggunakan lampu ring light biasa yang menyilaukan mata. Photobooth Semarang Sebooth dilengkapi softbox studio berdiameter lebar dengan pencahayaan lembut yang membuat rona wajah tampak natural, mulus, dan fotogenik.',
-          '3. 35+ Desain Template Frame Elegan: Tim desainer Photobooth Wedding Semarang kami akan memadukan tipografi modern, inisial nama mempelai, tanggal acara, serta palet warna yang serasi dengan tema dekorasi pernikahan Anda.',
-          '4. Akses Digital Instan Melalui QR Code: Tamu Photobooth Semarang tidak hanya membawa pulang lembaran foto fisik, namun juga dapat langsung mengunduh softfile foto beresolusi penuh beserta file video animasi singkat untuk dibagikan di media sosial.',
-          '5. Kru Operator Ramah & Profesional: Operator Vendor Photobooth Semarang kami terlatih menyapa tamu dengan ramah, mengarahkan pose terbaik, dan menjaga kebersihan serta ketertiban antrean selama pesta berlangsung.',
-          '6. Pilihan Paket Photobooth Event Semarang Murah: Kami menghadirkan fleksibilitas paket hemat untuk berbagai skala event corporate, peluncuran produk, dan temu relasi di Semarang.'
-        ]
-      },
-      {
-        heading: 'Panduan Memilih Paket Sewa Photobooth Semarang untuk Wedding & Corporate',
-        paragraphs: [
-          'Setiap acara di Semarang memiliki skala dan alur waktu yang berbeda. Berikut perbandingan paket sewa Photobooth Semarang yang dapat Anda sesuaikan dengan estimasi jumlah tamu undangan pesta Anda:'
-        ],
-        table: {
-          headers: ['Detail Paket', 'Paket Silver (2 Jam)', 'Paket Gold (3 Jam)', 'Paket Platinum (4 Jam)'],
-          rows: [
-            ['Rekomendasi Tamu', 'Hingga 200 - 300 Tamu', '300 - 600 Tamu', 'Lebih dari 600 Tamu'],
-            ['Kapasitas Cetak', 'Unlimited Cetak Selama 2 Jam', 'Unlimited Cetak Selama 3 Jam', 'Unlimited Cetak Selama 4 Jam'],
-            ['Pilihan Ukuran', 'Strip 2x6 atau Postcard 4R', 'Strip 2x6 atau Postcard 4R', 'Strip 2x6 atau Postcard 4R'],
-            ['Properti Foto (Props)', 'Lengkap (Kacamata, Bando, Papan)', 'Lengkap + Custom Props Quotes', 'Lengkap + Custom Props Quotes'],
-            ['Kru Standby', '2 Kru Profesional Berseragam', '2 Kru Profesional Berseragam', '3 Kru Profesional Berseragam'],
-            ['Area Layanan', 'Seluruh Kota Semarang & Sekitarnya', 'Seluruh Kota Semarang & Sekitarnya', 'Seluruh Kota Semarang & Sekitarnya']
-          ]
-        }
-      },
-      {
-        heading: 'Daftar Venue Wedding & Ballroom Hotel Favorit di Semarang',
-        paragraphs: [
-          'Tim Photobooth Semarang Sebooth telah berpengalaman melayani acara di berbagai hotel berbintang dan gedung pertemuan ternama di Kota Semarang, di antaranya:',
-          '• Hotel Gumaya Tower Semarang: Ballroom megah di pusat kota yang sering menjadi venue resepsi Photobooth Wedding Semarang mewah berkapasitas ribuan tamu.',
-          '• PO Hotel Semarang (Paragon): Terintegrasi dengan pusat perbelanjaan, sangat ideal untuk wedding resepsi modern dan gathering korporasi berskala nasional dengan layanan Photobooth Semarang.',
-          '• Patra Semarang Hotel & Convention: Rama Shinta Ballroom di Gajahmungkur yang terkenal dengan pemandangan kota Semarang dari ketinggian bersama photobooth Sebooth.',
-          '• UTC Hotel & Convention Hall: Lokasi strategis di Jalan Kelud Raya dengan area parkir luas dan ballroom berkapasitas besar untuk sewa Photobooth Semarang.',
-          '• Gedung Rimba Graha & Gedung IPHI Semarang: Pilihan favorit keluarga untuk resepsi pernikahan bernuansa adat Jawa yang khidmat dan hangat diabadikan oleh Vendor Photobooth Semarang.',
-          'Di semua lokasi tersebut, tim Photobooth Semarang Sebooth siap hadir tepat waktu untuk melakukan pemasangan peralatan sebelum acara dimulai.'
-        ]
-      },
-      {
-        heading: 'Cara Mudah Reservasi Vendor Photobooth Semarang Sebooth',
-        paragraphs: [
-          'Memesan layanan sewa Photobooth Semarang di Sebooth sangatlah praktis. Anda cukup menghubungi tim sales kami via WhatsApp, memilih paket durasi yang diinginkan, dan menentukan tanggal resepsi pernikahan atau gathering.',
-          'Desainer kami akan segera menghubungi Anda untuk mendiskusikan konsep template frame Photobooth Wedding Semarang hingga Anda merasa puas 100% sebelum hari perayaan tiba.',
-          'Jadikan hari istimewa Anda di Semarang tak terlupakan dengan layanan Photobooth Semarang terbaik dari Sebooth. Hubungi kontak WhatsApp kami sekarang untuk mendapatkan penawaran harga spesial Vendor Photobooth Semarang bulan ini!'
-        ]
-      }
-    ],
-    faqs: [
-      {
-        question: 'Apakah template frame Photobooth Semarang bisa disesuaikan dengan undangan wedding kami?',
-        answer: 'Tentu saja! Desainer Photobooth Semarang Sebooth akan membuatkan preview template frame khusus yang mencantumkan nama pengantin, tanggal, font, dan warna yang selaras dengan palet tema pernikahan kamu tanpa biaya desain tambahan.'
-      },
-      {
-        question: 'Apakah paket sewa Photobooth Semarang sudah termasuk properti foto dan backdrop?',
-        answer: 'Semua paket Photobooth Semarang Sebooth sudah mencakup lighting profesional studio, properti foto lucu (fun props kacamata, bando, papan quotes), kru operator standby, serta pilihan backdrop standar atau integrasi ke backdrop dekorasi wedding kamu.'
-      },
-      {
-        question: 'Area mana saja di Semarang dan sekitarnya yang dijangkau oleh vendor Sebooth?',
-        answer: 'Layanan Photobooth Semarang Sebooth melayani seluruh area Kota Semarang, Tembalang, Banyumanik, Ungaran, Ambarawa, Salatiga, Demak, hingga Kendal dengan jaminan ketepatan waktu.'
-      }
-    ],
-    igLink: 'https://instagram.com/sebooth.id'
-  },
-  {
-    id: 'artikel-3',
-    slug: 'sewa-photobooth-cetak-instan-semarang-vending-machine-pertama',
-    title: 'Sewa Photobooth Cetak Instan Semarang: Inovasi Vending Machine Pertama',
-    metaTitle: 'Sewa Photobooth Cetak Instan Semarang | Vending Machine',
-    metaDescription: 'Sewa photobooth cetak instan Semarang dengan teknologi vending machine pertama. Seru, otomatis, cetak cepat & softfile instan ke HP untuk cafe dan expo.',
-    targetKeyword: 'Photobooth Event Semarang Murah',
-    secondaryKeywords: [
-      'Sewa Photobooth Semarang',
-      'Photobooth Cetak Instan Semarang',
-      'Vending Machine Photobooth Semarang',
-      'Self Photo Studio Semarang'
-    ],
-    category: 'EVENT SEMARANG',
-    date: '1 Oktober 2026',
-    readTime: '6 menit baca',
-    author: 'Tim Editorial Sebooth',
-    coverImage: '/images/products/vending_machine_booth.webp',
-    excerpt: 'Pertama di Jawa Tengah! Sebooth meluncurkan Vending Machine Photobooth pintar yang beroperasi otomatis untuk mall, cafe, festival musik, dan pop-up market di Semarang.',
-    highlights: [
-      'Self-service automated touchscreen interface yang futuristik dan mudah digunakan siapa saja',
-      'Pilihan terbaik untuk Photobooth Event Semarang Murah di cafe, pusat perbelanjaan, dan festival',
-      'Kamera mirrorless studio internal dengan flash diffuser untuk pencahayaan sempurna',
-      'Cetak foto instan lab-grade dalam 12 detik dengan softfile live video langsung ke smartphone'
-    ],
-    content: [
-      'Industri hiburan visual di Kota Semarang memasuki era baru dengan hadirnya Vending Machine Photobooth dari Sebooth. Konsep self-service photobooth ini menghadirkan pengalaman berfoto mandiri ala Korea yang sedang viral di kota-kota besar dunia.',
-      'Bagi para penyelenggara pameran, peluncuran produk (product launch), festival musik di PRPP Semarang, maupun pemilik cafe di kawasan Kota Lama dan Siranda, menyewa Photobooth Event Semarang Murah dengan format vending machine adalah cara jitu meningkatkan crowd engagement dan brand awareness secara organik.',
-      'Mesin inovatif Vending Machine Photobooth Semarang ini dibalut bodi ramping berdesain industrial modern yang tidak memakan banyak tempat venue. Tamu cukup menyentuh layar sentuh interaktif, memilih pose favorit, berpose dengan hitungan mundur, dan foto photostrip berkecepatan tinggi langsung keluar dari slot dispenser dalam waktu singkat.',
-      'Sebagai pelopor Photobooth Cetak Instan Semarang, seluruh foto dilengkapi QR code dinamis yang memfasilitasi tamu untuk langsung membagikan hasil foto ke Instagram Stories dan TikTok dengan watermark logo acara atau sponsor terkait.',
-      'Layanan sewa Photobooth Semarang dari Sebooth ini menyediakan model kemitraan bagi pemilik tempat usaha di Semarang dengan skema profit-sharing ataupun sewa harian untuk festival akhir pekan.'
-    ],
-    sections: [
-      {
-        heading: 'Era Baru Hiburan Interaktif: Vending Machine Photobooth di Kota Semarang',
-        paragraphs: [
-          'Perkembangan tren fotografi di Kota Semarang bergerak semakin dinamis. Generasi Z dan milenial kini lebih menyukai kebebasan berekspresi tanpa rasa canggung di hadapan fotografer layaknya di Self Photo Studio Semarang. Inilah alasan mengapa konsep self-photo booth berbentuk mesin otomatis kian digemari di berbagai sudut kota.',
-          'Sebooth menghadirkan inovasi Vending Machine Photobooth Semarang pertama di Jawa Tengah sebagai solusi Photobooth Event Semarang Murah yang praktis dan futuristik. Pengunjung dapat mengeksplorasi gaya sesuka hati di depan layar sentuh beresolusi tajam.',
-          'Mesin otomatis ini dirancang sangat ergonomis sehingga cocok diterapkan sebagai Photobooth Event Semarang Murah pada berbagai jenis acara, mulai dari bazaar kuliner, festival musik kampus, gathering komunitas, hingga pameran otomotif di pusat perbelanjaan Semarang.'
-        ]
-      },
-      {
-        heading: 'Mengapa Memilih Photobooth Event Semarang Murah Berkonsep Self-Service?',
-        subheading: 'Efisiensi Operasional Tanpa Mengorbankan Kualitas Visual',
-        paragraphs: [
-          'Menyelenggarakan event publik dengan anggaran terbatas sering kali menjadi tantangan besar bagi panitia. Memilih layanan Photobooth Event Semarang Murah dari Sebooth memberikan efisiensi biaya maksimal dengan berbagai keunggulan teknologi canggih:',
-          '1. Pengoperasian Otomatis Mandiri: Mesin Photobooth Event Semarang Murah Sebooth bekerja mandiri 100%. Pengunjung cukup mengikuti instruksi audio-visual di layar sentuh, memilih filter favorit, dan mencetak hasil foto tanpa perlu campur tangan operator yang rumit.',
-          '2. Komponen Kamera Mirrorless Studio: Berbeda dari photo booth murah biasa yang mengandalkan webcam berkualitas rendah, unit Photobooth Event Semarang Murah Sebooth dipersenjatai kamera mirrorless beresolusi tinggi dan pencahayaan studio terkalibrasi.',
-          '3. Jejak Area Minimalis (Space-Saving): Bodi ramping mesin Photobooth Event Semarang Murah ini hanya membutuhkan ruang 1x1 meter persegi, sangat menghemat alokasi tempat pameran atau sudut cafe di Semarang.',
-          '4. Kecepatan Photobooth Cetak Instan Semarang: Didukung mesin printer foto thermal sublimasi industri, setiap jepretan dicetak rapi dan kering sempurna hanya dalam hitungan belasan detik.',
-          '5. Interaksi Media Sosial Instan: Setelah sesi selesai, kode QR dinamis pada foto Photobooth Event Semarang Murah dapat dipindai untuk mengunduh softfile digital dan video animasi bergerak yang siap dipamerkan di media sosial.'
-        ]
-      },
-      {
-        heading: 'Aplikasi Terbaik Vending Machine Photobooth untuk Berbagai Event Semarang',
-        paragraphs: [
-          'Fleksibilitas unit Sebooth menjadikannya solusi sewa Photobooth Semarang dan Photobooth Event Semarang Murah yang dapat diterapkan di berbagai konteks kegiatan:',
-          '• Festival Musik & Konser Terbuka: Seperti pagelaran musik di PRPP Convention Hall Semarang atau Sam Poo Kong, di mana ribuan pengunjung mencari spot foto interaktif yang cepat tanpa antrean panjang melalui Photobooth Event Semarang Murah.',
-          '• Mall Exhibition & Pameran Brand: Pusat perbelanjaan seperti Pollux Mall Paragon, The Park Semarang, dan DP Mall sering memanfaatkan Photobooth Event Semarang Murah untuk menarik traffic pengunjung ke booth promosi brand.',
-          '• Kafe & Creative Space Semarang: Menghidupkan sudut nongkrong di Kota Lama Semarang, kawasan Siranda, dan Pleburan dengan Vending Machine Photobooth Semarang yang mendatangkan repeat customers.',
-          '• Pameran Kampus & Expo Mahasiswa: Menjadi magnet keramaian pada acara expo kewirausahaan dan festival kebudayaan sebagai opsi Photobooth Event Semarang Murah terfavorit.'
-        ]
-      },
-      {
-        heading: 'Perbandingan Sewa Photobooth Event Semarang Murah vs Booth Tradisional',
-        paragraphs: [
-          'Untuk memberikan gambaran menyeluruh bagi panitia, berikut perbandingan antara inovasi vending machine Photobooth Event Semarang Murah Sebooth dengan booth konvensional:'
-        ],
-        table: {
-          headers: ['Parameter Perbandingan', 'Vending Machine Sebooth', 'Photobooth Tradisional Manual'],
-          rows: [
-            ['Luas Area yang Dibutuhkan', 'Cukup 1 x 1 Meter', 'Minimal 3 x 3 Meter'],
-            ['Sistem Operasional', 'Full Otomatis Touchscreen', 'Memerlukan Banyak Operator Manual'],
-            ['Kecepatan Cetak', 'Kilat < 12 Detik per Strip', 'Sering Mengalami Antrean Penumpukan'],
-            ['Kamera & Sensor', 'Mirrorless Studio High-Res', 'Bervariasi / Sering Kurang Stabil'],
-            ['Privasi Berfoto', 'Tinggi (Tamu Bebas Berekspresi)', 'Rendah (Dilihat Banyak Orang)'],
-            ['Efisiensi Biaya Sewa', 'Sangat Murah & Hemat Anggaran', 'Biaya Operasional Kru Lebih Tinggi']
-          ]
-        }
-      },
-      {
-        heading: 'Skema Kemitraan & Cara Sewa Photobooth Event Semarang Murah',
-        paragraphs: [
-          'Sebooth tidak hanya menyediakan sistem sewa harian untuk acara temporer, tetapi juga membuka peluang kemitraan jangka panjang (revenue sharing) bagi para pengelola tempat usaha, cafe, dan mall di Kota Semarang.',
-          'Melalui skema kemitraan ini, Anda tidak perlu mengeluarkan modal pembelian mesin. Tim sewa Photobooth Semarang dari Sebooth akan bertanggung jawab penuh atas instalasi mesin, pengisian kertas cetak, dan pemeliharaan teknis secara berkala.',
-          'Jika Anda sedang merencanakan acara seru atau ingin meningkatkan omzet tempat usaha Anda di Semarang, hubungi Sebooth sekarang dan dapatkan solusi Photobooth Event Semarang Murah terbaik hari ini!'
-        ]
-      }
-    ],
-    faqs: [
-      {
-        question: 'Berapa daya listrik yang dibutuhkan untuk unit Vending Machine Photobooth Event Semarang Murah?',
-        answer: 'Unit Vending Machine Photobooth Event Semarang Murah Sebooth sangat hemat energi, hanya membutuhkan daya listrik standar sekitar 350 hingga 450 Watt.'
-      },
-      {
-        question: 'Apakah unit photobooth bisa diletakkan di luar ruangan (outdoor)?',
-        answer: 'Unit dapat dioperasikan di area outdoor selama terlindung dari terik matahari langsung dan hujan (misalnya di bawah tenda sarnafil atau kanopi tertutup).'
-      },
-      {
-        question: 'Bagaimana cara kerja sistem kemitraan (partnership) untuk cafe di Semarang?',
-        answer: 'Anda cukup menyediakan ruang seluas 1.5 x 1.5 meter dan stopkontak listrik. Tim Sebooth akan mengurus instalasi mesin, kertas cetak, perawatan berkala, dan membagi hasil penjualan foto setiap bulannya.'
-      }
-    ],
-    igLink: 'https://instagram.com/sebooth.id'
-  },
-  {
+const newArticlesContent = `  {
     id: 'artikel-4',
     slug: 'keseruan-photobooth-hut-kai-ke-81-stasiun-tawang-semarang',
     title: 'Keseruan Photobooth HUT KAI ke-81 di Stasiun Semarang Tawang: Cetak Kilat & Suvenir Digital Penumpang',
     metaTitle: 'Photobooth Stasiun Tawang | HUT KAI ke-81 Semarang',
-    metaDescription: 'Keseruan photobooth Stasiun Tawang di HUT KAI ke-81 Semarang. Cetak instan lab-grade, live video & softfile cepat bagi penumpang kereta api & kru KAI Daop 4.',
+    metaDescription: 'Keseruan photobooth Stasiun Tawang di HUT KAI ke-81 Semarang. Cetak instan lab-grade, live video & softfile cepat untuk penumpang kereta api & kru PT KAI Daop 4.',
     targetKeyword: 'Photobooth Stasiun Tawang',
     secondaryKeywords: [
       'Photobooth HUT KAI Semarang',
@@ -689,15 +349,15 @@ export const ARTICLES_DATA: ArticleItem[] = [
       'Dengan estimasi kehadiran lebih dari 12.000 mahasiswa yang memadati kompleks pameran di Gedung Muladi Dome dan Stadion UNDIP Tembalang, menjaga dinamika kerumunan dan menghadirkan spot aktivitas yang menarik adalah tantangan logistik raksasa bagi panitia pelaksana.',
       'Dalam perhelatan akbar tersebut, kehadiran Photobooth Dipoxpo Undip dari Sebooth tampil sebagai primadona pameran. Booth Sebooth menjadi spot paling diburu oleh mahasiswa baru angkatan muda yang ingin mengabadikan hari-hari awal mereka resmi menyandang status sebagai mahasiswa Universitas Diponegoro.',
       'Mengelola antrean mahasiswa yang mengular panjang di acara expo sebesar Dipoxpo memerlukan keandalan infrastruktur perangkat keras dan alur operasional tanpa cela. Sebooth membuktikan kapasitas kelas dunianya dengan menerapkan teknologi cetak sublimasi industri berkecepatan tinggi yang memproses lembaran foto dalam waktu kurang dari 12 detik per sesi, mencegah terjadinya penumpukan massa di lorong stand pameran.',
-      'Layanan Photobooth Dipoxpo Undip ini sukses mencatatkan rekor operasional Photobooth Dipoxpo Undip tanpa ada insiden kertas macet maupun mesin overheat, membuktikan bahwa Sebooth adalah mitra terpercaya nomor satu untuk event kampus berskala masif di Semarang.'
+      'Layanan Photobooth Dipoxpo Undip ini sukses mencatatkan rekor layanan tanpa ada insiden kertas macet (paper jam) maupun mesin overheat, membuktikan bahwa Sebooth adalah mitra terpercaya nomor satu untuk event kampus berskala masif di Semarang.'
     ],
     sections: [
       {
         heading: 'Fenomena Dipoxpo UNDIP: Pameran Kemahasiswaan Terbesar se-Jawa Tengah',
         paragraphs: [
           'Dipoxpo bukan sekadar pameran stand biasa; ini adalah pesta kebudayaan dan unjuk kebolehan seluruh talenta mahasiswa UNDIP. Mulai dari demonstrasi bela diri, marching band, paduan suara mahasiswa, robotika, pecinta alam, hingga teater bergantian tampil di panggung utama.',
-          'Di tengah gegap gempita tersebut, mahasiswa baru mencari layanan Photobooth Dipoxpo Undip untuk mengabadikan momen bersama rekan sekelompok pemandu, teman satu daerah asal, dan kenalan baru dari fakultas berbeda. Layanan Photobooth Dipoxpo Undip dari Sebooth menyediakan fasilitas berfoto yang cepat, modern, dan bernilai kenangan abadi bagi civitas akademika.',
-          'Setiap mahasiswa yang keluar dari bilik Photobooth Dipoxpo Undip membawa senyuman lebar sambil memegang strip foto fisik yang masih hangat dan langsung memindai QR code di ponsel mereka untuk saling bertukar hasil foto Photobooth Dipoxpo Undip di grup perpesanan angkatan.'
+          'Di tengah gegap gempita tersebut, mahasiswa baru mencari cara untuk mengabadikan momen bersama rekan sekelompok pemandu, teman satu daerah asal, dan kenalan baru dari fakultas berbeda. Photobooth Dipoxpo Undip dari Sebooth menyediakan fasilitas berfoto yang cepat, modern, dan bernilai kenangan abadi.',
+          'Setiap mahasiswa yang keluar dari bilik foto Sebooth membawa senyuman lebar sambil memegang strip foto fisik yang masih hangat dan langsung memindai QR code di ponsel mereka untuk saling bertukar hasil foto di grup perpesanan angkatan.'
         ]
       },
       {
@@ -715,7 +375,7 @@ export const ARTICLES_DATA: ArticleItem[] = [
         heading: 'Daya Tarik Photobooth Sebooth sebagai Magnet Keramaian Stand Pameran Expo',
         paragraphs: [
           'Bagi penyelenggara pameran seperti BEM universitas, memiliki instalasi yang mampu mendistribusikan kerumunan secara merata ke seluruh area expo adalah sebuah keuntungan strategis.',
-          'Keberadaan Photobooth Dipoxpo Undip terbukti meningkatkan waktu singgah (dwell time) pengunjung di area expo. Mahasiswa yang sedang menunggu giliran berfoto di Photobooth Dipoxpo Undip dapat menjelajahi stand-stand UKM di sekitarnya, sehingga seluruh peserta pameran mendapatkan eksposur pengunjung yang optimal berkat aktivasi Photobooth Ormawa Expo Tembalang.',
+          'Keberadaan Photobooth Dipoxpo Undip terbukti meningkatkan waktu singgah (dwell time) pengunjung di area expo. Mahasiswa yang sedang menunggu giliran berfoto dapat menjelajahi stand-stand UKM di sekitarnya, sehingga seluruh peserta pameran mendapatkan eksposur pengunjung yang optimal.',
           'Desain booth Sebooth yang modern dan berestetika tinggi juga menjadi latar belakang swafoto (selfie) yang mempercantik dokumentasi visual media resmi panitia Dipoxpo di media sosial.'
         ]
       },
@@ -740,7 +400,7 @@ export const ARTICLES_DATA: ArticleItem[] = [
         heading: 'Panduan bagi Panitia Expo Kampus dan Pameran Brand di Semarang Memilih Vendor Photobooth',
         paragraphs: [
           'Memilih vendor photobooth untuk acara berskala ribuan orang tidak boleh didasarkan pada harga termurah semata, melainkan harus mempertimbangkan rekam jejak ketahanan alat dan profesionalisme tim pelaksana.',
-          'Pengalaman sukses Sebooth pada Photobooth Dipoxpo Undip membuktikan bahwa kami memiliki kapabilitas penuh untuk Sewa Photobooth Expo Semarang, mengawal pameran akbar, festival dies natalis, expo kewirausahaan mahasiswa, hingga Photobooth Mahasiswa Baru Undip bersama Vendor Photobooth Tembalang terpercaya.',
+          'Pengalaman sukses Sebooth pada Photobooth Dipoxpo Undip membuktikan bahwa kami memiliki kapabilitas penuh untuk mengawal pameran akbar, festival dies natalis, expo kewirausahaan mahasiswa, maupun job fair universitas di seluruh Semarang.',
           'Hubungi customer relations Sebooth melalui WhatsApp sekarang juga untuk mengamankan slot jadwal dan merancang sistem antrean photobooth terbaik untuk expo kampus Anda!'
         ]
       }
@@ -788,7 +448,7 @@ export const ARTICLES_DATA: ArticleItem[] = [
     ],
     content: [
       'Ketika dua kekuatan besar di kampus Universitas Diponegoro bersatu, terciptalah sebuah festival yang luar biasa meriah. Pekan Ekonomi Teknik (PET) adalah kolaborasi tahunan legendaris antara Fakultas Ekonomika dan Bisnis (FEB) dan Fakultas Teknik (FT) UNDIP yang diselenggarakan di Plaza Widya Puraya Tembalang.',
-      'Festival akbar ini memadukan bazar UMKM kuliner kreatif mahasiswa di siang hari dengan panggung pentas seni musik live. Dalam memeriahkan festival tersebut, Photobooth Pekan Ekonomi Teknik Undip menjadi pusat perhatian ribuan mahasiswa dari berbagai fakultas yang tumpah ruah merayakan kreativitas seni dan wirausaha.',
+      'Festival akbar ini memadukan bazar UMKM kuliner kreatif mahasiswa di siang hari dengan panggung pentas seni (pensi) musik live yang menghadirkan musisi indie dan guest star ternama di malam hari. Ribuan mahasiswa dari berbagai fakultas tumpah ruah merayakan kreativitas, seni, dan wirausaha di ruang terbuka kampus.',
       'Di tengah semarak festival tersebut, instalasi Photobooth Pekan Ekonomi Teknik Undip dari Sebooth tampil memukau sebagai magnet hiburan visual paling diminati. Penonton pensi dan pengunjung bazar memadati booth Sebooth untuk mengabadikan busana festival mereka, keseruan bersama kawan seangkatan, serta kenangan menikmati musik di bawah langit malam Tembalang.',
       'Tantangan utama pada festival kombinasi bazar dan pentas seni terbuka adalah fluktuasi pencahayaan dan intensitas kerumunan penonton konser. Sebooth membuktikan keunggulan teknologinya dengan menyajikan pencahayaan studio cerdas yang mampu beradaptasi sempurna—menghasilkan foto terang natural di bawah terik matahari siang bazar, serta tetap glowing tajam di tengah kelap-kelip lampu panggung konser musik malam hari.',
       'Ciri khas Photobooth Pensi Bazar Semarang dari Sebooth ini menjadikannya pelengkap wajib setiap festival anak muda dan mahasiswa di ibukota Jawa Tengah.'
@@ -799,7 +459,7 @@ export const ARTICLES_DATA: ArticleItem[] = [
         paragraphs: [
           'Plaza Widya Puraya kembali menjadi saksi sinergi harmonis antara mahasiswa ekonomi dan teknik. Bazaar kuliner menyuguhkan aneka jajanan kekinian dan kreasi wirausaha rintisan, sementara panggung megah berlatar patung Pangeran Diponegoro menggetarkan suasana dengan lantunan nada musisi kampus.',
           'Pemasangan booth foto Sebooth di titik temu antara koridor bazar dan area penonton panggung utama menjadi langkah strategis panitia pelaksana. Pengunjung yang baru saja menikmati sajian kuliner dapat langsung mampir berfoto sebelum menikmati penampilan band favorit mereka.',
-          'Kehangatan interaksi antar-fakultas tercermin nyata di depan kamera Photobooth Pekan Ekonomi Teknik Undip, di mana mahasiswa teknik berjaket almamater biru tua berpose ceria bersama mahasiswa FEB di arena Photobooth Festival Widya Puraya, menciptakan momen persaudaraan kampus yang membekas mendalam.'
+          'Kehangatan interaksi antar-fakultas tercermin nyata di depan kamera Sebooth, di mana mahasiswa teknik berjaket almamater biru tua berpose ceria bersama mahasiswa FEB, menciptakan momen persaudaraan kampus yang membekas mendalam.'
         ]
       },
       {
@@ -817,8 +477,8 @@ export const ARTICLES_DATA: ArticleItem[] = [
         heading: 'Custom Template Frame Edisi Khusus Pekan Ekonomi Teknik yang Diburu Penonton Pensi',
         paragraphs: [
           'Untuk memperkuat nuansa kolaborasi, tim grafis Sebooth merancang template bingkai foto khusus yang memadukan identitas visual oranye cerah khas FEB dan biru tua kebanggaan Fakultas Teknik.',
-          'Dihiasi elemen grafis tipografi festival musik, siluet panggung, dan logo resmi, hasil jepretan Photobooth Pekan Ekonomi Teknik Undip menjadi merchandise paling diburu oleh penonton pensi. Banyak mahasiswa mengoleksi beberapa strip Photobooth Pekan Ekonomi Teknik Undip bersama geng pertemanan mereka.',
-          'Melalui fitur pemindaian QR code instan di kertas foto Photobooth Pekan Ekonomi Teknik Undip, penonton pensi langsung dapat membagikan video live boomerang mereka ke medsos sebagai bukti serunya Photobooth Pensi Bazar Semarang dan Vendor Photobooth Festival Kampus Semarang.'
+          'Dihiasi elemen grafis tipografi festival musik, siluet panggung, dan logo resmi Pekan Ekonomi Teknik, cetakan strip foto ini menjadi merchandise paling diburu oleh penonton pensi. Banyak mahasiswa mengoleksi beberapa strip dengan pose berbeda bersama geng pertemanan mereka.',
+          'Melalui fitur pemindaian QR code instan di kertas foto, penonton pensi langsung dapat membagikan video live boomerang mereka ke Instagram Reels dan TikTok dengan menambahkan audio lagu guest star yang sedang tampil di panggung.'
         ]
       },
       {
@@ -841,7 +501,7 @@ export const ARTICLES_DATA: ArticleItem[] = [
       {
         heading: 'Rekomendasi Paket Photobooth untuk Acara Dies Natalis, Bazar, dan Festival Seni Kampus Semarang',
         paragraphs: [
-          'Suksesnya aktivasi Photobooth Pekan Ekonomi Teknik Undip menegaskan reputasi Sebooth sebagai vendor Photobooth Tembalang nomor satu untuk segala bentuk festival musik, pentas seni sekolah (pensi SMA), bazar kuliner, dan agenda Photobooth Pekan Ekonomi Teknik Undip di masa depan.',
+          'Suksesnya aktivasi Photobooth Pekan Ekonomi Teknik Undip menegaskan reputasi Sebooth sebagai vendor photobooth nomor satu untuk segala bentuk festival musik, pentas seni sekolah (pensi SMA), bazar kuliner, dan dies natalis kampus di Semarang.',
           'Sebooth menyediakan opsi paket sewa harian fleksibel, paket kemitraan bagi hasil (profit sharing), maupun paket unlimited cetak yang dapat disesuaikan dengan sponsor utama festival Anda.',
           'Segera rencanakan instalasi photobooth festival Anda bersama Sebooth untuk menghadirkan pengalaman visual yang tak terlupakan bagi ribuan penonton. Hubungi tim representatif kami melalui WhatsApp sekarang juga!'
         ]
@@ -889,18 +549,18 @@ export const ARTICLES_DATA: ArticleItem[] = [
       'Pengalaman aktivasi brand sponsor dengan penempatan logo eksklusif di cetakan foto dan portal QR digital'
     ],
     content: [
-      'Industri pertunjukan musik langsung di Kota Semarang mengalami kebangkitan luar biasa dalam beberapa tahun terakhir. Mulai dari festival akbar di PRPP Convention Hall dan Sam Poo Kong, konser kampus di Muladi Dome UNDIP, hingga venue Marina Convention Center dan TBRS Semarang, puluhan ribu penonton memadati arena konser untuk menyaksikan musisi idola mereka.',
+      'Industri pertunjukan musik langsung di Kota Semarang mengalami kebangkitan luar biasa dalam beberapa tahun terakhir. Mulai dari festival musik akbar tahunan di PRPP Convention Hall dan Sam Poo Kong, konser musik kampus di Muladi Dome UNDIP, hingga pertunjukan intimate gig di Marina Convention Center (MCC) dan TBRS (Taman Budaya Raden Saleh), puluhan ribu penonton memadati arena konser untuk menyaksikan musisi idola mereka.',
       'Bagi para Event Organizer (EO) dan promotor konser musik, tantangan terbesar saat ini bukan hanya menjual tiket hingga sold-out, melainkan bagaimana menciptakan festival experience yang mendalam, berkesan, dan menghasilkan perbincangan organik di media sosial pasca-acara.',
-      'Di sinilah peran strategis Photobooth Konser Semarang dari Sebooth. Menghadirkan Photobooth Konser Semarang di festival musik bukan lagi sekadar pelengkap hiburan, melainkan instrumen aktivasi pengunjung yang terbukti meningkatkan kepuasan penonton, memperkuat nilai tawar sponsorship, serta membuka peluang pendapatan baru (revenue stream) melalui Kerjasama Photobooth Konser yang saling menguntungkan.',
-      'Sebooth membuka program Kerjasama Photobooth Konser yang dirancang khusus bagi promotor musik di Jawa Tengah. Dengan fleksibilitas skema Kerjasama Photobooth Konser yang transparan—mulai dari sistem bagi hasil tanpa risiko biaya awal, paket aktivasi sponsor, hingga Sewa Photobooth Konser Semarang flat rate—Sebooth siap menjadi Vendor Photobooth Festival Musik Semarang terdepan.',
-      'Didukung teknologi cetak thermal lab-grade < 12 detik, layanan Photobooth Konser Semarang dari Sebooth menjamin antrean penonton festival tetap mengalir dinamis tanpa mengganggu kenikmatan mereka menonton konser.'
+      'Di sinilah peran strategis Photobooth Konser Semarang dari Sebooth. Menghadirkan photobooth di festival musik bukan lagi sekadar pelengkap hiburan, melainkan instrumen aktivasi pengunjung yang terbukti meningkatkan kepuasan penonton, memperkuat nilai tawar terhadap sponsor brand, serta membuka peluang pendapatan baru (revenue stream) yang sangat menguntungkan.',
+      'Sebooth membuka program Kerjasama Photobooth Konser yang dirancang khusus bagi para promotor musik di Jawa Tengah. Dengan fleksibilitas skema kemitraan yang transparan—mulai dari sistem bagi hasil (revenue sharing) tanpa risiko biaya awal panitia, paket aktivasi sponsor (all-you-can-photos), hingga sistem sewa flat rate terkontrol—Sebooth siap menjadi mitra andalan konser musik Anda.',
+      'Didukung teknologi mesin cetak thermal lab-grade yang mencetak strip foto hanya dalam waktu kurang dari 12 detik, Sebooth menjamin antrean penonton konser tetap mengalir dinamis tanpa mengganggu kenikmatan mereka menyaksikan musisi idola di atas panggung.'
     ],
     sections: [
       {
         heading: 'Peluang Emas Pengalaman Interaktif Penonton di Konser Musik & Festival Semarang',
         paragraphs: [
           'Penonton konser masa kini, khususnya dari kalangan Generasi Z dan Milenial, sangat menghargai suvenir fisik yang memiliki nilai emosional tinggi. Kaos merchandise konser sering kali mahal, sementara tiket konser digital di smartphone tidak bisa disentuh secara fisik.',
-          'Lembaran photostrip Photobooth Konser Semarang menjadi memorabilia fisik yang paling diburu penonton. Melalui fasilitas Photobooth Konser Semarang, penonton dapat berpose dengan gaya ekspresif, mengenakan merchandise konser, dan memegang lembaran foto bertanggal konser yang akan mereka simpan hingga bertahun-tahun mendatang.',
+          'Lembaran photostrip berdesain resmi konser musik menjadi memorabilia fisik yang paling diburu penonton. Mereka dapat berpose bersama sahabat dengan gaya ekspresif, mengenakan merchandise konser, dan memegang lembaran foto bertanggal konser yang akan mereka simpan di dompet atau kamar kos hingga bertahun-tahun mendatang.',
           'Lebih dari itu, integrasi kode QR cloud Sebooth memungkinkan ribuan penonton mengunduh file foto digital dan video animasi Boomerang dalam sekejap, yang seketika mereka unggah ke Instagram Stories dan TikTok. Dampaknya, konser Anda mendapatkan publisitas viral gratis berskala masif secara real-time sepanjang malam pertunjukan berlangsung.'
         ]
       },
@@ -908,16 +568,16 @@ export const ARTICLES_DATA: ArticleItem[] = [
         heading: 'Tiga Model Kerjasama Vendor Photobooth Konser yang Fleksibel & Menguntungkan Promotor',
         subheading: 'Solusi Kemitraan Menyesuaikan Struktur Anggaran dan Tujuan Bisnis Event Organizer',
         paragraphs: [
-          'Sebooth memahami bahwa setiap perhelatan musik memiliki kebutuhan unik. Oleh sebab itu, program Partnership Photobooth Event Organizer Semarang kami menawarkan tiga model Kerjasama Photobooth Konser untuk menghadirkan Photobooth Konser Semarang terbaik:',
-          '1. Model Bagi Hasil (Revenue Sharing / Zero Risk): Promotor tidak perlu modal sewa awal. Tim Sebooth menyediakan unit booth, kertas foto, dan kru di venue Photobooth Konser Semarang. Penonton membayar per sesi foto terjangkau, dan promotor memperoleh persentase bagi hasil bersih transparan via POS.',
-          '2. Model All You Can Photos (Sponsorship & VIP): Didanai penuh oleh sponsor brand atau benefit tiket VIP. Seluruh penonton berfoto gratis di Photobooth Konser Semarang tanpa batas, dengan bingkai foto dan portal QR menampilkan logo sponsor secara eksklusif.',
-          '3. Model Sewa Flat Rate (Kontrol Penuh EO): Promotor menyewa unit Photobooth Konser Semarang dengan tarif flat rate. Promotor memegang kendali penuh atas tiket booth atau bundling merchandise resmi.'
+          'Sebooth memahami bahwa setiap festival musik memiliki karakteristik finansial dan kemitraan sponsor yang unik. Oleh sebab itu, kami menawarkan tiga model Kerjasama Photobooth Konser yang dapat dipilih sesuai preferensi promotor:',
+          '1. Model Bagi Hasil (Revenue Sharing / Zero Risk Promotor): Promotor tidak perlu mengeluarkan biaya sewa sepeser pun (nol rupiah modal awal). Tim Sebooth menyediakan seluruh unit booth, peralatan studio, kertas foto, dan kru operator di lokasi. Penonton membayar per sesi foto dengan tarif terjangkau (misalnya Rp25.000 - Rp35.000 per sesi), dan promotor mendapatkan persentase bagi hasil bersih dari setiap transaksi yang tercatat transparan di sistem POS kami.',
+          '2. Model All You Can Photos (Sponsorship & VIP Activation): Didanai sepenuhnya oleh sponsor utama festival (seperti brand rokok, provider seluler, minuman, atau perbankan) atau dijadikan benefit tiket VIP/VVIP konser. Seluruh penonton yang memenuhi syarat berfoto gratis tanpa batas, dengan template foto dan portal QR code menampilkan logo dan pesan promosi brand sponsor secara eksklusif.',
+          '3. Model Sewa Flat Rate (Kontrol Penuh EO): Promotor menyewa unit Sebooth dengan tarif sewa tetap (flat rate) untuk durasi acara tertentu. Promotor memiliki hak penuh menentukan apakah booth dibuka gratis untuk semua pengunjung, dijual per tiket mandiri, atau dibundling dengan penjualan merchandise resmi artis.'
         ]
       },
       {
         heading: 'Keunggulan Teknis Sebooth di Venue Konser Musik Berkepadatan Tinggi',
         paragraphs: [
-          'Menyelenggarakan Photobooth Konser Semarang di tengah ribuan penonton yang riuh memerlukan standar ketahanan alat kelas industri. Layanan Photobooth Konser Semarang dari Sebooth memiliki sederet keunggulan spesifikasi:',
+          'Menyelenggarakan photobooth di festival musik dengan ribuan penonton yang riuh memerlukan standar ketahanan alat yang jauh melampaui photo booth pernikahan biasa. Sebooth memiliki sederet keunggulan spesifikasi:',
           '• Kecepatan Cetak Kilat < 12 Detik: Mesin printer sublimasi industri Sebooth mampu melayani pergantian penonton dengan sangat cepat, mencegah terjadinya penumpukan massa di area festival ground.',
           '• Tahan Guncangan Suara Subwoofer Konser: Unit kamera dan lighting Sebooth dibangun di atas rangka chassis logam padat berbobot stabil, memastikan hasil foto tetap tajam dan tidak blur meski terpapar dentuman bass sound system panggung berdaya puluhan ribu watt.',
           '• Custom Frame Lineup Artis & Sponsor: Desainer Sebooth akan membuatkan template frame eksklusif yang memuat nama lineup musisi, tanggal konser, dan logo promotor serta sponsor festival.',
@@ -944,13 +604,13 @@ export const ARTICLES_DATA: ArticleItem[] = [
       {
         heading: 'Langkah Mudah Memulai Kerjasama Vendor Photobooth Konser Musik Bersama Sebooth',
         paragraphs: [
-          'Bagi Event Organizer dan promotor festival musik di Kota Semarang yang sedang merencanakan konser akbar, jangan lewatkan kesempatan bermitra bersama Sebooth.',
+          'Bagi Anda Event Organizer, promotor festival musik, agensi periklanan, atau pengelola venue di Kota Semarang dan sekitarnya yang sedang merencanakan konser musik akbar, jangan lewatkan kesempatan bermitra bersama Sebooth.',
           'Proses pengajuan kemitraan sangat cepat dan profesional:',
           '1. Hubungi Tim Kemitraan: Sampaikan tanggal konser, venue acara, perkiraan jumlah penonton, dan konsep festival Anda melalui kontak WhatsApp kemitraan Sebooth.',
           '2. Diskusi Model Kerjasama: Tim kami akan memaparkan simulasi pendapatan bagi hasil atau menyusun proposal penawaran teknis yang siap Anda ajukan kepada calon sponsor brand.',
           '3. Finalisasi Desain Frame & Technical Meeting: Desainer kami menyiapkan mockup template frame bertema lineup musisi, dan tim teknis kami menghadiri rapat koordinasi teknis venue.',
-          '4. Eksekusi Hari H: Tim Sebooth tiba awal untuk instalasi mandiri dan mengawal kesuksesan aktivasi booth hingga konser usai.',
-          'Jadikan agenda musik Anda viral, berkesan, dan menguntungkan bersama layanan Photobooth Konser Semarang dari Sebooth. Hubungi kami sekarang untuk menjadwalkan diskusi Kerjasama Photobooth Konser eksklusif!'
+          '4. Eksekusi Hari H: Tim Sebooth tiba lebih awal untuk instalasi mandiri, uji coba, dan mengawal kesuksesan aktivasi booth dari open gate hingga konser usai.',
+          'Jadikan konser musik Anda di Semarang viral, berkesan, dan menguntungkan bersama Sebooth. Hubungi kami sekarang untuk menjadwalkan pertemuan kemitraan eksklusif!'
         ]
       }
     ],
@@ -974,5 +634,21 @@ export const ARTICLES_DATA: ArticleItem[] = [
     ],
     igLink: 'https://instagram.com/sebooth.id'
   }
+`
 
-]
+// Find the position of the closing bracket of ARTICLES_DATA: ArticleItem[] = [ ... ]
+// In the current file, it ends with '  }\n]'
+const lastClosingBracketIndex = existingContent.lastIndexOf('  }\n]')
+if (lastClosingBracketIndex === -1) {
+  console.error('Could not locate closing pattern "  }\\n]" in articles.ts')
+  process.exit(1)
+}
+
+const updatedContent =
+  existingContent.slice(0, lastClosingBracketIndex + 3) +
+  ',\n' +
+  newArticlesContent +
+  existingContent.slice(lastClosingBracketIndex + 3)
+
+fs.writeFileSync(articlesFilePath, updatedContent, 'utf8')
+console.log('Successfully added artikel-4 through artikel-9 to articles.ts!')

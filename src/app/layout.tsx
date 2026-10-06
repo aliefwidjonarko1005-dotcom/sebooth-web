@@ -37,6 +37,9 @@ export const metadata: Metadata = {
   keywords: [
     "Photobooth Semarang",
     "Photobooth Tembalang",
+    "Photobooth Konser Semarang",
+    "Kerjasama Photobooth Konser",
+    "Photobooth Stasiun Tawang",
     "Photobooth Event Semarang Murah",
     "Sewa Photobooth Semarang",
     "Photobooth Wedding Semarang",

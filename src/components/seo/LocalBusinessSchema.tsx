@@ -98,6 +98,14 @@ export function LocalBusinessSchema() {
             name: 'Vending Machine Photobooth Semarang',
             description: 'Mesin photobooth mandiri otomatis untuk kafe, mall, expo dan festival di Jawa Tengah.'
           }
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Kerjasama Photobooth Konser Musik Semarang',
+            description: 'Layanan kemitraan vendor photobooth konser musik dan festival akbar dengan skema revenue sharing atau sponsorship branding di Semarang.'
+          }
         }
       ]
     },
