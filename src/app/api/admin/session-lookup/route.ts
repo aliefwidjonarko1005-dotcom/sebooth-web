@@ -73,8 +73,6 @@ export async function GET(req: NextRequest) {
 
         const { searchParams } = new URL(req.url);
         const queryId = searchParams.get("id")?.trim();
-        const limitParam = parseInt(searchParams.get("limit") || "15", 10);
-        const limit = Math.min(Math.max(limitParam, 1), 50);
 
         const supabase = createServiceClient();
 
@@ -200,20 +198,105 @@ export async function GET(req: NextRequest) {
             });
         }
 
-        // CASE 2: List recent sessions
-        const { data: recentSessions, error: listErr } = await supabase
-            .from("sessions")
-            .select("id, created_at, event_name, user_id, is_claimed")
-            .order("created_at", { ascending: false })
-            .limit(limit);
+        // CASE 2: List sessions with search, filters, sorting, and pagination
+        const search = searchParams.get("search")?.trim() || "";
+        const status = searchParams.get("status")?.trim() || "all"; // 'all' | 'claimed' | 'unclaimed'
+        const policy = searchParams.get("policy")?.trim() || "all"; // 'all' | 'legacy' | 'new'
+        const sort = searchParams.get("sort")?.trim() || "newest";
+        const pageParam = parseInt(searchParams.get("page") || "1", 10);
+        const page = Math.max(pageParam, 1);
+        const limitParam = parseInt(searchParams.get("limit") || "20", 10);
+        const limit = Math.min(Math.max(limitParam, 1), 100);
 
-        if (listErr) {
-            return NextResponse.json({ success: false, error: listErr.message }, { status: 500 });
+        let query = supabase
+            .from("sessions")
+            .select("id, created_at, event_name, user_id, is_claimed, queue_ticket_id", { count: "exact" });
+
+        // Search filter (UUID or Event Name)
+        if (search) {
+            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+            if (uuidRegex.test(search)) {
+                query = query.eq("id", search);
+            } else {
+                query = query.ilike("event_name", `%${search}%`);
+            }
         }
+
+        // Status filter
+        if (status === "claimed") {
+            query = query.eq("is_claimed", true);
+        } else if (status === "unclaimed") {
+            query = query.eq("is_claimed", false);
+        }
+
+        // Policy filter (3-day expiry policy started 2026-10-05)
+        const policyStart = "2026-10-05T00:00:00.000Z";
+        if (policy === "legacy") {
+            query = query.lt("created_at", policyStart);
+        } else if (policy === "new") {
+            query = query.gte("created_at", policyStart);
+        }
+
+        // Sorting
+        switch (sort) {
+            case "oldest":
+                query = query.order("created_at", { ascending: true });
+                break;
+            case "event_asc":
+                query = query.order("event_name", { ascending: true }).order("created_at", { ascending: false });
+                break;
+            case "event_desc":
+                query = query.order("event_name", { ascending: false }).order("created_at", { ascending: false });
+                break;
+            case "claimed_first":
+                query = query.order("is_claimed", { ascending: false }).order("created_at", { ascending: false });
+                break;
+            case "unclaimed_first":
+                query = query.order("is_claimed", { ascending: true }).order("created_at", { ascending: false });
+                break;
+            case "newest":
+            default:
+                query = query.order("created_at", { ascending: false });
+                break;
+        }
+
+        // Pagination range
+        const from = (page - 1) * limit;
+        const to = from + limit - 1;
+        query = query.range(from, to);
+
+        // Parallel stats query
+        const [queryRes, totalRes, claimedRes] = await Promise.all([
+            query,
+            supabase.from("sessions").select("id", { count: "exact", head: true }),
+            supabase.from("sessions").select("id", { count: "exact", head: true }).eq("is_claimed", true),
+        ]);
+
+        if (queryRes.error) {
+            return NextResponse.json({ success: false, error: queryRes.error.message }, { status: 500 });
+        }
+
+        const totalOverall = totalRes.count || 0;
+        const claimedOverall = claimedRes.count || 0;
+        const unclaimedOverall = totalOverall - claimedOverall;
+
+        const totalFiltered = queryRes.count || 0;
+        const totalPages = Math.ceil(totalFiltered / limit) || 1;
 
         return NextResponse.json({
             success: true,
-            sessions: recentSessions || [],
+            sessions: queryRes.data || [],
+            pagination: {
+                page,
+                limit,
+                total: totalFiltered,
+                totalPages,
+            },
+            stats: {
+                total: totalOverall,
+                claimed: claimedOverall,
+                unclaimed: unclaimedOverall,
+            },
         });
     } catch (err: any) {
         return NextResponse.json({ success: false, error: err.message || "Internal server error" }, { status: 500 });
