@@ -784,6 +784,11 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                       style={{ WebkitTouchCallout: 'default' }}
                       loading="lazy"
                       decoding="async"
+                      onError={(e) => {
+                        if (item.url && e.currentTarget.src !== item.url) {
+                          e.currentTarget.src = item.url
+                        }
+                      }}
                     />
                   )}
 
@@ -871,6 +876,11 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                   alt={previewMedia.label}
                   className="max-h-[70vh] w-auto max-w-full rounded-lg object-contain select-auto pointer-events-auto"
                   style={{ WebkitTouchCallout: 'default' }}
+                  onError={(e) => {
+                    if (previewMedia.url && e.currentTarget.src !== previewMedia.url) {
+                      e.currentTarget.src = previewMedia.url
+                    }
+                  }}
                 />
               )}
             </div>
