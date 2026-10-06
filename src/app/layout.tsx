@@ -87,6 +87,9 @@ export const metadata: Metadata = {
     description: "Sewa photobooth aesthetic cetak instan di Semarang & Tembalang untuk event, wisuda UNDIP, dan wedding.",
     images: ["/images/slides/hero/bg_slide_1.webp"],
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+  },
   other: {
     "geo.placename": "Semarang, Jawa Tengah",
     "geo.region": "ID-JT",

@@ -22,11 +22,11 @@ export async function generateMetadata({ params }: AccessPageProps): Promise<Met
   }
 
   return {
-    title: `${session.event_name || "Sebooth Session"} — Foto Kamu Siap! | Sebooth`,
-    description: `Lihat dan klaim ${session.media?.length || 0} foto dari sesi di ${session.event_name || "Sebooth Studio"}. Simpan kenangan indahmu selamanya!`,
+    title: `${session.event_name || "Sebooth Session"} · Unduh Softfile Foto | Sebooth`,
+    description: `Lihat dan simpan ${session.media?.length || 0} foto dari sesi di ${session.event_name || "Sebooth Studio"}.`,
     openGraph: {
-      title: `${session.event_name || "Sebooth Session"} — Foto Kamu Siap!`,
-      description: `${session.media?.length || 0} foto menunggumu dari ${session.event_name || "Sebooth Studio"}.`,
+      title: `${session.event_name || "Sebooth Session"} · Unduh Softfile Foto`,
+      description: `${session.media?.length || 0} media foto & video dari ${session.event_name || "Sebooth Studio"}.`,
       type: "website",
     },
   };

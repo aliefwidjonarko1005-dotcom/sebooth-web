@@ -9,6 +9,7 @@ export function LocalBusinessSchema() {
     alternateName: ['Sebooth', 'Sebooth Photobooth', 'Sewa Photobooth Semarang'],
     description: 'Vendor sewa photobooth terbaik di Semarang dan Tembalang untuk wedding, wisuda UNDIP, gathering kantor, festival kampus, dan event. Cetak instan lab-grade, live video softfile ke HP, dan frame kustom aesthetic.',
     url: 'https://www.sebooth.in',
+    hasMap: 'https://maps.app.goo.gl/9E2px1CPS9krAEp5A',
     telephone: '+6281234567890',
     priceRange: 'IDR 850.000 - IDR 3.500.000',
     image: [
