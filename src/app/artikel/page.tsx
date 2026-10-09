@@ -10,6 +10,10 @@ export const metadata: Metadata = {
   description: 'Kumpulan artikel, panduan sewa photobooth, dan tips event kampus atau wedding di Semarang & Tembalang. Cetak instan lab-grade, live video, & frame aesthetic.',
   keywords: [
     'Photobooth Semarang',
+    'Photobooth Semarang Murah',
+    'Photobooth Vending Machine Widya Puraya',
+    'Photobooth Widpur UNDIP',
+    'Nongkrong Malam Widpur UNDIP',
     'Photobooth Tembalang',
     'Photobooth Konser Semarang',
     'Kerjasama Photobooth Konser',

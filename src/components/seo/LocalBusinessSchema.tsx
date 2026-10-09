@@ -104,6 +104,14 @@ export function LocalBusinessSchema() {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
+            name: 'Photobooth Vending Machine Widya Puraya UNDIP Semarang',
+            description: 'Layanan photobooth Semarang murah model vending machine otomatis di Widya Puraya UNDIP Tembalang, cetak lab-grade kilat cashless QRIS.'
+          }
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
             name: 'Kerjasama Photobooth Konser Musik Semarang',
             description: 'Layanan kemitraan vendor photobooth konser musik dan festival akbar dengan skema revenue sharing atau sponsorship branding di Semarang.'
           }
