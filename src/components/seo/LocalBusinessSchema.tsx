@@ -115,6 +115,22 @@ export function LocalBusinessSchema() {
             name: 'Kerjasama Photobooth Konser Musik Semarang',
             description: 'Layanan kemitraan vendor photobooth konser musik dan festival akbar dengan skema revenue sharing atau sponsorship branding di Semarang.'
           }
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Photobooth Natal Semarang Murah untuk Gereja & Gathering Kantor',
+            description: 'Layanan sewa photobooth Natal Semarang murah untuk ibadah perayaan gereja, komisi pemuda, dan family gathering akhir tahun kantor.'
+          }
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Rekomendasi Photobooth Tembalang & Mahasiswa UNDIP',
+            description: 'Vendor photobooth terpercaya di kawasan Tembalang untuk selebrasi wisuda di Gedung Prof Soedarto, Muladi Dome, dan event ormawa kampus.'
+          }
         }
       ]
     },

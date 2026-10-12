@@ -37,6 +37,11 @@ export const metadata: Metadata = {
   keywords: [
     "Photobooth Semarang",
     "Photobooth Semarang Murah",
+    "Vendor Photobooth Konser",
+    "Photobooth Natal Semarang Murah",
+    "Rekomendasi Photobooth Tembalang",
+    "Photobooth UNDIP",
+    "Photobooth Mahasiswa UNDIP",
     "Photobooth Vending Machine Widya Puraya",
     "Photobooth Widpur UNDIP",
     "Nongkrong Malam Widpur UNDIP",

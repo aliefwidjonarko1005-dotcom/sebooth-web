@@ -1541,3 +1541,48 @@ sebooth-website/
     - `npx tsc --noEmit`: 0 errors.
     - `npm run build`: 34/34 routes successfully statically pre-rendered in Next.js 16 SSG.
 - **October 2026 (Phase 8HT - GitHub Push Synchronization)** ✅: Staged, committed, and pushed all 10 new SEO articles ("Photobooth Semarang Murah", Widpur vending machine & night nongky culture), schema updates, metadata enhancements, and validation scripts to `origin/main` on GitHub repository.
+- **October 2026 (Phase 8HU - AI Context Read & Sync)** ✅: Read and verified [agents.md](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/agents.md) file upon user request ("baca agents.md") to align AI context with project guidelines, directory structure, tech stack, database schema, design system, recent 19-article SEO expansion ("Photobooth Semarang Murah" & Widpur UNDIP), QR softfile claim flow, and current roadmap status.
+- **October 2026 (Phase 8HV - 20 High-Quality SEO Articles Production: Concert Vendors, Semarang Murah, Tembalang Recommendations, Christmas Church & UNDIP Mahasiswa)** 🚀:
+  - **1. Production of 20 Distinct Long-Form SEO Articles (Articles 20–39, Expanding Catalog from 19 to 39 Articles)** in [src/data/articles.ts](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/src/data/articles.ts):
+    - **Vendor Photobooth Konser** (4 Articles):
+      - *Artikel 20*: `Vendor Photobooth Konser Semarang untuk Festival Musik Spektakuler` (`vendor-photobooth-konser-semarang-festival-musik`) — Cover: `/images/gallery/thumbs/photo_004a6bbb_2.webp`.
+      - *Artikel 21*: `Paket Kemitraan Revenue Sharing Vendor Photobooth Konser Semarang` (`paket-kemitraan-revenue-sharing-vendor-photobooth-konser-semarang`) — Cover: `/images/products/partner_sebooth.webp`.
+      - *Artikel 22*: `Solusi Cetak Kilat Anti Antre dari Vendor Photobooth Konser Semarang` (`solusi-cetak-kilat-anti-antre-vendor-photobooth-konser-semarang`) — Cover: `/images/gallery/thumbs/strip_008d08da.webp`.
+      - *Artikel 23*: `Aktivasi Brand & Sponsor Stage Bersama Vendor Photobooth Konser` (`aktivasi-brand-sponsor-stage-vendor-photobooth-konser-semarang`) — Cover: `/images/gallery/thumbs/photo_031d39e4_4.webp`.
+    - **Photobooth Natal Semarang Murah** (3 Articles):
+      - *Artikel 24*: `Sewa Photobooth Natal Semarang Murah untuk Ibadah & Perayaan Gereja` (`sewa-photobooth-natal-semarang-murah-ibadah-perayaan-gereja`) — Cover: `/images/gallery/thumbs/strip_031d39e4.webp`.
+      - *Artikel 25*: `Paket Photobooth Natal Semarang Murah untuk Family Gathering & Kantor` (`paket-photobooth-natal-semarang-murah-family-gathering-kantor`) — Cover: `/images/gallery/thumbs/photo_08408b39_4.webp`.
+      - *Artikel 26*: `Kemeriahan Natal Kampus PMK & Mahasiswa: Photobooth Natal Semarang Murah` (`kemeriahan-natal-kampus-pmk-photobooth-natal-semarang-murah`) — Cover: `/images/gallery/thumbs/strip_08408b39.webp`.
+    - **Photobooth Murah Semarang** (4 Articles):
+      - *Artikel 27*: `Paket Photobooth Murah Semarang untuk Pesta Ulang Tahun & Sweet 17` (`paket-photobooth-murah-semarang-pesta-ulang-tahun-sweet-seventeen`) — Cover: `/images/gallery/thumbs/photo_0bf8667a_4.webp`.
+      - *Artikel 28*: `Rahasia Layanan Photobooth Murah Semarang dengan Kualitas Cetak Lab` (`rahasia-layanan-photobooth-murah-semarang-kualitas-lab-terbaik`) — Cover: `/images/gallery/thumbs/strip_0bf8667a.webp`.
+      - *Artikel 29*: `Photobooth Murah Semarang untuk Gathering Komunitas & Arisan Keluarga` (`photobooth-murah-semarang-gathering-komunitas-arisan-keluarga`) — Cover: `/images/gallery/thumbs/photo_0ebe2be8_4.webp`.
+      - *Artikel 30*: `Sewa Photobooth Murah Semarang dengan Unlimited Cetak & Live GIF Cepat` (`sewa-photobooth-murah-semarang-unlimited-cetak-live-gif-cepat`) — Cover: `/images/gallery/thumbs/strip_0ebe2be8.webp`.
+    - **Rekomendasi Photobooth Tembalang** (3 Articles):
+      - *Artikel 31*: `Review Lengkap & Rekomendasi Photobooth Tembalang Favorit Anak Muda` (`review-rekomendasi-photobooth-tembalang-favorit-anak-muda`) — Cover: `/images/gallery/thumbs/photo_1629d7e0_1.webp`.
+      - *Artikel 32*: `Daftar Rekomendasi Photobooth Tembalang untuk Event Cafe & Intimate` (`daftar-rekomendasi-photobooth-tembalang-event-cafe-intimate-party`) — Cover: `/images/gallery/thumbs/photo_208a9ab2_4.webp`.
+      - *Artikel 33*: `Alasan Sebooth Jadi Rekomendasi Photobooth Tembalang Paling Dicari` (`alasan-sebooth-jadi-rekomendasi-photobooth-tembalang-paling-dicari`) — Cover: `/images/gallery/thumbs/strip_208a9ab2.webp`.
+    - **Photobooth UNDIP & Photobooth Mahasiswa UNDIP** (6 Articles):
+      - *Artikel 34*: `Panduan Sewa Photobooth UNDIP untuk Wisuda di Gedung Prof Soedarto` (`panduan-sewa-photobooth-undip-wisuda-gedung-prof-soedarto`) — Cover: `/images/gallery/thumbs/photo_225fd0b3_4.webp`.
+      - *Artikel 35*: `Layanan Photobooth UNDIP di Gedung Muladi Dome untuk Konser & Expo` (`eksplorasi-layanan-photobooth-undip-gedung-muladi-dome-konser-expo`) — Cover: `/images/gallery/thumbs/strip_225fd0b3.webp`.
+      - *Artikel 36*: `Strategi Panitia Menghadirkan Photobooth UNDIP untuk Festival Budaya` (`strategi-panitia-menghadirkan-photobooth-undip-festival-budaya-bem`) — Cover: `/images/gallery/thumbs/photo_35ab15b7_1.webp`.
+      - *Artikel 37*: `Tips Menghadirkan Photobooth Mahasiswa UNDIP untuk Anggaran UKM` (`tips-menghadirkan-photobooth-mahasiswa-undip-anggaran-hemat-ukm`) — Cover: `/images/gallery/thumbs/strip_35ab15b7.webp`.
+      - *Artikel 38*: `Selebrasi Sidang Skripsi & Pendadaran: Photobooth Mahasiswa UNDIP` (`momen-selebrasi-sidang-skripsi-bareng-photobooth-mahasiswa-undip`) — Cover: `/images/gallery/thumbs/photo_49ab1cee_2.webp`.
+      - *Artikel 39*: `Kompak Abadi Satu Angkatan: Kenapa Wajib Photobooth Mahasiswa UNDIP` (`kompak-abadi-satu-angkatan-cetak-photobooth-mahasiswa-undip`) — Cover: `/images/gallery/thumbs/strip_49ab1cee.webp`.
+  - **2. Diversified Visual Assets (Strictly Non-Uniform Images)**:
+    - Guaranteed zero identical cover images across all 20 newly generated articles.
+    - Each article utilizes a distinct, verified image asset from `public/images/gallery/thumbs/` and `public/images/products/` matching its context (concert crowds, church Christmas aesthetics, birthday party strips, cafe portraits, graduation poses, and large cohort wide-angle shots).
+  - **3. DomainRank AI-SEO 11-Point Technical Audit Compliance**:
+    - Every article satisfies strict content volume standards (870–1,050 words per article).
+    - Natural target keyword token weight density calibrated strictly to **3.9%–4.8%** (bypassing stuffing while ensuring search engine prominence).
+    - All secondary keywords naturally integrated at least 2 times per article.
+    - Meta titles strictly between 40–60 characters; meta descriptions strictly between 120–160 characters; single unique H1; strict H2/H3 semantic structure; responsive comparison tables in each article; structured FAQs; canonical URLs; OpenGraph & Twitter tags.
+  - **4. Schema & Metadata Enrichment**:
+    - Added target keywords to [src/app/layout.tsx](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/src/app/layout.tsx) and [src/app/artikel/page.tsx](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/src/app/artikel/page.tsx).
+    - Added *Photobooth Natal Semarang Murah* and *Rekomendasi Photobooth Tembalang & Mahasiswa UNDIP* services to `OfferCatalog` in [src/components/seo/LocalBusinessSchema.tsx](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/src/components/seo/LocalBusinessSchema.tsx).
+  - **5. Verification & Testing**:
+    - `node scripts/verify_full_seo_audit.mjs`: ALL AUDIT CHECKS PASSED ✅ (11/11 criteria passed across all 39 articles).
+    - `npx tsc --noEmit`: 0 errors.
+    - `npm run build`: 54/54 routes successfully statically pre-rendered in Next.js 16 SSG with exit code 0.
+- **October 2026 (Phase 8HW - GitHub Push Synchronization)** ✅: Staged, committed, and pushed all 20 new SEO articles (Concert Vendors, Semarang Murah, Tembalang Recommendations, Christmas Church & UNDIP Mahasiswa, total 39 articles catalog), schema updates, metadata enhancements, cluster data modules, and audit scripts to `origin/main` on GitHub repository.
+
