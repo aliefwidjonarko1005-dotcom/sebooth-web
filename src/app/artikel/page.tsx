@@ -31,6 +31,12 @@ export const metadata: Metadata = {
     'Photobooth Wisuda UNDIP',
     'Photobooth Event Semarang Murah',
     'Vendor Photobooth Semarang',
+    'Harga Sewa Photobooth Semarang',
+    'Photobooth Wedding Semarang',
+    'Photobooth Tembalang Murah',
+    'Sewa Photobooth Tembalang',
+    'Photobooth Wisuda Muladi Dome',
+    'Photobooth Sweet 17 Semarang',
   ],
   alternates: {
     canonical: 'https://www.sebooth.in/artikel',

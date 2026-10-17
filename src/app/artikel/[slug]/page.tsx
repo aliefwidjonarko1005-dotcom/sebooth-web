@@ -82,7 +82,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
     notFound()
   }
 
-  const relatedArticles = ARTICLES_DATA.filter((a) => a.id !== article.id)
+  const relatedArticles = ARTICLES_DATA.filter((a) => a.id !== article.id).slice(0, 4)
 
   // JSON-LD Breadcrumb Schema
   const breadcrumbSchema = {
