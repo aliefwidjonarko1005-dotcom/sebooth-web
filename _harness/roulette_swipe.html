@@ -1,0 +1,590 @@
+<!DOCTYPE html><html class="h-full bg-slate-100" lang="id" style="width: 390px; height: 884px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+<title>Beri Ulasan - Sebooth Photobooth</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#FF5500',
+              50: '#FFF5EB',
+              100: '#FFE8D2',
+              500: '#FF5500',
+              600: '#E64D00',
+              700: '#CC4400'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      user-select: none;
+      touch-action: pan-y pinch-zoom;
+    }
+    
+    .spring-trans {
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Soft pulse on face change */
+    @keyframes popIn {
+      0% { transform: scale(0.92); opacity: 0.85; }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .face-pop {
+      animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Wheel rotation transition class */
+    .wheel-snap-transition {
+      transition: transform 0.42s cubic-bezier(0.18, 1, 0.26, 1.02);
+    }
+    .wheel-free {
+      transition: none !important;
+    }
+
+    /* Marker subtle pulse */
+    .indicator-needle {
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.18));
+      transform-origin: top center;
+      transition: transform 0.15s ease-out;
+    }
+  </style>
+</head>
+<body class="h-full font-sans antialiased text-slate-800 flex justify-center items-center p-0 md:p-6 bg-slate-200/80 overflow-hidden">
+<!-- BEGIN: MobileContainer -->
+<div class="w-full h-full md:h-[884px] md:max-w-[412px] bg-[#F7F9FC] flex flex-col md:rounded-[50px] shadow-2xl relative overflow-hidden border-0 md:border-[8px] md:border-slate-800/15" data-purpose="mobile-viewport">
+<!-- BEGIN: iOSStatusBar -->
+<header class="w-full pt-3 px-7 flex justify-between items-center z-30 select-none bg-transparent" data-purpose="ios-status-bar">
+<span class="text-[14px] font-semibold tracking-tight text-slate-900">9:41</span>
+<!-- Dynamic Island / Speaker Pill indicator on desktop -->
+<div class="hidden md:block w-24 h-4 bg-slate-900 rounded-full"></div>
+<div class="flex items-center space-x-1.5 text-slate-900">
+<svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+<path d="M2 17h3v4H2v-4zm5-4h3v8H7v-8zm5-4h3v12h-3V9zm5-5h3v17h-3V4z"></path>
+</svg>
+<svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+<path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.5c3.78 0 7.22 1.48 9.77 3.9L12 19.34 2.23 11.4C4.78 8.98 8.22 7.5 12 7.5z"></path>
+</svg>
+<div class="w-5 h-2.5 border border-slate-900 rounded-sm p-0.5 flex items-center">
+<div class="h-full w-full bg-slate-900 rounded-[1px]"></div>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: NavigationBar -->
+<nav class="w-full px-6 py-2.5 flex items-center justify-between z-30" data-purpose="top-navigation">
+<button aria-label="Kembali" class="w-9 h-9 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100/70 active:scale-95 transition-all" type="button">
+<svg class="w-5 h-5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Center Logo (Sebooth Photobooth) -->
+<div class="flex items-center justify-center">
+<img alt="Sebooth Photobooth" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuyjJ6PtFIguPttTTr42ApgF4K_vEqM2IAIm27kwPaBOOGdfY26WLkG6cYIYnd18TxW1_ogvH2M8V0vmzW1FnBuRlzgUdfP9KWxBervEPotXyBKNB4kJPP8ooBxPlz324zlIr5wrrC986Sd8PzPb4DxhybGc_knLMehty6Rncwp5jMlm9Vl-EpI_HkRCqKmZZJ4pd_OqA3_SJmigB_eVvCuZSbmkgEVsc56PFTKTfLVIX_EB-ByEKQozCasTepoBOGrA">
+</div>
+<button aria-label="Bantuan" class="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100/70 active:scale-95 transition-all" type="button">
+<svg class="w-5 h-5 stroke-current stroke-[2.2] fill-none" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke-linecap="round"></path>
+<line stroke-linecap="round" x1="12" x2="12.01" y1="17" y2="17"></line>
+</svg>
+</button>
+</nav>
+<!-- END: NavigationBar -->
+<!-- BEGIN: MainContent -->
+<div class="flex-1 flex flex-col items-center justify-between relative px-6 select-none z-10 pt-1 pb-0 overflow-hidden">
+<!-- Question & Header Section -->
+<div class="text-center z-20 mt-1">
+<h1 class="text-3xl font-extrabold text-slate-800 tracking-tight leading-tight">Bagaimana pengalamanmu?</h1>
+<p class="text-[13px] font-medium text-slate-400 mt-1 flex items-center justify-center gap-1.5">
+
+<span class="text-slate-300">•</span>
+
+</p>
+</div>
+<!-- Giant Emoji & Mood Text Area -->
+<div class="flex flex-col items-center justify-center my-auto z-20 mt-4">
+<!-- Big Expressive Emoji Circle -->
+<div class="w-60 h-60 sm:w-64 sm:h-64 rounded-full flex items-center justify-center relative spring-trans shadow-md face-pop" id="emoji-face-container">
+<!-- SVG Face Dynamic -->
+<svg class="w-full h-full" fill="none" id="emoji-face-svg" viewBox="0 0 160 160">
+        <circle cx="80" cy="80" r="72" stroke="#10d078" stroke-width="7" fill="#ECFDF5"></circle>
+        <!-- Sparkling star eyes -->
+        <path d="M54 50 L57 60 L67 63 L57 66 L54 76 L51 66 L41 63 L51 60 Z" fill="#10d078"></path>
+        <path d="M106 50 L109 60 L119 63 L109 66 L106 76 L103 66 L93 63 L103 60 Z" fill="#10d078"></path>
+        <!-- Big open laughing mouth -->
+        <path d="M46 94 Q80 142 114 94 Z" fill="#10d078" stroke="#10d078" stroke-width="4" stroke-linejoin="round"></path>
+      </svg>
+</div>
+<!-- Bold Uppercase Mood Label -->
+<h2 class="text-4xl sm:text-5xl font-black tracking-wider uppercase mt-4 mb-0 spring-trans select-none" id="mood-title" style="color: rgb(16, 208, 120);">KEREN!</h2>
+<p class="text-[14px] sm:text-[15px] font-semibold text-slate-400 tracking-wide mt-1.5 transition-all text-center" id="mood-subtitle">Luar biasa seru &amp; sangat puas!</p>
+</div>
+<!-- BEGIN: BottomSwipeRouletteArc -->
+<!-- Circular arch dome expanding across the bottom of the viewport -->
+<div class="w-full relative flex flex-col items-center justify-end z-20" id="wheel-touch-container" style="height: 340px;">
+<!-- Indicator Pin Marker at Top Center Apex of Arc -->
+
+<!-- Interactive Wheel Dome Wrapper -->
+<div class="absolute bottom-[-290px] w-[640px] h-[640px] pointer-events-auto cursor-grab active:cursor-grabbing select-none touch-none" id="wheel-wrapper" style="bottom: -355px; width: 720px; height: 720px; left: 50%; transform: translateX(-50%);">
+<svg class="w-full h-full drop-shadow-xl wheel-snap-transition" id="roulette-wheel" style="transform: rotate(-180deg); transform-origin: 50% 50%; text-rendering: geometricprecision; -webkit-font-smoothing: antialiased;" viewBox="0 0 640 640">
+<circle cx="320" cy="320" fill="none" r="312" stroke="rgba(255,255,255,0.4)" stroke-width="2"></circle>
+<g id="wheel-wedges-group">
+        <g id="sector-0" class="cursor-pointer transition-opacity duration-200" onclick="selectMood(0)" style="opacity: 0.78;">
+          <path d="M 207.10838745229853 47.4555379091704 A 295 295 0 0 1 432.89161254770147 47.4555379091704 L 390.7964349875416 149.08228648541194 A 185 185 0 0 0 249.2035650124584 149.08228648541194 Z" fill="#ff4258" stroke="#ffffff" stroke-width="2.5"></path>
+          
+          <!-- Outer and Inner tick marks -->
+          <line x1="239.51389210143628" y1="39.31158478601088" x2="241.4433535921553" y2="46.0404166575791" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="279.3614545196609" y1="30.84172392746143" x2="280.33566622638136" y2="37.77360040865244" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="320" y1="28" x2="320" y2="35" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="360.6385454803392" y1="30.841723927461487" x2="359.66433377361875" y2="37.7736004086525" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="400.4861078985638" y1="39.31158478601088" x2="398.55664640784477" y2="46.0404166575791" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line>
+          
+          <!-- Mood Label with readable uppercase typography -->
+          <text id="sector-text-0" x="320" y="82" fill="#ffffff" font-size="15" font-weight="700" letter-spacing="0.08em" text-anchor="middle" transform="rotate(0, 320, 77)">
+            BURUK
+          </text>
+        </g>
+      
+        <g id="sector-1" class="cursor-pointer transition-opacity duration-200" onclick="selectMood(1)" style="opacity: 0.78;">
+          <path d="M 432.89161254770147 47.4555379091704 A 295 295 0 0 1 592.5444620908296 207.10838745229853 L 490.91771351458806 249.2035650124584 A 185 185 0 0 0 390.7964349875416 149.08228648541194 Z" fill="#ff7a45" stroke="#ffffff" stroke-width="2.5"></path>
+          
+          <!-- Outer and Inner tick marks -->
+          <line x1="461.56440911193044" y1="64.61104551529644" x2="458.17074177020606" y2="70.73338346527223" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="495.7299867603981" y1="86.79843106619049" x2="491.5172815983338" y2="92.38887963652155" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="526.475180106472" y1="113.52481989352813" x2="521.5254326381661" y2="118.47456736183398" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="553.2015689338095" y1="144.2700132396019" x2="547.6111203634784" y2="148.48271840166623" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="575.3889544847036" y1="178.43559088806958" x2="569.2666165347277" y2="181.82925822979394" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line>
+          
+          <!-- Mood Label with readable uppercase typography -->
+          <text id="sector-text-1" x="491.8269478283311" y="153.17305217166896" fill="#ffffff" font-size="15" font-weight="700" letter-spacing="0.08em" text-anchor="middle" transform="rotate(45, 491.8269478283311, 148.17305217166896)">
+            KURANG
+          </text>
+        </g>
+      
+        <g id="sector-2" class="cursor-pointer transition-opacity duration-200" onclick="selectMood(2)" style="opacity: 0.78;">
+          <path d="M 592.5444620908296 207.10838745229853 A 295 295 0 0 1 592.5444620908296 432.89161254770147 L 490.91771351458806 390.7964349875416 A 185 185 0 0 0 490.91771351458806 249.2035650124584 Z" fill="#ffb020" stroke="#ffffff" stroke-width="2.5"></path>
+          
+          <!-- Outer and Inner tick marks -->
+          <line x1="600.6884152139892" y1="239.51389210143623" x2="593.959583342421" y2="241.44335359215523" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="609.1582760725386" y1="279.36145451966087" x2="602.2263995913476" y2="280.33566622638136" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="612" y1="320" x2="605" y2="320" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="609.1582760725386" y1="360.63854548033913" x2="602.2263995913476" y2="359.66433377361864" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="600.6884152139892" y1="400.4861078985638" x2="593.959583342421" y2="398.55664640784477" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line>
+          
+          <!-- Mood Label with readable uppercase typography -->
+          <text id="sector-text-2" x="563" y="325" fill="#ffffff" font-size="15" font-weight="700" letter-spacing="0.08em" text-anchor="middle" transform="rotate(90, 563, 320)">
+            CUKUP
+          </text>
+        </g>
+      
+        <g id="sector-3" class="cursor-pointer transition-opacity duration-200" onclick="selectMood(3)" style="opacity: 0.78;">
+          <path d="M 592.5444620908296 432.89161254770147 A 295 295 0 0 1 432.89161254770147 592.5444620908296 L 390.7964349875416 490.91771351458806 A 185 185 0 0 0 490.91771351458806 390.7964349875416 Z" fill="#00c2ff" stroke="#ffffff" stroke-width="2.5"></path>
+          
+          <!-- Outer and Inner tick marks -->
+          <line x1="575.3889544847036" y1="461.56440911193044" x2="569.2666165347277" y2="458.17074177020606" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="553.2015689338095" y1="495.7299867603981" x2="547.6111203634784" y2="491.51728159833374" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="526.475180106472" y1="526.4751801064718" x2="521.5254326381661" y2="521.525432638166" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="495.7299867603981" y1="553.2015689338095" x2="491.5172815983338" y2="547.6111203634784" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="461.56440911193044" y1="575.3889544847036" x2="458.17074177020606" y2="569.2666165347277" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line>
+          
+          <!-- Mood Label with readable uppercase typography -->
+          <text id="sector-text-3" x="491.8269478283311" y="496.8269478283311" fill="#ffffff" font-size="15" font-weight="700" letter-spacing="0.08em" text-anchor="middle" transform="rotate(135, 491.8269478283311, 491.8269478283311)">
+            BAGUS
+          </text>
+        </g>
+      
+        <g id="sector-4" class="cursor-pointer transition-opacity duration-200" onclick="selectMood(4)" style="opacity: 1;">
+          <path d="M 432.89161254770147 592.5444620908296 A 295 295 0 0 1 207.10838745229853 592.5444620908296 L 249.2035650124584 490.91771351458806 A 185 185 0 0 0 390.7964349875416 490.91771351458806 Z" fill="#10d078" stroke="#ffffff" stroke-width="2.5"></path>
+          
+          <!-- Outer and Inner tick marks -->
+          <line x1="400.4861078985638" y1="600.6884152139892" x2="398.55664640784477" y2="593.959583342421" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="360.6385454803392" y1="609.1582760725385" x2="359.66433377361875" y2="602.2263995913474" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="320" y1="612" x2="320" y2="605" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="279.3614545196609" y1="609.1582760725386" x2="280.33566622638136" y2="602.2263995913476" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line><line x1="239.51389210143628" y1="600.6884152139892" x2="241.4433535921553" y2="593.959583342421" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"></line>
+          
+          <!-- Mood Label with readable uppercase typography -->
+          <text id="sector-text-4" x="320" y="568" fill="#ffffff" font-size="17" font-weight="900" letter-spacing="0.08em" text-anchor="middle" transform="rotate(180, 320, 563)">
+            KEREN!
+          </text>
+        </g>
+      </g>
+<!-- Center Hub Disc -->
+<circle cx="320" cy="320" fill="#FFFFFF" filter="drop-shadow(0 -4px 14px rgba(0,0,0,0.06))" r="195" stroke="rgba(226,232,240,0.7)" stroke-width="4"></circle>
+</svg>
+</div>
+<!-- Floating Submit CTA Button over the Arch Inner Center -->
+<div class="relative z-30 mb-7 flex flex-col items-center w-full px-8 pointer-events-auto"><button class="w-56 h-[54px] rounded-full text-white font-extrabold text-[16px] tracking-wider uppercase flex items-center justify-center transition-all duration-300 active:scale-95 shadow-xl select-none" id="submit-btn" onclick="handleSubmit()" type="button" style="background-color: rgb(16, 208, 120); box-shadow: rgba(16, 208, 120, 0.45) 0px 10px 25px -4px;">KIRIM ULASAN</button><span class="text-[11px] font-bold text-slate-400 mt-2.5 tracking-wider uppercase">Geser roda untuk ganti nilai</span></div>
+<!-- iOS Home Bar Indicator -->
+<div class="w-32 h-1 bg-slate-300 rounded-full mb-2 z-30 pointer-events-none"></div>
+</div>
+<!-- END: BottomSwipeRouletteArc -->
+</div>
+<!-- END: MainContent -->
+</div>
+<!-- END: MobileContainer -->
+<!-- BEGIN: Script -->
+<script>
+  // 5 Rating Moods with exact colors and distinct expressive vector faces
+  const moods = [
+    {
+      id: 0,
+      title: "BURUK",
+      sub: "Maaf atas pengalaman kurang baikmu",
+      color: "#ff4258",
+      lightColor: "#FFF0F3",
+      btnShadow: "0 10px 25px -4px rgba(255, 66, 88, 0.45)",
+      // Angry / frowning face with angled brows
+      faceSvg: `
+        <circle cx="80" cy="80" r="72" stroke="#ff4258" stroke-width="7" fill="#FFF0F3" />
+        <ellipse cx="54" cy="64" rx="7" ry="8" fill="#ff4258" transform="rotate(15 54 64)" />
+        <ellipse cx="106" cy="64" rx="7" ry="8" fill="#ff4258" transform="rotate(-15 106 64)" />
+        <path d="M46 50 L64 58" stroke="#ff4258" stroke-width="5.5" stroke-linecap="round" />
+        <path d="M114 50 L96 58" stroke="#ff4258" stroke-width="5.5" stroke-linecap="round" />
+        <path d="M52 114 Q80 84 108 114" stroke="#ff4258" stroke-width="7.5" stroke-linecap="round" fill="none" />
+      `
+    },
+    {
+      id: 1,
+      title: "KURANG",
+      sub: "Beri tahu kami apa yang bisa diperbaiki",
+      color: "#ff7a45",
+      lightColor: "#FFF3EE",
+      btnShadow: "0 10px 25px -4px rgba(255, 122, 69, 0.45)",
+      // Annoyed / skeptic face
+      faceSvg: `
+        <circle cx="80" cy="80" r="72" stroke="#ff7a45" stroke-width="7" fill="#FFF3EE" />
+        <ellipse cx="55" cy="64" rx="7.5" ry="8.5" fill="#ff7a45" />
+        <ellipse cx="105" cy="64" rx="7.5" ry="8.5" fill="#ff7a45" />
+        <path d="M48 50 Q60 44 70 50" stroke="#ff7a45" stroke-width="5" stroke-linecap="round" fill="none" />
+        <path d="M90 52 Q100 46 112 50" stroke="#ff7a45" stroke-width="5" stroke-linecap="round" fill="none" />
+        <path d="M52 108 C68 96 90 114 108 102" stroke="#ff7a45" stroke-width="7.5" stroke-linecap="round" fill="none" />
+      `
+    },
+    {
+      id: 2,
+      title: "CUKUP",
+      sub: "Sesi standar tanpa kendala berarti",
+      color: "#ffb020",
+      lightColor: "#FFFDF0",
+      btnShadow: "0 10px 25px -4px rgba(255, 176, 32, 0.45)",
+      // Flat / neutral face
+      faceSvg: `
+        <circle cx="80" cy="80" r="72" stroke="#ffb020" stroke-width="7" fill="#FFFDF0" />
+        <circle cx="56" cy="65" r="8" fill="#ffb020" />
+        <circle cx="104" cy="65" r="8" fill="#ffb020" />
+        <line x1="52" y1="108" x2="108" y2="108" stroke="#ffb020" stroke-width="7.5" stroke-linecap="round" />
+      `
+    },
+    {
+      id: 3,
+      title: "BAGUS",
+      sub: "Hasil foto ceria & memuaskan!",
+      color: "#00c2ff",
+      lightColor: "#EDFAFF",
+      btnShadow: "0 10px 25px -4px rgba(0, 194, 255, 0.45)",
+      // Friendly smile face
+      faceSvg: `
+        <circle cx="80" cy="80" r="72" stroke="#00c2ff" stroke-width="7" fill="#EDFAFF" />
+        <ellipse cx="55" cy="64" rx="8" ry="9" fill="#00c2ff" />
+        <ellipse cx="105" cy="64" rx="8" ry="9" fill="#00c2ff" />
+        <path d="M50 96 Q80 134 110 96" stroke="#00c2ff" stroke-width="7.5" stroke-linecap="round" fill="none" />
+      `
+    },
+    {
+      id: 4,
+      title: "KEREN!",
+      sub: "Luar biasa seru & sangat puas!",
+      color: "#10d078",
+      lightColor: "#ECFDF5",
+      btnShadow: "0 10px 25px -4px rgba(16, 208, 120, 0.45)",
+      // Ecstatic sparkling happy face
+      faceSvg: `
+        <circle cx="80" cy="80" r="72" stroke="#10d078" stroke-width="7" fill="#ECFDF5" />
+        <!-- Sparkling star eyes -->
+        <path d="M54 50 L57 60 L67 63 L57 66 L54 76 L51 66 L41 63 L51 60 Z" fill="#10d078" />
+        <path d="M106 50 L109 60 L119 63 L109 66 L106 76 L103 66 L93 63 L103 60 Z" fill="#10d078" />
+        <!-- Big open laughing mouth -->
+        <path d="M46 94 Q80 142 114 94 Z" fill="#10d078" stroke="#10d078" stroke-width="4" stroke-linejoin="round" />
+      `
+    }
+  ];
+
+  // Wheel configuration: 5 sectors
+  // sectorStep = 45 degrees
+  // Index 0: 0 deg (BURUK)
+  // Index 1: 45 deg (KURANG)
+  // Index 2: 90 deg (CUKUP)
+  // Index 3: 135 deg (BAGUS)
+  // Index 4: 180 deg (KEREN!)
+  const sectorStep = 45;
+  let activeIndex = 4; // Default starting at KEREN!
+
+  const svgGroup = document.getElementById('wheel-wedges-group');
+  const cx = 320, cy = 320, rOuter = 295, rInner = 185;
+
+  function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+    const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+    return {
+      x: centerX + (radius * Math.cos(angleInRadians)),
+      y: centerY + (radius * Math.sin(angleInRadians))
+    };
+  }
+
+  function describeRingSector(x, y, innerRadius, outerRadius, startAngle, endAngle) {
+    const p1 = polarToCartesian(x, y, outerRadius, startAngle);
+    const p2 = polarToCartesian(x, y, outerRadius, endAngle);
+    const p3 = polarToCartesian(x, y, innerRadius, endAngle);
+    const p4 = polarToCartesian(x, y, innerRadius, startAngle);
+    const largeArc = (endAngle - startAngle) % 360 <= 180 ? 0 : 1;
+
+    return [
+      "M", p1.x, p1.y,
+      "A", outerRadius, outerRadius, 0, largeArc, 1, p2.x, p2.y,
+      "L", p3.x, p3.y,
+      "A", innerRadius, innerRadius, 0, largeArc, 0, p4.x, p4.y,
+      "Z"
+    ].join(" ");
+  }
+
+  function renderWheel() {
+    let html = '';
+    for (let i = 0; i < 5; i++) {
+      const centerAngle = i * sectorStep;
+      const startAngle = centerAngle - (sectorStep / 2);
+      const endAngle = centerAngle + (sectorStep / 2);
+      const pathD = describeRingSector(cx, cy, rInner, rOuter, startAngle, endAngle);
+      const textPos = polarToCartesian(cx, cy, (rInner + rOuter) / 2 + 3, centerAngle);
+
+      html += `
+        <g id="sector-${i}" class="cursor-pointer transition-opacity duration-200" onclick="selectMood(${i})">
+          <path d="${pathD}" fill="${moods[i].color}" stroke="#ffffff" stroke-width="2.5" />
+          
+          <!-- Outer and Inner tick marks -->
+          ${(() => {
+            let ticks = '';
+            for (let t = -16; t <= 16; t += 8) {
+              const pOuter = polarToCartesian(cx, cy, rOuter - 3, centerAngle + t);
+              const pOuterIn = polarToCartesian(cx, cy, rOuter - 10, centerAngle + t);
+              ticks += `<line x1="${pOuter.x}" y1="${pOuter.y}" x2="${pOuterIn.x}" y2="${pOuterIn.y}" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"/>`;
+            }
+            return ticks;
+          })()}
+          
+          <!-- Mood Label with readable uppercase typography -->
+          <text 
+            id="sector-text-${i}"
+            x="${textPos.x}" 
+            y="${textPos.y + 5}" 
+            fill="#ffffff" 
+            font-size="16" 
+            font-weight="800" 
+            letter-spacing="0.08em"
+            text-anchor="middle" 
+            transform="rotate(${centerAngle}, ${textPos.x}, ${textPos.y})">
+            ${moods[i].title}
+          </text>
+        </g>
+      `;
+    }
+    svgGroup.innerHTML = html;
+  }
+
+  renderWheel();
+
+  const wheel = document.getElementById('roulette-wheel');
+  const wheelWrapper = document.getElementById('wheel-wrapper');
+  const moodTitle = document.getElementById('mood-title');
+  const moodSubtitle = document.getElementById('mood-subtitle');
+  const faceContainer = document.getElementById('emoji-face-container');
+  const faceSvg = document.getElementById('emoji-face-svg');
+  const submitBtn = document.getElementById('submit-btn');
+  const indicatorPin = document.getElementById('indicator-pin');
+
+  let currentAngle = -(activeIndex * sectorStep);
+
+  function highlightSector(idx) {
+    for (let i = 0; i < 5; i++) {
+      const g = document.getElementById(`sector-${i}`);
+      const t = document.getElementById(`sector-text-${i}`);
+      if (g && t) {
+        if (i === idx) {
+          g.style.opacity = '1';
+          t.setAttribute('font-size', '17');
+          t.setAttribute('font-weight', '900');
+        } else {
+          g.style.opacity = '0.78';
+          t.setAttribute('font-size', '15');
+          t.setAttribute('font-weight', '700');
+        }
+      }
+    }
+  }
+
+  function updateActiveUI(idx, animated = true) {
+    const data = moods[idx];
+
+    // Animate or snap wheel angle
+    currentAngle = -(idx * sectorStep);
+    wheel.classList.remove('wheel-free');
+    if (animated) {
+      wheel.classList.add('wheel-snap-transition');
+    } else {
+      wheel.classList.remove('wheel-snap-transition');
+    }
+    wheel.style.transform = `rotate(${currentAngle}deg)`;
+
+    // Update Text
+    moodTitle.innerText = data.title;
+    moodTitle.style.color = data.color;
+    moodSubtitle.innerText = data.sub;
+
+    // Update Face
+    faceSvg.innerHTML = data.faceSvg;
+    faceContainer.classList.remove('face-pop');
+    void faceContainer.offsetWidth; // retrigger animation
+    faceContainer.classList.add('face-pop');
+
+    // Update Submit Button
+    submitBtn.style.backgroundColor = data.color;
+    submitBtn.style.boxShadow = data.btnShadow;
+
+    // Sector highlighted in wheel
+    highlightSector(idx);
+
+    // Subtle needle bounce
+    indicatorPin.style.transform = 'scale(1.15) translateY(-2px)';
+    setTimeout(() => {
+      indicatorPin.style.transform = 'scale(1) translateY(0px)';
+    }, 160);
+  }
+
+  function selectMood(idx) {
+    if (idx < 0) idx = 0;
+    if (idx > 4) idx = 4;
+    activeIndex = idx;
+    updateActiveUI(activeIndex, true);
+  }
+
+  // Real Drag & Swipe Gesture Handling with Pointer Events
+  let isPointerDown = false;
+  let startX = 0;
+  let startY = 0;
+  let startAngle = 0;
+  let lastMoveTime = 0;
+  let lastMoveAngle = 0;
+  let velocityAngle = 0;
+
+  function onPointerDown(e) {
+    isPointerDown = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startAngle = currentAngle;
+    lastMoveAngle = currentAngle;
+    lastMoveTime = performance.now();
+    velocityAngle = 0;
+
+    wheel.classList.remove('wheel-snap-transition');
+    wheel.classList.add('wheel-free');
+    wheelWrapper.setPointerCapture?.(e.pointerId);
+  }
+
+  function onPointerMove(e) {
+    if (!isPointerDown) return;
+
+    const deltaX = e.clientX - startX;
+    
+    // Scale delta pixels to wheel angle rotation
+    // Swiping right rotates clockwise, swiping left rotates counter-clockwise
+    const sensitivity = 0.28;
+    let newAngle = startAngle + (deltaX * sensitivity);
+
+    // Elastic resistance bounds (index 0 is 0 deg, index 4 is -180 deg)
+    const maxBound = 16;
+    const minBound = -(4 * sectorStep + 16);
+
+    if (newAngle > maxBound) {
+      newAngle = maxBound + (newAngle - maxBound) * 0.25;
+    } else if (newAngle < minBound) {
+      newAngle = minBound + (newAngle - minBound) * 0.25;
+    }
+
+    currentAngle = newAngle;
+    wheel.style.transform = `rotate(${currentAngle}deg)`;
+
+    // Calculate velocity for inertia release
+    const now = performance.now();
+    const dt = now - lastMoveTime;
+    if (dt > 10) {
+      velocityAngle = (newAngle - lastMoveAngle) / dt; // deg per ms
+      lastMoveTime = now;
+      lastMoveAngle = newAngle;
+    }
+
+    // Dynamic realtime preview of nearest mood
+    let estIdx = Math.round(-currentAngle / sectorStep);
+    if (estIdx < 0) estIdx = 0;
+    if (estIdx > 4) estIdx = 4;
+
+    if (estIdx !== activeIndex) {
+      activeIndex = estIdx;
+      const data = moods[activeIndex];
+      moodTitle.innerText = data.title;
+      moodTitle.style.color = data.color;
+      moodSubtitle.innerText = data.sub;
+      faceSvg.innerHTML = data.faceSvg;
+      submitBtn.style.backgroundColor = data.color;
+      submitBtn.style.boxShadow = data.btnShadow;
+      highlightSector(activeIndex);
+
+      // Subtle indicator twitch following drag direction
+      const tilt = Math.max(-12, Math.min(12, deltaX * 0.1));
+      indicatorPin.style.transform = `rotate(${tilt}deg)`;
+    }
+  }
+
+  function onPointerUp(e) {
+    if (!isPointerDown) return;
+    isPointerDown = false;
+    wheelWrapper.releasePointerCapture?.(e.pointerId);
+
+    // Apply inertia based on velocity
+    let projectedAngle = currentAngle + (velocityAngle * 120);
+    let targetIdx = Math.round(-projectedAngle / sectorStep);
+    if (targetIdx < 0) targetIdx = 0;
+    if (targetIdx > 4) targetIdx = 4;
+
+    activeIndex = targetIdx;
+    updateActiveUI(activeIndex, true);
+    indicatorPin.style.transform = 'rotate(0deg)';
+  }
+
+  wheelWrapper.addEventListener('pointerdown', onPointerDown);
+  wheelWrapper.addEventListener('pointermove', onPointerMove);
+  wheelWrapper.addEventListener('pointerup', onPointerUp);
+  wheelWrapper.addEventListener('pointercancel', onPointerUp);
+
+  // Submit Feedback Handler
+  function handleSubmit() {
+    submitBtn.disabled = true;
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = `
+      <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+      </svg>
+    `;
+    setTimeout(() => {
+      submitBtn.innerHTML = "TERKIRIM! ✨";
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }, 1800);
+    }, 700);
+  }
+
+  // Initial setup: Default to KEREN! (index 4)
+  updateActiveUI(4, false);
+</script>
+<!-- END: Script -->
+
+
+
+
+
+
+</body></html>

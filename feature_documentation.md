@@ -295,11 +295,11 @@ Halaman registrasi akun baru dengan integrasi **session claiming flow**, mirip d
 
 | Skenario | Kondisi | Tampilan |
 |---|---|---|
-| **Auto-Claim** | User login + sesi belum diklaim | Otomatis klaim tanpa klik, lalu redirect ke `/profile` setelah 2 detik |
-| **Manual Claim** | User login + sesi belum diklaim (fallback) | Card biru dengan greeting personal + tombol "Klaim Sekarang! 🚀" |
-| **Claim Berhasil** | Sesi berhasil diklaim | Ikon ✓ + *"Foto Sudah Di Klaim"* + tombol "Lihat My Photos" |
-| **Sudah Diklaim Orang Lain** | Sesi diklaim oleh user berbeda | Ikon ✗ + *"Sudah Diklaim"* + pesan maaf |
-| **Guest (Belum Login)** | User belum login | *"Simpan Selamanya?"* + 2 tombol: "Daftar Sekarang" (→ `/register?claim=[id]`) dan "Sudah Punya Akun" (→ `/login?claim=[id]`) |
+| **Auto-Claim / Claim Sesi** | User login + sesi belum diklaim | Otomatis klaim tanpa klik, dan **TETAP berada di halaman `/access/[id]`** (TIDAK redirect ke `/profile` / My Photos). Pengguna tetap di halaman klaim agar dapat langsung mengunduh softfile foto & video |
+| **Manual Claim** | User login + sesi belum diklaim (fallback) | Card informatif dengan tombol tautkan akun |
+| **Claim Berhasil / Sesi Sudah Diklaim** | Sesi telah diklaim | Toast konfirmasi klaim berhasil + status sesi tersimpan di akun. Halaman **100% tetap di `/access/[id]`** tanpa redirect |
+| **Sudah Diklaim Orang Lain** | Sesi diklaim oleh user berbeda | Card peringatan + pesan bahwa file tetap dapat diunduh |
+| **Guest (Belum Login)** | User belum login | Card opsi simpan + 2 tombol: "Daftar Akun Baru" (→ `/register?claim=[id]`) dan "Masuk & Klaim Sesi" (→ `/login?claim=[id]`) |
 
 ### Error Handling
 - Jika sesi tidak ditemukan: Tampilan error dengan ikon XCircle merah dan pesan *"Session tidak ditemukan atau link sudah kedaluwarsa."* serta tombol "Kembali ke Beranda".
@@ -530,10 +530,10 @@ Homepage → Partnership → Isi inquiry form → Submit
 ### Alur 3: User Photobooth (Utama)
 ```
 Foto di booth fisik → Scan QR code → /access/[id]
-  ├─ Sudah login → Auto-claim → Redirect ke /profile
+  ├─ Sudah login → Auto-claim → Tetap di /access/[id] (Langsung unduh media)
   └─ Belum login → Pilih Daftar/Login
-       ├─ /register?claim=[id] → Daftar → Auto-claim → /profile
-       └─ /login?claim=[id] → Login → Auto-claim → /profile
+       ├─ /register?claim=[id] → Daftar → Kembali ke /access/[id] (Tetap di halaman klaim)
+       └─ /login?claim=[id] → Login → Kembali ke /access/[id] (Tetap di halaman klaim)
 ```
 
 ### Alur 4: Admin CMS

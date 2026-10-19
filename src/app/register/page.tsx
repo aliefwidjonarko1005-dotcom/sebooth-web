@@ -72,13 +72,13 @@ function RegisterContent() {
         }
       }
 
-      // Priority: claim > redirect > profile
+      // Priority: claim (/access/${claimId}) > redirect > profile
       if (claimId) {
-        router.push(`/access/${claimId}`)
+        window.location.href = `/access/${claimId}`
       } else if (redirectTo) {
-        router.push(redirectTo)
+        window.location.href = redirectTo
       } else {
-        router.push('/profile')
+        window.location.href = '/profile'
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Gagal mendaftar. Silakan coba lagi.'

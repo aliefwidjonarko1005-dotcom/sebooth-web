@@ -15,7 +15,7 @@ import { User } from '@supabase/supabase-js'
 import { claimSession } from '@/app/actions'
 import InteractiveTour, { TourStep } from '@/components/ui/InteractiveTour'
 import { checkSessionExpiry } from '@/lib/sessionExpiryPolicy'
-import GoogleReviewPromptCard from '@/components/features/GoogleReviewPromptCard'
+import ClayPillButton from '@/components/ui/ClayPillButton'
 
 interface AccessSessionClientProps {
   session: SessionData
@@ -69,6 +69,28 @@ export default function AccessSessionClient({ session: initialSession, sessionId
   const [isBundling, setIsBundling] = useState(false)
   const [bundleProgress, setBundleProgress] = useState<{ current: number; total: number }>({ current: 0, total: 0 })
   const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const [hasReviewed, setHasReviewed] = useState(false)
+  const [shouldAutoDownload, setShouldAutoDownload] = useState(false)
+
+  // Check if session has been reviewed & check auto-download trigger
+  useEffect(() => {
+    try {
+      const isReviewed = localStorage.getItem(`sebooth_reviewed_${sessionId}`) === 'true'
+      const isUrlReviewed = typeof window !== 'undefined' && window.location.search.includes('reviewed=true')
+      const isDownloadParam = typeof window !== 'undefined' && window.location.search.includes('download=true')
+      const isPendingDownload = sessionStorage.getItem(`sebooth_pending_download_${sessionId}`) === 'true'
+
+      if (isReviewed || isUrlReviewed) {
+        setHasReviewed(true)
+        if (isUrlReviewed || isDownloadParam || isPendingDownload) {
+          sessionStorage.removeItem(`sebooth_pending_download_${sessionId}`)
+          setToastMessage('Ulasan terkirim! Memulai unduh seluruh foto...')
+          setTimeout(() => setToastMessage(null), 5000)
+          setShouldAutoDownload(true)
+        }
+      }
+    } catch {}
+  }, [sessionId])
 
   // Lightbox preview modal state
   const [previewMedia, setPreviewMedia] = useState<{ url: string; displayUrl?: string; type: string; label: string } | null>(null)
@@ -115,19 +137,10 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       gestureLabel: 'Tahan Foto di Layar'
     },
     {
-      targetId: 'tour-claim-google-review-card',
-      title: 'Ulasan di Google Maps',
-      description: 'Bantu studio Sebooth berkembang dengan memberikan rating bintang 5 di Google Maps. Tersedia pilihan contoh ulasan yang dapat disalin dengan satu sentuhan.',
-      badgeText: 'Fase 4: Dukung Studio',
-      icon: <Star className="w-5 h-5 text-amber-500 fill-amber-500" />,
-      gesture: 'tap',
-      gestureLabel: 'Beri Ulasan di Google'
-    },
-    {
       targetId: 'tour-claim-first-media',
       title: 'Preview Detail Resolusi Penuh',
       description: 'Ketuk media mana pun untuk membuka tampilan layar besar dan memeriksa ketajaman foto.',
-      badgeText: 'Fase 5: Pratinjau',
+      badgeText: 'Fase 4: Pratinjau',
       icon: <ImageIcon className="w-5 h-5 text-slate-700" />,
       gesture: 'pinch',
       gestureLabel: 'Ketuk untuk Detail'
@@ -136,7 +149,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       targetId: 'tour-claim-share-btn',
       title: 'Bagikan Tautan Sesi',
       description: 'Gunakan tombol ini untuk membagikan tautan sesi ini kepada teman-teman atau menyalin link sesi.',
-      badgeText: 'Fase 6: Bagikan Tautan',
+      badgeText: 'Fase 5: Bagikan Tautan',
       icon: <Share2 className="w-5 h-5 text-slate-700" />,
       gesture: 'tap',
       gestureLabel: 'Bagikan Tautan'
@@ -224,7 +237,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       setClaimSuccess(true)
       setIsClaimedByMe(true)
       setSession(prev => ({ ...prev, is_claimed: true, user_id: user.id }))
-      showToast('Sesi berhasil diklaim dan tersimpan permanen di akun kamu.')
+      showToast('Sesi berhasil diklaim dan tersimpan di akun kamu.')
     } catch (err: any) {
       console.error('Claim error:', err)
       setError(err.message || 'Gagal mengklaim sesi. Silakan coba lagi.')
@@ -371,6 +384,30 @@ export default function AccessSessionClient({ session: initialSession, sessionId
     }
   }
 
+  // Auto-download bundle if returning from review page
+  useEffect(() => {
+    if (shouldAutoDownload && mediaList.length > 0 && !isBundling) {
+      setShouldAutoDownload(false)
+      const timer = setTimeout(() => {
+        handleDownloadBundle()
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [shouldAutoDownload, mediaList.length, isBundling])
+
+  // 8. Download Click Trigger: Gated by rating page if not reviewed yet
+  const handleDownloadClick = () => {
+    try {
+      const isReviewed = localStorage.getItem(`sebooth_reviewed_${sessionId}`) === 'true'
+      if (!isReviewed) {
+        sessionStorage.setItem(`sebooth_pending_download_${sessionId}`, 'true')
+        router.push(`/access/${sessionId}/review`)
+        return
+      }
+    } catch {}
+    handleDownloadBundle()
+  }
+
   // Format date display
   const formattedDate = useMemo(() => {
     if (!session.created_at) return ''
@@ -436,8 +473,8 @@ export default function AccessSessionClient({ session: initialSession, sessionId
           </Link>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-sm text-slate-900 tracking-tight">
-                Sebooth
+              <span className="font-black font-bayon text-base sm:text-lg uppercase tracking-wider text-[#002366]">
+                SEBOOTH<span className="text-[#FF4500]">.</span>
               </span>
               <span className="text-slate-300">/</span>
               <span className="text-xs text-slate-600 font-medium truncate max-w-[150px] sm:max-w-xs">
@@ -448,17 +485,6 @@ export default function AccessSessionClient({ session: initialSession, sessionId
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          {/* Profile / Account Gallery Link if Claimed */}
-          {isClaimedByMe && (
-            <Link
-              href="/profile"
-              className="h-9 px-3 rounded-xl bg-slate-100 hover:bg-slate-200/70 text-slate-800 border border-slate-200/80 text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-slate-700 stroke-[2.2]" />
-              <span className="hidden xs:inline">Galeri Akun</span>
-            </Link>
-          )}
-
           {/* Share Button */}
           <button
             id="tour-claim-share-btn"
@@ -484,35 +510,12 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       </header>
 
       {/* ─── MAIN CONTENT CONTAINER ─── */}
-      <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-24 flex-1 flex flex-col gap-6">
+      <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-36 sm:pb-32 flex-1 flex flex-col gap-6">
 
-        {/* ─── 1. TOP STATUS & RETENTION CALLOUT ─── */}
-        <section id="tour-claim-urgent-banner">
-          {isClaimedByMe ? (
-            /* Already Claimed by Current User */
-            <div className="w-full rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 stroke-[2.2]" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-slate-900">
-                    Sesi tersimpan permanen di akun kamu
-                  </h4>
-                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                    Seluruh foto dan video sesi ini telah terhubung ke profil Sebooth kamu dan tidak memiliki batas kedaluwarsa.
-                  </p>
-                </div>
-              </div>
-              <Link
-                href="/profile"
-                className="shrink-0 self-start sm:self-auto px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-medium transition-colors flex items-center gap-1.5 shadow-xs"
-              >
-                <span>Buka Galeri Akun</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          ) : alreadyClaimedByOther ? (
+        {/* ─── 1. TOP STATUS & RETENTION CALLOUT (Hanya tampil jika belum diklaim oleh user ini) ─── */}
+        {!isClaimedByMe && (
+          <section id="tour-claim-urgent-banner">
+            {alreadyClaimedByOther ? (
             /* Claimed by Another User */
             <div className="w-full rounded-2xl bg-slate-100/80 border border-slate-200 p-4 sm:p-5 flex items-start gap-3 text-slate-700 shadow-xs">
               <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/80 text-slate-500 flex items-center justify-center shrink-0 mt-0.5">
@@ -668,74 +671,22 @@ export default function AccessSessionClient({ session: initialSession, sessionId
             </div>
           )}
         </section>
+        )}
 
         {/* ─── 2. HERO SECTION & PRIMARY ACTIONS ─── */}
         <section className="text-center pt-3 pb-2 flex flex-col items-center">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
-            Koleksi Softfile
+          <span className="text-[11px] font-extrabold text-[#FF5500] uppercase tracking-widest mb-1.5">
+            KOLEKSI SOFTFILE
           </span>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-bayon uppercase text-[#181B34] tracking-tight leading-none">
             Foto & Video Sesi Kamu
           </h1>
-          <p className="mt-1.5 text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+          <p className="mt-1.5 text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed font-medium">
             {session.event_name || 'Sebooth Studio'} · {mediaList.length} media
             {formattedDate ? ` · ${formattedDate}` : ''}
           </p>
-
-          {/* Action Buttons */}
-          <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-2.5 w-full sm:w-auto">
-            <button
-              id="tour-claim-bundle-btn"
-              onClick={handleDownloadBundle}
-              disabled={isBundling || mediaList.length === 0}
-              className={`w-full sm:w-auto px-6 py-3 rounded-xl font-medium text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xs active:scale-98 transition-all cursor-pointer ${
-                isBundling
-                  ? 'bg-slate-800 text-slate-300 cursor-wait'
-                  : mediaList.length === 0
-                  ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                  : 'bg-slate-900 hover:bg-black text-white'
-              }`}
-              title="Unduh seluruh foto dan video sesi ini ke galeri perangkat"
-            >
-              {isBundling ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin text-slate-300" />
-                  <span>
-                    Menyimpan ke Galeri ({bundleProgress.current}/{bundleProgress.total})...
-                  </span>
-                </>
-              ) : (
-                <>
-                  <Download className="w-4 h-4 stroke-[2.2]" />
-                  <span>Unduh Semua Media ({mediaList.length})</span>
-                </>
-              )}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                const el = document.getElementById('tour-claim-google-review-card')
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-              }}
-              className="w-full sm:w-auto px-5 py-3 rounded-xl font-medium text-xs sm:text-sm flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 shadow-xs active:scale-98 transition-all cursor-pointer"
-              title="Beri ulasan di Google Maps"
-            >
-              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span>Beri Ulasan Studio</span>
-            </button>
-          </div>
-
-          <p className="mt-3 text-[11px] text-slate-400 font-medium">
-            File diunduh berurutan langsung ke galeri HP tanpa file ZIP
-          </p>
         </section>
 
-        {/* ─── 3. GOOGLE REVIEW 5-STAR PROMPT CARD ─── */}
-        <GoogleReviewPromptCard
-          sessionId={sessionId}
-          eventName={session.event_name}
-        />
 
         {/* ─── 4. MEDIA GALLERY GRID ─── */}
         <section>
@@ -799,14 +750,14 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                     </span>
                   </div>
 
-                  {/* Top-Right Frosted Glass Download Button */}
+                  {/* Top-Right Apple Liquid Glass Circular Download Button */}
                   <button
                     onClick={(e) => handleDownloadSingle(e, item, idx)}
-                    className="absolute top-2.5 right-2.5 z-30 w-8 h-8 rounded-lg bg-black/50 hover:bg-black/80 text-white backdrop-blur-md border border-white/15 flex items-center justify-center shadow-xs active:scale-90 transition-all cursor-pointer"
+                    className="absolute top-2.5 right-2.5 z-30 w-8 h-8 rounded-full bg-black/40 hover:bg-black/65 text-white backdrop-blur-xl border border-white/30 flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer"
                     title={`Unduh ${item.label}`}
                     aria-label={`Unduh ${item.label}`}
                   >
-                    <Download className="w-3.5 h-3.5 stroke-[2.2]" />
+                    <Download className="w-3.5 h-3.5 stroke-[2.4]" />
                   </button>
 
                   {/* Bottom Hover Preview Overlay */}
@@ -894,11 +845,34 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       )}
 
       {/* ─── FOOTER ─── */}
-      <footer className="text-center py-6 mt-auto border-t border-slate-200/80 bg-white">
+      <footer className="text-center py-6 mt-auto border-t border-slate-200/80 bg-white mb-32 sm:mb-28">
         <p className="text-[11px] text-slate-400 font-medium">
           &copy; 2026 Sebooth Indonesia &middot; Digital Photobooth Experience
         </p>
       </footer>
+
+      {/* ─── GLOBAL FLOATING 3D CLAY PILL ACTION BAR (IMAGE 2 STYLE) ─── */}
+      <aside
+        aria-label="Aksi Galeri Cepat"
+        className="fixed z-40 w-auto max-w-fit pointer-events-auto flex items-center justify-center"
+        style={{
+          position: 'fixed',
+          bottom: '28px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          isolation: 'isolate',
+        }}
+      >
+        <ClayPillButton
+          id="tour-claim-bundle-btn"
+          onClick={handleDownloadClick}
+          disabled={isBundling || mediaList.length === 0}
+          loading={isBundling}
+          title="Download All Photo"
+          titleAttr="Download All Photo"
+          ariaLabel="Download All Photo"
+        />
+      </aside>
 
       {/* Interactive Phase-by-Phase Tour */}
       <InteractiveTour

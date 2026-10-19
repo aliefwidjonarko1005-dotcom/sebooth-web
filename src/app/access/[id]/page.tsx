@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import { fetchSessionById } from "@/lib/serverSupabase";
 import AccessSessionClient from "@/components/features/AccessSessionClient";
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
+
 interface AccessPageProps {
   params: Promise<{ id: string }>;
 }

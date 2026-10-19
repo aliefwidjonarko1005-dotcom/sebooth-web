@@ -1,0 +1,480 @@
+<!DOCTYPE html><html class="h-full bg-slate-100" lang="id" style=""><head></head><body class="h-full font-sans antialiased text-slate-800 flex justify-center items-center p-0 md:p-6 bg-slate-200/80"><svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+<title>Beri Ulasan - Sebooth Photobooth</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#FF5500',
+              50: '#FFF5EB',
+              100: '#FFE8D2',
+              500: '#FF5500',
+              600: '#E64D00',
+              700: '#CC4400'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      user-select: none;
+    }
+    
+    .spring-trans {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .roulette-smooth {
+      transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .dragging {
+      transition: none !important;
+    }
+
+    /* Soft pulse on face change */
+    @keyframes popIn {
+      0% { transform: scale(0.92); opacity: 0.8; }
+      50% { transform: scale(1.04); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .face-pop {
+      animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+
+
+<!-- BEGIN: MobileContainer -->
+<div class="w-full h-full md:h-[884px] md:max-w-[412px] bg-[#F7F9FC] flex flex-col md:rounded-[50px] shadow-2xl relative overflow-hidden border-0 md:border-[8px] md:border-slate-800/15" data-purpose="mobile-viewport">
+<!-- BEGIN: iOSStatusBar -->
+<header class="w-full pt-3 px-7 flex justify-between items-center z-30 select-none bg-transparent" data-purpose="ios-status-bar">
+<span class="text-[14px] font-semibold tracking-tight text-slate-900">9:41</span>
+<!-- Dynamic Island / Speaker Pill indicator on desktop -->
+<div class="hidden md:block w-24 h-4 bg-slate-900 rounded-full"></div>
+<div class="flex items-center space-x-1.5 text-slate-900">
+<svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+<path d="M2 17h3v4H2v-4zm5-4h3v8H7v-8zm5-4h3v12h-3V9zm5-5h3v17h-3V4z"></path>
+</svg>
+<svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+<path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.5c3.78 0 7.22 1.48 9.77 3.9L12 19.34 2.23 11.4C4.78 8.98 8.22 7.5 12 7.5z"></path>
+</svg>
+<div class="w-5 h-2.5 border border-slate-900 rounded-sm p-0.5 flex items-center">
+<div class="h-full w-full bg-slate-900 rounded-[1px]"></div>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: NavigationBar -->
+<nav class="w-full px-6 py-2.5 flex items-center justify-between z-30" data-purpose="top-navigation">
+<button aria-label="Kembali" class="w-9 h-9 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100/70 active:scale-95 transition-all" type="button">
+<svg class="w-5 h-5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Center Logo (Sebooth Photobooth) -->
+<div class="flex items-center justify-center">
+<img alt="Sebooth Photobooth" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuyjJ6PtFIguPttTTr42ApgF4K_vEqM2IAIm27kwPaBOOGdfY26WLkG6cYIYnd18TxW1_ogvH2M8V0vmzW1FnBuRlzgUdfP9KWxBervEPotXyBKNB4kJPP8ooBxPlz324zlIr5wrrC986Sd8PzPb4DxhybGc_knLMehty6Rncwp5jMlm9Vl-EpI_HkRCqKmZZJ4pd_OqA3_SJmigB_eVvCuZSbmkgEVsc56PFTKTfLVIX_EB-ByEKQozCasTepoBOGrA">
+</div>
+<button aria-label="Bantuan" class="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100/70 active:scale-95 transition-all" type="button">
+<svg class="w-5 h-5 stroke-current stroke-[2.2] fill-none" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke-linecap="round"></path>
+<line stroke-linecap="round" x1="12" x2="12.01" y1="17" y2="17"></line>
+</svg>
+</button>
+</nav>
+<!-- END: NavigationBar -->
+<!-- BEGIN: MainContent -->
+<div class="flex-1 flex flex-col items-center justify-between relative px-6 select-none z-10 pt-1 pb-0 overflow-hidden" id="touch-area">
+<!-- Question & Header Section -->
+<div class="text-center z-20 mt-1">
+<h1 class="text-[23px] font-extrabold text-slate-800 tracking-tight leading-snug">
+        Bagaimana pengalamanmu?
+      </h1>
+<p class="text-[13px] font-medium text-slate-400 mt-1 flex items-center justify-center gap-1.5">
+<span class="">Sesi Sarah &amp; Dimas</span>
+<span class="text-slate-300">•</span>
+<span class="text-slate-400">24 Okt 2024</span>
+</p>
+</div>
+<!-- Giant Emoji & Mood Text Area -->
+<div class="flex flex-col items-center justify-center my-auto z-20 -mt-2">
+<!-- Big Expressive Emoji Circle -->
+<div class="w-40 h-40 sm:w-44 sm:h-44 rounded-full flex items-center justify-center relative spring-trans face-pop" id="emoji-face-container">
+<!-- SVG Face Dynamic -->
+<svg class="w-full h-full" fill="none" id="emoji-face-svg" viewBox="0 0 160 160">
+        <circle cx="80" cy="80" r="72" stroke="#FF3855" stroke-width="7" fill="#FFF0F2"></circle>
+        <ellipse cx="54" cy="62" rx="7" ry="9" fill="#FF3855" transform="rotate(15 54 62)"></ellipse>
+        <ellipse cx="106" cy="62" rx="7" ry="9" fill="#FF3855" transform="rotate(-15 106 62)"></ellipse>
+        <path d="M46 48 L64 56" stroke="#FF3855" stroke-width="5" stroke-linecap="round"></path>
+        <path d="M114 48 L96 56" stroke="#FF3855" stroke-width="5" stroke-linecap="round"></path>
+        <path d="M52 114 Q80 84 108 114" stroke="#FF3855" stroke-width="7" stroke-linecap="round" fill="none"></path>
+      </svg>
+</div>
+<!-- Bold Uppercase Mood Label -->
+<h2 class="text-3xl font-black tracking-wider uppercase mt-4 mb-0 spring-trans select-none" id="mood-title" style="color: rgb(255, 56, 85);">BURUK</h2>
+<p class="text-xs font-semibold text-slate-400 tracking-wide mt-1" id="mood-subtitle">Maaf atas pengalaman kurang baikmu</p>
+</div>
+<!-- BEGIN: BottomSwipeRouletteArc -->
+<!-- Circular arch dome expanding across the bottom of the viewport -->
+<div class="w-full relative flex flex-col items-center justify-end z-20" style="height: 310px;">
+<!-- Interactive Wheel Dome Wrapper -->
+<div class="absolute bottom-[-275px] w-[620px] h-[620px] pointer-events-auto cursor-grab active:cursor-grabbing select-none" id="wheel-wrapper" style="bottom: -290px; width: 640px; height: 640px;">
+<svg class="w-full h-full roulette-smooth drop-shadow-xl" id="roulette-wheel" style="transform: rotate(0deg); transform-origin: 320px 320px; text-rendering: geometricprecision; -webkit-font-smoothing: antialiased;" viewBox="0 0 640 640"><defs class=""><linearGradient id="grad-bad-ref" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#FF2A54"></stop>
+  <stop offset="100%" stop-color="#FF4B72"></stop>
+</linearGradient>
+<linearGradient id="grad-ugh-ref" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#FF8038"></stop>
+  <stop offset="100%" stop-color="#FFA050"></stop>
+</linearGradient>
+<linearGradient id="grad-ok-ref" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#00B4D8"></stop>
+  <stop offset="100%" stop-color="#48CAE4"></stop>
+</linearGradient>
+<linearGradient id="grad-good-ref" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#06D6A0"></stop>
+  <stop offset="100%" stop-color="#2EC4B6"></stop>
+</linearGradient>
+<linearGradient id="grad-great-ref" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#FF3366"></stop>
+  <stop offset="100%" stop-color="#FF6584"></stop>
+</linearGradient></defs><circle cx="320" cy="320" fill="none" r="312" stroke="rgba(255,255,255,0.4)" stroke-width="2" class=""></circle><g id="wheel-wedges-group" class=""><g class="cursor-pointer"><path d="M 300 10 A 290 290 0 0 1 411 32 L 366.8 138.8 A 175 175 0 0 0 300 125 Z" fill="url(#grad-bad-ref)" stroke="#ffffff" stroke-width="1.5"></path><line x1="300" y1="12" x2="300" y2="19" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><line x1="329.8" y1="13.5" x2="328.9" y2="20.5" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><line x1="359.2" y1="18.1" x2="357.3" y2="25" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><line x1="387.7" y1="25.8" x2="384.8" y2="32.5" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><text x="300" y="72" fill="#ffffff" font-size="18" font-weight="800" letter-spacing="0.06em" text-anchor="middle">BURUK</text></g><g class="cursor-pointer"><path d="M 411 32 A 290 290 0 0 1 505.1 94.9 L 423.6 176.4 A 175 175 0 0 0 366.8 138.8 Z" fill="url(#grad-ugh-ref)" stroke="#ffffff" stroke-width="1.5"></path><line x1="415" y1="35" x2="411" y2="41" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><line x1="441.5" y1="47.5" x2="436.5" y2="53" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><line x1="466.1" y1="62.6" x2="460" y2="67.7" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><line x1="488.3" y1="80.1" x2="481.3" y2="84.6" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><text x="464" y="139" fill="#ffffff" font-size="18" font-weight="800" letter-spacing="0.06em" text-anchor="middle" transform="rotate(45, 464, 135)">KURANG</text></g><g class="cursor-pointer"><path d="M 505.1 94.9 A 290 290 0 0 1 568 181.7 L 461.7 228.8 A 175 175 0 0 0 423.6 176.4 Z" fill="url(#grad-ok-ref)" stroke="#ffffff" stroke-width="1.5"></path><line x1="523" y1="115" x2="515" y2="119" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><line x1="541" y1="136" x2="532" y2="139" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><line x1="556" y1="158" x2="546" y2="161" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><text x="526" y="226" fill="#ffffff" font-size="18" font-weight="800" letter-spacing="0.06em" text-anchor="middle" transform="rotate(90, 526, 222)">CUKUP</text></g><g class="cursor-pointer"><path d="M 568 181.7 A 290 290 0 0 1 590 300 L 475 300 A 175 175 0 0 0 461.7 228.8 Z" fill="url(#grad-good-ref)" stroke="#ffffff" stroke-width="1.5"></path><text x="546" y="304" fill="#ffffff" font-size="18" font-weight="800" letter-spacing="0.06em" text-anchor="middle" transform="rotate(135, 546, 300)">BAGUS</text></g><g class="cursor-pointer"><path d="M 189 32 A 290 290 0 0 1 300 10 L 300 125 A 175 175 0 0 0 233.2 138.8 Z" fill="url(#grad-great-ref)" stroke="#ffffff" stroke-width="1.5"></path><line x1="212.3" y1="25.8" x2="215.2" y2="32.5" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><line x1="240.8" y1="18.1" x2="242.7" y2="25" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><line x1="270.2" y1="13.5" x2="271.1" y2="20.5" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"></line><text x="248" y="88" fill="#ffffff" font-size="18" font-weight="800" letter-spacing="0.06em" text-anchor="middle" transform="rotate(-22.5, 248, 84)">KEREN</text></g></g><circle cx="320" cy="320" fill="#FFFFFF" r="195" stroke="rgba(226,232,240,0.6)" stroke-width="4" filter="drop-shadow(0 -4px 14px rgba(0,0,0,0.06))" class=""></circle></svg>
+</div>
+<!-- Center Indicator Marker Triangle/Tick at Apex -->
+<div class="absolute top-1 z-30 pointer-events-none flex flex-col items-center drop-shadow-md"><div class="w-2 h-4 bg-white rounded-full shadow-lg border border-slate-200/50"></div></div>
+<!-- Floating Submit CTA Button over the Arch Inner Center -->
+<div class="relative z-30 mb-8 flex flex-col items-center w-full px-8">
+<button class="w-48 h-[48px] rounded-full text-white font-extrabold text-[15px] tracking-wider uppercase flex items-center justify-center transition-all duration-300 active:scale-95 shadow-lg" id="submit-btn" onclick="handleSubmit()" type="button" style="background-color: rgb(255, 56, 85); box-shadow: rgba(255, 56, 85, 0.45) 0px 10px 25px -4px;">
+          KIRIM ULASAN
+        </button>
+<span class="text-[10px] font-semibold text-slate-400 mt-2 tracking-wide uppercase">Geser untuk ganti nilai</span>
+</div>
+<!-- iOS Home Bar Indicator -->
+<div class="w-32 h-1 bg-slate-300 rounded-full mb-2 z-30"></div>
+</div>
+<!-- END: BottomSwipeRouletteArc -->
+</div>
+<!-- END: MainContent -->
+</div>
+<!-- END: MobileContainer -->
+<!-- BEGIN: Script -->
+<script>
+  // 5 Rating Moods Definition exactly corresponding to Reference Image Style
+  const moods = [
+    {
+      id: 0,
+      title: "BURUK",
+      sub: "Maaf atas pengalaman kurang baikmu",
+      color: "#FF3855",
+      lightColor: "#FFF0F2",
+      btnShadow: "0 10px 25px -4px rgba(255, 56, 85, 0.45)",
+      // Angry face
+      faceSvg: `
+        <circle cx="80" cy="80" r="72" stroke="#FF3855" stroke-width="7" fill="#FFF0F2" />
+        <ellipse cx="54" cy="62" rx="7" ry="9" fill="#FF3855" transform="rotate(15 54 62)" />
+        <ellipse cx="106" cy="62" rx="7" ry="9" fill="#FF3855" transform="rotate(-15 106 62)" />
+        <path d="M46 48 L64 56" stroke="#FF3855" stroke-width="5" stroke-linecap="round" />
+        <path d="M114 48 L96 56" stroke="#FF3855" stroke-width="5" stroke-linecap="round" />
+        <path d="M52 114 Q80 84 108 114" stroke="#FF3855" stroke-width="7" stroke-linecap="round" fill="none" />
+      `
+    },
+    {
+      id: 1,
+      title: "KURANG",
+      sub: "Beri tahu kami apa yang bisa diperbaiki",
+      color: "#FFA845",
+      lightColor: "#FFF8ED",
+      btnShadow: "0 10px 25px -4px rgba(255, 168, 69, 0.45)",
+      // Skeptical / ugh face
+      faceSvg: `
+        <circle cx="80" cy="80" r="72" stroke="#FFA845" stroke-width="7" fill="#FFF8ED" />
+        <ellipse cx="56" cy="62" rx="7" ry="8" fill="#FFA845" />
+        <ellipse cx="104" cy="62" rx="7" ry="8" fill="#FFA845" />
+        <path d="M48 48 Q60 42 70 48" stroke="#FFA845" stroke-width="4.5" stroke-linecap="round" fill="none" />
+        <path d="M90 48 Q100 42 112 48" stroke="#FFA845" stroke-width="4.5" stroke-linecap="round" fill="none" />
+        <path d="M54 108 C68 94 92 116 106 102" stroke="#FFA845" stroke-width="7" stroke-linecap="round" fill="none" />
+      `
+    },
+    {
+      id: 2,
+      title: "CUKUP",
+      sub: "Sesi standar tanpa kendala berarti",
+      color: "#24B2FF",
+      lightColor: "#EDF8FF",
+      btnShadow: "0 10px 25px -4px rgba(36, 178, 255, 0.45)",
+      // Neutral face
+      faceSvg: `
+        <circle cx="80" cy="80" r="72" stroke="#24B2FF" stroke-width="7" fill="#EDF8FF" />
+        <circle cx="56" cy="65" r="8" fill="#24B2FF" />
+        <circle cx="104" cy="65" r="8" fill="#24B2FF" />
+        <line x1="52" y1="108" x2="108" y2="108" stroke="#24B2FF" stroke-width="7" stroke-linecap="round" />
+      `
+    },
+    {
+      id: 3,
+      title: "BAGUS",
+      sub: "Hasil foto ceria & memuaskan!",
+      color: "#22D48B",
+      lightColor: "#EDFDF6",
+      btnShadow: "0 10px 25px -4px rgba(34, 212, 139, 0.45)",
+      // Happy smile face
+      faceSvg: `
+        <circle cx="80" cy="80" r="72" stroke="#22D48B" stroke-width="7" fill="#EDFDF6" />
+        <ellipse cx="56" cy="64" rx="8" ry="9" fill="#22D48B" />
+        <ellipse cx="104" cy="64" rx="8" ry="9" fill="#22D48B" />
+        <path d="M50 96 Q80 134 110 96" stroke="#22D48B" stroke-width="7" stroke-linecap="round" fill="none" />
+      `
+    },
+    {
+      id: 4,
+      title: "KEREN!",
+      sub: "Luar biasa seru & sangat puas!",
+      color: "#FF5500",
+      lightColor: "#FFF5EB",
+      btnShadow: "0 10px 25px -4px rgba(255, 85, 0, 0.45)",
+      // Super excited big smile face
+      faceSvg: `
+        <circle cx="80" cy="80" r="72" stroke="#FF5500" stroke-width="7" fill="#FFF5EB" />
+        <circle cx="54" cy="60" r="9" fill="#FF5500" />
+        <circle cx="106" cy="60" r="9" fill="#FF5500" />
+        <path d="M46 92 Q80 142 114 92 Z" fill="#FF5500" stroke="#FF5500" stroke-width="4" stroke-linejoin="round" />
+      `
+    }
+  ];
+
+  // Wheel configuration: 5 sectors = 42 degrees visible width per wedge on the arch
+  // We arrange sectors circularly on the 360-deg wheel.
+  // Sector step angle:
+  const sectorStep = 45; // 45 deg each sector for crisp readable spacing
+  let activeIndex = 4; // Start at KEREN!
+
+  // Build the SVG Roulette sectors
+  const svgGroup = document.getElementById('wheel-wedges-group');
+  const cx = 300, cy = 300, rOuter = 290, rInner = 175;
+
+  function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+    const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+    return {
+      x: centerX + (radius * Math.cos(angleInRadians)),
+      y: centerY + (radius * Math.sin(angleInRadians))
+    };
+  }
+
+  function describeRingSector(x, y, innerRadius, outerRadius, startAngle, endAngle) {
+    const p1 = polarToCartesian(x, y, outerRadius, startAngle);
+    const p2 = polarToCartesian(x, y, outerRadius, endAngle);
+    const p3 = polarToCartesian(x, y, innerRadius, endAngle);
+    const p4 = polarToCartesian(x, y, innerRadius, startAngle);
+    const largeArc = endAngle - startAngle <= 180 ? 0 : 1;
+
+    return [
+      "M", p1.x, p1.y,
+      "A", outerRadius, outerRadius, 0, largeArc, 1, p2.x, p2.y,
+      "L", p3.x, p3.y,
+      "A", innerRadius, innerRadius, 0, largeArc, 0, p4.x, p4.y,
+      "Z"
+    ].join(" ");
+  }
+
+  // Generate wedges centered around top (0 deg)
+  // Indices 0, 1, 2, 3, 4
+  const sectorColors = [
+    "#FF3855", // BURUK
+    "#FFA845", // KURANG
+    "#24B2FF", // CUKUP
+    "#22D48B", // BAGUS
+    "#FF5500"  // KEREN!
+  ];
+
+  function renderWheel() {
+    let html = '';
+    for (let i = 0; i < 5; i++) {
+      // Each wedge centered at i * sectorStep
+      const centerAngle = i * sectorStep;
+      const startAngle = centerAngle - (sectorStep / 2);
+      const endAngle = centerAngle + (sectorStep / 2);
+      const pathD = describeRingSector(cx, cy, rInner, rOuter, startAngle, endAngle);
+      
+      // Calculate text position
+      const textPos = polarToCartesian(cx, cy, (rInner + rOuter) / 2, centerAngle);
+      
+      html += `
+        <g class="cursor-pointer" onclick="selectMood(${i})">
+          <path d="${pathD}" fill="${sectorColors[i]}" stroke="#ffffff" stroke-width="1.5" />
+          
+          <!-- Tick Marks on Outer & Inner Rim -->
+          ${(() => {
+            let ticks = '';
+            for (let t = -18; t <= 18; t += 6) {
+              const pOuter = polarToCartesian(cx, cy, rOuter - 2, centerAngle + t);
+              const pOuterIn = polarToCartesian(cx, cy, rOuter - 9, centerAngle + t);
+              ticks += `<line x1="${pOuter.x}" y1="${pOuter.y}" x2="${pOuterIn.x}" y2="${pOuterIn.y}" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>`;
+            }
+            return ticks;
+          })()}
+          
+          <!-- Mood Label on Arc -->
+          <text 
+            x="${textPos.x}" 
+            y="${textPos.y + 4}" 
+            fill="#ffffff" 
+            font-size="16" 
+            font-weight="800" 
+            letter-spacing="0.06em"
+            text-anchor="middle" 
+            transform="rotate(${centerAngle}, ${textPos.x}, ${textPos.y})">
+            ${moods[i].title}
+          </text>
+        </g>
+      `;
+    }
+    svgGroup.innerHTML = html;
+  }
+
+  renderWheel();
+
+  // Roulette rotation logic
+  const wheel = document.getElementById('roulette-wheel');
+  const moodTitle = document.getElementById('mood-title');
+  const moodSubtitle = document.getElementById('mood-subtitle');
+  const faceContainer = document.getElementById('emoji-face-container');
+  const faceSvg = document.getElementById('emoji-face-svg');
+  const submitBtn = document.getElementById('submit-btn');
+
+  function updateActiveUI(idx) {
+    const data = moods[idx];
+    
+    // Smoothly rotate the wheel so the selected wedge is exactly at top (0 deg)
+    const targetAngle = -(idx * sectorStep);
+    wheel.style.transform = `rotate(${targetAngle}deg)`;
+
+    // Update Title & Subtitle
+    moodTitle.innerText = data.title;
+    moodTitle.style.color = data.color;
+    moodSubtitle.innerText = data.sub;
+
+    // Update Emoji Face with pop bounce
+    faceSvg.innerHTML = data.faceSvg;
+    faceContainer.classList.remove('face-pop');
+    void faceContainer.offsetWidth; // trigger reflow
+    faceContainer.classList.add('face-pop');
+
+    // Update Submit Button style
+    submitBtn.style.backgroundColor = data.color;
+    submitBtn.style.boxShadow = data.btnShadow;
+  }
+
+  function selectMood(idx) {
+    if (idx < 0) idx = 0;
+    if (idx > 4) idx = 4;
+    activeIndex = idx;
+    updateActiveUI(activeIndex);
+  }
+
+  // Interactive Drag & Touch Swipe support
+  let isDragging = false;
+  let startX = 0;
+  let currentRotation = -(activeIndex * sectorStep);
+
+  const touchArea = document.getElementById('touch-area');
+
+  function handleStart(clientX) {
+    isDragging = true;
+    startX = clientX;
+    wheel.classList.add('dragging');
+    currentRotation = -(activeIndex * sectorStep);
+  }
+
+  function handleMove(clientX) {
+    if (!isDragging) return;
+    const deltaX = clientX - startX;
+    // Map horizontal swipe distance (px) to rotation degree
+    // Moving finger right rotates wheel counter-clockwise (revealing lower index), etc.
+    const degDelta = deltaX * 0.22;
+    let computedRotation = currentRotation + degDelta;
+    
+    // Bounds resistance
+    if (computedRotation > 15) computedRotation = 15;
+    if (computedRotation < -(4 * sectorStep + 15)) computedRotation = -(4 * sectorStep + 15);
+
+    wheel.style.transform = `rotate(${computedRotation}deg)`;
+
+    // Calculate closest index preview
+    let estimatedIdx = Math.round(-computedRotation / sectorStep);
+    if (estimatedIdx < 0) estimatedIdx = 0;
+    if (estimatedIdx > 4) estimatedIdx = 4;
+
+    if (estimatedIdx !== activeIndex) {
+      activeIndex = estimatedIdx;
+      // Quick live preview update of labels & face
+      const data = moods[activeIndex];
+      moodTitle.innerText = data.title;
+      moodTitle.style.color = data.color;
+      moodSubtitle.innerText = data.sub;
+      faceSvg.innerHTML = data.faceSvg;
+      submitBtn.style.backgroundColor = data.color;
+      submitBtn.style.boxShadow = data.btnShadow;
+    }
+  }
+
+  function handleEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    wheel.classList.remove('dragging');
+    // Snap cleanly to active index
+    updateActiveUI(activeIndex);
+  }
+
+  // Touch Listeners
+  touchArea.addEventListener('touchstart', (e) => handleStart(e.touches[0].clientX), { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    if (isDragging) handleMove(e.touches[0].clientX);
+  }, { passive: true });
+  window.addEventListener('touchend', handleEnd);
+
+  // Mouse Listeners for Desktop simulation
+  touchArea.addEventListener('mousedown', (e) => handleStart(e.clientX));
+  window.addEventListener('mousemove', (e) => {
+    if (isDragging) handleMove(e.clientX);
+  });
+  window.addEventListener('mouseup', handleEnd);
+
+  // Submit Handler
+  function handleSubmit() {
+    submitBtn.disabled = true;
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = `
+      <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+      </svg>
+    `;
+    setTimeout(() => {
+      submitBtn.innerHTML = "TERKIRIM! ✨";
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }, 1800);
+    }, 800);
+  }
+
+  // Initial load
+  updateActiveUI(4);
+</script>
+<!-- END: Script -->
+
+
+</body></html>
