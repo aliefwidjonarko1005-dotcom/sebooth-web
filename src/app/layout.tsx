@@ -113,7 +113,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`scroll-smooth ${poppins.variable} ${bayon.variable}`}>
+    <html lang="id" className={`${poppins.variable} ${bayon.variable}`}>
       <head>
         <LocalBusinessSchema />
         <link

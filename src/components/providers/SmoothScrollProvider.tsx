@@ -21,6 +21,9 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     )
     if (isMobile) return
 
+    // Respect the OS "reduce motion" setting: keep plain native scrolling
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
     let isDestroyed = false
     let updateTicker: ((time: number) => void) | null = null
     let lenisInstance: any = null

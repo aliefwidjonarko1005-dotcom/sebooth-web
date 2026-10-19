@@ -37,7 +37,7 @@ export const LANDING_SLIDES: LandingSlide[] = [
     ctas: [
       {
         text: "SEBOOTH-IN SEKARANG",
-        href: "https://wa.me/6281234567890?text=Halo%20Sebooth,%20saya%20ingin%20booking%20photobooth%20untuk%20acara%20saya!",
+        href: "https://wa.me/6285713899441?text=Halo%20Sebooth,%20saya%20ingin%20booking%20photobooth%20untuk%20acara%20saya!",
         isExternal: true,
         variant: "primary",
         position: "bottom-center",

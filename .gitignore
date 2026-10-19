@@ -47,3 +47,7 @@ next-env.d.ts
 /picture_stocks
 picture_stocks/
 picture_stocks
+
+# local MCP configs (contain API keys)
+.mcp.json
+.agents/mcp_config.json

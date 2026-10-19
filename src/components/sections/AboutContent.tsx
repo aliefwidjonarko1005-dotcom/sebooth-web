@@ -72,9 +72,9 @@ export function AboutContent({ content }: AboutContentProps) {
             <section className="px-6 md:px-20 py-24 md:py-32 bg-primary relative overflow-hidden">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
+                        initial={{ y: 30 }}
+                        animate={{ y: 0 }}
+                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                         className="max-w-5xl z-10 relative"
                     >
                         <p className="text-lg font-bold uppercase text-white/60 mb-4">
@@ -101,9 +101,9 @@ export function AboutContent({ content }: AboutContentProps) {
 
                     {/* Hero Image */}
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.8, delay: 0.3 }}
+                        initial={{ scale: 1.04 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                         className="relative h-[400px] md:h-[500px] w-full border-4 border-white/20 overflow-hidden flex items-center justify-center bg-slate-900"
                     >
                         {content["hero_image"] ? (
@@ -134,8 +134,8 @@ export function AboutContent({ content }: AboutContentProps) {
                 <div className="grid md:grid-cols-2 gap-12">
                     {/* Left: Vision */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ y: 20 }}
+                        whileInView={{ y: 0 }}
                         viewport={{ once: true }}
                         className="bg-primary p-12 border-2 border-black hard-shadow-orange"
                     >
@@ -164,8 +164,8 @@ export function AboutContent({ content }: AboutContentProps) {
 
                     {/* Right: Steps */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ y: 20 }}
+                        whileInView={{ y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.2 }}
                     >

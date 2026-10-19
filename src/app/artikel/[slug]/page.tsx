@@ -356,7 +356,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
           </p>
 
           <a
-            href="https://wa.me/6281234567890?text=Halo%20Sebooth,%20saya%20baca%20artikel%20di%20website%20dan%20tertarik%20sewa%20photobooth%20untuk%20event%20di%20Semarang!"
+            href="https://wa.me/6285713899441?text=Halo%20Sebooth,%20saya%20baca%20artikel%20di%20website%20dan%20tertarik%20sewa%20photobooth%20untuk%20event%20di%20Semarang!"
             target="_blank"
             rel="noopener noreferrer"
             className="mt-5 inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-[#FF5500] to-[#FF2200] hover:opacity-95 active:scale-95 text-white font-black text-xs sm:text-sm tracking-wider uppercase shadow-lg transition-all"
