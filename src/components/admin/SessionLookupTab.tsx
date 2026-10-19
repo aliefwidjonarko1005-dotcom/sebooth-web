@@ -14,7 +14,6 @@ import {
   Copy,
   Check,
   ExternalLink,
-  Loader2,
   RefreshCw,
   MessageCircle,
   Layers,
@@ -29,9 +28,10 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  X
+  X,
 } from 'lucide-react'
 import { checkSessionExpiry } from '@/lib/sessionExpiryPolicy'
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 interface SessionItem {
   id: string
@@ -377,7 +377,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
             disabled={loading || !searchQuery.trim()}
             className="px-6 py-3 rounded-xl bg-[#0F3D2E] text-white font-bold text-sm hover:bg-[#185340] disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer"
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+            {loading ? <SeboothLoader variant="mini" className="w-4 h-4" /> : <Search className="w-4 h-4" />}
             Inspeksi Sesi
           </button>
         </form>
@@ -714,7 +714,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                 className="px-3 py-2 rounded-xl border border-[#1A1A1A]/10 hover:bg-[#F9F9F9] text-[#1A1A1A] text-xs font-semibold flex items-center gap-1.5 disabled:opacity-50 transition-all cursor-pointer"
                 title="Segarkan data sesi"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${listLoading ? 'animate-spin text-[#0F3D2E]' : ''}`} />
+                {listLoading ? <SeboothLoader variant="mini" className="w-3.5 h-3.5 text-[#0F3D2E]" /> : <RefreshCw className="w-3.5 h-3.5" />}
                 <span>Refresh</span>
               </button>
             </div>
@@ -795,7 +795,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
         {/* ─── DATA RENDERING (LIST vs GRID) ─── */}
         {listLoading ? (
           <div className="py-20 flex flex-col items-center justify-center text-[#1A1A1A]/40">
-            <Loader2 className="w-8 h-8 animate-spin text-[#0F3D2E] mb-3" />
+            <SeboothLoader variant="block" theme="white" label="Memuat daftar sesi" className="mb-3 w-40" />
             <p className="text-xs font-medium">Memuat daftar sesi...</p>
           </div>
         ) : sessionsList.length === 0 ? (

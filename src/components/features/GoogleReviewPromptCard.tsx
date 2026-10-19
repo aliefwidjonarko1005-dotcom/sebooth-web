@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Star, ExternalLink, Check, Sparkles } from 'lucide-react'
+import { GOOGLE_REVIEW_URL } from '@/config/social'
 
 interface GoogleReviewPromptCardProps {
   sessionId?: string
@@ -9,9 +10,6 @@ interface GoogleReviewPromptCardProps {
   className?: string
 }
 
-const GOOGLE_REVIEW_URL =
-  process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ||
-  'https://search.google.com/local/writereview?placeid=ChIJMw7u0BePcC4RfJlnOavYI6k'
 
 function GoogleIcon({ className = 'w-6 h-6' }: { className?: string }) {
   return (

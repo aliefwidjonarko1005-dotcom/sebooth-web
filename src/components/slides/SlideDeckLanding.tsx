@@ -5,6 +5,8 @@ import { LANDING_SLIDES, LandingSlide } from "@/config/landingSlides";
 import { SlideItem } from "./SlideItem";
 import { SlideNavigationDots } from "./SlideNavigationDots";
 import { ChevronDown } from "lucide-react";
+import GuideGesture from "@/components/guide/GuideGesture";
+import { GUIDE_KEYS } from "@/config/guides";
 
 interface SlideDeckLandingProps {
   slides?: LandingSlide[];
@@ -14,6 +16,21 @@ export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
   slides = LANDING_SLIDES,
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  // One-time animated swipe cue for first-time visitors; retired after the first slide change
+  const [showSwipeHint, setShowSwipeHint] = useState(false);
+  useEffect(() => {
+    try {
+      // localStorage is client-only, so the cue is decided after mount
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (localStorage.getItem(GUIDE_KEYS.homeSwipe) !== "true") setShowSwipeHint(true);
+    } catch {}
+  }, []);
+  useEffect(() => {
+    if (activeIndex === 0) return;
+    try {
+      localStorage.setItem(GUIDE_KEYS.homeSwipe, "true");
+    } catch {}
+  }, [activeIndex]);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Progressive slide mounting: Slide 0 is mounted eagerly for instant FCP/LCP.
@@ -185,6 +202,11 @@ export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
             activeIndex === 0 ? "flex" : "flex md:hidden"
           }`}
         >
+          {activeIndex === 0 && showSwipeHint && (
+            <span className="md:hidden mb-1">
+              <GuideGesture kind="swipe-y" size={44} />
+            </span>
+          )}
           {activeIndex === 0 && (
             <span className="text-[9.5px] xs:text-xs sm:text-sm font-extrabold tracking-[0.2em] uppercase text-[#F59E0B] group-hover:text-[#FF5500] transition-colors drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] filter">
               SCROLL UNTUK GANTI SLIDE

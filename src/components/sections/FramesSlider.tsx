@@ -534,20 +534,16 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
   return (
     <section
       id="frames"
-      className="relative w-full h-[100svh] min-h-[100svh] bg-[#FF4500] text-white pt-16 sm:pt-20 md:pt-24 lg:pt-28 pb-4 sm:pb-12 px-3 sm:px-8 lg:px-16 overflow-hidden select-none flex flex-col justify-center items-center gap-2 sm:gap-5"
+      className="relative w-full h-[100svh] min-h-[100svh] bg-[#002366] text-white pt-16 sm:pt-20 md:pt-24 lg:pt-28 pb-4 sm:pb-12 px-3 sm:px-8 lg:px-16 overflow-hidden select-none flex flex-col justify-center items-center gap-2 sm:gap-5"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onContextMenu={(e) => e.preventDefault()}
     >
       {/* ── AMBIENT VIBRANT ORANGE MULTI-STOP GRADIENT BACKGROUND ── */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#FF7700] via-[#FF3D00] to-[#7A0F00] pointer-events-none z-0" />
 
       {/* Dominant Fiery Orange Core Aura (Desktop only for max mobile 60fps performance) */}
-      <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] sm:w-[70rem] h-[40rem] sm:h-[70rem] rounded-full bg-gradient-to-r from-[#FF9900]/40 via-[#FF4500]/50 to-[#CC2200]/40 blur-[120px] sm:blur-[180px] pointer-events-none z-0" />
 
       {/* Abstract Bright Amber & Vivid Crimson Ambient Blur Accent Blobs */}
-      <div className="hidden sm:block absolute top-[-10%] left-[-15%] sm:left-[-8%] w-[25rem] sm:w-[42rem] h-[25rem] sm:h-[42rem] rounded-full bg-gradient-to-br from-[#FFBB00] via-[#FF5500] to-[#D6002A] opacity-55 blur-[90px] sm:blur-[140px] pointer-events-none z-0 animate-pulse duration-10000" />
-      <div className="hidden sm:block absolute bottom-[-10%] right-[-15%] sm:right-[-8%] w-[26rem] sm:w-[44rem] h-[26rem] sm:h-[44rem] rounded-full bg-gradient-to-tl from-[#FFAA00] via-[#FF3300] to-[#90001B] opacity-55 blur-[100px] sm:blur-[150px] pointer-events-none z-0 animate-pulse duration-7000" />
 
       {/* ── SECTION HEADER ── */}
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center text-center mb-1 sm:mb-4 px-2">
@@ -563,8 +559,8 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
       {/* ── CONTINUOUS INFINITE SLIDING MARQUEE TRACK (ZERO MASK-IMAGE FOR ULTRA 60FPS) ── */}
       <div className="relative z-10 w-full overflow-hidden select-none pt-1 sm:pt-4 pb-4 sm:pb-16 md:pb-20">
         {/* Hardware-friendly Left & Right Fade Overlays */}
-        <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-[#FF5500] to-transparent z-20 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-[#FF4000] to-transparent z-20 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-[#002366] to-transparent z-20 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-[#002366] to-transparent z-20 pointer-events-none" />
 
         {/* MOBILE 2-TIER STACKED ROWS (Visible only on < sm screens) */}
         <div className="flex sm:hidden flex-col gap-2 xs:gap-3 py-1">
@@ -823,7 +819,7 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
                     href={`https://wa.me/6285713899441?text=${encodeURIComponent(`Halo Sebooth, saya mau pakai template frame "${selectedFrame.title}" untuk acara saya!`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full rounded-full py-2.5 sm:py-3.5 px-4 sm:px-6 bg-gradient-to-r from-[#FF5E00] via-[#FF3900] to-[#551286] text-white font-extrabold text-xs xs:text-sm sm:text-base text-center tracking-wide border border-white/20 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full rounded-full py-2.5 sm:py-3.5 px-4 sm:px-6 bg-[#FF4500] hover:bg-[#e63e00] text-white font-extrabold text-xs xs:text-sm sm:text-base text-center tracking-wide border border-white/20 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <span>Pakai Frame Ini Untuk Acara Saya</span>
                   </a>

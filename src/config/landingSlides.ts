@@ -52,7 +52,7 @@ export const LANDING_SLIDES: LandingSlide[] = [
     desktopImage: "/images/slides/desktop/slide-02-services.svg",
     mobileImage: "/images/slides/mobile/slide-02-services.svg",
     alt: "Sebooth Services & Packages",
-    bgFallbackColor: "#0f3d2e",
+    bgFallbackColor: "#eef2ff",
     ctas: [
       {
         text: "LIHAT DETAIL LAYANAN",
@@ -70,7 +70,7 @@ export const LANDING_SLIDES: LandingSlide[] = [
     desktopImage: "/images/slides/desktop/slide-03-frames.svg",
     mobileImage: "/images/slides/mobile/slide-03-frames.svg",
     alt: "Sebooth Featured Frames & Portfolio",
-    bgFallbackColor: "#FF4500",
+    bgFallbackColor: "#002366",
     ctas: [],
   },
   {
@@ -92,7 +92,7 @@ export const LANDING_SLIDES: LandingSlide[] = [
     desktopImage: "/images/slides/desktop/slide-05-partnership.svg",
     mobileImage: "/images/slides/mobile/slide-05-partnership.svg",
     alt: "Sebooth Activities & Stories Semarang",
-    bgFallbackColor: "#FAF8F5",
+    bgFallbackColor: "#eef2ff",
     ctas: [],
   },
   {
@@ -103,7 +103,7 @@ export const LANDING_SLIDES: LandingSlide[] = [
     desktopImage: "/images/slides/desktop/slide-04-pricing.svg",
     mobileImage: "/images/slides/mobile/slide-04-pricing.svg",
     alt: "Sebooth Pricing & Rental Packages",
-    bgFallbackColor: "#0239A0",
+    bgFallbackColor: "#002366",
     ctas: [],
   },
   {

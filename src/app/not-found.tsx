@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -25,7 +26,7 @@ export default function NotFound() {
               <span className="font-bayon text-4xl sm:text-5xl text-secondary leading-none">404</span>
             </div>
           </div>
-          <p className="mt-3 text-center font-bayon text-lg text-primary leading-none">SEBOOTH</p>
+          <Image src="/images/logo/sebooth-navy.svg" alt="" width={86} height={36} unoptimized className="mx-auto mt-3 h-auto w-auto" style={{ height: 30 }} />
         </div>
 
         <div className="text-center md:text-left">

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/apiSecurity";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
@@ -16,6 +17,9 @@ function createServiceClient() {
  * Body: { userId, endpoint, p256dh, auth }
  */
 export async function POST(req: NextRequest) {
+    const limited = rateLimit(req, "push-subscribe", 10, 60_000);
+    if (limited) return limited;
+
     const body = await req.json();
     const { userId, endpoint, p256dh, auth } = body;
 

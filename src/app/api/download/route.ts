@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { resolveMediaSource, rateLimit } from '@/lib/apiSecurity'
 
 export const runtime = 'edge'
 
@@ -11,13 +12,20 @@ export async function GET(request: Request) {
     return new NextResponse('Missing URL parameter', { status: 400 })
   }
 
+  const limited = rateLimit(request, 'download', 120, 60_000)
+  if (limited) return limited
+
+  // Only our own public files and allowlisted media buckets (otherwise this is an open proxy)
+  const source = resolveMediaSource(url)
+  if (!source) {
+    return new NextResponse('URL not allowed', { status: 400 })
+  }
+
   try {
-    // Resolve absolute URL for both relative static paths (/images/...) and remote cloud URLs
-    const targetUrl = url.startsWith('http')
-      ? url
-      : new URL(url, request.url).toString()
+    const targetUrl = source.kind === 'remote' ? source.url : new URL(source.path, request.url).toString()
 
     const response = await fetch(targetUrl, {
+      redirect: 'error',
       headers: {
         Accept: '*/*',
         'User-Agent': 'Sebooth Proxy/1.0',
@@ -52,7 +60,7 @@ export async function GET(request: Request) {
     const safeFilename = filename.replace(/[^a-zA-Z0-9._-]/g, '_')
     const headers = new Headers()
     headers.set('Content-Type', contentType)
-    headers.set('Content-Disposition', `attachment; filename="${safeFilename}"; filename*=UTF-8''${encodeURIComponent(filename)}"`)
+    headers.set('Content-Disposition', `attachment; filename="${safeFilename}"; filename*=UTF-8''${encodeURIComponent(filename)}`)
     headers.set('Cache-Control', 'public, max-age=31536000, immutable')
 
     return new NextResponse(response.body, {

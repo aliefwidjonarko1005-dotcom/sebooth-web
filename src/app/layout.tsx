@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import { Poppins, Bayon } from "next/font/google";
+import { Hanken_Grotesk, Bayon } from "next/font/google";
 import "./globals.css";
 import { LayoutShell } from "@/components/layout/LayoutShell";
 import { OrientationProvider } from "@/components/layout/OrientationProvider";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
+import { BootSplash } from "@/components/ui/BootSplash";
 
-const poppins = Poppins({
+// Text face for everything except the Bayon poster headlines
+const hanken = Hanken_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
-  variable: "--font-poppins",
+  variable: "--font-text",
   display: "swap",
 });
 
@@ -113,9 +115,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${poppins.variable} ${bayon.variable}`}>
+    <html lang="id" className={`${hanken.variable} ${bayon.variable}`}>
       <head>
         <LocalBusinessSchema />
+        <noscript>
+          <style>{`.sb-boot{display:none}`}</style>
+        </noscript>
         <link
           rel="preload"
           as="image"
@@ -132,6 +137,7 @@ export default function RootLayout({
       <body
         className="antialiased paper-texture"
       >
+        <BootSplash />
         <OrientationProvider>
           <SmoothScrollProvider>
             <div id="root-app" className="w-full h-full relative">

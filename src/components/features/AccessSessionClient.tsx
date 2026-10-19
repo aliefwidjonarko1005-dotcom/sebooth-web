@@ -4,18 +4,30 @@ import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
-  Download, Loader2, CheckCircle2, XCircle,
-  Clock, AlertTriangle, Share2, Sparkles, Check,
-  ChevronLeft, ArrowRight, ShieldCheck, Image as ImageIcon,
-  Eye, X, HelpCircle, Star
+  Download,
+  XCircle,
+  Share2,
+  Check,
+  ChevronLeft,
+  ArrowRight,
+  Eye,
+  X,
+  HelpCircle,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 import { SessionData, MediaItem } from '@/types/database'
 import { User } from '@supabase/supabase-js'
 import { claimSession } from '@/app/actions'
-import InteractiveTour, { TourStep } from '@/components/ui/InteractiveTour'
+import Guide from '@/components/guide/Guide'
+import { useGuide } from '@/components/guide/useGuide'
+import { ACCESS_GUIDE, GUIDE_KEYS } from '@/config/guides'
 import { checkSessionExpiry } from '@/lib/sessionExpiryPolicy'
 import ClayPillButton from '@/components/ui/ClayPillButton'
+import ClaimStatusStrip from '@/components/features/ClaimStatusStrip'
+import ReviewSheet from '@/components/features/review/ReviewSheet'
+import { FunnelStage, readFunnel, shouldAutoOpen } from '@/lib/reviewFunnel'
+import { INSTAGRAM_HANDLE } from '@/config/social'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 
 interface AccessSessionClientProps {
   session: SessionData
@@ -69,92 +81,25 @@ export default function AccessSessionClient({ session: initialSession, sessionId
   const [isBundling, setIsBundling] = useState(false)
   const [bundleProgress, setBundleProgress] = useState<{ current: number; total: number }>({ current: 0, total: 0 })
   const [toastMessage, setToastMessage] = useState<string | null>(null)
-  const [hasReviewed, setHasReviewed] = useState(false)
-  const [shouldAutoDownload, setShouldAutoDownload] = useState(false)
+  const [downloadedCount, setDownloadedCount] = useState<number | null>(null)
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [justSaved, setJustSaved] = useState(false)
+  const [sheetStage, setSheetStage] = useState<FunnelStage | undefined>(undefined)
+  const reduceMotion = useReducedMotion()
 
-  // Check if session has been reviewed & check auto-download trigger
-  useEffect(() => {
-    try {
-      const isReviewed = localStorage.getItem(`sebooth_reviewed_${sessionId}`) === 'true'
-      const isUrlReviewed = typeof window !== 'undefined' && window.location.search.includes('reviewed=true')
-      const isDownloadParam = typeof window !== 'undefined' && window.location.search.includes('download=true')
-      const isPendingDownload = sessionStorage.getItem(`sebooth_pending_download_${sessionId}`) === 'true'
-
-      if (isReviewed || isUrlReviewed) {
-        setHasReviewed(true)
-        if (isUrlReviewed || isDownloadParam || isPendingDownload) {
-          sessionStorage.removeItem(`sebooth_pending_download_${sessionId}`)
-          setToastMessage('Ulasan terkirim! Memulai unduh seluruh foto...')
-          setTimeout(() => setToastMessage(null), 5000)
-          setShouldAutoDownload(true)
-        }
-      }
-    } catch {}
-  }, [sessionId])
+  const openSheet = (stage?: FunnelStage) => {
+    setSheetStage(stage)
+    setSheetOpen(true)
+  }
 
   // Lightbox preview modal state
-  const [previewMedia, setPreviewMedia] = useState<{ url: string; displayUrl?: string; type: string; label: string } | null>(null)
-  const [isTourOpen, setIsTourOpen] = useState(false)
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null)
+  const [previewDir, setPreviewDir] = useState(0)
 
   // Expiration time & policy check
   const expiryInfo = useMemo(() => {
     return checkSessionExpiry(session.created_at, session.is_claimed)
   }, [session.created_at, session.is_claimed])
-
-  // Interactive Tour Steps (Editorial, calm, zero emojis, zero em-dashes)
-  const claimTourSteps: TourStep[] = useMemo(() => [
-    {
-      targetId: 'tour-claim-urgent-banner',
-      title: expiryInfo.isSubjectToPolicy
-        ? 'Batas Simpan Sementara 3 Hari'
-        : 'Tautkan Sesi ke Akun Sebooth',
-      description: expiryInfo.isSubjectToPolicy
-        ? 'Sesi foto dari kiosk photobooth disimpan sementara di server selama 3 hari. Masuk atau buat akun Sebooth agar seluruh foto tersimpan permanen di galeri kamu.'
-        : 'Sesi ini dibuat sebelum kebijakan retensi berlaku. Masuk atau buat akun Sebooth agar foto tersimpan rapi di profil kamu.',
-      badgeText: expiryInfo.isSubjectToPolicy
-        ? 'Fase 1: Informasi Simpan'
-        : 'Fase 1: Tautkan Akun',
-      icon: expiryInfo.isSubjectToPolicy ? <Clock className="w-5 h-5 text-amber-700" /> : <ShieldCheck className="w-5 h-5 text-emerald-700" />,
-      gesture: 'tap',
-      gestureLabel: 'Masuk atau Buat Akun'
-    },
-    {
-      targetId: 'tour-claim-bundle-btn',
-      title: 'Unduh Semua File ke Galeri',
-      description: 'Kamu dapat langsung mengunduh seluruh media (photostrip, live video, dan foto) tanpa harus masuk akun terlebih dahulu. File akan diunduh berurutan ke penyimpanan perangkat tanpa arsip ZIP.',
-      badgeText: 'Fase 2: Unduh Langsung',
-      icon: <Download className="w-5 h-5 text-slate-700" />,
-      gesture: 'tap',
-      gestureLabel: 'Unduh Semua Media'
-    },
-    {
-      targetId: 'tour-claim-tip-banner',
-      title: 'Simpan Cepat di Layar HP',
-      description: 'Pada browser ponsel, tekan dan tahan (long-press) foto yang diinginkan, lalu pilih simpan gambar untuk menyimpannya langsung ke galeri.',
-      badgeText: 'Fase 3: Simpan via HP',
-      icon: <Sparkles className="w-5 h-5 text-slate-700" />,
-      gesture: 'hold',
-      gestureLabel: 'Tahan Foto di Layar'
-    },
-    {
-      targetId: 'tour-claim-first-media',
-      title: 'Preview Detail Resolusi Penuh',
-      description: 'Ketuk media mana pun untuk membuka tampilan layar besar dan memeriksa ketajaman foto.',
-      badgeText: 'Fase 4: Pratinjau',
-      icon: <ImageIcon className="w-5 h-5 text-slate-700" />,
-      gesture: 'pinch',
-      gestureLabel: 'Ketuk untuk Detail'
-    },
-    {
-      targetId: 'tour-claim-share-btn',
-      title: 'Bagikan Tautan Sesi',
-      description: 'Gunakan tombol ini untuk membagikan tautan sesi ini kepada teman-teman atau menyalin link sesi.',
-      badgeText: 'Fase 5: Bagikan Tautan',
-      icon: <Share2 className="w-5 h-5 text-slate-700" />,
-      gesture: 'tap',
-      gestureLabel: 'Bagikan Tautan'
-    }
-  ], [expiryInfo.isSubjectToPolicy])
 
   // 1. Check auth
   useEffect(() => {
@@ -221,6 +166,27 @@ export default function AccessSessionClient({ session: initialSession, sessionId
     })
   }, [session.media, isMobile])
 
+  const previewMedia = previewIndex !== null ? mediaList[previewIndex] ?? null : null
+  const guide = useGuide(GUIDE_KEYS.access, { enabled: mediaList.length > 0 && !sheetOpen && previewIndex === null })
+  const stepPreview = (dir: number) => {
+    if (previewIndex === null || mediaList.length < 2) return
+    setPreviewDir(dir)
+    setPreviewIndex((previewIndex + dir + mediaList.length) % mediaList.length)
+  }
+
+  // Lightbox keyboard: arrows to browse, Esc to close
+  useEffect(() => {
+    if (previewIndex === null) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPreviewIndex(null)
+      else if (e.key === 'ArrowRight') stepPreview(1)
+      else if (e.key === 'ArrowLeft') stepPreview(-1)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [previewIndex, mediaList.length])
+
   // 4. Handle Claim
   const handleClaim = async () => {
     if (!user) {
@@ -279,8 +245,9 @@ export default function AccessSessionClient({ session: initialSession, sessionId
   }
 
   // 7. Bundle Download: Multiple Sequential Downloads directly to User's Gallery (No ZIP)
-  const handleDownloadBundle = async () => {
-    if (mediaList.length === 0 || isBundling) return
+  const handleDownloadBundle = async (): Promise<number> => {
+    if (mediaList.length === 0 || isBundling) return 0
+    let savedCount = 0
     setIsBundling(true)
     const total = mediaList.length
     setBundleProgress({ current: 0, total })
@@ -347,6 +314,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
             text: 'Simpan semua foto & video ke galeri perangkat.'
           })
           savedViaShare = true
+          savedCount = downloadedFiles.length
           showToast(`Berhasil menyimpan ${downloadedFiles.length} file ke galeri.`)
         } catch (shareErr: any) {
           if (shareErr.name !== 'AbortError') {
@@ -374,6 +342,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
             await new Promise(r => setTimeout(r, 450))
           }
         }
+        savedCount = downloadedFiles.length
         showToast(`Berhasil mengunduh ${downloadedFiles.length} file ke perangkat.`)
       }
     } catch (err) {
@@ -382,30 +351,20 @@ export default function AccessSessionClient({ session: initialSession, sessionId
     } finally {
       setIsBundling(false)
     }
+    return savedCount
   }
 
-  // Auto-download bundle if returning from review page
-  useEffect(() => {
-    if (shouldAutoDownload && mediaList.length > 0 && !isBundling) {
-      setShouldAutoDownload(false)
-      const timer = setTimeout(() => {
-        handleDownloadBundle()
-      }, 500)
-      return () => clearTimeout(timer)
-    }
-  }, [shouldAutoDownload, mediaList.length, isBundling])
-
-  // 8. Download Click Trigger: Gated by rating page if not reviewed yet
-  const handleDownloadClick = () => {
-    try {
-      const isReviewed = localStorage.getItem(`sebooth_reviewed_${sessionId}`) === 'true'
-      if (!isReviewed) {
-        sessionStorage.setItem(`sebooth_pending_download_${sessionId}`, 'true')
-        router.push(`/access/${sessionId}/review`)
-        return
+  // 8. Download first, ask later: once every file is saved, slide up the rating → Google → Instagram sheet
+  const handleDownloadClick = async () => {
+    const saved = await handleDownloadBundle()
+    if (saved > 0) {
+      setDownloadedCount(saved)
+      setJustSaved(true)
+      setTimeout(() => setJustSaved(false), 2800)
+      if (shouldAutoOpen(readFunnel(sessionId))) {
+        setTimeout(() => openSheet(), reduceMotion ? 0 : 600)
       }
-    } catch {}
-    handleDownloadBundle()
+    }
   }
 
   // Format date display
@@ -453,12 +412,23 @@ export default function AccessSessionClient({ session: initialSession, sessionId
     <div className="min-h-[100svh] bg-[#FAF8F5] text-slate-900 flex flex-col font-sans select-none antialiased">
 
       {/* ─── TOAST NOTIFICATION ─── */}
-      {toastMessage && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-slate-950/90 backdrop-blur-md text-white font-medium text-xs sm:text-sm shadow-xl border border-white/10 flex items-center gap-2 animate-fade-in pointer-events-none">
-          <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
+      <div role="status" aria-live="polite" className="fixed top-[68px] left-1/2 -translate-x-1/2 z-50 pointer-events-none w-[calc(100%-32px)] max-w-sm flex justify-center">
+        <AnimatePresence>
+          {toastMessage && (
+            <motion.div
+              key={toastMessage}
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -12, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, transition: { duration: 0.15 } }}
+              transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+              className="px-4 py-2.5 rounded-full bg-slate-950 text-white font-medium text-[14px] shadow-xl flex items-center gap-2"
+            >
+              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>{toastMessage}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* ─── TOP APP BAR ─── */}
       <header className="sticky top-0 z-40 w-full bg-[#FAF8F5]/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3.5 flex items-center justify-between">
@@ -499,7 +469,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
           {/* Interactive Tour / Help Button */}
           <button
             id="tour-claim-help-btn"
-            onClick={() => setIsTourOpen(true)}
+            onClick={guide.start}
             className="w-9 h-9 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-100/70 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
             title="Buka Panduan Penggunaan"
             aria-label="Panduan Penggunaan"
@@ -510,192 +480,41 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       </header>
 
       {/* ─── MAIN CONTENT CONTAINER ─── */}
-      <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-36 sm:pb-32 flex-1 flex flex-col gap-6">
+      <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-5 pb-36 sm:pb-32 flex-1 flex flex-col gap-5">
 
-        {/* ─── 1. TOP STATUS & RETENTION CALLOUT (Hanya tampil jika belum diklaim oleh user ini) ─── */}
-        {!isClaimedByMe && (
-          <section id="tour-claim-urgent-banner">
-            {alreadyClaimedByOther ? (
-            /* Claimed by Another User */
-            <div className="w-full rounded-2xl bg-slate-100/80 border border-slate-200 p-4 sm:p-5 flex items-start gap-3 text-slate-700 shadow-xs">
-              <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/80 text-slate-500 flex items-center justify-center shrink-0 mt-0.5">
-                <AlertTriangle className="w-4 h-4 stroke-[2]" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-slate-900">
-                  Sesi ini telah ditautkan ke akun lain
-                </h4>
-                <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-                  Sesi ini sudah diklaim oleh pemilik akun lain. Namun, kamu tetap dapat melihat dan mengunduh seluruh media di bawah kapan saja.
-                </p>
-              </div>
-            </div>
-          ) : !expiryInfo.isSubjectToPolicy ? (
-            /* Unclaimed Session BEFORE Policy Date: Permanent Safe Storage (Grandfathered Legacy Session) */
-            <div className="w-full rounded-2xl bg-white border border-slate-200 p-5 sm:p-6 flex flex-col gap-3.5 shadow-xs">
-              <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-semibold border border-slate-200/80">
-                    Penyimpanan Permanen
-                  </span>
-                  <span className="text-[11px] text-slate-500 font-medium">
-                    Bebas batas kedaluwarsa
-                  </span>
-                </div>
-                <span className="text-[11px] text-slate-400 font-medium">
-                  Arsip Sesi
-                </span>
-              </div>
-
-              <div>
-                <h3 className="text-sm sm:text-base font-semibold text-slate-900">
-                  Tautkan sesi ini ke akun Sebooth kamu
-                </h3>
-                <p className="mt-1 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Sesi ini dibuat sebelum kebijakan retensi 3 hari diberlakukan, sehingga file kamu aman. Masuk atau buat akun agar foto tersimpan rapi di galeri profil kamu selamanya.
-                </p>
-              </div>
-
-              <div className="pt-1 flex flex-col sm:flex-row items-center gap-2.5">
-                {user ? (
-                  <button
-                    onClick={handleClaim}
-                    disabled={isClaiming}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-                  >
-                    {isClaiming ? (
-                      <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        <span>Menautkan sesi...</span>
-                      </>
-                    ) : (
-                      <span>Tautkan ke Akun ({user.email?.split('@')[0]})</span>
-                    )}
-                  </button>
-                ) : (
-                  <div className="w-full flex flex-col sm:flex-row items-center gap-2">
-                    <button
-                      onClick={() => router.push(`/login?claim=${sessionId}`)}
-                      className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-medium transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-xs"
-                    >
-                      <span>Masuk & Tautkan Sesi</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => router.push(`/register?claim=${sessionId}`)}
-                      className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 text-xs font-medium border border-slate-200 transition-colors cursor-pointer flex items-center justify-center"
-                    >
-                      Buat Akun Baru
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : expiryInfo.isExpired ? (
-            /* Unclaimed Session AFTER Policy Date AND EXPIRED (> 3 days) */
-            <div className="w-full rounded-2xl bg-white border border-rose-200 p-5 sm:p-6 flex flex-col gap-3 shadow-xs">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 text-[11px] font-semibold border border-rose-200">
-                  Batas Simpan Sementara Berakhir
-                </span>
-              </div>
-              <div>
-                <h3 className="text-sm sm:text-base font-semibold text-slate-900">
-                  Sesi ini melewati batas simpan sementara 3 hari
-                </h3>
-                <p className="mt-1 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Sesi ini belum sempat diklaim ke akun Sebooth. Unduh softfile yang tersedia di bawah ini sekarang ke perangkat kamu sebelum pembersihan berkala server dilakukan.
-                </p>
-              </div>
-            </div>
-          ) : (
-            /* Unclaimed Session AFTER Policy Date AND ACTIVE (< 3 days): High-Contrast Restrained Urgency */
-            <div className="w-full rounded-2xl bg-[#FFFDF9] border border-amber-300/80 p-5 sm:p-6 flex flex-col gap-3.5 shadow-xs">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-100 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100/80 text-amber-900 text-[11px] font-semibold border border-amber-200">
-                    Penyimpanan Sementara
-                  </span>
-                  <span className="text-xs font-semibold text-amber-900">
-                    Sisa Waktu: {expiryInfo.timeString}
-                  </span>
-                </div>
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Batas Server: 3 Hari
-                </span>
-              </div>
-
-              <div>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
-                  Simpan sesi ini permanen ke akun Sebooth kamu
-                </h3>
-                <p className="mt-1 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Foto dan video sesi kiosk disimpan sementara selama 3 hari. Masuk atau buat akun sekarang agar seluruh file tersimpan selamanya di galeri akun kamu.
-                </p>
-              </div>
-
-              <div className="pt-1 flex flex-col sm:flex-row items-center gap-2.5">
-                {user ? (
-                  <button
-                    onClick={handleClaim}
-                    disabled={isClaiming}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-                  >
-                    {isClaiming ? (
-                      <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        <span>Menyimpan ke akun...</span>
-                      </>
-                    ) : (
-                      <span>Klaim ke Akun Saya ({user.email?.split('@')[0]})</span>
-                    )}
-                  </button>
-                ) : (
-                  <div className="w-full flex flex-col sm:flex-row items-center gap-2">
-                    <button
-                      onClick={() => router.push(`/login?claim=${sessionId}`)}
-                      className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-medium transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-xs"
-                    >
-                      <span>Masuk & Klaim Sesi</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => router.push(`/register?claim=${sessionId}`)}
-                      className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 text-xs font-medium border border-slate-200 transition-colors cursor-pointer flex items-center justify-center"
-                    >
-                      Daftar Akun Baru
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </section>
-        )}
-
-        {/* ─── 2. HERO SECTION & PRIMARY ACTIONS ─── */}
-        <section className="text-center pt-3 pb-2 flex flex-col items-center">
-          <span className="text-[11px] font-extrabold text-[#FF5500] uppercase tracking-widest mb-1.5">
-            KOLEKSI SOFTFILE
-          </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-bayon uppercase text-[#181B34] tracking-tight leading-none">
+        {/* ─── 1. HERO ─── */}
+        <section className="pt-1">
+          <h1 className="text-[30px] sm:text-[40px] font-black font-bayon uppercase text-[#181B34] tracking-tight leading-none">
             Foto & Video Sesi Kamu
           </h1>
-          <p className="mt-1.5 text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed font-medium">
+          <p className="mt-2 text-[14px] text-slate-600 leading-relaxed">
             {session.event_name || 'Sebooth Studio'} · {mediaList.length} media
             {formattedDate ? ` · ${formattedDate}` : ''}
           </p>
         </section>
 
+        {/* ─── 2. STORAGE STATUS (hidden once the session is in the user's own account) ─── */}
+        {!isClaimedByMe && (
+          <ClaimStatusStrip
+            id="tour-claim-urgent-banner"
+            variant={alreadyClaimedByOther ? 'other' : !expiryInfo.isSubjectToPolicy ? 'legacy' : expiryInfo.isExpired ? 'expired' : 'active'}
+            timeString={expiryInfo.timeString}
+            userName={user ? user.email?.split('@')[0] : null}
+            isClaiming={isClaiming}
+            onClaim={handleClaim}
+            onLogin={() => router.push(`/login?claim=${sessionId}`)}
+            onRegister={() => router.push(`/register?claim=${sessionId}`)}
+          />
+        )}
 
         {/* ─── 4. MEDIA GALLERY GRID ─── */}
         <section>
-          <div id="tour-claim-tip-banner" className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-3.5 px-0.5">
-            <h3 className="text-sm font-bold text-slate-900 tracking-tight">
-              Semua Media ({mediaList.length})
-            </h3>
-            <p className="text-[11px] text-slate-500 font-normal">
-              Ketuk foto untuk perbesar · Tahan (long-press) di layar HP untuk opsi simpan cepat
+          <div id="tour-claim-tip-banner" className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-3 px-0.5">
+            <h2 className="text-[16px] font-bold text-slate-900 tracking-tight">
+              Semua media ({mediaList.length})
+            </h2>
+            <p className="text-[13px] text-slate-500">
+              Ketuk untuk lihat penuh, tahan untuk simpan cepat di HP
             </p>
           </div>
 
@@ -705,10 +524,23 @@ export default function AccessSessionClient({ session: initialSession, sessionId
               const isStrip = item.type === 'strip'
 
               return (
-                <div
+                <motion.div
                   key={item.id}
                   id={idx === 0 ? 'tour-claim-first-media' : undefined}
-                  onClick={() => setPreviewMedia(item)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Lihat ${item.label}`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setPreviewIndex(idx)
+                    }
+                  }}
+                  initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '0px 0px -40px 0px' }}
+                  transition={{ duration: 0.36, delay: reduceMotion ? 0 : Math.min(idx, 8) * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                  onClick={() => setPreviewIndex(idx)}
                   className={`group relative rounded-xl overflow-hidden bg-slate-950 border border-slate-200 shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-center select-auto ${
                     isStrip ? 'aspect-[2/3] row-span-1' : 'aspect-[3/4]'
                   }`}
@@ -767,82 +599,135 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                       Lihat detail
                     </span>
                   </div>
-                </div>
+                </motion.div>
               )
             })}
           </div>
         </section>
 
+        {/* ─── 3. AFTER-DOWNLOAD ASKS (quiet, always reachable even if the sheet was dismissed) ─── */}
+        {mediaList.length > 0 && (
+          <section id="tour-claim-after-card" aria-labelledby="after-card-title" className="rounded-2xl bg-white px-4 py-4 sm:px-5">
+            <h2 id="after-card-title" className="text-[16px] font-bold text-slate-900 tracking-tight">
+              Suka hasilnya?
+            </h2>
+            <p className="mt-0.5 text-[14px] text-slate-600">Dua langkah kecil yang sangat membantu tim Sebooth.</p>
+            <div className="mt-3 flex flex-col divide-y divide-slate-100">
+              <button type="button" onClick={() => openSheet('rating')} className="min-h-[52px] flex items-center justify-between gap-3 text-left cursor-pointer group">
+                <span className="text-[15px] font-medium text-slate-900">Beri rating dan ulasan Google</span>
+                <ArrowRight className="w-4 h-4 text-slate-400 transition-transform group-hover:translate-x-1" />
+              </button>
+              <button type="button" onClick={() => openSheet('instagram')} className="min-h-[52px] flex items-center justify-between gap-3 text-left cursor-pointer group">
+                <span className="text-[15px] font-medium text-slate-900">Follow @{INSTAGRAM_HANDLE} di Instagram</span>
+                <ArrowRight className="w-4 h-4 text-slate-400 transition-transform group-hover:translate-x-1" />
+              </button>
+            </div>
+          </section>
+        )}
+
       </main>
 
-      {/* ─── 5. LIGHTBOX DETAIL PREVIEW MODAL ─── */}
-      {previewMedia && (
-        <div
-          onClick={() => setPreviewMedia(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-lg bg-slate-950 rounded-2xl overflow-hidden border border-white/15 shadow-2xl flex flex-col items-center"
+      {/* ─── 5. LIGHTBOX: swipe or arrow keys to browse ─── */}
+      <AnimatePresence>
+        {previewMedia && previewIndex !== null && (
+          <motion.div
+            key="lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={previewMedia.label}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            onClick={() => setPreviewIndex(null)}
+            className="fixed inset-0 z-50 flex flex-col bg-slate-950/95"
           >
-            {/* Top Modal Controls */}
-            <div className="w-full flex items-center justify-between p-3.5 bg-slate-900/90 border-b border-white/10 z-20">
-              <span className="text-xs font-semibold text-white/90 tracking-wide uppercase">
-                {previewMedia.label}
+            <div onClick={(e) => e.stopPropagation()} className="w-full flex items-center justify-between px-4 py-3 text-white">
+              <span className="text-[14px] font-medium tabular-nums">
+                {previewMedia.label} · {previewIndex + 1}/{mediaList.length}
               </span>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={(e) => {
-                    const idx = mediaList.findIndex(m => m.url === previewMedia.url)
-                    handleDownloadSingle(e, previewMedia, idx >= 0 ? idx : 0)
-                  }}
-                  className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-900 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                  onClick={(e) => handleDownloadSingle(e, previewMedia, previewIndex)}
+                  className="min-h-[40px] px-4 rounded-full bg-white text-slate-900 text-[14px] font-semibold flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
                 >
-                  <Download className="w-3.5 h-3.5 stroke-[2.2]" />
+                  <Download className="w-4 h-4 stroke-[2.2]" />
                   <span>Unduh</span>
                 </button>
                 <button
-                  onClick={() => setPreviewMedia(null)}
-                  className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+                  id="tour-lightbox-close"
+                  onClick={() => setPreviewIndex(null)}
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
                   aria-label="Tutup preview"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
 
-            {/* Media Body */}
-            <div className="relative w-full max-h-[75vh] flex items-center justify-center p-3 overflow-hidden">
-              {previewMedia.type === 'video' ? (
-                <video
-                  src={previewMedia.url}
-                  autoPlay
-                  controls
-                  playsInline
-                  className="max-h-[70vh] w-auto max-w-full rounded-lg object-contain select-auto pointer-events-auto"
-                />
-              ) : (
-                <img
-                  src={previewMedia.displayUrl || previewMedia.url}
-                  alt={previewMedia.label}
-                  className="max-h-[70vh] w-auto max-w-full rounded-lg object-contain select-auto pointer-events-auto"
-                  style={{ WebkitTouchCallout: 'default' }}
-                  onError={(e) => {
-                    if (previewMedia.url && e.currentTarget.src !== previewMedia.url) {
-                      e.currentTarget.src = previewMedia.url
-                    }
+            <div className="relative flex-1 min-h-0 flex items-center justify-center overflow-hidden px-3" onClick={(e) => e.stopPropagation()}>
+              <AnimatePresence initial={false} mode="popLayout">
+                <motion.div
+                  key={previewMedia.id}
+                  id="tour-lightbox-media"
+                  initial={reduceMotion ? { opacity: 0 } : { x: previewDir * 80, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={reduceMotion ? { opacity: 0 } : { x: previewDir * -80, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 360, damping: 34 }}
+                  drag={mediaList.length > 1 && previewMedia.type !== 'video' ? 'x' : false}
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.5}
+                  onDragEnd={(_, info) => {
+                    if (info.offset.x < -70 || info.velocity.x < -500) stepPreview(1)
+                    else if (info.offset.x > 70 || info.velocity.x > 500) stepPreview(-1)
                   }}
-                />
+                  className="max-h-full max-w-full flex items-center justify-center touch-pan-y"
+                >
+                  {previewMedia.type === 'video' ? (
+                    <video src={previewMedia.url} autoPlay controls playsInline className="max-h-[78svh] w-auto max-w-full rounded-lg object-contain" />
+                  ) : (
+                    <img
+                      src={previewMedia.displayUrl || previewMedia.url}
+                      alt={previewMedia.label}
+                      draggable={false}
+                      className="max-h-[78svh] w-auto max-w-full rounded-lg object-contain select-auto"
+                      style={{ WebkitTouchCallout: 'default' }}
+                      onError={(e) => {
+                        if (previewMedia.url && e.currentTarget.src !== previewMedia.url) {
+                          e.currentTarget.src = previewMedia.url
+                        }
+                      }}
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+
+              {mediaList.length > 1 && (
+                <>
+                  <button
+                    onClick={() => stepPreview(-1)}
+                    aria-label="Media sebelumnya"
+                    className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white items-center justify-center cursor-pointer"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => stepPreview(1)}
+                    aria-label="Media berikutnya"
+                    className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white items-center justify-center cursor-pointer"
+                  >
+                    <ChevronLeft className="w-5 h-5 rotate-180" />
+                  </button>
+                </>
               )}
             </div>
 
-            {/* Bottom Hint */}
-            <div className="w-full p-3 bg-slate-900/90 border-t border-white/10 text-center text-slate-400 text-[11px]">
-              Tahan (long-press) foto untuk opsi simpan di HP, atau gunakan tombol Unduh di atas
-            </div>
-          </div>
-        </div>
-      )}
+            <p onClick={(e) => e.stopPropagation()} className="px-4 py-3 text-center text-white/60 text-[13px]">
+              {mediaList.length > 1 ? 'Geser kiri atau kanan untuk media lain. ' : ''}Tahan foto untuk simpan di HP.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ─── FOOTER ─── */}
       <footer className="text-center py-6 mt-auto border-t border-slate-200/80 bg-white mb-32 sm:mb-28">
@@ -868,19 +753,26 @@ export default function AccessSessionClient({ session: initialSession, sessionId
           onClick={handleDownloadClick}
           disabled={isBundling || mediaList.length === 0}
           loading={isBundling}
+          progress={bundleProgress}
+          done={justSaved}
           title="Download All Photo"
           titleAttr="Download All Photo"
           ariaLabel="Download All Photo"
         />
       </aside>
 
-      {/* Interactive Phase-by-Phase Tour */}
-      <InteractiveTour
-        steps={claimTourSteps}
-        isOpen={isTourOpen}
-        onClose={() => setIsTourOpen(false)}
-        tourKey="hasSeenClaimTour_v1"
+      {/* Post-download rating → Google Review → Instagram */}
+      <ReviewSheet
+        open={sheetOpen}
+        sessionId={sessionId}
+        eventName={session.event_name}
+        initialStage={sheetStage}
+        doneNote={downloadedCount ? `${downloadedCount} file sudah tersimpan di perangkatmu.` : undefined}
+        onClose={() => setSheetOpen(false)}
       />
+
+      {/* Interactive guide: spotlight + gesture, "do it to continue" steps */}
+      <Guide steps={ACCESS_GUIDE} open={guide.open} onClose={guide.close} storageKey={GUIDE_KEYS.access} />
 
     </div>
   )

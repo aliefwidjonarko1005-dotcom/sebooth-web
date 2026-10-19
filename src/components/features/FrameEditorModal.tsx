@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, Download, Loader2 } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { MediaItem } from "@/types/database";
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 const FRAMES = [
     { id: "classic", name: "Classic White", url: "/frames/classic.svg" },
@@ -183,7 +184,7 @@ export function FrameEditorModal({ isOpen, onClose, rawPhotos }: FrameEditorModa
                         <div className="flex-1 bg-gray-100 flex items-center justify-center p-8 relative min-h-[500px]">
                             {isRendering ? (
                                 <div className="flex flex-col items-center text-gray-500">
-                                    <Loader2 className="w-10 h-10 animate-spin mb-4" />
+                                    <SeboothLoader variant="block" theme="white" label="Menerapkan frame" className="mb-4 w-44" />
                                     <p className="font-bold">Menerapkan Frame...</p>
                                 </div>
                             ) : (

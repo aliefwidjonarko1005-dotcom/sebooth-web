@@ -3,8 +3,9 @@
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { UserPlus, Mail, Lock, Loader2, ArrowRight, User, Phone, Instagram, Compass, ChevronDown } from 'lucide-react'
+import { UserPlus, Mail, Lock, ArrowRight, User, Phone, Instagram, Compass, ChevronDown } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 function RegisterContent() {
   const router = useRouter()
@@ -242,7 +243,7 @@ function RegisterContent() {
             disabled={loading}
             className="flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 py-4 font-black text-white shadow-xl transition-all hover:scale-[1.02] active:scale-95 disabled:bg-gray-400"
           >
-            {loading ? <Loader2 className="h-6 w-6 animate-spin" /> : (
+            {loading ? <SeboothLoader variant="mini" className="h-6 w-6" /> : (
               <>
                 {claimId ? 'Daftar & Klaim Foto' : 'Daftar Sekarang'} <ArrowRight className="h-5 w-5" />
               </>
@@ -266,11 +267,7 @@ function RegisterContent() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-fluid-gradient">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
-      </div>
-    }>
+    <Suspense fallback={<SeboothLoader theme="light" label="Memuat halaman daftar" />}>
       <RegisterContent />
     </Suspense>
   )

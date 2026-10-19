@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { hasValidWebhookSecret, rateLimit } from "@/lib/apiSecurity";
 
 export const dynamic = "force-dynamic";
-
-const WEBHOOK_SECRET = process.env.QUEUE_WEBHOOK_SECRET;
 
 /**
  * POST /api/queue/generate-session-token
@@ -22,9 +21,11 @@ const WEBHOOK_SECRET = process.env.QUEUE_WEBHOOK_SECRET;
  * }
  */
 export async function POST(req: NextRequest) {
-    // Validate webhook secret
-    const secret = req.headers.get("x-webhook-secret");
-    if (WEBHOOK_SECRET && secret !== WEBHOOK_SECRET) {
+    const limited = rateLimit(req, "kiosk-session-token", 120, 60_000);
+    if (limited) return limited;
+
+    // Fails closed: without QUEUE_WEBHOOK_SECRET configured, nobody can call this
+    if (!hasValidWebhookSecret(req)) {
         return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 

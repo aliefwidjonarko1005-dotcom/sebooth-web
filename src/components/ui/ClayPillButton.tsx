@@ -1,7 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Loader2, Download } from 'lucide-react'
+import { Download, Check } from 'lucide-react'
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 interface ClayPillButtonProps {
   id?: string
@@ -12,6 +13,10 @@ interface ClayPillButtonProps {
   className?: string
   titleAttr?: string
   ariaLabel?: string
+  /** Live bundle progress while loading */
+  progress?: { current: number; total: number }
+  /** Briefly true right after every file was saved */
+  done?: boolean
 }
 
 /**
@@ -33,8 +38,11 @@ export default function ClayPillButton({
   title = 'Download All Photo',
   className = '',
   titleAttr = 'Download All Photo',
-  ariaLabel = 'Download All Photo'
+  ariaLabel = 'Download All Photo',
+  progress,
+  done = false
 }: ClayPillButtonProps) {
+  const pct = progress && progress.total > 0 ? progress.current / progress.total : 0
   return (
     <button
       id={id}
@@ -69,19 +77,33 @@ export default function ClayPillButton({
       }}
       title={titleAttr}
       aria-label={ariaLabel}
+      aria-busy={loading}
     >
       {/* ─── INLINE WHITE ICON (Clean stroke matching '+' in Reference Image 2) ─── */}
       <div className="relative z-10 flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
-        {loading ? (
-          <Loader2 className="w-5 h-5 text-white animate-spin stroke-[2]" />
+        {loading && progress && progress.total > 0 ? (
+          <svg className="w-[22px] h-[22px] -rotate-90" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9.5" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2.5" />
+            <circle cx="12" cy="12" r="9.5" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={59.7} strokeDashoffset={59.7 * (1 - pct)} style={{ transition: 'stroke-dashoffset 300ms ease-out' }} />
+          </svg>
+        ) : loading ? (
+          <SeboothLoader variant="mini" className="w-5 h-5 text-white" />
+        ) : done ? (
+          <Check className="w-[19px] h-[19px] text-white stroke-[2.6]" />
         ) : (
           <Download className="w-[19px] h-[19px] text-white stroke-[2.1]" />
         )}
       </div>
 
       {/* ─── PURE WHITE TYPOGRAPHY (Single-Line "Download All Photo") ─── */}
-      <span className="relative z-10 text-[16px] font-medium text-white tracking-normal leading-none select-none">
-        {loading ? 'Downloading...' : title}
+      <span className="relative z-10 text-[16px] font-medium text-white tracking-normal leading-none select-none tabular-nums">
+        {loading
+          ? progress && progress.total > 0
+            ? `Downloading ${progress.current}/${progress.total}`
+            : 'Downloading...'
+          : done
+          ? 'Saved to device'
+          : title}
       </span>
     </button>
   )

@@ -7,17 +7,32 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  X, LayoutGrid, Download, MoreHorizontal, Share2,
-  Check, QrCode, ArrowRight, Camera, LogOut,
-  ChevronLeft, ChevronRight, Loader2, FolderDown, Package,
-  HelpCircle, Sparkles, Image as ImageIcon
+  X,
+  LayoutGrid,
+  Download,
+  MoreHorizontal,
+  Share2,
+  Check,
+  QrCode,
+  ArrowRight,
+  Camera,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  FolderDown,
+  Package,
+  HelpCircle,
+  Sparkles,
+  Image as ImageIcon,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 import { SessionData } from '@/types/database'
 import PhotoDirectGestureGuide from '@/components/ui/PhotoDirectGestureGuide'
 import DesktopGuideModal from '@/components/ui/DesktopGuideModal'
-import InteractiveTour, { TourStep } from '@/components/ui/InteractiveTour'
+import Guide from '@/components/guide/Guide'
+import { PROFILE_GUIDE, GUIDE_KEYS } from '@/config/guides'
 import { LiquidGlassDock } from '@/components/ui/LiquidGlassDock'
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 export interface SessionMediaItem {
   id: string
@@ -249,39 +264,6 @@ export default function MyPhotosPage() {
     }
   }
 
-  // Interactive Spotlight Tour steps for desktop
-  const profileTourSteps: TourStep[] = useMemo(() => [
-    {
-      targetId: 'tour-profile-session-card',
-      title: 'Tumpukan Foto Polaroid (3D Focus View)',
-      description: 'Ini adalah tumpukan foto polaroid sesi aktif kamu. Klik foto untuk ganti pose (shuffle), atau geser mouse (drag) / tekan panah keyboard [←] [→] untuk berpindah sesi.',
-      badgeText: 'KONTROL UTAMA',
-      icon: <Sparkles className="w-5 h-5 text-orange-500" />,
-      gesture: 'swipe',
-      gestureLabel: 'Drag Mouse / Panah Keyboard'
-    },
-    {
-      targetId: 'tour-profile-mode-switcher',
-      title: 'Mode Rak Album (Bookshelf View)',
-      description: 'Klik tombol 4-kotak ini untuk membuka tampilan rak album seluruh sesi kamu dengan animasi zoom out ala Apple Photos.',
-      badgeText: 'TAMPILAN GRID',
-      icon: <LayoutGrid className="w-5 h-5 text-orange-500" />
-    },
-    {
-      targetId: 'tour-profile-bundle-btn',
-      title: 'Simpan Semua ke Galeri (HD)',
-      description: 'Download seluruh file dalam sesi ini (Photostrip, Live Video, GIF, dan Foto Master) secara beruntun dan cepat dalam kualitas 100% original.',
-      badgeText: 'DOWNLOAD CEPAT',
-      icon: <Download className="w-5 h-5 text-emerald-500" />
-    },
-    {
-      targetId: 'tour-profile-help-btn',
-      title: 'Pusat Bantuan & Shortcut',
-      description: 'Klik tombol tanda tanya kapan saja untuk melihat shortcut keyboard dan panduan navigasi desktop lengkap.',
-      badgeText: 'BANTUAN',
-      icon: <HelpCircle className="w-5 h-5 text-orange-500" />
-    }
-  ], [])
 
   // Universal Help Opener: Routes cleanly to Desktop Guide on desktop (>=768px) and Direct Hand Gesture Guide on mobile (<768px)
   const handleOpenHelp = () => {
@@ -964,25 +946,9 @@ export default function MyPhotosPage() {
 
   // ── LOADING STATE ──
   if (loading) {
-    return (
-      <div className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-slate-900 flex flex-col items-center justify-center font-sans">
-        <div className="flex flex-col items-center gap-3.5">
-          <div className="relative w-10 h-10 flex items-center justify-center">
-            <Loader2
-              className="w-10 h-10 text-orange-500 animate-spin"
-              style={{
-                animation: 'spin 0.85s linear infinite',
-                transformOrigin: 'center center'
-              }}
-            />
-          </div>
-          <span className="text-xs font-semibold text-slate-500 tracking-wide">
-            Memuat galeri foto kamu...
-          </span>
-        </div>
-      </div>
-    )
+    return <SeboothLoader theme="white" label="Memuat galeri foto kamu" />;
   }
+
 
   // ── EMPTY STATE (LOGGED IN USER WITHOUT SESSIONS) ──
   if (sessionsList.length === 0) {
@@ -1016,7 +982,7 @@ export default function MyPhotosPage() {
               title="Keluar / Log Out"
             >
               {isLoggingOut ? (
-                <Loader2 className="w-5 h-5 animate-spin text-rose-500" />
+                <SeboothLoader variant="mini" className="w-5 h-5 text-rose-500" />
               ) : (
                 <LogOut className="w-[20px] h-[20px] stroke-[2.2]" />
               )}
@@ -1613,10 +1579,7 @@ export default function MyPhotosPage() {
                   : 'Download',
                 disabled: isBundling,
                 icon: isBundling ? (
-                  <Loader2
-                    className="w-5 h-5 animate-spin text-orange-400"
-                    style={{ animation: 'spin 0.85s linear infinite', transformOrigin: 'center center' }}
-                  />
+                  <SeboothLoader variant="mini" label="Menyiapkan unduhan" className="w-5 h-5 text-orange-400" />
                 ) : (
                   <Download className="w-5 h-5 stroke-[1.8]" />
                 ),
@@ -1645,7 +1608,7 @@ export default function MyPhotosPage() {
                 tone: 'danger',
                 disabled: isLoggingOut,
                 icon: isLoggingOut ? (
-                  <Loader2 className="w-5 h-5 animate-spin text-rose-400" />
+                  <SeboothLoader variant="mini" className="w-5 h-5 text-rose-400" />
                 ) : (
                   <LogOut className="w-5 h-5 stroke-[1.8]" />
                 ),
@@ -1885,11 +1848,12 @@ export default function MyPhotosPage() {
       />
 
       {/* Desktop Interactive Spotlight Tour */}
-      <InteractiveTour
-        steps={profileTourSteps}
-        isOpen={isInteractiveTourOpen}
+      <Guide
+        steps={PROFILE_GUIDE}
+        open={isInteractiveTourOpen}
         onClose={() => setIsInteractiveTourOpen(false)}
-        tourKey="hasSeenProfileTour_v1"
+        storageKey={GUIDE_KEYS.profile}
+        variant="brutal"
       />
 
     </div>

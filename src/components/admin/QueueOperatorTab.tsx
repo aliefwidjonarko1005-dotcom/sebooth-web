@@ -3,13 +3,24 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    Plus, Play, SkipForward, CheckCircle, RotateCcw,
-    QrCode, Loader2, Users, Clock, Zap, Monitor, X, Power,
+  Plus,
+  Play,
+  SkipForward,
+  CheckCircle,
+  RotateCcw,
+  QrCode,
+  Users,
+  Clock,
+  Zap,
+  Monitor,
+  X,
+  Power,
 } from "lucide-react";
 import QueueQrCode from "./QueueQrCode";
 import type { QueueEvent, QueueTicket } from "@/types/database";
 import QueueStatusBadge from "../queue/QueueStatusBadge";
 import { createQueueEvent, toggleQueueEventActive } from "@/lib/queue/queueActions";
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 interface QueueStatus {
     event: QueueEvent | null;
@@ -197,7 +208,7 @@ export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
                         </div>
                         <button onClick={handleCreateEvent} disabled={creating}
                             className="w-full bg-[#0F3D2E] text-white font-bold text-sm rounded-xl py-2.5 flex items-center justify-center gap-2 hover:bg-[#195240] transition-all disabled:opacity-60">
-                            {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                            {creating ? <SeboothLoader variant="mini" className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                             Buat Event
                         </button>
                     </motion.div>
@@ -206,7 +217,7 @@ export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
 
             {/* Events Selector */}
             {loading ? (
-                <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-[#0F3D2E]" /></div>
+                <div className="flex justify-center py-8"><SeboothLoader variant="block" theme="white" label="Memuat antrean" className="w-36" /></div>
             ) : events.length === 0 ? (
                 <div className="bg-[#F9F9F9] border border-[#1A1A1A]/10 rounded-2xl p-8 text-center">
                     <Users className="w-8 h-8 text-[#1A1A1A]/20 mx-auto mb-2" />
@@ -277,7 +288,7 @@ export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
                                 disabled={actionLoading === "call_next" || status.totalWaiting === 0}
                                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0F3D2E] text-white text-sm font-bold hover:bg-[#195240] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {actionLoading === "call_next" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                                {actionLoading === "call_next" ? <SeboothLoader variant="mini" className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                                 Panggil Berikutnya
                             </button>
                             <button
@@ -408,7 +419,7 @@ function TicketRow({
                         className="p-2 rounded-lg bg-green-500/10 text-green-600 hover:bg-green-500/20 transition-all disabled:opacity-50"
                         title="Selesai"
                     >
-                        {isLoading("complete") ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />}
+                        {isLoading("complete") ? <SeboothLoader variant="mini" className="w-3.5 h-3.5" /> : <CheckCircle className="w-3.5 h-3.5" />}
                     </button>
                 )}
                 {ticket.status === "waiting" && (
@@ -418,7 +429,7 @@ function TicketRow({
                         className="p-2 rounded-lg bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition-all disabled:opacity-50"
                         title="Reset ke menunggu"
                     >
-                        {isLoading("reset") ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
+                        {isLoading("reset") ? <SeboothLoader variant="mini" className="w-3.5 h-3.5" /> : <RotateCcw className="w-3.5 h-3.5" />}
                     </button>
                 )}
                 <button
@@ -427,7 +438,7 @@ function TicketRow({
                     className="p-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all disabled:opacity-50"
                     title="Skip / Expired"
                 >
-                    {isLoading("skip") ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <SkipForward className="w-3.5 h-3.5" />}
+                    {isLoading("skip") ? <SeboothLoader variant="mini" className="w-3.5 h-3.5" /> : <SkipForward className="w-3.5 h-3.5" />}
                 </button>
             </div>
         </div>

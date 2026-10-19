@@ -21,10 +21,10 @@ import {
   Zap,
   ChevronRight,
   ExternalLink,
-  Loader2,
-  Search
+  Search,
 } from 'lucide-react'
 import type { InsightsData } from '@/app/api/admin/insights/route'
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 interface AnalyticsInsightsTabProps {
   onInspectSession?: (sessionId: string) => void
@@ -76,7 +76,7 @@ export default function AnalyticsInsightsTab({
   if (loading && !refreshing) {
     return (
       <div className="bg-white rounded-3xl border border-[#1A1A1A]/10 p-16 text-center space-y-4 shadow-xs">
-        <Loader2 className="w-8 h-8 animate-spin mx-auto text-[#0F3D2E]" />
+        <SeboothLoader variant="block" theme="white" label="Menganalisis performa website" className="mx-auto w-40" />
         <div>
           <p className="text-base font-extrabold text-[#1A1A1A]">Menganalisis Performa Website...</p>
           <p className="text-xs text-[#1A1A1A]/50 mt-1">Mengumpulkan data sesi, klaim pengguna, media, dan antrean photobooth.</p>
@@ -152,7 +152,7 @@ export default function AnalyticsInsightsTab({
               disabled={refreshing}
               className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs backdrop-blur-sm border border-white/15 transition-all flex items-center gap-2 disabled:opacity-50"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+              {refreshing ? <SeboothLoader variant="mini" className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
               {refreshing ? 'Memperbarui...' : 'Segarkan Data'}
             </button>
           </div>

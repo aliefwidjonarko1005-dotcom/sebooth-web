@@ -160,14 +160,10 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
   return (
     <section 
       id="product" 
-      className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-gray-900 overflow-hidden select-none flex flex-col justify-between items-center px-3 sm:px-8 lg:px-16 pt-16 sm:pt-20 md:pt-22 pb-2 sm:pb-3"
+      className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-[#eef2ff] text-gray-900 overflow-hidden select-none flex flex-col justify-between items-center px-3 sm:px-8 lg:px-16 pt-16 sm:pt-20 md:pt-22 pb-2 sm:pb-3"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* ── ABSTRACT BLUR BLOBS (DESKTOP ONLY FOR 120FPS MOBILE) ── */}
-      <div className="hidden sm:block absolute top-[-5%] left-[10%] w-[32rem] h-[32rem] rounded-full bg-[#FF4500]/20 blur-[120px] pointer-events-none z-0" />
-      <div className="hidden sm:block absolute top-1/4 right-[-5%] w-[45rem] h-[45rem] rounded-full bg-[#FF5E00]/25 blur-[150px] pointer-events-none z-0" />
-      <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[35rem] h-[35rem] rounded-full bg-[#3B82F6]/20 blur-[130px] pointer-events-none z-0" />
 
       {/* ── PERFECTLY CENTERED VERTICAL & HORIZONTAL CONTENT WRAPPER ── */}
       <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col items-center justify-between flex-1 min-h-0 text-center gap-1 sm:gap-2 my-auto">
@@ -322,7 +318,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="w-full rounded-full py-1.5 xs:py-2 sm:py-2.5 px-3 sm:px-4 bg-gradient-to-r from-[#FF5E00] via-[#FF3900] to-[#551286] text-white font-extrabold text-xs sm:text-sm text-center tracking-wide border border-white/25 shadow-[0_4px_16px_rgba(255,94,0,0.35)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer pointer-events-auto"
+                        className="w-full rounded-full py-1.5 xs:py-2 sm:py-2.5 px-3 sm:px-4 bg-[#FF4500] hover:bg-[#e63e00] text-white font-extrabold text-xs sm:text-sm text-center tracking-wide border border-white/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer pointer-events-auto"
                       >
                         <span>{prod.ctaText}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -431,7 +427,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                     href={`https://wa.me/6285713899441?text=${encodeURIComponent(selectedProduct.waText)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full rounded-full py-2.5 sm:py-3.5 px-4 sm:px-6 bg-gradient-to-r from-[#FF5E00] via-[#FF3900] to-[#551286] text-white font-bold text-xs xs:text-sm sm:text-base text-center tracking-wide border border-white/20 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                    className="w-full rounded-full py-2.5 sm:py-3.5 px-4 sm:px-6 bg-[#FF4500] hover:bg-[#e63e00] text-white font-bold text-xs xs:text-sm sm:text-base text-center tracking-wide border border-white/20 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
                   >
                     <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
                     <span>Mau ini dong (Konsultasi WA)</span>

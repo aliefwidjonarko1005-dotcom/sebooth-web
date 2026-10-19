@@ -18,6 +18,9 @@ Before executing tasks, classify the user request and load only the relevant fil
 - **Image Optimizer & Fallback**: `src/app/api/image/route.ts`
 - **Download Proxy**: `src/app/api/download/route.ts`
 - **Server Actions**: `src/app/actions.ts` (`claimSession`)
+- **Post-Download Funnel (rating → Google Review → Instagram)**: `src/components/features/review/` (`ReviewSheet`, `ReviewFunnel`, `ExperienceDial`), state in `src/lib/reviewFunnel.ts`
+- **Storage Status Strip**: `src/components/features/ClaimStatusStrip.tsx`
+- **Social Links (IG handle, Google Review URL, WhatsApp)**: `src/config/social.ts`
 
 ## 3. Digital Queue System (Auth-Gated)
 - **Public Queue Flow**: `src/app/queue/[eventId]/page.tsx`
@@ -45,3 +48,7 @@ Before executing tasks, classify the user request and load only the relevant fil
 - **Analytics & Insights**: `src/components/admin/AnalyticsInsightsTab.tsx`
 - **Frame CMS**: `src/components/admin/FrameManagementTab.tsx`
 - **News CMS**: `src/components/admin/NewsManagementTab.tsx`
+
+## 6. Interactive Guides (all pages)
+- **Engine**: `src/components/guide/Guide.tsx` (spotlight + animated gesture, `advanceOn: 'click'` steps), `useGuide.ts`, `GuideLauncher.tsx`, `GuideGesture.tsx`
+- **Steps per page**: `src/config/guides.ts` (bump `GUIDE_KEYS` version when steps change)

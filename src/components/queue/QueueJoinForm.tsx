@@ -3,8 +3,13 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Loader2, Ticket, CheckSquare, User, Phone, Mail } from "lucide-react";
+import { ArrowRight, Ticket, CheckSquare, User, Phone, Mail } from "lucide-react";
 import type { QueueEvent } from "@/types/database";
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
+import Guide from "@/components/guide/Guide";
+import GuideLauncher from "@/components/guide/GuideLauncher";
+import { useGuide } from "@/components/guide/useGuide";
+import { QUEUE_JOIN_GUIDE, GUIDE_KEYS } from "@/config/guides";
 
 interface QueueUserData {
     id: string;
@@ -22,6 +27,7 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState("");
+    const guide = useGuide(GUIDE_KEYS.queueJoin);
 
     async function handleSubmit() {
         setError("");
@@ -96,7 +102,7 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
                     </div>
 
                     {/* User Data Preview */}
-                    <div className="space-y-4 mb-8">
+                    <div id="guide-join-account" className="space-y-4 mb-8">
                         <div className="flex items-center gap-4 border-b border-gray-200 pb-3">
                             <User className="w-5 h-5 text-primary shrink-0" />
                             <div className="flex-1 min-w-0">
@@ -135,13 +141,14 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
 
                     {/* Submit */}
                     <button
+                        id="guide-join-submit"
                         type="button"
                         onClick={handleSubmit}
                         disabled={isPending}
                         className="w-full bg-secondary text-white font-black text-[0.9rem] uppercase tracking-wider border-4 border-black hard-shadow-black py-4 flex items-center justify-center gap-3 transition-all disabled:opacity-60 disabled:cursor-not-allowed active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
                     >
                         {isPending ? (
-                            <><Loader2 className="w-5 h-5 animate-spin" /> MEMPROSES...</>
+                            <><SeboothLoader variant="mini" className="w-5 h-5" /> MEMPROSES...</>
                         ) : (
                             <><Ticket className="w-5 h-5" /> AMBIL NOMOR <ArrowRight className="w-5 h-5" /></>
                         )}
@@ -158,6 +165,9 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
                     NOMOR ANTREAN TIDAK BISA DIPINDAHTANGANKAN.<br/>HADIR SAAT DIPANGGIL YA!
                 </motion.p>
             </motion.div>
+
+            <GuideLauncher onClick={guide.start} variant="brutal" className="fixed bottom-4 right-4 z-40" />
+            <Guide steps={QUEUE_JOIN_GUIDE} open={guide.open} onClose={guide.close} storageKey={GUIDE_KEYS.queueJoin} variant="brutal" />
         </div>
     );
 }

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { fetchSiteContent } from "@/lib/serverSupabase";
 import { parseJsonContent } from "@/lib/useSiteContent";
 import { FramesGalleryClient } from "@/components/sections/FramesGalleryClient";
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 export const revalidate = 60;
 
@@ -27,11 +28,7 @@ export default async function FramesPage() {
     );
 
     return (
-        <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-transparent">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            </div>
-        }>
+        <Suspense fallback={<SeboothLoader label="Memuat koleksi frame" />}>
             <FramesGalleryClient initialFrames={frames} />
         </Suspense>
     );

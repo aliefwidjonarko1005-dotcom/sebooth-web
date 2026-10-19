@@ -3,10 +3,9 @@ import { createClient } from "@supabase/supabase-js";
 import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
 import { sendPushToUser } from "@/lib/queue/pushSender";
+import { hasValidWebhookSecret, rateLimit } from "@/lib/apiSecurity";
 
 export const dynamic = "force-dynamic";
-
-const WEBHOOK_SECRET = process.env.QUEUE_WEBHOOK_SECRET;
 
 function createServiceClient() {
     return createClient(
@@ -28,9 +27,11 @@ function createServiceClient() {
  * }
  */
 export async function POST(req: NextRequest) {
-    // Validate webhook secret
-    const secret = req.headers.get("x-webhook-secret");
-    if (WEBHOOK_SECRET && secret !== WEBHOOK_SECRET) {
+    const limited = rateLimit(req, "queue-webhook", 120, 60_000);
+    if (limited) return limited;
+
+    // Fails closed: without QUEUE_WEBHOOK_SECRET configured, nobody can call this
+    if (!hasValidWebhookSecret(req)) {
         return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 

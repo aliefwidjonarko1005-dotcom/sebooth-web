@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 import {
   Users,
   Camera,
@@ -18,9 +19,8 @@ import {
   Calendar,
   Layers,
   Sparkles,
-  Loader2,
   XCircle,
-  ArrowUpDown
+  ArrowUpDown,
 } from 'lucide-react'
 
 interface SessionMini {
@@ -227,7 +227,7 @@ export default function UserClaimsMonitorTab({ onInspectSession }: UserClaimsMon
             disabled={refreshing || loading}
             className="self-start sm:self-auto text-xs font-bold text-[#0F3D2E] hover:text-[#185340] bg-[#0F3D2E]/5 hover:bg-[#0F3D2E]/10 px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 disabled:opacity-50"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+            {refreshing ? <SeboothLoader variant="mini" className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
             Refresh Data
           </button>
         </div>
@@ -285,7 +285,7 @@ export default function UserClaimsMonitorTab({ onInspectSession }: UserClaimsMon
       <div className="space-y-3">
         {loading && !refreshing ? (
           <div className="bg-white rounded-2xl border border-[#1A1A1A]/10 p-12 text-center text-[#1A1A1A]/40">
-            <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-[#0F3D2E]" />
+            <SeboothLoader variant="block" theme="white" label="Memuat data klaim pengguna" className="mx-auto mb-2 w-36" />
             <p className="text-xs font-medium">Memuat data klaim pengguna...</p>
           </div>
         ) : users.length === 0 ? (

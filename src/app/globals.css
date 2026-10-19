@@ -15,14 +15,14 @@
 
   /* ─── Font Tokens ─── */
   --font-headline: "Bayon", sans-serif;
-  --font-marker: "Poppins", sans-serif;
+  --font-marker: var(--font-text), system-ui, sans-serif;
   --font-sebooth: "Bayon", sans-serif;
-  --font-poppins: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: var(--font-text), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-poppins: var(--font-text), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-bayon: "Bayon", Impact, sans-serif;
 }
 
 :root {
-  --font-poppins: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-bayon: "Bayon", Impact, sans-serif;
   --c-blue: #002366;
   --c-dark-blue: #00113a;
@@ -74,7 +74,8 @@ html {
 body {
   background-color: #f8f9fa;
   color: #002366;
-  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-family: var(--font-text), system-ui, sans-serif;
+  letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
@@ -149,6 +150,150 @@ body {
     background-image: url("/images/paper-noise.png");
     background-repeat: repeat;
   }
+}
+
+/* ─── Sebooth loader: 2D logo reveal (transform/opacity only, runs at display refresh) ───
+   0.00s letters pop in one by one with an elastic bounce (S E B O O T H)
+   1.20s the O-O eyes glance left, right, then blink
+   2.05s camera flash (screen variant)
+   2.20s the photo slides out of the slot like a tongue
+   2.60s PHOTOBOOTH drops into place on top; eyes keep looking around while loading
+   Colours come from --sb-bg / --sb-ink / --sb-accent, set by the component's theme props. */
+.sb-loader-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sb-bg, #1d43c4);
+  padding: 24px;
+  overflow: hidden;
+}
+.sb-loader { position: relative; display: flex; justify-content: center; }
+.sb-loader-screen .sb-loader { position: static; }
+.sb-loader--block .sb-loader__svg { width: 100%; }
+.sb-loader__svg { width: min(82vw, 460px); height: auto; overflow: visible; fill: var(--sb-ink, #fe6b00); }
+.sb-loader-mini { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }
+.sb-loader-mini__svg { width: 100%; height: 100%; fill: var(--sb-ink, currentColor); overflow: visible; }
+.sb-loader__pop {
+  transform-box: fill-box;
+  transform-origin: 50% 85%;
+  animation: sb-pop 0.75s linear both;
+}
+.sb-loader__blink {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: sb-blink 3.6s ease-in-out 1.2s infinite;
+}
+.sb-loader__look { animation: sb-look 3.6s cubic-bezier(0.65, 0, 0.35, 1) 1.2s infinite; }
+/* Mini: no reveal, the eyes start looking around straight away and a little faster */
+.sb-loader-mini .sb-loader__blink { animation-duration: 2.4s; animation-delay: 0s; }
+.sb-loader-mini .sb-loader__look { animation-duration: 2.4s; animation-delay: 0s; }
+.sb-loader__paper {
+  transform-box: fill-box;
+  animation: sb-tongue 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 2.2s both;
+}
+.sb-loader__label {
+  fill: var(--sb-accent, #fe6b00);
+  transform-box: fill-box;
+  animation: sb-label 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.6s both;
+}
+.sb-loader__flash {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  animation: sb-flash 0.42s ease-out 2.05s both;
+}
+/* Boot splash: covers the first paint of every hard page load. JS fades it out once the page has
+   loaded; the failsafe animation hides it anyway if the script never runs. */
+.sb-boot {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  transition: opacity 0.4s ease, visibility 0.4s;
+  animation: sb-boot-failsafe 0.4s ease 9s forwards;
+}
+.sb-boot .sb-loader-screen { z-index: auto; }
+.sb-boot--out { opacity: 0; visibility: hidden; pointer-events: none; }
+@keyframes sb-boot-failsafe { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+/* Elastic pop: overshoot, undershoot, settle */
+@keyframes sb-pop {
+  0% { opacity: 0; transform: scale(0); animation-timing-function: cubic-bezier(0.2, 0.8, 0.4, 1); }
+  38% { opacity: 1; transform: scale(1.22); animation-timing-function: ease-in-out; }
+  58% { transform: scale(0.88); animation-timing-function: ease-in-out; }
+  74% { transform: scale(1.07); animation-timing-function: ease-in-out; }
+  88% { transform: scale(0.97); animation-timing-function: ease-out; }
+  100% { opacity: 1; transform: scale(1); }
+}
+/* Eye whites slide inside the eye: the notch (pupil) glances left, then right, then centre */
+@keyframes sb-look {
+  0%, 6% { transform: translateX(0); }
+  14%, 30% { transform: translateX(14px); }
+  40%, 56% { transform: translateX(-12px); }
+  66%, 100% { transform: translateX(0); }
+}
+@keyframes sb-blink {
+  0%, 68%, 76%, 100% { transform: scaleY(1); }
+  72% { transform: scaleY(0.08); }
+}
+@keyframes sb-flash {
+  0% { opacity: 0; }
+  14% { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+@keyframes sb-tongue {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+@keyframes sb-label {
+  from { opacity: 0; transform: translateY(-60%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sb-loader__pop, .sb-loader__blink, .sb-loader__look, .sb-loader__paper,
+  .sb-loader__label { animation: none; }
+  .sb-loader__flash { display: none; }
+}
+
+/* ─── Booking ticket perforation: notches bitten out at the seam + a dotted tear line ─── */
+.booking-ticket .ticket-perf {
+  position: relative;
+  height: 6px;
+  margin: 0 22px;
+  background: radial-gradient(circle, #00113a 2.6px, transparent 3px) 0 0 / 14px 6px repeat-x;
+}
+.booking-ticket .ticket-perf::before,
+.booking-ticket .ticket-perf::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #00113a;
+  translate: 0 -50%;
+}
+.booking-ticket .ticket-perf::before { left: -36px; }
+.booking-ticket .ticket-perf::after { right: -36px; }
+@media (min-width: 768px) {
+  .booking-ticket .ticket-perf {
+    position: absolute;
+    left: 70%;
+    top: 22px;
+    bottom: 22px;
+    width: 6px;
+    height: auto;
+    margin: 0;
+    translate: -50% 0;
+    background: radial-gradient(circle, #00113a 2.6px, transparent 3px) 0 0 / 6px 14px repeat-y;
+  }
+  .booking-ticket .ticket-perf::before,
+  .booking-ticket .ticket-perf::after { left: 50%; right: auto; translate: -50% 0; }
+  .booking-ticket .ticket-perf::before { top: -36px; }
+  .booking-ticket .ticket-perf::after { top: auto; bottom: -36px; }
 }
 
 /* ─── Custom Card Shadows ─── */

@@ -7,13 +7,14 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
 import { 
-  Loader2, Home, LogOut, ShieldCheck, Users, Search,
+  Home, LogOut, ShieldCheck, Users, Search,
   Ticket, TrendingUp, Plus, Trash2, CheckCircle2, AlertCircle
 } from 'lucide-react'
 import AnalyticsInsightsTab from '@/components/admin/AnalyticsInsightsTab'
 import UserClaimsMonitorTab from '@/components/admin/UserClaimsMonitorTab'
 import SessionLookupTab from '@/components/admin/SessionLookupTab'
 import QueueOperatorTab from '@/components/admin/QueueOperatorTab'
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 type TabKey = 'insights' | 'user_claims' | 'session_lookup' | 'queue' | 'admins'
 
@@ -112,11 +113,7 @@ export default function AdminPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F9F9F9]">
-        <Loader2 className="h-10 w-10 animate-spin text-[#0F3D2E]" />
-      </div>
-    )
+    return <SeboothLoader theme="light" label="Memuat panel admin" />
   }
 
   if (!isAdmin) {

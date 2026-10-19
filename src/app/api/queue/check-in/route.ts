@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/apiSecurity";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
@@ -26,6 +27,9 @@ async function getAuthUser() {
 }
 
 export async function POST(req: NextRequest) {
+    const limited = rateLimit(req, "queue-check-in", 20, 60_000);
+    if (limited) return limited;
+
     const { supabase, user } = await getAuthUser();
     if (!user) {
         return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });

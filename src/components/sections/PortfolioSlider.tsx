@@ -3,8 +3,9 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X, ZoomIn, Heart, MessageCircle, Tag, MoreHorizontal, ChevronDown, Loader2 } from "lucide-react";
+import { Sparkles, X, ZoomIn, Heart, MessageCircle, Tag, MoreHorizontal, ChevronDown } from "lucide-react";
 import { GALLERY_PINS, PortfolioPin } from "@/data/galleryPins";
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 const PINS: PortfolioPin[] = GALLERY_PINS;
 
@@ -237,7 +238,7 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
           {/* Subtle Infinite Scroll Loading Indicator */}
           {visibleCount < PINS.length && (
             <div className="w-full py-4 flex items-center justify-center text-slate-400 text-xs font-semibold gap-2 animate-pulse">
-              <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+              <SeboothLoader variant="mini" className="w-4 h-4 text-orange-500" />
               <span>Memuat foto lainnya ({visibleCount}/{PINS.length})...</span>
             </div>
           )}
@@ -249,7 +250,7 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
             </span>
             <button
               onClick={() => window.dispatchEvent(new CustomEvent("sebooth:next-slide"))}
-              className="px-8 py-3.5 rounded-full bg-gradient-to-r from-[#FF5E00] to-[#FF2200] text-white font-black font-bayon uppercase tracking-wider text-base shadow-lg hover:shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+              className="px-8 py-3.5 rounded-full bg-[#FF4500] hover:bg-[#e63e00] text-white font-black font-bayon uppercase tracking-wider text-base shadow-lg hover:shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
             >
               <span>LANJUT KE PRICING & PAKET</span>
               <ChevronDown className="w-4 h-4" />
@@ -335,7 +336,7 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
                     )}"%20untuk%20acara%20saya!`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:brightness-110 text-white font-black font-bayon uppercase tracking-wider text-base flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition-all cursor-pointer"
+                    className="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1fb857] text-white font-black font-bayon uppercase tracking-wider text-base flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition-all cursor-pointer"
                   >
                     <MessageCircle className="w-5 h-5 fill-current" />
                     <span>REQUEST FRAME SEPERTI INI</span>

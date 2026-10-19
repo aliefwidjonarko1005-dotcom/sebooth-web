@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/apiSecurity";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { joinQueue } from "@/lib/queue/queueActions";
@@ -28,6 +29,9 @@ async function getAuthUser() {
 }
 
 export async function POST(req: NextRequest) {
+    const limited = rateLimit(req, "queue-join", 10, 60_000);
+    if (limited) return limited;
+
     // Validate authentication
     const user = await getAuthUser();
     if (!user) {

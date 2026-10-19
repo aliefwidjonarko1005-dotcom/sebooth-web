@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { BookingTicket } from "@/components/features/BookingTicket";
 import {
   ChevronLeft,
   ChevronRight,
@@ -181,6 +182,7 @@ interface PricingSliderProps {
 export function PricingSlider({ isActive = true }: PricingSliderProps) {
   const [selectedPackage, setSelectedPackage] = useState<PackageType | null>(null);
   const [activeSlide, setActiveSlide] = useState(1);
+  const [ticketPkg, setTicketPkg] = useState<DetailedPackage | null>(null);
   const [selectedTierId, setSelectedTierId] = useState<string | null>(null);
   const [clickCoord, setClickCoord] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
   const touchStartX = useRef<number | null>(null);
@@ -192,11 +194,11 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
 
   const handleMobileSlideChange = (targetSlide: number, direction: "left" | "right") => {
     // Exact matching background gradient classes of the destination target slide
-    let colorGradient = "bg-gradient-to-b from-[#1E50D8] via-[#0239A0] to-[#001D66]"; // Slide 1 (Center Hero Overview)
+    let colorGradient = "bg-[#002366]"; // Slide 1 (Center Hero Overview)
     if (targetSlide === 0) {
-      colorGradient = "bg-gradient-to-b from-[#FBBF24] via-[#F59E0B] to-[#B45309]"; // Slide 0 (All You Can Photo)
+      colorGradient = "bg-[#00113a]"; // Slide 0 (All You Can Photo)
     } else if (targetSlide === 2) {
-      colorGradient = "bg-gradient-to-b from-[#14B8A6] via-[#0D9488] to-[#0F5550]"; // Slide 2 (Batch Booking)
+      colorGradient = "bg-[#00113a]"; // Slide 2 (Batch Booking)
     }
 
     setSwipeRipple({
@@ -257,26 +259,26 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
   const isAllYouCanActive = isAllYouCan || (!selectedPackage && activeSlide === 0);
   const isBatchActive = isBatch || (!selectedPackage && activeSlide === 2);
 
-  const currentBgColor = isAllYouCanActive ? "#F59E0B" : isBatchActive ? "#0D9488" : "#0239A0";
+  const currentBgColor = isAllYouCanActive || isBatchActive ? "#00113a" : "#002366";
 
   // Helper to determine semi-circle button colors and targets based on activeSlide
   const getSideButtonConfig = (direction: "left" | "right") => {
     if (activeSlide === 1) {
       // Center slide: Left points to All You Can (Amber), Right points to Batch (Teal)
       return direction === "left"
-        ? { colorClass: "bg-gradient-to-r from-[#FF851B] to-[#FF6200]", borderClass: "border-orange-200/60", target: 0 }
-        : { colorClass: "bg-gradient-to-r from-[#14B8A6] to-[#0D9488]", borderClass: "border-teal-200/60", target: 2 };
+        ? { colorClass: "bg-[#FF4500]", borderClass: "border-white/30", target: 0 }
+        : { colorClass: "bg-[#002366]", borderClass: "border-white/30", target: 2 };
     }
     if (activeSlide === 0) {
       // All You Can slide: Left points to Batch (Teal), Right points to Center (Royal Blue)
       return direction === "left"
-        ? { colorClass: "bg-gradient-to-r from-[#14B8A6] to-[#0D9488]", borderClass: "border-teal-200/60", target: 2 }
-        : { colorClass: "bg-gradient-to-r from-[#0A4DBF] to-[#0239A0]", borderClass: "border-blue-200/60", target: 1 };
+        ? { colorClass: "bg-[#002366]", borderClass: "border-white/30", target: 2 }
+        : { colorClass: "bg-[#002366]", borderClass: "border-blue-200/60", target: 1 };
     }
     // Batch slide: Left points to Center (Royal Blue), Right points to All You Can (Amber)
     return direction === "left"
-      ? { colorClass: "bg-gradient-to-r from-[#0A4DBF] to-[#0239A0]", borderClass: "border-blue-200/60", target: 1 }
-      : { colorClass: "bg-gradient-to-r from-[#FF851B] to-[#FF6200]", borderClass: "border-orange-200/60", target: 0 };
+      ? { colorClass: "bg-[#002366]", borderClass: "border-blue-200/60", target: 1 }
+      : { colorClass: "bg-[#FF4500]", borderClass: "border-white/30", target: 0 };
   };
 
   const leftBtnConfig = getSideButtonConfig("left");
@@ -308,8 +310,8 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
             }}
             className={`absolute w-[120vmax] h-[120vmax] -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none z-0 ${
               isAllYouCan
-                ? "bg-gradient-to-br from-[#FBBF24] via-[#F59E0B] to-[#D97706]"
-                : "bg-gradient-to-br from-[#14B8A6] via-[#0D9488] to-[#0F766E]"
+                ? "bg-[#00113a]"
+                : "bg-[#00113a]"
             }`}
           />
         )}
@@ -353,10 +355,10 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
         <div
           className={`absolute inset-0 pointer-events-none z-0 transition-opacity duration-500 ${
             isAllYouCanActive
-              ? "bg-gradient-to-b from-[#FBBF24] via-[#F59E0B] to-[#B45309]"
+              ? "bg-[#00113a]"
               : isBatchActive
-              ? "bg-gradient-to-b from-[#14B8A6] via-[#0D9488] to-[#0F766E]"
-              : "bg-gradient-to-b from-[#0A4DBF] via-[#0239A0] to-[#01256B]"
+              ? "bg-[#00113a]"
+              : "bg-[#002366]"
           }`}
         />
       )}
@@ -412,7 +414,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                   className="relative w-[275px] lg:w-[305px] xl:w-[325px] h-[450px] lg:h-[485px] xl:h-[510px] flex flex-col justify-between shrink-0 drop-shadow-[0_15px_25px_rgba(0,0,0,0.22)] cursor-pointer group"
                 >
                   <Image
-                    src="/images/slides/slide4/all-you-can-photo-pckg.png"
+                    src="/images/slides/slide4/all-you-can-photo-pckg-brand.png"
                     alt="All You Can Photo Package Card"
                     fill
                     unoptimized
@@ -431,7 +433,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
 
                     <div className="w-full max-w-[190px] lg:max-w-[210px] space-y-0.5 my-1 lg:my-1.5 text-left">
                       <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
-                        <InfinityIcon className="w-3.5 h-3.5 text-amber-500 stroke-[2.5] shrink-0" />
+                        <InfinityIcon className="w-3.5 h-3.5 text-[#FF4500] stroke-[2.5] shrink-0" />
                         <span>Foto bebas tanpa batas</span>
                       </div>
                       <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
@@ -451,7 +453,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         e.stopPropagation();
                         handleSelectPackage("all-you-can", e);
                       }}
-                      className="bg-gradient-to-r from-[#FF851B] via-[#FF6200] to-[#E64D00] hover:from-[#FF9433] hover:to-[#FF5500] text-white font-black uppercase text-[10.5px] lg:text-[11.5px] tracking-wider px-6 lg:px-7 py-2.5 lg:py-3 rounded-full shadow-[0_8px_18px_rgba(230,77,0,0.35)] border border-orange-300/40 group-hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+                      className="bg-[#FF4500] hover:bg-[#e63e00] text-white font-black uppercase text-[10.5px] lg:text-[11.5px] tracking-wider px-6 lg:px-7 py-2.5 lg:py-3 rounded-full shadow-[0_8px_18px_rgba(230,77,0,0.35)] border border-orange-300/40 group-hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
                     >
                       <span>PILIH PAKET INI</span>
                       <ArrowUpRight className="w-3.5 h-3.5 stroke-[3] text-white" />
@@ -494,13 +496,13 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                     <div className="mt-2 flex gap-2">
                       <button
                         onClick={(e) => handleSelectPackage("all-you-can", e)}
-                        className="flex-1 bg-gradient-to-r from-[#FF851B] via-[#FF6200] to-[#E64D00] hover:from-[#FF9433] hover:to-[#FF5500] text-white font-black uppercase text-[11px] lg:text-xs tracking-wider py-3 rounded-full shadow-md border border-orange-300/40 active:scale-95 transition-transform cursor-pointer"
+                        className="flex-1 bg-[#FF4500] hover:bg-[#e63e00] text-white font-black uppercase text-[11px] lg:text-xs tracking-wider py-3 rounded-full shadow-md border border-orange-300/40 active:scale-95 transition-transform cursor-pointer"
                       >
                         ALL YOU CAN
                       </button>
                       <button
                         onClick={(e) => handleSelectPackage("batch-booking", e)}
-                        className="flex-1 bg-[#26B7AB] hover:bg-[#1fa196] text-white font-black uppercase text-[11px] lg:text-xs tracking-wider py-3 rounded-full shadow-md border border-teal-300 active:scale-95 transition-transform cursor-pointer"
+                        className="flex-1 bg-[#002366] hover:bg-[#00113a] text-white font-black uppercase text-[11px] lg:text-xs tracking-wider py-3 rounded-full shadow-md border border-white/30 active:scale-95 transition-transform cursor-pointer"
                       >
                         BATCH BOOKING
                       </button>
@@ -517,7 +519,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                   className="relative w-[275px] lg:w-[305px] xl:w-[325px] h-[450px] lg:h-[485px] xl:h-[510px] flex flex-col justify-between shrink-0 drop-shadow-[0_15px_25px_rgba(0,0,0,0.22)] cursor-pointer group"
                 >
                   <Image
-                    src="/images/slides/slide4/batch-booking-pckg.png"
+                    src="/images/slides/slide4/batch-booking-pckg-brand.png"
                     alt="Batch Booking Package Card"
                     fill
                     unoptimized
@@ -537,15 +539,15 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
 
                     <div className="w-full max-w-[190px] lg:max-w-[210px] space-y-0.5 my-1 lg:my-1.5 text-left">
                       <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
-                        <Calendar className="w-3.5 h-3.5 text-teal-600 stroke-[2.5] shrink-0" />
+                        <Calendar className="w-3.5 h-3.5 text-[#002366] stroke-[2.5] shrink-0" />
                         <span>Bebas atur sesi foto</span>
                       </div>
                       <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
-                        <Users className="w-3.5 h-3.5 text-teal-600 stroke-[2.5] shrink-0" />
+                        <Users className="w-3.5 h-3.5 text-[#002366] stroke-[2.5] shrink-0" />
                         <span>Pas buat rombongan</span>
                       </div>
                       <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
-                        <Clock className="w-3.5 h-3.5 text-teal-600 stroke-[2.5] shrink-0" />
+                        <Clock className="w-3.5 h-3.5 text-[#002366] stroke-[2.5] shrink-0" />
                         <span>Fleksibel & rapi terjadwal</span>
                       </div>
                     </div>
@@ -557,7 +559,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         e.stopPropagation();
                         handleSelectPackage("batch-booking", e);
                       }}
-                      className="bg-gradient-to-r from-[#FF851B] via-[#FF6200] to-[#E64D00] hover:from-[#FF9433] hover:to-[#FF5500] text-white font-black uppercase text-[10.5px] lg:text-[11.5px] tracking-wider px-6 lg:px-7 py-2.5 lg:py-3 rounded-full shadow-[0_8px_18px_rgba(230,77,0,0.35)] border border-orange-300/40 group-hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+                      className="bg-[#FF4500] hover:bg-[#e63e00] text-white font-black uppercase text-[10.5px] lg:text-[11.5px] tracking-wider px-6 lg:px-7 py-2.5 lg:py-3 rounded-full shadow-[0_8px_18px_rgba(230,77,0,0.35)] border border-orange-300/40 group-hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
                     >
                       <span>PILIH PAKET INI</span>
                       <ArrowUpRight className="w-3.5 h-3.5 stroke-[3] text-white" />
@@ -601,8 +603,8 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                   <Image
                     src={
                       isAllYouCan
-                        ? "/images/slides/slide4/all-you-can-photo-pckg.png"
-                        : "/images/slides/slide4/batch-booking-pckg.png"
+                        ? "/images/slides/slide4/all-you-can-photo-pckg-brand.png"
+                        : "/images/slides/slide4/batch-booking-pckg-brand.png"
                     }
                     alt={isAllYouCan ? "All You Can Photo Card" : "Batch Booking Card"}
                     fill
@@ -626,7 +628,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       {isAllYouCan ? (
                         <>
                           <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
-                            <InfinityIcon className="w-3.5 h-3.5 text-amber-500 stroke-[2.5] shrink-0" />
+                            <InfinityIcon className="w-3.5 h-3.5 text-[#FF4500] stroke-[2.5] shrink-0" />
                             <span>Foto bebas tanpa batas</span>
                           </div>
                           <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
@@ -641,15 +643,15 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       ) : (
                         <>
                           <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
-                            <Calendar className="w-3.5 h-3.5 text-teal-600 stroke-[2.5] shrink-0" />
+                            <Calendar className="w-3.5 h-3.5 text-[#002366] stroke-[2.5] shrink-0" />
                             <span>Bebas atur sesi foto</span>
                           </div>
                           <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
-                            <Users className="w-3.5 h-3.5 text-teal-600 stroke-[2.5] shrink-0" />
+                            <Users className="w-3.5 h-3.5 text-[#002366] stroke-[2.5] shrink-0" />
                             <span>Pas untuk rombongan</span>
                           </div>
                           <div className="flex items-center gap-2 text-[10px] lg:text-[11px] font-bold text-slate-700">
-                            <Clock className="w-3.5 h-3.5 text-teal-600 stroke-[2.5] shrink-0" />
+                            <Clock className="w-3.5 h-3.5 text-[#002366] stroke-[2.5] shrink-0" />
                             <span>Fleksibel & rapi terjadwal</span>
                           </div>
                         </>
@@ -708,8 +710,8 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                             onClick={() => setSelectedTierId(pkg.id)}
                             className={`bg-white rounded-2xl px-6 py-3.5 lg:py-4 shadow-md border-2 transition-all cursor-pointer flex items-center justify-between gap-3 ${
                               isTierSelected
-                                ? "border-teal-400 ring-2 ring-white/50"
-                                : "border-white/90 hover:border-teal-300 hover:bg-white"
+                                ? "border-[#002366] ring-2 ring-white/50"
+                                : "border-white/90 hover:border-[#002366] hover:bg-white"
                             }`}
                           >
                             <div>
@@ -727,16 +729,17 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
 
 
                             <div className="shrink-0">
-                              <a
-                                href={`${waBase}${encodeURIComponent(pkg.waText)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setTicketPkg(pkg);
+                                }}
                                 className="bg-[#25D366] hover:bg-[#20ba59] text-white font-black uppercase text-xs sm:text-sm px-6 py-2.5 sm:py-3 rounded-2xl shadow flex items-center gap-2 active:scale-95 transition-transform"
                               >
                                 <MessageCircle className="w-4.5 h-4.5 sm:w-5 sm:h-5 fill-current" />
                                 <span>{pkg.id === "batch-4" ? "Konsultasi WA" : "Pesan WA"}</span>
-                              </a>
+                              </button>
                             </div>
                           </motion.div>
                         );
@@ -761,8 +764,8 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                             onClick={() => setSelectedTierId(pkg.id)}
                             className={`bg-white rounded-2xl px-6 py-4 lg:py-5 shadow-md border-2 transition-all cursor-pointer flex items-center justify-between gap-3 ${
                               isTierSelected
-                                ? "border-amber-400 ring-2 ring-white/50"
-                                : "border-white/90 hover:border-amber-300 hover:bg-white"
+                                ? "border-[#FF4500] ring-2 ring-white/50"
+                                : "border-white/90 hover:border-[#FF4500] hover:bg-white"
                             }`}
                           >
                             <div>
@@ -774,16 +777,17 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                             </div>
 
                             <div className="shrink-0">
-                              <a
-                                href={`${waBase}${encodeURIComponent(pkg.waText)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setTicketPkg(pkg);
+                                }}
                                 className="bg-[#25D366] hover:bg-[#20ba59] text-white font-black uppercase text-xs sm:text-sm px-6 py-2.5 sm:py-3 rounded-2xl shadow flex items-center gap-2 active:scale-95 transition-transform"
                               >
                                 <MessageCircle className="w-4.5 h-4.5 sm:w-5 sm:h-5 fill-current" />
                                 <span>Pesan WA</span>
-                              </a>
+                              </button>
                             </div>
                           </motion.div>
                         );
@@ -805,7 +809,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="underline text-white hover:text-amber-200 flex items-center gap-1 font-extrabold"
+                      className="underline text-white hover:text-white/80 flex items-center gap-1 font-extrabold"
                     >
                       <span>Ngobrol Bareng Kami</span>
                       <ArrowUpRight className="w-3 h-3 stroke-[3]" />
@@ -839,7 +843,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       className="relative w-full h-full flex flex-col justify-between drop-shadow-[0_12px_20px_rgba(0,0,0,0.22)] cursor-pointer group active:scale-[0.98] transition-transform"
                     >
                       <Image
-                        src="/images/slides/slide4/all-you-can-photo-pckg.png"
+                        src="/images/slides/slide4/all-you-can-photo-pckg-brand.png"
                         alt="All You Can Photo"
                         fill
                         unoptimized
@@ -856,7 +860,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         </p>
                         <div className="w-full max-w-[175px] space-y-0.5 my-1 text-left">
                           <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-700">
-                            <InfinityIcon className="w-3.5 h-3.5 text-amber-500 stroke-[2.5]" />
+                            <InfinityIcon className="w-3.5 h-3.5 text-[#FF4500] stroke-[2.5]" />
                             <span>Foto bebas tanpa batas</span>
                           </div>
                           <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-700">
@@ -875,7 +879,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                             e.stopPropagation();
                             handleSelectPackage("all-you-can", e);
                           }}
-                          className="bg-gradient-to-r from-[#FF851B] via-[#FF6200] to-[#E64D00] active:from-[#FF9433] active:to-[#FF5500] text-white font-black uppercase text-[10.5px] tracking-wider px-6 py-2 rounded-full shadow-[0_6px_16px_rgba(230,77,0,0.35)] border border-orange-300/40 flex items-center gap-1"
+                          className="bg-[#FF4500] active:bg-[#e63e00] text-white font-black uppercase text-[10.5px] tracking-wider px-6 py-2 rounded-full shadow-[0_6px_16px_rgba(230,77,0,0.35)] border border-orange-300/40 flex items-center gap-1"
                         >
                           <span>PILIH PAKET INI</span>
                           <ArrowUpRight className="w-3 h-3 stroke-[3] text-white" />
@@ -915,13 +919,13 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         <div className="mt-2 flex gap-2">
                           <button
                             onClick={(e) => handleSelectPackage("all-you-can", e)}
-                            className="flex-1 bg-gradient-to-r from-[#FF851B] via-[#FF6200] to-[#E64D00] text-white font-black uppercase text-[10.5px] py-2.5 rounded-full shadow-md border border-orange-300/40 active:scale-95"
+                            className="flex-1 bg-[#FF4500] text-white font-black uppercase text-[10.5px] py-2.5 rounded-full shadow-md border border-orange-300/40 active:scale-95"
                           >
                             ALL YOU CAN
                           </button>
                           <button
                             onClick={(e) => handleSelectPackage("batch-booking", e)}
-                            className="flex-1 bg-[#26B7AB] text-white font-black uppercase text-[10.5px] py-2.5 rounded-full shadow-md border border-teal-300 active:scale-95"
+                            className="flex-1 bg-[#002366] text-white font-black uppercase text-[10.5px] py-2.5 rounded-full shadow-md border border-white/30 active:scale-95"
                           >
                             BATCH BOOKING
                           </button>
@@ -934,7 +938,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       className="relative w-full h-full flex flex-col justify-between drop-shadow-[0_12px_20px_rgba(0,0,0,0.22)] cursor-pointer group active:scale-[0.98] transition-transform"
                     >
                       <Image
-                        src="/images/slides/slide4/batch-booking-pckg.png"
+                        src="/images/slides/slide4/batch-booking-pckg-brand.png"
                         alt="Batch Booking"
                         fill
                         unoptimized
@@ -951,15 +955,15 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         </p>
                         <div className="w-full max-w-[175px] space-y-0.5 my-1 text-left">
                           <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-700">
-                            <Calendar className="w-3.5 h-3.5 text-teal-600 stroke-[2.5]" />
+                            <Calendar className="w-3.5 h-3.5 text-[#002366] stroke-[2.5]" />
                             <span>Bebas atur sesi foto</span>
                           </div>
                           <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-700">
-                            <Users className="w-3.5 h-3.5 text-teal-600 stroke-[2.5]" />
+                            <Users className="w-3.5 h-3.5 text-[#002366] stroke-[2.5]" />
                             <span>Pas untuk rombongan</span>
                           </div>
                           <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-700">
-                            <Clock className="w-3.5 h-3.5 text-teal-600 stroke-[2.5]" />
+                            <Clock className="w-3.5 h-3.5 text-[#002366] stroke-[2.5]" />
                             <span>Fleksibel & rapi terjadwal</span>
                           </div>
                         </div>
@@ -970,7 +974,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                             e.stopPropagation();
                             handleSelectPackage("batch-booking", e);
                           }}
-                          className="bg-gradient-to-r from-[#FF851B] via-[#FF6200] to-[#E64D00] active:from-[#FF9433] active:to-[#FF5500] text-white font-black uppercase text-[10.5px] tracking-wider px-6 py-2 rounded-full shadow-[0_6px_16px_rgba(230,77,0,0.35)] border border-orange-300/40 flex items-center gap-1"
+                          className="bg-[#FF4500] active:bg-[#e63e00] text-white font-black uppercase text-[10.5px] tracking-wider px-6 py-2 rounded-full shadow-[0_6px_16px_rgba(230,77,0,0.35)] border border-orange-300/40 flex items-center gap-1"
                         >
                           <span>PILIH PAKET INI</span>
                           <ArrowUpRight className="w-3 h-3 stroke-[3] text-white" />
@@ -987,7 +991,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       onClick={() => setActiveSlide(idx)}
                       aria-label={`Go to card ${idx + 1}`}
                       className={`transition-all duration-200 rounded-full cursor-pointer ${
-                        activeSlide === idx ? "w-6 h-2 bg-[#FFC72C]" : "w-2 h-2 bg-white/40"
+                        activeSlide === idx ? "w-6 h-2 bg-[#FF4500]" : "w-2 h-2 bg-white/40"
                       }`}
                     />
                   ))}
@@ -1054,8 +1058,8 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         className={`relative rounded-2xl xs:rounded-3xl p-3 xs:p-3.5 flex flex-col justify-between items-center text-center overflow-hidden transition-all cursor-pointer min-h-[155px] xs:min-h-[170px] ${
                           isSelected
                             ? isBatch
-                              ? "bg-white border-4 border-teal-400 shadow-[0_8px_24px_rgba(13,148,136,0.35)]"
-                              : "bg-white border-4 border-amber-400 shadow-[0_8px_24px_rgba(245,158,11,0.35)]"
+                              ? "bg-white border-4 border-[#002366]"
+                              : "bg-white border-4 border-[#FF4500]"
                             : "bg-gradient-to-b from-white via-slate-50/95 to-slate-100/90 border-2 border-white/90 shadow-lg hover:shadow-xl"
                         }`}
                       >
@@ -1064,8 +1068,8 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                           <div
                             className={`w-7 h-7 xs:w-8 xs:h-8 rounded-full flex items-center justify-center shadow-inner ${
                               isBatch
-                                ? "bg-teal-50 text-teal-600 border border-teal-200/60"
-                                : "bg-amber-50 text-amber-600 border border-amber-200/60"
+                                ? "bg-[#eef2ff] text-[#002366]"
+                                : "bg-[#eef2ff] text-[#FF4500]"
                             }`}
                           >
                             {idx === 0 && <Zap className="w-3.5 h-3.5 xs:w-4 xs:h-4 stroke-[2.5]" />}
@@ -1077,9 +1081,9 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                           <span
                             className={`text-[8px] xs:text-[9px] font-black uppercase px-2 py-0.5 rounded-full shadow-xs tracking-wide ${
                               idx === 1
-                                ? "bg-gradient-to-r from-rose-500 to-red-600 text-white"
+                                ? "bg-[#FF4500] text-white"
                                 : idx === 3
-                                ? "bg-gradient-to-r from-amber-500 to-orange-600 text-white"
+                                ? "bg-[#002366] text-white"
                                 : "bg-slate-800 text-white"
                             }`}
                           >
@@ -1112,20 +1116,21 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         </div>
 
                         {/* Shimmer CTA Button */}
-                        <a
-                          href={`${waBase}${encodeURIComponent(pkg.waText)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setTicketPkg(pkg);
+                          }}
                           className={`w-full text-white font-black uppercase text-[10.5px] xs:text-[11.5px] py-2.5 rounded-xl shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition-all ${
                             isBatch
-                              ? "bg-gradient-to-r from-[#26B7AB] via-[#0D9488] to-[#0F5550] shadow-teal-500/25 border border-teal-300/40"
-                              : "bg-gradient-to-r from-[#FF851B] via-[#FF6200] to-[#E64D00] shadow-orange-500/25 border border-orange-300/40"
+                              ? "bg-[#002366] border border-white/30"
+                              : "bg-[#FF4500] hover:bg-[#e63e00]"
                           }`}
                         >
                           <MessageCircle className="w-4 h-4 fill-current shrink-0" />
                           <span>{pkg.id.includes("4") ? "Konsultasi" : "Pesan WA"}</span>
-                        </a>
+                        </button>
                       </motion.div>
                     );
                   })}
@@ -1158,6 +1163,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
           </button>
         </>
       )}
+      <BookingTicket pkg={ticketPkg} onClose={() => setTicketPkg(null)} />
     </section>
   );
 }

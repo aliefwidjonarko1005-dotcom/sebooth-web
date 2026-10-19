@@ -42,10 +42,8 @@ const FOLDERS: FaqFolder[] = [
     tabLabel: "Custom Frame",
     gradientId: "grad-faq-custom",
     stops: [
-      { offset: "0%", color: "#FF3B5C" },
-      { offset: "35%", color: "#E60039" },
-      { offset: "70%", color: "#99002B" },
-      { offset: "100%", color: "#4D0014" },
+      { offset: "0%", color: "#002366" },
+      { offset: "100%", color: "#002366" },
     ],
     tabTextColor: "text-white",
     tabPosition: "left",
@@ -89,10 +87,8 @@ const FOLDERS: FaqFolder[] = [
     tabLabel: "Teknis",
     gradientId: "grad-faq-technical",
     stops: [
-      { offset: "0%", color: "#0066FF" },
-      { offset: "35%", color: "#0038B8" },
-      { offset: "70%", color: "#001B66" },
-      { offset: "100%", color: "#000B2B" },
+      { offset: "0%", color: "#00113a" },
+      { offset: "100%", color: "#00113a" },
     ],
     tabTextColor: "text-white",
     tabPosition: "middle",
@@ -136,10 +132,8 @@ const FOLDERS: FaqFolder[] = [
     tabLabel: "General",
     gradientId: "grad-faq-general",
     stops: [
-      { offset: "0%", color: "#FF7700" },
-      { offset: "35%", color: "#FF3B00" },
-      { offset: "70%", color: "#B82300" },
-      { offset: "100%", color: "#5E0F00" },
+      { offset: "0%", color: "#FF4500" },
+      { offset: "100%", color: "#FF4500" },
     ],
     tabTextColor: "text-white",
     tabPosition: "right",
@@ -198,10 +192,6 @@ export function FaqStackSlider({ isActive = true }: FaqStackSliderProps) {
       id="faq"
       className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-slate-900 overflow-hidden select-none flex flex-col justify-end items-center px-2 xs:px-4 sm:px-6 md:px-8 lg:px-12 pb-0 pt-0"
     >
-      {/* ── AMBIENT ABSTRACT BLUR BACKDROPS (DESKTOP ONLY FOR 120FPS MOBILE) ── */}
-      <div className="hidden sm:block absolute top-1/4 left-1/5 -translate-x-1/2 w-[550px] h-[550px] bg-[#FF6B00]/22 rounded-full blur-[130px] pointer-events-none z-0" />
-      <div className="hidden sm:block absolute top-1/3 right-1/5 translate-x-1/3 w-[500px] h-[500px] bg-[#FF3838]/18 rounded-full blur-[140px] pointer-events-none z-0" />
-      <div className="hidden sm:block absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[600px] bg-[#0239A0]/20 rounded-full blur-[140px] pointer-events-none z-0" />
 
       {/* ═══════════════════════════════════════════════════════════════════
           HEADER (Title & Subtitle - Proporsional, Elegan & Rapi)
@@ -211,7 +201,7 @@ export function FaqStackSlider({ isActive = true }: FaqStackSliderProps) {
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}
-          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black font-bayon uppercase tracking-normal sm:tracking-wide text-[#181B34] leading-tight drop-shadow-xs"
+          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black font-bayon uppercase tracking-normal sm:tracking-wide text-[#00113a] leading-tight drop-shadow-xs"
         >
           FREQUENTLY ASK QUESTION
         </motion.h2>
@@ -256,7 +246,7 @@ export function FaqStackSlider({ isActive = true }: FaqStackSliderProps) {
                 style={{ zIndex: dynamicZIndex }}
                 className="absolute inset-0 h-full cursor-pointer drop-shadow-[0_24px_50px_rgba(0,0,0,0.24)] select-none pointer-events-auto"
               >
-                {/* SVG Silhouette of the Folder (Multi-Stop Rich Gradients) */}
+                {/* SVG Silhouette of the Folder (flat brand colour) */}
                 <svg
                   viewBox="0 0 600 460"
                   preserveAspectRatio="none"
@@ -268,19 +258,11 @@ export function FaqStackSlider({ isActive = true }: FaqStackSliderProps) {
                         <stop key={i} offset={stop.offset} stopColor={stop.color} />
                       ))}
                     </linearGradient>
-                    <linearGradient id={`${folder.gradientId}-top-shine`} x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.26" />
-                      <stop offset="25%" stopColor="#FFFFFF" stopOpacity="0.08" />
-                      <stop offset="60%" stopColor="#000000" stopOpacity="0" />
-                      <stop offset="100%" stopColor="#000000" stopOpacity="0.3" />
-                    </linearGradient>
                   </defs>
 
-                  {/* Main Multi-Stop Rich Color Gradient Path */}
+                  {/* Folder body */}
                   <path d={folder.svgPath} fill={`url(#${folder.gradientId})`} />
 
-                  {/* Top Metallic / Glass Sheen Overlay */}
-                  <path d={folder.svgPath} fill={`url(#${folder.gradientId}-top-shine)`} />
                 </svg>
 
                 {/* ── PER-FOLDER TAB TEXT & INTERACTIVE BUTTONS (BOUND TO THIS FOLDER'S Z-INDEX) ── */}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -94,10 +95,10 @@ export function Header() {
         {/* Small Brand Pill Next to Hamburger */}
         <Link
           href="/"
-          className="px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-lg border border-white/15 text-white font-black font-bayon text-lg uppercase tracking-wide flex items-center shadow-md"
+          aria-label="Sebooth, ke beranda"
+          className="px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-lg border border-white/15 flex items-center shadow-md"
         >
-          <span>SEBOOTH</span>
-          <span className="text-[#FF4500] ml-0.5">.</span>
+          <Image src="/images/logo/sebooth-white.svg" alt="Sebooth Photobooth" width={62} height={26} unoptimized priority className="h-auto w-auto" style={{ height: 26 }} />
         </Link>
       </div>
 
@@ -132,10 +133,10 @@ export function Header() {
                   <Link
                     href="/"
                     onClick={() => setIsMobileDrawerOpen(false)}
-                    className="text-2xl font-black font-bayon uppercase tracking-wider text-white flex items-center"
+                    aria-label="Sebooth, ke beranda"
+                    className="flex items-center"
                   >
-                    <span>SEBOOTH</span>
-                    <span className="text-[#FF4500] ml-0.5">.</span>
+                    <Image src="/images/logo/sebooth-white.svg" alt="Sebooth Photobooth" width={76} height={32} unoptimized priority className="h-auto w-auto" style={{ height: 32 }} />
                   </Link>
 
                   <button
@@ -212,10 +213,10 @@ export function Header() {
           <Link
             href="/"
             onClick={() => setActiveItem("")}
-            className="text-3xl font-black text-white uppercase tracking-tight font-bayon flex items-center hover:opacity-90 transition-opacity"
+            aria-label="Sebooth, ke beranda"
+            className="flex items-center hover:opacity-90 transition-opacity"
           >
-            <span>sebooth</span>
-            <span className="text-[#FF4500] ml-0.5">.</span>
+            <Image src="/images/logo/sebooth-white.svg" alt="Sebooth Photobooth" width={86} height={36} unoptimized priority className="h-auto w-auto" style={{ height: 36 }} />
           </Link>
 
           {/* Desktop Navigation Links */}

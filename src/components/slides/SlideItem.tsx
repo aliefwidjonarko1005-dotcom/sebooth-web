@@ -4,30 +4,31 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 import { LandingSlide, SlideCta } from "@/config/landingSlides";
 import { ArrowUpRight, MessageCircle, Sparkles } from "lucide-react";
 
 // Code-split heavy interactive slide components so their JS and data catalogs only load when active
 const Product = dynamic(() => import("@/components/sections/Product").then((mod) => mod.Product), {
-  loading: () => <div className="w-full h-full bg-black/40 flex items-center justify-center" />,
+  loading: () => <div className="w-full h-full flex items-center justify-center"><SeboothLoader variant="block" theme="white" className="w-56" /></div>,
 });
 
 const FramesSlider = dynamic(() => import("@/components/sections/FramesSlider").then((mod) => mod.FramesSlider), {
-  loading: () => <div className="w-full h-full bg-[#ff4500]/20 flex items-center justify-center" />,
+  loading: () => <div className="w-full h-full flex items-center justify-center"><SeboothLoader variant="block" theme="navy" className="w-56" /></div>,
 });
 
 const PortfolioSlider = dynamic(() => import("@/components/sections/PortfolioSlider").then((mod) => mod.PortfolioSlider), {
-  loading: () => <div className="w-full h-full bg-black/40 flex items-center justify-center" />,
+  loading: () => <div className="w-full h-full flex items-center justify-center"><SeboothLoader variant="block" theme="white" className="w-56" /></div>,
 });
 
 const PricingSlider = dynamic(() => import("@/components/sections/PricingSlider").then((mod) => mod.PricingSlider), {
-  loading: () => <div className="w-full h-full bg-black/40 flex items-center justify-center" />,
+  loading: () => <div className="w-full h-full flex items-center justify-center"><SeboothLoader variant="block" theme="navy" className="w-56" /></div>,
 });
 
 import { ActivitiesSlider } from "@/components/sections/ActivitiesSlider";
 
 const FaqStackSlider = dynamic(() => import("@/components/sections/FaqStackSlider").then((mod) => mod.FaqStackSlider), {
-  loading: () => <div className="w-full h-full bg-black/40 flex items-center justify-center" />,
+  loading: () => <div className="w-full h-full flex items-center justify-center"><SeboothLoader variant="block" theme="white" className="w-56" /></div>,
 });
 
 interface SlideItemProps {

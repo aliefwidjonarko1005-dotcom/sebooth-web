@@ -6,6 +6,10 @@ import { ArrowLeft, Search, X, ZoomIn, Download, ExternalLink } from "lucide-rea
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import Guide from "@/components/guide/Guide";
+import GuideLauncher from "@/components/guide/GuideLauncher";
+import { useGuide } from "@/components/guide/useGuide";
+import { FRAMES_GUIDE, GUIDE_KEYS } from "@/config/guides";
 
 export interface FrameItem {
     id: string;
@@ -345,6 +349,7 @@ export function FramesGalleryClient({ initialFrames }: FramesGalleryClientProps)
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [activeLightboxFrame, setActiveLightboxFrame] = useState<FrameItem | null>(null);
     const [imageRatios, setImageRatios] = useState<Record<string, number>>({});
+    const guide = useGuide(GUIDE_KEYS.frames, { delay: 2600 });
 
     const framesToDisplay = initialFrames && initialFrames.length > 0 ? initialFrames : DEFAULT_FRAMES;
 
@@ -408,7 +413,7 @@ export function FramesGalleryClient({ initialFrames }: FramesGalleryClientProps)
                 {/* Search & Category Filter Controls */}
                 <div className="mb-12 flex flex-col md:flex-row gap-4 justify-between items-center bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl shadow-sm">
                     {/* Categories Tabs */}
-                    <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
+                    <div id="guide-frames-categories" className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
                         {categories.map((cat) => (
                             <button
                                 key={cat}
@@ -426,7 +431,7 @@ export function FramesGalleryClient({ initialFrames }: FramesGalleryClientProps)
                     </div>
 
                     {/* Search Input */}
-                    <div className="relative w-full md:w-80">
+                    <div id="guide-frames-search" className="relative w-full md:w-80">
                         <input
                             type="text"
                             placeholder="Cari desain frame..."
@@ -467,6 +472,7 @@ export function FramesGalleryClient({ initialFrames }: FramesGalleryClientProps)
                                 {/* Frame Image Frame — dynamic aspect ratio */}
                                 <div 
                                     className="w-full bg-neutral-900/5 rounded-2xl overflow-hidden flex items-center justify-center p-3 relative cursor-pointer group-hover:scale-[1.02] transition-transform duration-300"
+                                    id={idx === 0 ? 'guide-frames-first' : undefined}
                                     style={{ aspectRatio: imageRatios[frame.id] ? `${imageRatios[frame.id]}` : '3/4' }}
                                     onClick={() => setActiveLightboxFrame(frame)}
                                 >
@@ -593,6 +599,7 @@ export function FramesGalleryClient({ initialFrames }: FramesGalleryClientProps)
                                     Tutup Preview
                                 </button>
                                 <a
+                                    id="guide-frames-order"
                                     href={`https://wa.me/6285713899441?text=${encodeURIComponent(`Halo Sebooth, saya berminat dengan template frame "${activeLightboxFrame.title}" untuk acara saya!`)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -605,7 +612,9 @@ export function FramesGalleryClient({ initialFrames }: FramesGalleryClientProps)
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <GuideLauncher onClick={guide.start} className="fixed bottom-5 right-5 z-40" />
+            <Guide steps={FRAMES_GUIDE} open={guide.open} onClose={guide.close} storageKey={GUIDE_KEYS.frames} />
         </div>
     );
 }
-

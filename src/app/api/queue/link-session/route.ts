@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/apiSecurity";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
@@ -40,6 +41,9 @@ async function getAuthUser() {
  * Token is valid for 10 minutes.
  */
 export async function POST(req: NextRequest) {
+    const limited = rateLimit(req, "queue-link-session", 20, 60_000);
+    if (limited) return limited;
+
     const cookieStore = await cookies();
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,

@@ -4,6 +4,7 @@ import fsPromises from 'fs/promises'
 import path from 'path'
 import os from 'os'
 import crypto from 'crypto'
+import { resolveMediaSource, rateLimit } from '@/lib/apiSecurity'
 
 export const runtime = 'nodejs'
 
@@ -75,6 +76,9 @@ const diskCacheDir = getDiskCacheDir()
 
 export async function GET(request: Request) {
   let url = ''
+  // Generous: one gallery page can request dozens of thumbnails at once
+  const limited = rateLimit(request, 'image', 600, 60_000)
+  if (limited) return limited
   try {
     const { searchParams } = new URL(request.url)
     const rawUrlParam = searchParams.get('url')
@@ -102,6 +106,13 @@ export async function GET(request: Request) {
         break
       }
     }
+
+    // Only our own public files and allowlisted media buckets; blocks SSRF, open redirect and path traversal
+    const source = resolveMediaSource(url)
+    if (!source) {
+      return new NextResponse('URL not allowed', { status: 400 })
+    }
+    url = source.kind === 'remote' ? source.url : source.path
 
     // Safely construct base host URL for relative URLs
     const hostHeader = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'localhost:3000'
@@ -193,14 +204,11 @@ export async function GET(request: Request) {
         let detectedContentType = 'image/jpeg'
 
         // Local public file check (0ms)
-        const isLocalUrl = !url.startsWith('http://') && !url.startsWith('https://')
-        const isSelfHostUrl = url.includes('localhost') || url.includes('127.0.0.1') || url.includes('0.0.0.0') || url.includes('192.168.')
-
-        if (isLocalUrl || isSelfHostUrl) {
+        if (source.kind === 'local') {
           try {
-            const pathname = isLocalUrl ? url.split('?')[0] : new URL(url).pathname
-            const cleanRel = pathname.replace(/^\/+/, '')
-            const localFilePath = path.join(process.cwd(), 'public', cleanRel)
+            const publicDir = path.join(process.cwd(), 'public')
+            const localFilePath = path.join(publicDir, source.path.replace(/^\/+/, ''))
+            if (!localFilePath.startsWith(publicDir + path.sep)) throw new Error('Outside public dir')
             inputBuffer = await fsPromises.readFile(localFilePath)
             if (url.endsWith('.png')) detectedContentType = 'image/png'
             else if (url.endsWith('.webp')) detectedContentType = 'image/webp'
@@ -217,6 +225,7 @@ export async function GET(request: Request) {
 
           const res = await fetch(targetUrl, {
             signal: AbortSignal.timeout(8000),
+            redirect: 'error', // an allowlisted host must not bounce us elsewhere
             headers: {
               Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
               'User-Agent': 'Sebooth-Fast-Optimizer/2.0',

@@ -6,7 +6,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Loader2, Download, Image as ImageIcon, Film, Zap, Grid,
+  Download, Image as ImageIcon, Film, Zap, Grid,
   AlertCircle, ChevronLeft, ChevronRight, ArrowLeft, LogOut, Home,
   Share2, Bookmark, Check, Sparkles
 } from 'lucide-react'
@@ -14,6 +14,7 @@ import Link from 'next/link'
 import NextImage from 'next/image'
 import { createClient } from '@/lib/supabase'
 import { SessionData, MediaItem } from '@/types/database'
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 /* ─── Frame Templates ─── */
 const FRAME_TEMPLATES = [
@@ -231,11 +232,7 @@ export default function SessionDetailPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F7F9FC]">
-        <Loader2 className="h-10 w-10 animate-spin text-[#FF5500]" />
-      </div>
-    )
+    return <SeboothLoader theme="white" label="Memuat foto sesi kamu" />
   }
 
   if (!session) return null

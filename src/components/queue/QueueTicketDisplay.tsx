@@ -3,13 +3,18 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { RefreshCw, X, Camera, Volume2, VolumeX, Bell, BellOff, QrCode, Loader2, CheckSquare } from "lucide-react";
+import { X, Camera, Volume2, VolumeX, Bell, BellOff, QrCode, CheckSquare } from "lucide-react";
 import type { QueueTicket, QueueEvent, QueueProximityTier } from "@/types/database";
 import { getProximityTier, getProximityTierColor } from "@/types/database";
 import QueueStatusBadge from "./QueueStatusBadge";
 import QueueEstimateTimer from "./QueueEstimateTimer";
 import QRScannerModal from "./QRScannerModal";
 import { subscribeToPush, isPushSupported } from "@/lib/queue/pushSubscription";
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
+import Guide from "@/components/guide/Guide";
+import GuideLauncher from "@/components/guide/GuideLauncher";
+import { useGuide } from "@/components/guide/useGuide";
+import { QUEUE_TICKET_GUIDE, GUIDE_KEYS } from "@/config/guides";
 
 interface QueueStatus {
     event: QueueEvent | null;
@@ -79,6 +84,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
     const [showQRScanner, setShowQRScanner] = useState(false);
     const [scanStatus, setScanStatus] = useState<'idle' | 'linking' | 'success' | 'error'>('idle');
     const [scanError, setScanError] = useState('');
+    const guide = useGuide(GUIDE_KEYS.queueTicket, { enabled: !showQRScanner });
     const sseRef = useRef<EventSource | null>(null);
     const retryCount = useRef(0);
     const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -255,6 +261,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
             <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
                 {isPushSupported() && (
                     <button
+                        id="guide-ticket-push"
                         onClick={handleEnablePush}
                         className={`p-2 border-2 border-black hard-shadow-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ${
                             pushEnabled ? "bg-green-300 text-primary" : "bg-white text-primary"
@@ -308,6 +315,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
 
                         {/* Queue Number */}
                         <motion.div
+                            id="guide-ticket-number"
                             animate={proximityTier === "your_turn" ? { scale: [1, 1.05, 1] } : {}}
                             transition={{ repeat: proximityTier === "your_turn" ? Infinity : 0, duration: 1.5 }}
                         >
@@ -323,7 +331,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                         </motion.div>
 
                         {/* Timer / Status Content */}
-                        <div className="mt-8 relative pt-6 border-t-4 border-black border-dashed">
+                        <div id="guide-ticket-timer" className="mt-8 relative pt-6 border-t-4 border-black border-dashed">
                             <QueueEstimateTimer
                                 estimatedWaitMs={myEstimateMs}
                                 positionFromFront={myPosition}
@@ -337,7 +345,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
 
                         {/* Check-in logic */}
                         {liveStatus !== "completed" && liveStatus !== "cancelled" && liveStatus !== "expired" && liveStatus !== "in_session" && (
-                            <div className="mt-8">
+                            <div id="guide-ticket-checkin" className="mt-8">
                                 {!ticket.is_checked_in && (myPosition <= 2 || liveStatus === "called") ? (
                                     <motion.div
                                         initial={{ opacity: 0, scale: 0.95 }}
@@ -352,7 +360,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                                             disabled={isCheckingIn}
                                             className="w-full bg-secondary text-white font-black text-[0.85rem] uppercase tracking-wider border-4 border-black py-4 flex items-center justify-center gap-2 active:translate-x-[2px] active:translate-y-[2px] transition-transform shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none"
                                         >
-                                            {isCheckingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "CHECK-IN SEKARANG"}
+                                            {isCheckingIn ? <SeboothLoader variant="mini" className="w-5 h-5" /> : "CHECK-IN SEKARANG"}
                                         </button>
                                         {liveStatus === "called" && (
                                             <p className="text-red-600 text-[0.65rem] text-center mt-3 font-black uppercase tracking-widest">
@@ -396,7 +404,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                         )}
                         {scanStatus === 'linking' && (
                             <div className="mt-6 flex items-center gap-2 justify-center py-2 border-2 border-black bg-gray-100">
-                                <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                                <SeboothLoader variant="mini" className="w-5 h-5 text-primary" />
                                 <span className="text-primary text-[0.8rem] font-black uppercase tracking-wider">MENGHUBUNGKAN...</span>
                             </div>
                         )}
@@ -516,7 +524,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                                         disabled={cancelling}
                                         className="flex-1 bg-red-600 text-white border-2 border-black py-3 text-[0.75rem] font-black uppercase tracking-widest hover:bg-red-700 transition-all disabled:opacity-60 shadow-[2px_2px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-y-[2px] active:translate-x-[2px]"
                                     >
-                                        {cancelling ? <RefreshCw className="w-4 h-4 animate-spin mx-auto" /> : "YA, BATAL"}
+                                        {cancelling ? <SeboothLoader variant="mini" className="w-4 h-4 mx-auto" /> : "YA, BATAL"}
                                     </button>
                                     <button
                                         onClick={() => setCancelConfirm(false)}
@@ -536,6 +544,9 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                 onClose={() => setShowQRScanner(false)}
                 onScanned={handleQRScanned}
             />
+
+            <GuideLauncher onClick={guide.start} variant="brutal" className="fixed bottom-4 left-4 z-40" />
+            <Guide steps={QUEUE_TICKET_GUIDE} open={guide.open} onClose={guide.close} storageKey={GUIDE_KEYS.queueTicket} variant="brutal" />
         </div>
     );
 }

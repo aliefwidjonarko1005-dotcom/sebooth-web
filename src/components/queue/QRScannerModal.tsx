@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Camera, CheckCircle, AlertCircle, Loader2, Flashlight, FlashlightOff } from "lucide-react";
+import { X, Camera, CheckCircle, AlertCircle, Flashlight, FlashlightOff } from "lucide-react";
+import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
 interface QRScannerModalProps {
     isOpen: boolean;
@@ -279,7 +280,7 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
                             </motion.div>
                             <p className="text-white font-black text-xl mt-4">QR Terdeteksi!</p>
                             <p className="text-white/50 text-sm mt-1">Menghubungkan sesi...</p>
-                            <Loader2 className="w-5 h-5 text-[#D4AF37] animate-spin mt-3" />
+                            <SeboothLoader variant="mini" className="w-5 h-5 text-[#D4AF37] mt-3" />
                         </motion.div>
                     )}
 

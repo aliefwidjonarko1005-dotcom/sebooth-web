@@ -14,10 +14,7 @@ export const ActivitiesSlider: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'stories' | 'activities'>('stories')
 
   return (
-    <section className="relative w-full h-full min-h-screen flex flex-col justify-between items-center px-4 sm:px-6 md:px-10 pt-20 sm:pt-24 pb-8 overflow-hidden select-none bg-[#FAF8F5]">
-      {/* Background Soft Glows */}
-      <div className="absolute top-1/4 -left-20 w-80 h-80 rounded-full bg-orange-400/15 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-20 w-80 h-80 rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
+    <section className="relative w-full h-full min-h-screen flex flex-col justify-between items-center px-4 sm:px-6 md:px-10 pt-20 sm:pt-24 pb-8 overflow-hidden select-none bg-[#eef2ff]">
 
       {/* ── 1. Top Section Header ── */}
       <div className="max-w-3xl w-full text-center flex flex-col items-center shrink-0 z-10">
@@ -45,7 +42,7 @@ export const ActivitiesSlider: React.FC = () => {
             onClick={() => setActiveTab('activities')}
             className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'activities'
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm'
+                ? 'bg-[#002366] text-white'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -139,7 +136,7 @@ export const ActivitiesSlider: React.FC = () => {
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-[1.5px]">
+                      <div className="w-8 h-8 rounded-full bg-[#FF4500] p-[1.5px]">
                         <div className="w-full h-full rounded-full bg-white flex items-center justify-center font-black text-[10px] text-slate-900">
                           SB
                         </div>
@@ -186,7 +183,7 @@ export const ActivitiesSlider: React.FC = () => {
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-[1.5px]">
+                      <div className="w-8 h-8 rounded-full bg-[#FF4500] p-[1.5px]">
                         <div className="w-full h-full rounded-full bg-white flex items-center justify-center font-black text-[10px] text-slate-900">
                           SB
                         </div>
@@ -233,7 +230,7 @@ export const ActivitiesSlider: React.FC = () => {
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-[1.5px]">
+                      <div className="w-8 h-8 rounded-full bg-[#FF4500] p-[1.5px]">
                         <div className="w-full h-full rounded-full bg-white flex items-center justify-center font-black text-[10px] text-slate-900">
                           SB
                         </div>

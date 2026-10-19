@@ -178,9 +178,10 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
 
           <Link
             href="/"
-            className="text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors"
+            aria-label="Sebooth, ke beranda"
+          className="flex items-center hover:opacity-80 transition-opacity"
           >
-            SEBOOTH.IN
+            <Image src="/images/logo/sebooth-navy.svg" alt="Sebooth Photobooth" width={67} height={28} unoptimized className="h-auto w-auto" style={{ height: 28 }} />
           </Link>
         </div>
       </header>
