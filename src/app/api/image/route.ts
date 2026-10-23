@@ -59,6 +59,14 @@ function setToMemoryCache(key: string, item: MemoryCacheItem) {
 // Prevents duplicate concurrent fetches for the same asset
 const inFlightRequests = new Map<string, Promise<{ buffer: Buffer; contentType: string }>>()
 
+// Several sizes of one photo (blur preview + display) arrive together on a cold cache;
+// they share one download of the original instead of each pulling the multi-MB file
+const inFlightSources = new Map<string, Promise<{ buffer: Buffer; contentType: string }>>()
+
+// s-maxage lets Vercel's edge CDN keep each WebP, so only the very first viewer pays for the
+// conversion; max-age alone caches in that one browser and every new visitor hits the function
+const CACHE_CONTROL = 'public, max-age=31536000, s-maxage=31536000, immutable'
+
 // ── Persistent Disk Cache Directory (Safe for Serverless & Read-Only FS) ──
 function getDiskCacheDir(): string | null {
   try {
@@ -73,6 +81,32 @@ function getDiskCacheDir(): string | null {
 }
 
 const diskCacheDir = getDiskCacheDir()
+
+async function fetchSource(url: string): Promise<{ buffer: Buffer; contentType: string }> {
+  const targetUrl = url.startsWith('http')
+    ? url
+    : new URL(url.startsWith('/') ? url : `/${url}`, 'http://127.0.0.1:3000').toString()
+
+  const res = await fetch(targetUrl, {
+    signal: AbortSignal.timeout(8000),
+    redirect: 'error', // an allowlisted host must not bounce us elsewhere
+    headers: {
+      Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+      'User-Agent': 'Sebooth-Fast-Optimizer/2.0',
+    },
+  })
+
+  if (!res.ok) {
+    throw new Error(`Remote image fetch failed: HTTP ${res.status}`)
+  }
+
+  const contentType = res.headers.get('content-type') || 'image/jpeg'
+  if (contentType.includes('video') || contentType.includes('gif')) {
+    throw new Error('Animation/Video format bypass')
+  }
+
+  return { buffer: Buffer.from(await res.arrayBuffer()), contentType }
+}
 
 export async function GET(request: Request) {
   let url = ''
@@ -133,7 +167,7 @@ export async function GET(request: Request) {
     }
 
     // Clamp width and quality to optimal performance ranges
-    const targetWidth = Math.min(Math.max(w || 640, 100), 1600)
+    const targetWidth = Math.min(Math.max(w || 640, 16), 1600)
     const targetQuality = Math.min(Math.max(q || 72, 40), 95)
 
     // Unique deterministic cache key
@@ -146,7 +180,7 @@ export async function GET(request: Request) {
       return new Response(null, {
         status: 304,
         headers: {
-          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Cache-Control': CACHE_CONTROL,
           ETag: etag,
         },
       })
@@ -159,7 +193,7 @@ export async function GET(request: Request) {
         status: 200,
         headers: {
           'Content-Type': memItem.contentType,
-          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Cache-Control': CACHE_CONTROL,
           ETag: memItem.etag,
           'X-Cache': 'HIT-RAM',
         },
@@ -184,7 +218,7 @@ export async function GET(request: Request) {
             status: 200,
             headers: {
               'Content-Type': 'image/webp',
-              'Cache-Control': 'public, max-age=31536000, immutable',
+              'Cache-Control': CACHE_CONTROL,
               ETag: etag,
               'X-Cache': 'HIT-DISK',
             },
@@ -217,33 +251,16 @@ export async function GET(request: Request) {
           }
         }
 
-        // Fetch remote resource
+        // Fetch remote resource (shared across sizes of the same photo)
         if (!inputBuffer) {
-          const targetUrl = url.startsWith('http')
-            ? url
-            : new URL(url.startsWith('/') ? url : `/${url}`, 'http://127.0.0.1:3000').toString()
-
-          const res = await fetch(targetUrl, {
-            signal: AbortSignal.timeout(8000),
-            redirect: 'error', // an allowlisted host must not bounce us elsewhere
-            headers: {
-              Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-              'User-Agent': 'Sebooth-Fast-Optimizer/2.0',
-            },
-          })
-
-          if (!res.ok) {
-            throw new Error(`Remote image fetch failed: HTTP ${res.status}`)
+          let sourcePromise = inFlightSources.get(url)
+          if (!sourcePromise) {
+            sourcePromise = fetchSource(url).finally(() => inFlightSources.delete(url))
+            inFlightSources.set(url, sourcePromise)
           }
-
-          const rawContentType = res.headers.get('content-type') || 'image/jpeg'
-          if (rawContentType.includes('video') || rawContentType.includes('gif')) {
-            throw new Error('Animation/Video format bypass')
-          }
-          detectedContentType = rawContentType
-
-          const arrayBuffer = await res.arrayBuffer()
-          inputBuffer = Buffer.from(arrayBuffer)
+          const fetched = await sourcePromise
+          inputBuffer = fetched.buffer
+          detectedContentType = fetched.contentType
         }
 
         // Check if Sharp is available
@@ -309,7 +326,7 @@ export async function GET(request: Request) {
         status: 200,
         headers: {
           'Content-Type': result.contentType,
-          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Cache-Control': CACHE_CONTROL,
           ETag: etag,
           'X-Cache': 'MISS',
         },

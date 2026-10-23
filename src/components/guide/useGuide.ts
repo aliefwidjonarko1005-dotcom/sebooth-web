@@ -21,8 +21,16 @@ export function useGuide(storageKey: string, { autoStart = true, delay = 1400, e
       seen = localStorage.getItem(storageKey) === 'true'
     } catch {}
     if (seen) return
-    const t = setTimeout(() => setOpen(true), delay)
-    return () => clearTimeout(t)
+    // Open when the browser is idle so the entrance animation does not compete with image decoding
+    let idle = 0
+    const t = setTimeout(() => {
+      if ('requestIdleCallback' in window) idle = window.requestIdleCallback(() => setOpen(true), { timeout: 1500 })
+      else setOpen(true)
+    }, delay)
+    return () => {
+      clearTimeout(t)
+      if (idle) window.cancelIdleCallback(idle)
+    }
   }, [storageKey, autoStart, delay, enabled])
 
   const start = useCallback(() => setOpen(true), [])

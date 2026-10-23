@@ -27,9 +27,9 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 import { SessionData } from '@/types/database'
-import PhotoDirectGestureGuide from '@/components/ui/PhotoDirectGestureGuide'
-import DesktopGuideModal from '@/components/ui/DesktopGuideModal'
-import Guide from '@/components/guide/Guide'
+import Guide, { emitGuideAction } from '@/components/guide/Guide'
+import ProgressiveImage from '@/components/ui/ProgressiveImage'
+import { useGuide } from '@/components/guide/useGuide'
 import { PROFILE_GUIDE, GUIDE_KEYS } from '@/config/guides'
 import { LiquidGlassDock } from '@/components/ui/LiquidGlassDock'
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
@@ -72,6 +72,12 @@ function getOptimizedDisplayUrl(rawUrl: string, width = 640, quality = 70): stri
   // Bypass animated formats and video streams
   if (rawUrl.match(/\.(gif|mp4|webm|mov)(\?.*)?$/i)) return rawUrl
   return `/api/image?url=${encodeURIComponent(rawUrl)}&w=${width}&q=${quality}`
+}
+
+/** ~300-byte blurred stand-in painted instantly while the display WebP loads. */
+function getBlurPlaceholderUrl(rawUrl: string | undefined): string | undefined {
+  if (!rawUrl || rawUrl.match(/\.(gif|mp4|webm|mov)(\?.*)?$/i)) return undefined
+  return getOptimizedDisplayUrl(getRawOriginalUrl(rawUrl), 24, 40)
 }
 
 /**
@@ -119,9 +125,6 @@ export default function MyPhotosPage() {
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false)
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false)
   const [claimInput, setClaimInput] = useState('')
-  const [isGestureGuideOpen, setIsGestureGuideOpen] = useState(false)
-  const [isDesktopGuideOpen, setIsDesktopGuideOpen] = useState(false)
-  const [isInteractiveTourOpen, setIsInteractiveTourOpen] = useState(false)
   const holdTimer = useRef<NodeJS.Timeout | null>(null)
   const holdFired = useRef<boolean>(false)
   const [touchFeedback, setTouchFeedback] = useState<'idle' | 'pressing' | 'peeking' | 'dragging' | 'tapping'>('idle')
@@ -265,15 +268,18 @@ export default function MyPhotosPage() {
   }
 
 
-  // Universal Help Opener: Routes cleanly to Desktop Guide on desktop (>=768px) and Direct Hand Gesture Guide on mobile (<768px)
+  // One spotlight guide for phone and desktop; opens by itself once for first-time visitors
+  const guide = useGuide(GUIDE_KEYS.profile, { enabled: !loading && dbSessions.length > 0 && !isOverviewMode })
   const handleOpenHelp = () => {
-    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
-      setIsDesktopGuideOpen(true)
-    } else {
-      setIsOverviewMode(false)
-      setIsGestureGuideOpen(true)
-    }
+    setIsOverviewMode(false)
+    guide.start()
   }
+
+  // A swipe step can't be completed with a single session, so leave it out
+  const profileGuideSteps = useMemo(
+    () => (dbSessions.length > 1 ? PROFILE_GUIDE : PROFILE_GUIDE.filter(st => st.action !== 'profile-swipe')),
+    [dbSessions.length]
+  )
 
   // Handle clicking a card in Bookshelf -> Zoom In to Focus Mode (iOS Photos style)
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>, targetIdx: number) => {
@@ -289,7 +295,6 @@ export default function MyPhotosPage() {
   // Handle opening Bookshelf from Focus Mode -> Zoom Out (iOS Photos style)
   const handleOpenBookshelf = () => {
     triggerHaptic(15)
-    setIsGestureGuideOpen(false)
     const rect = cardRectsRef.current[activeSessionIndex]
     if (rect) {
       setZoomOrigin(`${Math.round(rect.x)}px ${Math.round(rect.y)}px`)
@@ -328,23 +333,6 @@ export default function MyPhotosPage() {
       return () => clearTimeout(timer)
     }
   }, [isOverviewMode, activeSessionIndex])
-
-  // Auto-launch direct on-photo hand gesture tutorial for first-time visitors on mobile devices (< 768px)
-  useEffect(() => {
-    if (typeof window !== 'undefined' && !loading && dbSessions.length > 0) {
-      const isMobile = window.innerWidth < 768
-      if (isMobile) {
-        const hasSeen = localStorage.getItem('hasSeenPhotoGestureGuide_v1')
-        if (!hasSeen) {
-          const timer = setTimeout(() => {
-            setIsOverviewMode(false)
-            setIsGestureGuideOpen(true)
-          }, 800)
-          return () => clearTimeout(timer)
-        }
-      }
-    }
-  }, [loading, dbSessions.length])
 
   // Bundle download state
   const [isBundling, setIsBundling] = useState(false)
@@ -428,8 +416,8 @@ export default function MyPhotosPage() {
 
       const isMobileDevice = isMobile || (typeof window !== 'undefined' ? window.innerWidth < 768 : false)
       const rawStripUrl = stripMedia?.url || '/images/gallery/hd/strip_004a6bbb.webp'
-      // HP/Mobile Mode: compress photostrip preview to 60% quality (w=360, q=60) for minimal load
-      const stripThumbUrl = getOptimizedDisplayUrl(rawStripUrl, isMobileDevice ? 360 : 420, isMobileDevice ? 60 : 75)
+      // Grid cards are ~170px wide on phones, so 300px WebP covers 2x screens at a fraction of the bytes
+      const stripThumbUrl = getOptimizedDisplayUrl(rawStripUrl, isMobileDevice ? 300 : 360, isMobileDevice ? 55 : 62)
 
       const date = s.created_at ? new Date(s.created_at) : new Date()
       const formattedDate = date.toLocaleDateString('id-ID', {
@@ -674,6 +662,7 @@ export default function MyPhotosPage() {
       }
       triggerHaptic('settle')
       setIsOptionsModalOpen(true)
+      emitGuideAction('profile-hold')
       return
     }
 
@@ -714,6 +703,7 @@ export default function MyPhotosPage() {
       if (currentSession && activeSessionMediaList.length > 1) {
         handleNextMedia(currentSession.id, activeSessionMediaList.length)
       }
+      emitGuideAction('profile-tap')
       if (trackRef.current) {
         trackRef.current.style.transition = 'transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1)'
         trackRef.current.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`
@@ -754,6 +744,7 @@ export default function MyPhotosPage() {
     if (targetIndex !== currentIndex) {
       triggerHaptic(18)
       setActiveSessionIndex(targetIndex)
+      emitGuideAction('profile-swipe')
     }
   }
 
@@ -761,6 +752,8 @@ export default function MyPhotosPage() {
   // Keyboard navigation (Linear)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // The guide owns the keyboard while it is open (arrows move its steps)
+      if (guide.open) return
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         setActiveSessionIndex(prev => (prev < sessionsList.length - 1 ? prev + 1 : prev))
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
@@ -778,7 +771,7 @@ export default function MyPhotosPage() {
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [sessionsList.length, currentSession, activeSessionMediaList.length])
+  }, [sessionsList.length, currentSession, activeSessionMediaList.length, guide.open])
 
   const handleShare = () => {
     if (navigator.share) {
@@ -1120,7 +1113,7 @@ export default function MyPhotosPage() {
               </div>
 
               {/* Bookshelf Grid: 2 columns on mobile, 3 on tablet, 4 columns on desktop */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-7 sm:gap-x-6 sm:gap-y-8 md:gap-x-7 md:gap-y-9 lg:gap-x-8 lg:gap-y-10">
+              <div id="tour-profile-bookshelf-grid" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-7 sm:gap-x-6 sm:gap-y-8 md:gap-x-7 md:gap-y-9 lg:gap-x-8 lg:gap-y-10">
                 {sessionsList.map((session, sIdx) => {
                   const originalIndex = sessionsList.findIndex(s => s.id === session.id)
                   const targetIndex = originalIndex >= 0 ? originalIndex : sIdx
@@ -1173,19 +1166,13 @@ export default function MyPhotosPage() {
                             transformOrigin: 'center center'
                           }}
                         >
-                          <img
+                          <ProgressiveImage
                             src={session.stripUrl}
+                            placeholder={getBlurPlaceholderUrl(session.rawStripUrl)}
+                            fallbackSrc={session.rawStripUrl}
                             alt={session.title}
                             className="w-full h-full object-cover object-top select-none pointer-events-none"
-                            loading="lazy"
-                            decoding="async"
-                            onError={(e) => {
-                              if (session.rawStripUrl && e.currentTarget.src !== session.rawStripUrl) {
-                                e.currentTarget.src = session.rawStripUrl
-                              } else {
-                                e.currentTarget.src = '/images/gallery/hd/strip_004a6bbb.webp'
-                              }
-                            }}
+                            loading={Math.abs(targetIndex - activeSessionIndex) < 8 ? 'eager' : 'lazy'}
                           />
                         </div>
                       </div>
@@ -1293,9 +1280,6 @@ export default function MyPhotosPage() {
             {/* Gesture / Drag Tracking Area (Single-touch Drag, Swipe & Hold) */}
             <div
               onTouchStart={(e) => {
-                if (isGestureGuideOpen) {
-                  setIsGestureGuideOpen(false)
-                }
                 if (e.touches.length === 1) {
                   handleDragStart(e.touches[0].clientX)
                 }
@@ -1435,19 +1419,14 @@ export default function MyPhotosPage() {
                                     className="w-full h-full object-cover pointer-events-none select-none brightness-100 saturate-100"
                                   />
                                 ) : (
-                                  <img
+                                  <ProgressiveImage
                                     src={med.url}
+                                    // The strip is usually already cached from Gallery View; photos get a blur
+                                    placeholder={med.type === 'strip' ? session.stripUrl : getBlurPlaceholderUrl(med.hdUrl)}
+                                    fallbackSrc={med.hdUrl}
                                     alt={med.label}
                                     className="w-full h-full object-cover pointer-events-none select-none"
                                     loading={isCurrentSession || isStrictlyInWindow ? 'eager' : 'lazy'}
-                                    decoding="async"
-                                    onError={(e) => {
-                                      if (med.hdUrl && e.currentTarget.src !== med.hdUrl) {
-                                        e.currentTarget.src = med.hdUrl
-                                      } else {
-                                        e.currentTarget.src = '/images/gallery/hd/strip_004a6bbb.webp'
-                                      }
-                                    }}
                                   />
                                 )}
 
@@ -1466,7 +1445,7 @@ export default function MyPhotosPage() {
                           onMouseDown={(e) => e.stopPropagation()}
                           onTouchStart={(e) => e.stopPropagation()}
                           className={`absolute top-3.5 right-3.5 z-40 flex items-center gap-1.5 transition-opacity duration-200 ${
-                            isCurrentSession && !isGestureGuideOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                            isCurrentSession ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                           }`}
                         >
                           <button
@@ -1496,19 +1475,6 @@ export default function MyPhotosPage() {
                             <MoreHorizontal className="w-4 h-4 stroke-[2.2]" />
                           </button>
                         </div>
-
-                        {/* 3. Direct On-Photo Hand Gesture Tutorial */}
-                        {isCurrentSession && isGestureGuideOpen && (
-                          <PhotoDirectGestureGuide
-                            isOpen={isGestureGuideOpen}
-                            onClose={() => setIsGestureGuideOpen(false)}
-                            onOpenBookshelf={() => {
-                              setIsGestureGuideOpen(false)
-                              handleOpenBookshelf()
-                            }}
-                            storageKey="hasSeenPhotoGestureGuide_v1"
-                          />
-                        )}
 
                       </div>
                     </div>
@@ -1543,7 +1509,7 @@ export default function MyPhotosPage() {
                   ? 'download'
                   : isOverviewMode
                     ? 'gallery'
-                    : (isGestureGuideOpen || isDesktopGuideOpen)
+                    : guide.open
                       ? 'guide'
                       : 'photos'
             }
@@ -1711,7 +1677,9 @@ export default function MyPhotosPage() {
                 Opsi Sesi ({currentSession?.title})
               </h3>
               <button
+                id="tour-profile-options-close"
                 onClick={() => setIsOptionsModalOpen(false)}
+                aria-label="Tutup menu"
                 className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
@@ -1837,24 +1805,8 @@ export default function MyPhotosPage() {
         </div>
       )}
 
-      {/* Desktop Navigation Guide Modal (Keyboard Shortcuts & Mouse Controls) */}
-      <DesktopGuideModal
-        isOpen={isDesktopGuideOpen}
-        onClose={() => setIsDesktopGuideOpen(false)}
-        onStartSpotlightTour={() => setIsInteractiveTourOpen(true)}
-        onOpenMobileGestureSimulation={() => {
-          setIsGestureGuideOpen(true)
-        }}
-      />
-
-      {/* Desktop Interactive Spotlight Tour */}
-      <Guide
-        steps={PROFILE_GUIDE}
-        open={isInteractiveTourOpen}
-        onClose={() => setIsInteractiveTourOpen(false)}
-        storageKey={GUIDE_KEYS.profile}
-        variant="brutal"
-      />
+      {/* Spotlight guide: card gestures, Gallery View, download, help */}
+      <Guide steps={profileGuideSteps} open={guide.open} onClose={guide.close} storageKey={GUIDE_KEYS.profile} variant="ios" />
 
     </div>
   )

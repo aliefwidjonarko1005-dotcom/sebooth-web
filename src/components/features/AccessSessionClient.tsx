@@ -55,6 +55,34 @@ function getRawOriginalUrl(url: string | undefined): string {
   return url
 }
 
+/**
+ * Muted looping grid video that only plays while on screen, so a long gallery does not decode
+ * every clip at once. `paused` holds it still while an overlay (the guide) is on top.
+ */
+function GridVideo({ src, paused, className }: { src: string; paused: boolean; className: string }) {
+  const ref = useRef<HTMLVideoElement>(null)
+  const [inView, setInView] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin: '120px 0px' })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (inView && !paused) {
+      el.muted = true
+      el.play().catch(() => {})
+    } else el.pause()
+  }, [inView, paused])
+
+  return <video ref={ref} src={src} muted loop playsInline preload="metadata" className={className} style={{ WebkitTouchCallout: 'default' }} />
+}
+
 export default function AccessSessionClient({ session: initialSession, sessionId }: AccessSessionClientProps) {
   const router = useRouter()
   const supabase = createClient()
@@ -95,6 +123,12 @@ export default function AccessSessionClient({ session: initialSession, sessionId
   // Lightbox preview modal state
   const [previewIndex, setPreviewIndex] = useState<number | null>(null)
   const [previewDir, setPreviewDir] = useState(0)
+  // Guide waits for the first thumbnail (or 1.5s) so its entrance does not land on top of image decoding
+  const [firstMediaReady, setFirstMediaReady] = useState(false)
+  useEffect(() => {
+    const t = setTimeout(() => setFirstMediaReady(true), 1500)
+    return () => clearTimeout(t)
+  }, [])
 
   // Expiration time & policy check
   const expiryInfo = useMemo(() => {
@@ -167,7 +201,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
   }, [session.media, isMobile])
 
   const previewMedia = previewIndex !== null ? mediaList[previewIndex] ?? null : null
-  const guide = useGuide(GUIDE_KEYS.access, { enabled: mediaList.length > 0 && !sheetOpen && previewIndex === null })
+  const guide = useGuide(GUIDE_KEYS.access, { delay: 900, enabled: firstMediaReady && mediaList.length > 0 && !sheetOpen && previewIndex === null })
   const stepPreview = (dir: number) => {
     if (previewIndex === null || mediaList.length < 2) return
     setPreviewDir(dir)
@@ -354,14 +388,18 @@ export default function AccessSessionClient({ session: initialSession, sessionId
     return savedCount
   }
 
-  // 8. Download first, ask later: once every file is saved, slide up the rating → Google → Instagram sheet
+  // 8. Download All asks for a rating right away while the files keep downloading underneath.
+  // The download never waits on the rating. Already rated: Google → Instagram follow once the files are saved.
   const handleDownloadClick = async () => {
+    if (isBundling) return
+    const askRatingNow = !readFunnel(sessionId).rating
+    if (askRatingNow) setTimeout(() => openSheet('rating'), reduceMotion ? 0 : 350)
     const saved = await handleDownloadBundle()
     if (saved > 0) {
       setDownloadedCount(saved)
       setJustSaved(true)
       setTimeout(() => setJustSaved(false), 2800)
-      if (shouldAutoOpen(readFunnel(sessionId))) {
+      if (!askRatingNow && shouldAutoOpen(readFunnel(sessionId))) {
         setTimeout(() => openSheet(), reduceMotion ? 0 : 600)
       }
     }
@@ -431,7 +469,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       </div>
 
       {/* ─── TOP APP BAR ─── */}
-      <header className="sticky top-0 z-40 w-full bg-[#FAF8F5]/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-40 w-full bg-[#FAF8F5]/95 sm:bg-[#FAF8F5]/90 sm:backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3 min-w-0">
           <Link
             href="/"
@@ -541,7 +579,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                   viewport={{ once: true, margin: '0px 0px -40px 0px' }}
                   transition={{ duration: 0.36, delay: reduceMotion ? 0 : Math.min(idx, 8) * 0.06, ease: [0.22, 1, 0.36, 1] }}
                   onClick={() => setPreviewIndex(idx)}
-                  className={`group relative rounded-xl overflow-hidden bg-slate-950 border border-slate-200 shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-center select-auto ${
+                  className={`group relative rounded-xl overflow-hidden bg-slate-950 border border-slate-200 shadow-xs hover:shadow-md transition-shadow cursor-pointer flex items-center justify-center select-auto ${
                     isStrip ? 'aspect-[2/3] row-span-1' : 'aspect-[3/4]'
                   }`}
                   style={{
@@ -550,14 +588,10 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                 >
                   {/* Media Element */}
                   {isVideo ? (
-                    <video
+                    <GridVideo
                       src={item.url}
-                      muted
-                      loop
-                      autoPlay
-                      playsInline
+                      paused={guide.open}
                       className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300 pointer-events-auto"
-                      style={{ WebkitTouchCallout: 'default' }}
                     />
                   ) : (
                     <img
@@ -567,6 +601,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                       style={{ WebkitTouchCallout: 'default' }}
                       loading="lazy"
                       decoding="async"
+                      onLoad={idx === 0 ? () => setFirstMediaReady(true) : undefined}
                       onError={(e) => {
                         if (item.url && e.currentTarget.src !== item.url) {
                           e.currentTarget.src = item.url
@@ -577,7 +612,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
 
                   {/* Top-Left Media Type Badge */}
                   <div className="absolute top-2.5 left-2.5 z-20 pointer-events-none">
-                    <span className="px-2 py-0.5 rounded-md bg-black/55 backdrop-blur-md text-white/95 text-[10px] font-medium tracking-wide uppercase border border-white/10 shadow-xs">
+                    <span className="px-2 py-0.5 rounded-md bg-black/60 text-white/95 text-[10px] font-medium tracking-wide uppercase border border-white/10 shadow-xs">
                       {item.label}
                     </span>
                   </div>
@@ -585,7 +620,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                   {/* Top-Right Apple Liquid Glass Circular Download Button */}
                   <button
                     onClick={(e) => handleDownloadSingle(e, item, idx)}
-                    className="absolute top-2.5 right-2.5 z-30 w-8 h-8 rounded-full bg-black/40 hover:bg-black/65 text-white backdrop-blur-xl border border-white/30 flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer"
+                    className="absolute top-2.5 right-2.5 z-30 w-8 h-8 rounded-full bg-black/50 hover:bg-black/65 text-white border border-white/30 flex items-center justify-center shadow-sm active:scale-90 transition-[background-color,transform] cursor-pointer"
                     title={`Unduh ${item.label}`}
                     aria-label={`Unduh ${item.label}`}
                   >
@@ -768,6 +803,13 @@ export default function AccessSessionClient({ session: initialSession, sessionId
         eventName={session.event_name}
         initialStage={sheetStage}
         doneNote={downloadedCount ? `${downloadedCount} file sudah tersimpan di perangkatmu.` : undefined}
+        status={
+          isBundling
+            ? { text: `Menyimpan ${bundleProgress.current} dari ${bundleProgress.total} file…`, busy: true }
+            : downloadedCount
+              ? { text: `${downloadedCount} file tersimpan di perangkatmu`, busy: false }
+              : undefined
+        }
         onClose={() => setSheetOpen(false)}
       />
 

@@ -8,7 +8,7 @@ import type { GuideStep } from '@/components/guide/Guide'
 
 export const GUIDE_KEYS = {
   access: 'guide_seen_access_v2',
-  profile: 'guide_seen_profile_v2',
+  profile: 'guide_seen_profile_v4',
   queueJoin: 'guide_seen_queue_join_v2',
   queueTicket: 'guide_seen_queue_ticket_v2',
   frames: 'guide_seen_frames_v2',
@@ -55,30 +55,62 @@ export const ACCESS_GUIDE: GuideStep[] = [
   }
 ]
 
+// Learn by doing: each gesture step waits for the visitor to really do it on their own photos
 export const PROFILE_GUIDE: GuideStep[] = [
   {
     target: 'tour-profile-session-card',
-    title: 'Tumpukan foto sesi',
-    body: 'Ketuk foto untuk ganti pose. Geser ke samping atau tekan panah kiri dan kanan untuk pindah sesi.',
-    gesture: 'swipe-x'
+    title: 'Ketuk untuk ganti pose',
+    body: 'Satu sesi berisi photostrip, foto pose, live video, dan GIF. Coba ketuk fotonya sekali.',
+    gesture: 'tap',
+    advanceOn: 'action',
+    action: 'profile-tap'
   },
   {
-    target: 'tour-profile-mode-switcher',
-    title: 'Lihat semua sesi sekaligus',
-    body: 'Tombol ini membuka rak album berisi seluruh sesimu.',
-    gesture: 'tap'
+    target: 'tour-profile-session-card',
+    title: 'Geser untuk pindah sesi',
+    body: 'Sekarang geser foto ke kiri atau kanan untuk membuka sesi lain. Di laptop, tarik pakai mouse.',
+    gesture: 'swipe-x',
+    advanceOn: 'action',
+    action: 'profile-swipe'
+  },
+  {
+    target: 'tour-profile-session-card',
+    title: 'Tahan untuk buka menu',
+    body: 'Tekan dan tahan foto sampai kartunya membesar, lalu lepas. Menu unduh dan bagikan akan terbuka.',
+    gesture: 'hold',
+    advanceOn: 'action',
+    action: 'profile-hold'
+  },
+  {
+    target: 'tour-profile-options-close',
+    title: 'Ini menu fotomu',
+    body: 'Dari sini kamu bisa unduh foto HD atau bagikan sesi. Untuk sekarang, tutup dulu menunya.',
+    gesture: 'tap',
+    advanceOn: 'click'
+  },
+  {
+    target: 'bottom-nav-bookshelf-btn',
+    title: 'Buka Gallery View',
+    body: 'Semua sesimu tersusun di satu rak. Ketuk tombol ini untuk melihatnya.',
+    gesture: 'tap',
+    advanceOn: 'click'
+  },
+  {
+    target: 'tour-profile-bookshelf-grid',
+    title: 'Pilih satu sesi',
+    body: 'Ketuk salah satu photostrip untuk membukanya dalam tampilan besar.',
+    gesture: 'tap',
+    advanceOn: 'click'
   },
   {
     target: 'tour-profile-bundle-btn',
     title: 'Simpan semua file sesi ini',
-    body: 'Photostrip, live video, GIF, dan foto asli diunduh berurutan dalam kualitas penuh.',
-    gesture: 'tap'
+    body: 'Tombol ini mengunduh photostrip, live video, GIF, dan foto asli dalam kualitas penuh. Pakai kapan saja kamu siap.'
   },
   {
-    target: 'tour-profile-help-btn',
-    title: 'Butuh bantuan lagi?',
-    body: 'Buka panduan ini kapan saja dari tombol tanda tanya.',
-    gesture: 'tap'
+    target: 'bottom-nav-guide-btn',
+    title: 'Kamu sudah siap',
+    body: 'Panduan ini bisa dibuka lagi kapan saja dari tombol Guide.'
   }
 ]
 

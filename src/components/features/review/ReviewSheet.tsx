@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { motion, AnimatePresence, useDragControls, useReducedMotion } from 'framer-motion'
-import { X } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 import ReviewFunnel from './ReviewFunnel'
 import { FunnelStage, writeFunnel } from '@/lib/reviewFunnel'
 
@@ -12,14 +12,16 @@ interface ReviewSheetProps {
   eventName?: string | null
   initialStage?: FunnelStage
   doneNote?: string
+  /** Download progress shown above the funnel while the files save in the background. */
+  status?: { text: string; busy: boolean }
   onClose: () => void
 }
 
 /**
- * Bottom sheet that slides up after the softfiles finish downloading.
+ * Bottom sheet that slides up when the user taps Download All (files keep saving underneath).
  * Drag the handle down, tap the backdrop, press Esc or the close button to dismiss.
  */
-export default function ReviewSheet({ open, sessionId, eventName, initialStage, doneNote, onClose }: ReviewSheetProps) {
+export default function ReviewSheet({ open, sessionId, eventName, initialStage, doneNote, status, onClose }: ReviewSheetProps) {
   const reduceMotion = useReducedMotion()
   const dragControls = useDragControls()
 
@@ -93,6 +95,20 @@ export default function ReviewSheet({ open, sessionId, eventName, initialStage, 
                 <X className="w-5 h-5" />
               </button>
             </div>
+            {status && (
+              <p
+                role="status"
+                aria-live="polite"
+                className="mx-auto mt-1 w-fit max-w-full px-3 py-1.5 rounded-full bg-slate-100 text-[13px] text-slate-600 tabular-nums flex items-center gap-2"
+              >
+                {status.busy ? (
+                  <span className="w-3.5 h-3.5 shrink-0 rounded-full border-2 border-slate-300 border-t-slate-700 animate-spin" aria-hidden="true" />
+                ) : (
+                  <Check className="w-3.5 h-3.5 shrink-0 text-emerald-600 stroke-[2.6]" aria-hidden="true" />
+                )}
+                {status.text}
+              </p>
+            )}
             <div className="mt-1">
               <ReviewFunnel sessionId={sessionId} eventName={eventName} initialStage={initialStage} doneNote={doneNote} onFinish={close} />
             </div>
