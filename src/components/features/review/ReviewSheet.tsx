@@ -13,7 +13,7 @@ interface ReviewSheetProps {
   initialStage?: FunnelStage
   doneNote?: string
   /** Download progress shown above the funnel while the files save in the background. */
-  status?: { text: string; busy: boolean; action?: { label: string; onClick: () => void } }
+  status?: { text: string; busy: boolean }
   onClose: () => void
 }
 
@@ -108,15 +108,6 @@ export default function ReviewSheet({ open, sessionId, eventName, initialStage, 
                 )}
                 {status.text}
               </p>
-            )}
-            {status?.action && (
-              <button
-                type="button"
-                onClick={status.action.onClick}
-                className="mt-3 w-full min-h-[52px] rounded-full bg-slate-900 text-white text-[15px] font-semibold cursor-pointer hover:bg-slate-800 transition-colors"
-              >
-                {status.action.label}
-              </button>
             )}
             <div className="mt-1">
               <ReviewFunnel sessionId={sessionId} eventName={eventName} initialStage={initialStage} doneNote={doneNote} onFinish={close} />
