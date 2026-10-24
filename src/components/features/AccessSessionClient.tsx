@@ -110,6 +110,8 @@ export default function AccessSessionClient({ session: initialSession, sessionId
   const [bundleProgress, setBundleProgress] = useState<{ current: number; total: number }>({ current: 0, total: 0 })
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [downloadedCount, setDownloadedCount] = useState<number | null>(null)
+  // Files fetched but not saved: the tap's user activation expired during the fetch, so share needs a fresh tap.
+  const [readyFiles, setReadyFiles] = useState<File[] | null>(null)
   const [sheetOpen, setSheetOpen] = useState(false)
   const [justSaved, setJustSaved] = useState(false)
   const [sheetStage, setSheetStage] = useState<FunnelStage | undefined>(undefined)
@@ -351,12 +353,25 @@ export default function AccessSessionClient({ session: initialSession, sessionId
           savedCount = downloadedFiles.length
           showToast(`Berhasil menyimpan ${downloadedFiles.length} file ke galeri.`)
         } catch (shareErr: any) {
+          if (shareErr.name === 'NotAllowedError') {
+            // Mobile browsers drop the tap's activation while files download; scripted downloads are blocked too.
+            setReadyFiles(downloadedFiles)
+            showToast('File siap. Tap "Simpan ke Galeri" untuk menyimpan.')
+            return 0
+          }
           if (shareErr.name !== 'AbortError') {
             console.warn('Share API fallback to sequential download:', shareErr)
           } else {
             savedViaShare = true
           }
         }
+      }
+
+      // Mobile without file share (http, in-app browsers): only the first scripted download is allowed, so wait for a tap.
+      if (!savedViaShare && isMobileDevice && downloadedFiles.length > 1) {
+        setReadyFiles(downloadedFiles)
+        showToast('File siap. Tap "Simpan ke Galeri" untuk menyimpan.')
+        return 0
       }
 
       // Step C: Fallback Sequential Multiple Downloads for Android / Chrome / PC
@@ -390,19 +405,61 @@ export default function AccessSessionClient({ session: initialSession, sessionId
 
   // 8. Download All asks for a rating right away while the files keep downloading underneath.
   // The download never waits on the rating. Already rated: Google → Instagram follow once the files are saved.
+  const markSaved = (saved: number, skipAutoOpen: boolean) => {
+    setDownloadedCount(saved)
+    setJustSaved(true)
+    setTimeout(() => setJustSaved(false), 2800)
+    if (!skipAutoOpen && shouldAutoOpen(readFunnel(sessionId))) {
+      setTimeout(() => openSheet(), reduceMotion ? 0 : 600)
+    }
+  }
+
+  // Second tap: share is called before any await so this tap's activation is still valid.
+  const saveReadyFiles = async () => {
+    if (!readyFiles) return
+    if (!navigator.canShare?.({ files: readyFiles })) {
+      // No awaits between clicks: every download must start inside this tap.
+      for (const file of readyFiles) {
+        const blobUrl = URL.createObjectURL(file)
+        const link = document.createElement('a')
+        link.href = blobUrl
+        link.download = file.name
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000)
+      }
+      const saved = readyFiles.length
+      setReadyFiles(null)
+      showToast(`Mengunduh ${saved} file. Izinkan "unduh beberapa file" jika browser bertanya.`)
+      markSaved(saved, sheetOpen)
+      return
+    }
+    try {
+      await navigator.share({
+        files: readyFiles,
+        title: `Sesi Foto ${session.event_name || 'Sebooth'}`,
+        text: 'Simpan semua foto & video ke galeri perangkat.'
+      })
+      const saved = readyFiles.length
+      setReadyFiles(null)
+      showToast(`Berhasil menyimpan ${saved} file ke galeri.`)
+      markSaved(saved, sheetOpen)
+    } catch (err: any) {
+      if (err.name !== 'AbortError') {
+        console.error('Save to gallery failed:', err)
+        showToast('Gagal menyimpan file. Tekan lama foto untuk menyimpan satu per satu.')
+      }
+    }
+  }
+
   const handleDownloadClick = async () => {
     if (isBundling) return
+    if (readyFiles) return saveReadyFiles()
     const askRatingNow = !readFunnel(sessionId).rating
     if (askRatingNow) setTimeout(() => openSheet('rating'), reduceMotion ? 0 : 350)
     const saved = await handleDownloadBundle()
-    if (saved > 0) {
-      setDownloadedCount(saved)
-      setJustSaved(true)
-      setTimeout(() => setJustSaved(false), 2800)
-      if (!askRatingNow && shouldAutoOpen(readFunnel(sessionId))) {
-        setTimeout(() => openSheet(), reduceMotion ? 0 : 600)
-      }
-    }
+    if (saved > 0) markSaved(saved, askRatingNow)
   }
 
   // Format date display
@@ -790,9 +847,9 @@ export default function AccessSessionClient({ session: initialSession, sessionId
           loading={isBundling}
           progress={bundleProgress}
           done={justSaved}
-          title="Download All Photo"
-          titleAttr="Download All Photo"
-          ariaLabel="Download All Photo"
+          title={readyFiles ? 'Simpan ke Galeri' : 'Download All Photo'}
+          titleAttr={readyFiles ? 'Simpan ke Galeri' : 'Download All Photo'}
+          ariaLabel={readyFiles ? 'Simpan ke Galeri' : 'Download All Photo'}
         />
       </aside>
 
@@ -806,6 +863,8 @@ export default function AccessSessionClient({ session: initialSession, sessionId
         status={
           isBundling
             ? { text: `Menyimpan ${bundleProgress.current} dari ${bundleProgress.total} file…`, busy: true }
+            : readyFiles
+              ? { text: `${readyFiles.length} file siap`, busy: false, action: { label: 'Simpan ke Galeri', onClick: saveReadyFiles } }
             : downloadedCount
               ? { text: `${downloadedCount} file tersimpan di perangkatmu`, busy: false }
               : undefined
