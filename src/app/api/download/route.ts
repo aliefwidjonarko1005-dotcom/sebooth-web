@@ -25,7 +25,8 @@ export async function GET(request: Request) {
     const targetUrl = source.kind === 'remote' ? source.url : new URL(source.path, request.url).toString()
 
     const response = await fetch(targetUrl, {
-      redirect: 'error',
+      // Not 'error': Vercel's edge runtime throws on it. A 3xx comes back !ok and is rejected below.
+      redirect: 'manual',
       headers: {
         Accept: '*/*',
         'User-Agent': 'Sebooth Proxy/1.0',

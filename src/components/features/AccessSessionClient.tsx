@@ -340,6 +340,11 @@ export default function AccessSessionClient({ session: initialSession, sessionId
         }
       }
 
+      if (downloadedFiles.length === 0) {
+        showToast('Gagal mengambil file. Periksa koneksi lalu coba lagi.')
+        return 0
+      }
+
       // Step B: Native Save via Web Share Level 2 on Mobile (Direct to Camera Roll / iOS Photos)
       let savedViaShare = false
       if (isMobileDevice && typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: downloadedFiles })) {
