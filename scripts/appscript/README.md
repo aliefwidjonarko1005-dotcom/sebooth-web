@@ -36,6 +36,13 @@ done DEV-202610-001
    - `APPS_SCRIPT_SECRET` = string dari langkah 2
 5. **Tes koneksi.** Buka **Actions → KPI Log → Run workflow**. Respons yang benar adalah `{"ok":true,"released":0,...}`. Setelah itu, push ke `main` akan langsung mengisi Release Log.
 
+## Cek berhasil atau tidak
+
+1. **GitHub Actions → KPI Log**: run harus hijau. Log step "Send commits to Apps Script" memuat `{"ok":true,"released":N,"done":[...]}`.
+2. **Website & App → Release Log**: muncul baris baru per commit. Kalau commit memakai `done DEV-…`, Status di Development Tracker berubah jadi Done.
+3. **KPI → KPI Evidence / KPI Progress**: setelah sync jam-jaman (menit ke-08), JON-03 ikut terhitung.
+4. **Ada masalah?** Buka Apps Script → Executions. Setiap kiriman muncul sebagai `doPost`, dan error-nya terlihat di sana.
+
 ## Catatan
 
 - Kalau `KpiLog.gs` diubah, deploy ulang lewat **Deploy → Manage deployments → Edit → Version: New version** supaya URL tetap sama.
