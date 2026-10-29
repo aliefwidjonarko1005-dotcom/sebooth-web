@@ -1,0 +1,46 @@
+# Sends every push to main to the KPI Log Google Sheet (scripts/appscript/kpi-log.gs).
+# Needs repo secrets APPS_SCRIPT_URL and APPS_SCRIPT_SECRET; setup in scripts/appscript/README.md.
+name: KPI Log
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send commits to Apps Script
+        env:
+          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
+          APPS_SCRIPT_SECRET: ${{ secrets.APPS_SCRIPT_SECRET }}
+        run: |
+          if [ -z "$APPS_SCRIPT_URL" ] || [ -z "$APPS_SCRIPT_SECRET" ]; then
+            echo "::warning::APPS_SCRIPT_URL / APPS_SCRIPT_SECRET not set, skipping KPI log"
+            exit 0
+          fi
+
+          # Manual runs have no commit list, so log the current HEAD instead.
+          jq --arg secret "$APPS_SCRIPT_SECRET" '{
+            secret: $secret,
+            repo: .repository.full_name,
+            branch: .ref,
+            commits: (if .commits then [.commits[] | {
+              hash: .id, message: .message, author: .author.name, timestamp: .timestamp, url: .url,
+              files: ((.added + .removed + .modified) | length)
+            }] else [] end)
+          }' "$GITHUB_EVENT_PATH" > payload.json
+
+          if [ "$(jq '.commits | length' payload.json)" = "0" ]; then
+            jq --arg sha "$GITHUB_SHA" --arg url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA" \
+              --arg ts "$(date -u +%FT%TZ)" --arg actor "$GITHUB_ACTOR" \
+              '.commits = [{hash: $sha, message: "manual run", author: $actor, timestamp: $ts, url: $url, files: 0}]' \
+              payload.json > p.tmp && mv p.tmp payload.json
+          fi
+
+          # Apps Script answers with a 302 to the result page; -L follows it as GET.
+          response=$(curl -sSL --fail -H "Content-Type: application/json" --data @payload.json "$APPS_SCRIPT_URL")
+          rm payload.json
+          echo "$response"
+          echo "$response" | jq -e '.ok == true' > /dev/null
