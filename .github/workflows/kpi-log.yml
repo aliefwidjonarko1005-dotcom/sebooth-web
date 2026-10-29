@@ -21,23 +21,17 @@ jobs:
             exit 0
           fi
 
-          # Manual runs have no commit list, so log the current HEAD instead.
+          # pushedAt is GitHub's server clock, used as the completion time for "done DEV-…".
+          # Manual runs have no commits: they only test the connection.
           jq --arg secret "$APPS_SCRIPT_SECRET" '{
             secret: $secret,
             repo: .repository.full_name,
             branch: .ref,
-            commits: (if .commits then [.commits[] | {
-              hash: .id, message: .message, author: .author.name, timestamp: .timestamp, url: .url,
-              files: ((.added + .removed + .modified) | length)
-            }] else [] end)
+            pushedAt: .repository.pushed_at,
+            commits: [(.commits // [])[] | {
+              hash: .id, message: .message, author: .author.name, timestamp: .timestamp, url: .url
+            }]
           }' "$GITHUB_EVENT_PATH" > payload.json
-
-          if [ "$(jq '.commits | length' payload.json)" = "0" ]; then
-            jq --arg sha "$GITHUB_SHA" --arg url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA" \
-              --arg ts "$(date -u +%FT%TZ)" --arg actor "$GITHUB_ACTOR" \
-              '.commits = [{hash: $sha, message: "manual run", author: $actor, timestamp: $ts, url: $url, files: 0}]' \
-              payload.json > p.tmp && mv p.tmp payload.json
-          fi
 
           # Apps Script answers with a 302 to the result page; -L follows it as GET.
           response=$(curl -sSL --fail -H "Content-Type: application/json" --data @payload.json "$APPS_SCRIPT_URL")
