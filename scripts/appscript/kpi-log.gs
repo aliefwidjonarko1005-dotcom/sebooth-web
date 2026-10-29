@@ -18,6 +18,8 @@
  */
 var KPI_LOG_DEV_RE = /DEV-\d{6}-\d{3}/gi;
 var KPI_LOG_DONE_RE = /\b(?:done|closes?|selesai)\s*:?\s*(DEV-\d{6}-\d{3})/gi;
+// Release Log PIC is a dropdown of team names, so a GitHub username would be rejected.
+var KPI_LOG_DEFAULT_PIC = 'Jonar';
 // Same eligibility as calcDevelopment_ in the engine.
 var KPI_LOG_DEV_KPI = [
   {key: 'JON-03', name: 'Jonar', platforms: ['Website', 'Both']},
@@ -42,8 +44,9 @@ function doPost(e) {
     var pushedAt = typeof body.pushedAt === 'number' ? new Date(body.pushedAt * 1000) : new Date();
     var commits = body.commits || [];
     var tracker = kpiLogTracker_(web);
-    var released = kpiLogRelease_(web, commits, tracker, body.branch);
+    // KPI evidence first: a Release Log problem must not cost the completion timestamp.
     var done = kpiLogMarkDone_(tracker, commits, pushedAt);
+    var released = kpiLogRelease_(web, commits, tracker, body.branch);
     return kpiLogJson_({ok: true, released: released, done: done});
   } finally {
     lock.releaseLock();
@@ -77,7 +80,7 @@ function kpiLogRelease_(web, commits, tracker, branch) {
         String(branch || '').replace('refs/heads/', ''),
         new Date(c.timestamp),
         String(c.message || '').split('\n')[0],
-        dev ? dev.values[tracker.h['PIC']] : (c.author || ''),
+        (dev && dev.values[tracker.h['PIC']]) || KPI_LOG_DEFAULT_PIC,
         'Released',
         ids.join(', '),
         '',
