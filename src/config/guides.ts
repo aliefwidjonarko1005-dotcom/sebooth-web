@@ -44,7 +44,7 @@ export const ACCESS_GUIDE: GuideStep[] = [
   {
     target: 'tour-claim-bundle-btn',
     title: 'Unduh semua sekaligus',
-    body: 'Satu ketukan menyimpan seluruh file ke perangkat, tanpa ZIP. Setelah selesai, ada dua langkah singkat: rating dan follow Instagram.',
+    body: 'Simpan seluruh file sekaligus, sebagai satu ZIP atau file terpisah. Setelah selesai, ada dua langkah singkat: rating dan follow Instagram.',
     gesture: 'tap'
   },
   {

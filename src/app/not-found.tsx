@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Halaman tidak ditemukan | Sebooth",
+  title: { absolute: "Halaman tidak ditemukan | Sebooth" },
   robots: { index: false, follow: true },
 };
 

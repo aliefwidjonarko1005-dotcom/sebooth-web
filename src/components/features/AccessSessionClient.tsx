@@ -25,6 +25,7 @@ import { checkSessionExpiry } from '@/lib/sessionExpiryPolicy'
 import ClayPillButton from '@/components/ui/ClayPillButton'
 import ClaimStatusStrip from '@/components/features/ClaimStatusStrip'
 import ReviewSheet from '@/components/features/review/ReviewSheet'
+import DownloadChoiceSheet, { DownloadFile, DownloadMode } from '@/components/features/DownloadChoiceSheet'
 import StoryShareSheet, { StoryPhoto } from '@/components/features/StoryShareSheet'
 import { FunnelStage, readFunnel, shouldAutoOpen } from '@/lib/reviewFunnel'
 import { INSTAGRAM_HANDLE } from '@/config/social'
@@ -237,9 +238,9 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       setIsClaimedByMe(true)
       setSession(prev => ({ ...prev, is_claimed: true, user_id: user.id }))
       showToast('Sesi berhasil diklaim dan tersimpan di akun kamu.')
-    } catch (err: any) {
+    } catch (err) {
       console.error('Claim error:', err)
-      setError(err.message || 'Gagal mengklaim sesi. Silakan coba lagi.')
+      setError((err instanceof Error && err.message) || 'Gagal mengklaim sesi. Silakan coba lagi.')
     } finally {
       setIsClaiming(false)
     }
@@ -277,26 +278,27 @@ export default function AccessSessionClient({ session: initialSession, sessionId
     showToast(`Mengunduh ${item.label}...`)
   }
 
-  // 7. Download All: one proxied attachment link per file, all clicked inside this tap (no share sheet).
-  // No fetch or await first: mobile browsers block scripted downloads once the tap's activation expires.
-  const handleDownloadBundle = (): number => {
-    const sessionSlug = session.event_name?.replace(/[^a-zA-Z0-9_-]+/g, '_') || `Sebooth_${sessionId.slice(0, 6)}`
-    mediaList.forEach((item) => {
+  // 7. Download All: every file as a proxied attachment link, for the ZIP or the separate downloads
+  const sessionSlug = session.event_name?.replace(/[^a-zA-Z0-9_-]+/g, '_') || `Sebooth_${sessionId.slice(0, 6)}`
+  const bundleFiles = useMemo<DownloadFile[]>(() => {
+    const used = new Set<string>()
+    return mediaList.map((item, idx) => {
       let ext = 'jpg'
       if (item.type === 'video' || /\.(mp4|mov|webm)/i.test(item.url)) ext = 'mp4'
       else if (item.type === 'gif' || /\.gif/i.test(item.url)) ext = 'gif'
       else if (/\.png/i.test(item.url)) ext = 'png'
-      const fileName = `Sebooth_${sessionSlug}_${item.label.replace(/\s+/g, '_')}.${ext}`
-      const link = document.createElement('a')
-      link.href = `/api/download?url=${encodeURIComponent(getRawOriginalUrl(item.url))}&filename=${encodeURIComponent(fileName)}`
-      link.download = fileName
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+      let name = `Sebooth_${sessionSlug}_${item.label.replace(/\s+/g, '_')}.${ext}`
+      // Two items with one label (two photostrips) must not overwrite each other inside the ZIP
+      if (used.has(name)) name = name.replace(`.${ext}`, `_${idx + 1}.${ext}`)
+      used.add(name)
+      return {
+        name,
+        label: item.label,
+        href: `/api/download?url=${encodeURIComponent(getRawOriginalUrl(item.url))}&filename=${encodeURIComponent(name)}`,
+      }
     })
-    showToast(`Mengunduh ${mediaList.length} file. Izinkan "unduh beberapa file" jika browser bertanya.`)
-    return mediaList.length
-  }
+  }, [mediaList, sessionSlug])
+  const [choiceOpen, setChoiceOpen] = useState(false)
 
   // IG Story maker: still images only, photostrips first since they read best as a story
   const storyPhotos = useMemo<StoryPhoto[]>(() => {
@@ -314,19 +316,22 @@ export default function AccessSessionClient({ session: initialSession, sessionId
     setStoryOpen(true)
   }
 
-  // 8. Download All asks for a rating right away while the files download underneath.
-  // The download never waits on the rating. Already rated: Google → Instagram follow once the files are saved.
+  // 8. Download All first asks ZIP or separate files (some browsers block several downloads in a row)
   const handleDownloadClick = () => {
     if (mediaList.length === 0) return
-    const askRatingNow = !readFunnel(sessionId).rating
-    if (askRatingNow) setTimeout(() => openSheet('rating'), reduceMotion ? 0 : 350)
-    const saved = handleDownloadBundle()
+    setChoiceOpen(true)
+  }
+
+  // 9. Once the files are saved: rating first, or Google → Instagram follow if already rated
+  const handleDownloadDone = (saved: number, mode: DownloadMode) => {
+    setChoiceOpen(false)
     setDownloadedCount(saved)
     setJustSaved(true)
     setTimeout(() => setJustSaved(false), 2800)
-    if (!askRatingNow && shouldAutoOpen(readFunnel(sessionId))) {
-      setTimeout(() => openSheet(), reduceMotion ? 0 : 600)
-    }
+    showToast(mode === 'zip' ? `${saved} file tersimpan dalam satu ZIP.` : `${saved} file diunduh ke perangkatmu.`)
+    const askRatingNow = !readFunnel(sessionId).rating
+    if (askRatingNow) setTimeout(() => openSheet('rating'), reduceMotion ? 0 : 350)
+    else if (shouldAutoOpen(readFunnel(sessionId))) setTimeout(() => openSheet(), reduceMotion ? 0 : 600)
   }
 
   // Format date display
@@ -736,6 +741,15 @@ export default function AccessSessionClient({ session: initialSession, sessionId
         />
       </aside>
 
+      {/* Download All: one ZIP or separate files */}
+      <DownloadChoiceSheet
+        open={choiceOpen}
+        files={bundleFiles}
+        zipName={`Sebooth_${sessionSlug}.zip`}
+        onClose={() => setChoiceOpen(false)}
+        onDone={handleDownloadDone}
+      />
+
       {/* Shareable IG Story image with logo + mention */}
       <StoryShareSheet
         open={storyOpen}
@@ -756,7 +770,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
         doneNote={downloadedCount ? `${downloadedCount} file sudah tersimpan di perangkatmu.` : undefined}
         status={
           downloadedCount
-            ? { text: `${downloadedCount} file sedang diunduh ke perangkatmu`, busy: false }
+            ? { text: `${downloadedCount} file sudah diunduh ke perangkatmu`, busy: false }
             : undefined
         }
         onClose={() => setSheetOpen(false)}

@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const url = `https://www.sebooth.in/artikel/${article.slug}`
 
   return {
-    title: article.metaTitle,
+    title: { absolute: article.metaTitle },
     description: article.metaDescription,
     keywords: [article.targetKeyword, ...article.secondaryKeywords],
     alternates: {

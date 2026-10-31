@@ -4,7 +4,7 @@ import { fetchActiveQueueEvents } from "@/lib/queue/queueFetchers";
 import { Ticket, Clock, Users, ArrowRight, QrCode } from "lucide-react";
 
 export const metadata: Metadata = {
-    title: "Antrean Photobooth | Sebooth",
+    title: { absolute: "Antrean Photobooth | Sebooth" },
     description: "Ambil nomor antrean photobooth Sebooth secara digital. Pantau posisi dan estimasi waktu tunggu secara real-time.",
 };
 

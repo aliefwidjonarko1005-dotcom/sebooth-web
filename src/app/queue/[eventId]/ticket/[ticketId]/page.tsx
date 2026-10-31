@@ -10,10 +10,11 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { ticketId } = await params;
     const ticket = await fetchQueueTicketById(ticketId);
-    if (!ticket) return { title: "Tiket Tidak Ditemukan | Sebooth" };
+    if (!ticket) return { title: { absolute: "Tiket Tidak Ditemukan | Sebooth" } };
     return {
-        title: `Antrean #${String(ticket.queue_number).padStart(3, "0")} — ${ticket.display_name} | Sebooth`,
+        title: { absolute: `Antrean #${String(ticket.queue_number).padStart(3, "0")} — ${ticket.display_name} | Sebooth` },
         description: `Pantau posisi antrean Sebooth kamu secara real-time. Nomor ${ticket.queue_number} atas nama ${ticket.display_name}.`,
+        robots: { index: false, follow: false },
     };
 }
 

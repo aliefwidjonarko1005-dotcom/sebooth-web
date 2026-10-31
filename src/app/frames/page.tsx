@@ -8,7 +8,7 @@ import { SeboothLoader } from "@/components/ui/SeboothLoader";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-    title: "Frames | Sebooth — Custom Photobooth Frame Designs",
+    title: { absolute: "Frames | Sebooth — Custom Photobooth Frame Designs" },
     description:
         "Tinjau koleksi desain frame kustom premium kami untuk melengkapi keindahan visual acara Anda di Sebooth photobooth.",
     openGraph: {

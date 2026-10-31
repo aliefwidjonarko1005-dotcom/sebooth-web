@@ -4,13 +4,15 @@ import { NextResponse, type NextRequest } from 'next/server'
 // Routes that require authentication
 const PROTECTED_PATHS = ['/admin']
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // ── Skip auth check entirely for public routes ──
   // Only run Supabase getUser() for protected paths to reduce latency
   const isProtected = PROTECTED_PATHS.some(p => pathname.startsWith(p))
-  if (!isProtected || request.nextUrl.searchParams.get('preview') === '1') {
+  // preview=1 skips auth for local UI screenshots only, never in production
+  const isDevPreview = process.env.NODE_ENV === 'development' && request.nextUrl.searchParams.get('preview') === '1'
+  if (!isProtected || isDevPreview) {
     return NextResponse.next()
   }
 

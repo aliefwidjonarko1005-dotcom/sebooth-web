@@ -17,13 +17,13 @@ export async function generateMetadata({ params }: NewsDetailPageProps): Promise
 
     if (!news) {
         return {
-            title: "Berita Tidak Ditemukan | Sebooth",
+            title: { absolute: "Berita Tidak Ditemukan | Sebooth" },
             description: "Berita yang Anda cari tidak ditemukan.",
         };
     }
 
     return {
-        title: `${news.title} | Sebooth News`,
+        title: { absolute: `${news.title} | Sebooth News` },
         description: news.body?.substring(0, 160) || "Baca berita terbaru dari Sebooth.",
         openGraph: {
             title: news.title,

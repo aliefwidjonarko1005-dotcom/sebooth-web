@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const metadata: Metadata = {
-    title: "Queue Display | Sebooth",
+    title: { absolute: "Queue Display | Sebooth" },
     description: "Layar antrean Sebooth untuk monitor venue.",
 };
 

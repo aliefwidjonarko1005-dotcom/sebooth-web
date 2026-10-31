@@ -22,17 +22,17 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Only the hosts the site really serves from. A wildcard here turns /_next/image
+    // into a free public image proxy for any URL on the internet.
     remotePatterns: [
       {
-        // Universal HTTPS (Supabase Storage, Cloudflare, S3, GCS, CDNs)
         protocol: "https",
-        hostname: "**",
+        hostname: "sebooth.in",
         pathname: "/**",
       },
       {
-        // Universal HTTP
-        protocol: "http",
-        hostname: "**",
+        protocol: "https",
+        hostname: "*.sebooth.in",
         pathname: "/**",
       },
       {

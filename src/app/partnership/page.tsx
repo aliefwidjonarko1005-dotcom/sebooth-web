@@ -8,7 +8,7 @@ import { PartnershipContent } from "@/components/sections/PartnershipContent";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-    title: "Partnership | Sebooth — The Best Friend of EOs & WOs",
+    title: { absolute: "Partnership | Sebooth — The Best Friend of EOs & WOs" },
     description:
         "Bergabunglah dengan jaringan partner Sebooth. Komisi transparan, opsi whitelabel, dan koordinator dedikasi untuk setiap event Anda.",
     openGraph: {

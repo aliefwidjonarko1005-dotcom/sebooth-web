@@ -13,14 +13,16 @@ export async function generateMetadata({ params }: ReviewPageProps): Promise<Met
 
   if (!session) {
     return {
-      title: "Session Not Found | Sebooth",
+      title: { absolute: "Session Not Found | Sebooth" },
       description: "Sesi foto tidak ditemukan atau link sudah kedaluwarsa.",
+      robots: { index: false, follow: false },
     };
   }
 
   return {
     title: `Ulasan Pengalaman · ${session.event_name || "Sebooth Photobooth"}`,
     description: `Berikan ulasan dan rating pengalaman photobooth kamu di ${session.event_name || "Sebooth"}.`,
+    robots: { index: false, follow: false },
   };
 }
 

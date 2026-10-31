@@ -9,7 +9,8 @@ import { createClient } from "@supabase/supabase-js";
 // Configure VAPID keys
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || "";
-const VAPID_SUBJECT = `mailto:${process.env.NEXT_PUBLIC_ADMIN_EMAILS || "seboothin@gmail.com"}`;
+// The admin env var may hold a comma-separated list; a VAPID subject takes one address
+const VAPID_SUBJECT = `mailto:${(process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || "").split(",")[0].trim() || "seboothin@gmail.com"}`;
 
 if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
     webpush.setVapidDetails(

@@ -6,7 +6,7 @@ import { ARTICLES_DATA } from '@/data/articles'
 import { ArrowLeft, Clock, Calendar, ArrowUpRight, MapPin, Instagram } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Artikel & Tips Photobooth Semarang | Sebooth Stories',
+  title: { absolute: 'Artikel & Tips Photobooth Semarang | Sebooth Stories' },
   description: 'Kumpulan artikel, panduan sewa photobooth, dan tips event kampus atau wedding di Semarang & Tembalang. Cetak instan lab-grade, live video, & frame aesthetic.',
   keywords: [
     'Photobooth Semarang',

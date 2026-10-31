@@ -42,7 +42,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     async function init() {
-      const isPreview = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('preview') === '1'
+      const isPreview = process.env.NODE_ENV === 'development' && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('preview') === '1'
       if (isPreview) {
         setIsAdmin(true)
         setIsSuper(true)
@@ -53,20 +53,14 @@ export default function AdminPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
 
-      const userEmail = user.email || ''
-      const envAdmins = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase())
-      const isEnvAdmin = envAdmins.includes(userEmail.toLowerCase())
+      const status: { isAdmin: boolean; isSuper: boolean } = await fetch('/api/admin/me', { cache: 'no-store' })
+        .then(res => res.json())
+        .catch(() => ({ isAdmin: false, isSuper: false }))
 
-      const { data: adminData } = await supabase
-        .from('admins')
-        .select('*')
-        .eq('email', userEmail)
-        .maybeSingle()
-
-      if (isEnvAdmin || adminData) {
+      if (status.isAdmin) {
         setIsAdmin(true)
-        setIsSuper(isEnvAdmin || (adminData?.is_super ?? false))
-        if (isEnvAdmin || adminData?.is_super) {
+        setIsSuper(status.isSuper)
+        if (status.isSuper) {
           loadAdmins()
         }
       }

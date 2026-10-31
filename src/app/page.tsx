@@ -19,5 +19,11 @@ export const metadata = {
 };
 
 export default function Home() {
-  return <SlideDeckLanding slides={LANDING_SLIDES} />;
+  return (
+    <>
+      {/* The hero headline is baked into the slide artwork, so the page's one H1 lives here for search and screen readers */}
+      <h1 className="sr-only">Sebooth Photobooth Semarang &amp; Tembalang — {LANDING_SLIDES[0]?.subtitle}</h1>
+      <SlideDeckLanding slides={LANDING_SLIDES} />
+    </>
+  );
 }

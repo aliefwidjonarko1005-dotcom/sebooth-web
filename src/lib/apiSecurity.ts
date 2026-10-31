@@ -88,7 +88,21 @@ export function hasValidWebhookSecret(req: Request): boolean {
 
 // ── Admin check (same rule as /api/admin/*: env admin list or a row in `admins`) ──
 
+// Server-only list. ADMIN_EMAILS is preferred; the NEXT_PUBLIC_ name is kept as a fallback for
+// existing deployments and is safe here because this module never runs in the browser.
+export function envAdminEmails(): string[] {
+  return (process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 export async function getAdminUser() {
+  const status = await getAdminStatus();
+  return status ? status.user : null;
+}
+
+export async function getAdminStatus() {
   const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -115,12 +129,8 @@ export async function getAdminUser() {
   if (!user) return null;
 
   const email = (user.email || "").toLowerCase().trim();
-  const envAdmins = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
-  if (envAdmins.includes(email)) return user;
+  if (envAdminEmails().includes(email)) return { user, isSuper: true };
 
-  const { data: adminRecord } = await supabase.from("admins").select("id").eq("email", email).maybeSingle();
-  return adminRecord ? user : null;
+  const { data: adminRecord } = await supabase.from("admins").select("id, is_super").eq("email", email).maybeSingle();
+  return adminRecord ? { user, isSuper: Boolean(adminRecord.is_super) } : null;
 }

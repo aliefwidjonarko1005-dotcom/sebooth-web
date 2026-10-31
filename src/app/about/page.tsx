@@ -8,7 +8,7 @@ import { AboutContent } from "@/components/sections/AboutContent";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-    title: "About Us | Sebooth — The Most Favorite Photobooth in Semarang",
+    title: { absolute: "About Us | Sebooth — The Most Favorite Photobooth in Semarang" },
     description:
         "Kenali kisah Sebooth — dari garasi kecil di Semarang menjadi standar emas industri event experience Indonesia. Visi, misi, dan perjalanan kami.",
     openGraph: {

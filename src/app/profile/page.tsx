@@ -360,7 +360,7 @@ export default function MyPhotosPage() {
     let isMounted = true
     async function init() {
       try {
-        const isPreview = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('preview') === '1'
+        const isPreview = process.env.NODE_ENV === 'development' && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('preview') === '1'
         const { data: { session } } = await supabase.auth.getSession()
         if (!session?.user && !isPreview) {
           router.push('/login?redirect=/profile')

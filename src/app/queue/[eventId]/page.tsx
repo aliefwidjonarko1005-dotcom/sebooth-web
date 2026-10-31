@@ -13,9 +13,9 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { eventId } = await params;
     const event = await fetchQueueEventById(eventId);
-    if (!event) return { title: "Event Tidak Ditemukan | Sebooth" };
+    if (!event) return { title: { absolute: "Event Tidak Ditemukan | Sebooth" } };
     return {
-        title: `Antrean ${event.name} | Sebooth`,
+        title: { absolute: `Antrean ${event.name} | Sebooth` },
         description: `Ambil nomor antrean untuk ${event.name} di ${event.booth_name}. Pantau posisi secara real-time.`,
     };
 }

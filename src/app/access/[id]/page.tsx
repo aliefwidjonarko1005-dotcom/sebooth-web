@@ -18,15 +18,20 @@ export async function generateMetadata({ params }: AccessPageProps): Promise<Met
   const { id } = await params;
   const session = await fetchSessionById(id);
 
+  // Personal photo pages: shareable by link, never listed in search results
+  const robots = { index: false, follow: false };
+
   if (!session) {
     return {
-      title: "Session Not Found | Sebooth",
+      title: "Sesi Tidak Ditemukan",
       description: "Sesi foto tidak ditemukan atau link sudah kedaluwarsa.",
+      robots,
     };
   }
 
   return {
-    title: `${session.event_name || "Sebooth Session"} · Unduh Softfile Foto | Sebooth`,
+    title: `${session.event_name || "Sebooth Session"} · Unduh Softfile Foto`,
+    robots,
     description: `Lihat dan simpan ${session.media?.length || 0} foto dari sesi di ${session.event_name || "Sebooth Studio"}.`,
     openGraph: {
       title: `${session.event_name || "Sebooth Session"} · Unduh Softfile Foto`,

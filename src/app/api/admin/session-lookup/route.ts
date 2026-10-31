@@ -1,56 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
+import { getAdminUser } from "@/lib/apiSecurity";
 
 export const dynamic = "force-dynamic";
-
-async function getAdminUser() {
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() { return cookieStore.getAll(); },
-                setAll(cookiesToSet: { name: string; value: string; options: Record<string, unknown> }[]) {
-                    try {
-                        cookiesToSet.forEach(({ name, value, options }) =>
-                            cookieStore.set(name, value, options)
-                        );
-                    } catch {
-                        // Safe to ignore in route handlers
-                    }
-                },
-            },
-        }
-    );
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-
-    const userEmail = (user.email || "").toLowerCase().trim();
-    const envAdmins = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
-        .split(",")
-        .map((e) => e.trim().toLowerCase())
-        .filter(Boolean);
-
-    if (envAdmins.includes(userEmail)) {
-        return user;
-    }
-
-    const { data: adminRecord } = await supabase
-        .from("admins")
-        .select("id, email, is_super")
-        .eq("email", userEmail)
-        .maybeSingle();
-
-    if (adminRecord) {
-        return user;
-    }
-
-    return null;
-}
 
 function createServiceClient() {
     return createClient(
@@ -298,7 +250,7 @@ export async function GET(req: NextRequest) {
                 unclaimed: unclaimedOverall,
             },
         });
-    } catch (err: any) {
-        return NextResponse.json({ success: false, error: err.message || "Internal server error" }, { status: 500 });
+    } catch (err) {
+        return NextResponse.json({ success: false, error: (err instanceof Error && err.message) || "Internal server error" }, { status: 500 });
     }
 }
