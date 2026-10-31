@@ -25,6 +25,7 @@ import { checkSessionExpiry } from '@/lib/sessionExpiryPolicy'
 import ClayPillButton from '@/components/ui/ClayPillButton'
 import ClaimStatusStrip from '@/components/features/ClaimStatusStrip'
 import ReviewSheet from '@/components/features/review/ReviewSheet'
+import StoryShareSheet, { StoryPhoto } from '@/components/features/StoryShareSheet'
 import { FunnelStage, readFunnel, shouldAutoOpen } from '@/lib/reviewFunnel'
 import { INSTAGRAM_HANDLE } from '@/config/social'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
@@ -297,6 +298,22 @@ export default function AccessSessionClient({ session: initialSession, sessionId
     return mediaList.length
   }
 
+  // IG Story maker: still images only, photostrips first since they read best as a story
+  const storyPhotos = useMemo<StoryPhoto[]>(() => {
+    const stills = mediaList.filter((m) => m.type === 'strip' || m.type === 'photo')
+    return [...stills.filter((m) => m.type === 'strip'), ...stills.filter((m) => m.type === 'photo')].map((m) => ({
+      id: m.id,
+      url: getRawOriginalUrl(m.url),
+      label: m.label,
+    }))
+  }, [mediaList])
+  const [storyOpen, setStoryOpen] = useState(false)
+  const [storyPhotoId, setStoryPhotoId] = useState<string | undefined>(undefined)
+  const openStory = (photoId?: string) => {
+    setStoryPhotoId(photoId)
+    setStoryOpen(true)
+  }
+
   // 8. Download All asks for a rating right away while the files download underneath.
   // The download never waits on the rating. Already rated: Google → Instagram follow once the files are saved.
   const handleDownloadClick = () => {
@@ -553,8 +570,14 @@ export default function AccessSessionClient({ session: initialSession, sessionId
             <h2 id="after-card-title" className="text-[16px] font-bold text-slate-900 tracking-tight">
               Suka hasilnya?
             </h2>
-            <p className="mt-0.5 text-[14px] text-slate-600">Dua langkah kecil yang sangat membantu tim Sebooth.</p>
+            <p className="mt-0.5 text-[14px] text-slate-600">Langkah kecil yang sangat membantu tim Sebooth.</p>
             <div className="mt-3 flex flex-col divide-y divide-slate-100">
+              {storyPhotos.length > 0 && (
+                <button type="button" onClick={() => openStory()} className="min-h-[52px] flex items-center justify-between gap-3 text-left cursor-pointer group">
+                  <span className="text-[15px] font-medium text-slate-900">Bikin Story Instagram dari fotomu</span>
+                  <ArrowRight className="w-4 h-4 text-slate-400 transition-transform group-hover:translate-x-1" />
+                </button>
+              )}
               <button type="button" onClick={() => openSheet('rating')} className="min-h-[52px] flex items-center justify-between gap-3 text-left cursor-pointer group">
                 <span className="text-[15px] font-medium text-slate-900">Beri rating dan ulasan Google</span>
                 <ArrowRight className="w-4 h-4 text-slate-400 transition-transform group-hover:translate-x-1" />
@@ -589,6 +612,18 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                 {previewMedia.label} · {previewIndex + 1}/{mediaList.length}
               </span>
               <div className="flex items-center gap-2">
+                {(previewMedia.type === 'photo' || previewMedia.type === 'strip') && (
+                  <button
+                    onClick={() => {
+                      setPreviewIndex(null)
+                      openStory(previewMedia.id)
+                    }}
+                    className="min-h-[40px] px-4 rounded-full bg-white/10 hover:bg-white/20 text-white text-[14px] font-semibold flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Share2 className="w-4 h-4 stroke-[2.2]" />
+                    <span>Story</span>
+                  </button>
+                )}
                 <button
                   onClick={(e) => handleDownloadSingle(e, previewMedia, previewIndex)}
                   className="min-h-[40px] px-4 rounded-full bg-white text-slate-900 text-[14px] font-semibold flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
@@ -700,6 +735,17 @@ export default function AccessSessionClient({ session: initialSession, sessionId
           ariaLabel="Download All Photo"
         />
       </aside>
+
+      {/* Shareable IG Story image with logo + mention */}
+      <StoryShareSheet
+        open={storyOpen}
+        photos={storyPhotos}
+        initialPhotoId={storyPhotoId}
+        sessionId={sessionId}
+        eventName={session.event_name}
+        onClose={() => setStoryOpen(false)}
+        onToast={showToast}
+      />
 
       {/* Post-download rating → Google Review → Instagram */}
       <ReviewSheet

@@ -9,6 +9,7 @@ import { getProximityTier, getProximityTierColor } from "@/types/database";
 import QueueStatusBadge from "./QueueStatusBadge";
 import QueueEstimateTimer from "./QueueEstimateTimer";
 import QRScannerModal from "./QRScannerModal";
+import PoseIdeasCard from "./PoseIdeasCard";
 import { subscribeToPush, isPushSupported } from "@/lib/queue/pushSubscription";
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
 import Guide from "@/components/guide/Guide";
@@ -482,6 +483,9 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
                         </div>
                     </motion.div>
                 )}
+
+                {/* Pose ideas while waiting */}
+                {(liveStatus === "waiting" || liveStatus === "called") && <PoseIdeasCard />}
 
                 {/* Queue stats */}
                 <div className="flex gap-4 text-center">
