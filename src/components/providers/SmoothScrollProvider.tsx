@@ -9,7 +9,9 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
   const isProfile = pathname.startsWith('/profile')
   const isAccess = pathname.startsWith('/access')
   const isQueue = pathname.startsWith('/queue')
-  const isExcluded = isHomepage || isProfile || isAccess || isQueue
+  // Event frame viewer drags prints sideways and scrolls back to the printer itself
+  const isEventFrames = pathname.startsWith('/frames/event')
+  const isExcluded = isHomepage || isProfile || isAccess || isQueue || isEventFrames
 
   useEffect(() => {
     if (isExcluded) return

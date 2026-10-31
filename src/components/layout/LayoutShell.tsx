@@ -4,7 +4,8 @@ import { usePathname } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { FloatingCTA } from "@/components/ui/FloatingCTA";
 
-const EXCLUDED_PATHS = ["/profile", "/login", "/register", "/admin", "/queue"];
+// /frames/event/* are full-screen QR pages with their own bar (the plain /frames gallery keeps the shell)
+const EXCLUDED_PATHS = ["/profile", "/login", "/register", "/admin", "/queue", "/frames/event"];
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();

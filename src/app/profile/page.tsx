@@ -33,6 +33,7 @@ import { useGuide } from '@/components/guide/useGuide'
 import { PROFILE_GUIDE, GUIDE_KEYS } from '@/config/guides'
 import { LiquidGlassDock } from '@/components/ui/LiquidGlassDock'
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
+import { PublishToSiteOption } from "@/components/frames-event/PublishToSiteOption";
 
 export interface SessionMediaItem {
   id: string
@@ -1722,6 +1723,13 @@ export default function MyPhotosPage() {
               </div>
               <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
             </button>
+
+            {/* Super admins only: send this photo to the Visual Archive / an event frame page */}
+            <PublishToSiteOption
+              sessionId={currentSession?.id}
+              sessionTitle={currentSession?.title}
+              media={activeSessionMediaList[currentMediaIndex]}
+            />
           </div>
         </div>
       )}
