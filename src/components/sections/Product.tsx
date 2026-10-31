@@ -318,7 +318,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="w-full rounded-full py-1.5 xs:py-2 sm:py-2.5 px-3 sm:px-4 bg-[#FF4500] hover:bg-[#e63e00] text-white font-extrabold text-xs sm:text-sm text-center tracking-wide border border-white/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer pointer-events-auto"
+                        className="w-full rounded-full py-1.5 xs:py-2 sm:py-2.5 px-3 sm:px-4 bg-[#FF4500] hover:bg-orange-press text-white font-extrabold text-xs sm:text-sm text-center tracking-wide border border-white/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer pointer-events-auto"
                       >
                         <span>{prod.ctaText}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -427,7 +427,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                     href={`https://wa.me/6285713899441?text=${encodeURIComponent(selectedProduct.waText)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full rounded-full py-2.5 sm:py-3.5 px-4 sm:px-6 bg-[#FF4500] hover:bg-[#e63e00] text-white font-bold text-xs xs:text-sm sm:text-base text-center tracking-wide border border-white/20 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                    className="w-full rounded-full py-2.5 sm:py-3.5 px-4 sm:px-6 bg-[#FF4500] hover:bg-orange-press text-white font-bold text-xs xs:text-sm sm:text-base text-center tracking-wide border border-white/20 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
                   >
                     <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
                     <span>Mau ini dong (Konsultasi WA)</span>

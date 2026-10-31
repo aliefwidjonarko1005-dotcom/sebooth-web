@@ -151,7 +151,7 @@ export function PublishToSiteOption({ sessionId, sessionTitle, media }: Props) {
                                 <button
                                     onClick={publish}
                                     disabled={state === "saving"}
-                                    className="h-14 rounded-full bg-[#ff4500] text-[#00113a] text-[16px] font-bold disabled:opacity-60"
+                                    className="h-14 rounded-full bg-[#ff4500] text-blue-dark text-[16px] font-bold disabled:opacity-60"
                                 >
                                     {state === "saving" ? "Menyimpan" : "Tambahkan ke Visual Archive"}
                                 </button>

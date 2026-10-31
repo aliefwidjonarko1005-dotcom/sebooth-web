@@ -93,7 +93,7 @@ export function getProximityTierColor(tier: QueueProximityTier): {
 } {
   switch (tier) {
     case 'waiting':
-      return { bg: 'bg-[#0F3D2E]', text: 'text-white', border: 'border-2 border-black', ring: 'ring-black', hex: '#0F3D2E' };
+      return { bg: 'bg-primary', text: 'text-white', border: 'border-2 border-black', ring: 'ring-black', hex: '#002366' };
     case 'approaching':
       return { bg: 'bg-yellow-400', text: 'text-primary', border: 'border-2 border-black', ring: 'ring-black', hex: '#FACC15' };
     case 'preparing':

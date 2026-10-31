@@ -153,7 +153,7 @@ export default function ArtikelIndexPage() {
                     </span>
                   </div>
 
-                  <h2 className="text-lg sm:text-xl font-bold text-slate-900 group-hover:text-[#FF5500] transition-colors leading-snug line-clamp-2">
+                  <h2 className="text-lg sm:text-xl font-bold text-slate-900 group-hover:text-secondary transition-colors leading-snug line-clamp-2">
                     <Link href={`/artikel/${article.slug}`}>
                       {article.title}
                     </Link>
@@ -174,7 +174,7 @@ export default function ArtikelIndexPage() {
 
                 <Link
                   href={`/artikel/${article.slug}`}
-                  className="inline-flex items-center gap-1 text-xs font-black text-slate-900 hover:text-[#FF5500] uppercase tracking-wider transition-colors"
+                  className="inline-flex items-center gap-1 text-xs font-black text-slate-900 hover:text-secondary uppercase tracking-wider transition-colors"
                 >
                   <span>Baca</span>
                   <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />

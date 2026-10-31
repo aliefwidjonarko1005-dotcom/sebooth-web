@@ -226,7 +226,7 @@ export function FrameEventEditor({ event, catalogue, archive, onClose, onSaved }
                         <button
                             onClick={save}
                             disabled={!!busy}
-                            className="flex-1 h-14 rounded-full bg-[#ff4500] text-[#00113a] text-[16px] font-bold disabled:opacity-60"
+                            className="flex-1 h-14 rounded-full bg-[#ff4500] text-blue-dark text-[16px] font-bold disabled:opacity-60"
                         >
                             {busy === "save" ? "Menyimpan" : `Simpan acara (${selected.length} frame)`}
                         </button>

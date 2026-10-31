@@ -29,9 +29,9 @@ Semua warna dikalibrasi secara ketat. **AI Purple/Neon Blue glows secara eksplis
 | **Pure Surface** | `#FFFFFF` | Background kartu informasi, status box, popover dialog, dan container media. |
 | **Dark Vault** | `#121620` | Container khusus kartu Google Review 5-star & Lightbox modal. Kontras tinggi bergaya studio malam. |
 | **Navy Brand** | `#002366` | Warna identitas primer logo Sebooth & aksen judul institusional. |
-| **Fiery Orange** | `#FF4500` / `#FF5500` | Signature CTA accent Sebooth: tombol "Unduh Semua Media", highlight promo, dan kicker badge. |
+| **Fiery Orange** | `#FF4500` (`secondary`), hover/pressed `#E63E00` (`orange-press`) | Signature CTA accent Sebooth: tombol "Unduh Semua Media", highlight promo, dan kicker badge. |
 | **Orange Gradient** | `linear-gradient(90deg, #FF6A00 0%, #FF3D00 50%, #E62A00 100%)` | Gradient eksklusif untuk tombol aksi primer bundle download. |
-| **Deep Charcoal** | `#181B34` | Warna teks judul display utama (H1). Menggantikan pure black `#000000`. |
+| **Navy Deep** | `#00113A` (`blue-dark`) | Warna teks judul display utama (H1). Menggantikan pure black `#000000`. |
 | **Slate Ink** | `#0F172A` | Teks heading sekunder dan label teks berbobot tebal. |
 | **Muted Slate** | `#64748B` | Teks deskripsi, keterangan tanggal, instruksi sekunder (max 65ch). |
 | **Whisper Border** | `rgba(226, 232, 240, 0.8)` / `#E2E8F0` | Garis batas 1px pada kartu, pemisah header, dan tombol outline. |
@@ -49,9 +49,9 @@ Semua warna dikalibrasi secara ketat. **AI Purple/Neon Blue glows secara eksplis
 3. **Numbers & Timers**: `ui-monospace`, `JetBrains Mono`, `tabular-nums` untuk countdown timer, ukuran media, dan progress unduhan.
 
 ### Skala Tipografi
-- **Hero Title (H1)**: `clamp(1.875rem, 5vw, 3rem)` — `font-bayon font-black uppercase text-[#181B34] tracking-tight`.
+- **Hero Title (H1)**: `clamp(1.875rem, 5vw, 3rem)` — `font-bayon font-black uppercase text-blue-dark tracking-tight`.
 - **Section Headers (H2/H3)**: `1rem` – `1.25rem` (`font-bold text-slate-900 tracking-tight`).
-- **Kicker Badge**: `11px` (`font-extrabold uppercase tracking-widest text-[#FF5500]`).
+- **Kicker Badge**: `11px` (`font-extrabold uppercase tracking-widest text-secondary`).
 - **Body Text**: `0.875rem` (`14px`) pada desktop, `0.75rem` – `0.8125rem` (`12–13px`) pada mobile (`text-slate-600 leading-relaxed`).
 - **Micro Metadata & Hints**: `10px` – `11px` (`text-slate-400 font-medium`).
 
@@ -90,7 +90,7 @@ Kartu status berada tepat di bawah header dan mengadopsi 4 status dinamis:
    - Peringatan unduh instan sebelum rotasi file server berkala.
 
 ### 4.3 Hero Section & Primary Action Stack
-- **Judul**: Kicker `KOLEKSI SOFTFILE` berwarna `#FF5500`, diikuti headline raksasa `Foto & Video Sesi Kamu` dalam `font-bayon`.
+- **Judul**: Kicker `KOLEKSI SOFTFILE` berwarna `#FF4500` (`secondary`), diikuti headline raksasa `Foto & Video Sesi Kamu` dalam `font-bayon`.
 - **Sub-info**: `[Nama Event] · [Jumlah Media] media · [Hari, Tanggal Jam]`.
 - **Action Buttons**:
   - **Tombol Utama: "Unduh Semua Media"**:
@@ -99,11 +99,11 @@ Kartu status berada tepat di bawah header dan mengadopsi 4 status dinamis:
     - Logika unduh berurutan (*Sequential Native Save*) langsung ke Galeri Kamera (Camera Roll) ponsel via Web Share Level 2 tanpa ZIP file yang membingungkan pengguna mobile.
     - Status loading: Indikator spinner + counter real-time `Menyimpan ke Galeri (2/5)...`.
   - **Tombol Sekunder: "Beri Ulasan Studio"**:
-    - Background `#FFFFFF`, border tebal 2px `#181B34`, teks hitam display, icon bintang amber emas.
+    - Background `#FFFFFF`, border tebal 2px `#00113A`, teks hitam display, icon bintang amber emas.
     - Membuka halaman `/access/[id]/review` dengan dial speedometer ulasan interaktif.
 
 ### 4.4 Google Review 5-Star Prompt Card (`GoogleReviewPromptCard`)
-- **Visual Container**: Permukaan hitam kebiruan gelap (`#121620`), radius besar 28px–32px, ambient glow oranye subtil di sudut kanan atas (`#FF5500/20 blur-3xl`).
+- **Visual Container**: Permukaan hitam kebiruan gelap (`#121620`), radius besar 28px–32px, ambient glow oranye subtil di sudut kanan atas (`bg-secondary/20 blur-3xl`).
 - **Badge**: Chip mini `GOOGLE REVIEW` + bar bintang 5 berwarna `#F59E0B` dengan rating `5.0`.
 - **Logo**: Container kaca frosted putih 10% dengan ikon Google 4-warna vektor asli.
 - **Interaktivitas**: Satu ketukan langsung membuka URL ulasan Google Maps Sebooth (`search.google.com/local/writereview`).
@@ -184,7 +184,7 @@ Berikut adalah daftar elemen dan pola yang **DIHARAMKAN** muncul pada halaman cl
 
 1. **Dilarang Menggunakan Emojis**: Dilarang memakai emoji apa pun (misal: 📸, 🔥, ⚡, ⭐, 🎉). Gunakan ikon monokromatik dari `lucide-react`.
 2. **Dilarang Font Inter**: Font `Inter` dilarang untuk mempertahankan keunikan visual Sebooth (gunakan kombinasi `Bayon` + `Poppins`).
-3. **Dilarang Pure Black (`#000000`)**: Gunakan `#181B34`, `#0F172A`, atau `#121620` untuk saturasi gelap yang berkelas.
+3. **Dilarang Pure Black (`#000000`)**: Gunakan `#00113A`, `#0F172A`, atau `#121620` untuk saturasi gelap yang berkelas.
 4. **Dilarang Neon Glows & AI Violet**: Dilarang menambahkan outer glow ungu/sian bergaya AI generik.
 5. **Dilarang Mengemas Unduhan Mobile ke ZIP**: Jangan memaksa pengguna smartphone mengekstrak ZIP di browser ponsel.
 6. **Dilarang Copywriting AI Klise**: Hindari kata-kata kosong seperti *"Seamless experience"*, *"Unleash your memories"*, *"Next-gen photobooth"*. Gunakan bahasa Indonesia lugas, hangat, dan informatif.

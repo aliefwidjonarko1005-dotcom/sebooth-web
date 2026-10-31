@@ -53,7 +53,7 @@ export function BookingTicket({ pkg, onClose }: BookingTicketProps) {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#00113a]/80 p-4"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-blue-dark/80 p-4"
       onClick={onClose}
       onKeyDown={(e) => {
         // Keep arrow/space keys from moving the slide deck behind the ticket
@@ -130,7 +130,7 @@ export function BookingTicket({ pkg, onClose }: BookingTicketProps) {
             href={waHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex min-h-14 w-full items-center justify-center rounded-[4px] bg-[#FF4500] px-4 text-base font-medium text-white transition-[background-color,transform] duration-200 hover:bg-[#e63e00] active:translate-y-0.5 active:scale-[0.98]"
+            className="flex min-h-14 w-full items-center justify-center rounded-[4px] bg-[#FF4500] px-4 text-base font-medium text-white transition-[background-color,transform] duration-200 hover:bg-orange-press active:translate-y-0.5 active:scale-[0.98]"
           >
             Kirim ke WhatsApp
           </a>

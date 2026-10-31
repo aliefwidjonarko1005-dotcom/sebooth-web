@@ -199,7 +199,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
 
         {/* Category & Metadata */}
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap mb-4">
-          <span className="px-3 py-1 rounded-full bg-orange-500/10 text-[#FF5500] font-black text-[11px] uppercase tracking-wider">
+          <span className="px-3 py-1 rounded-full bg-orange-500/10 text-secondary font-black text-[11px] uppercase tracking-wider">
             {article.category}
           </span>
           <span className="text-xs text-slate-500 flex items-center gap-1">
@@ -243,13 +243,13 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
         {/* Key Highlights Box */}
         <div className="p-6 rounded-2xl bg-orange-50/70 border border-orange-200/80 my-8">
           <div className="flex items-center gap-2 text-sm font-black text-orange-950 uppercase tracking-wider mb-3">
-            <Sparkles className="w-4 h-4 text-[#FF5500]" />
+            <Sparkles className="w-4 h-4 text-secondary" />
             <h2 className="text-sm font-black text-orange-950 uppercase tracking-wider">Poin Utama Pembahasan</h2>
           </div>
           <ul className="space-y-2">
             {article.highlights.map((point, idx) => (
               <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 leading-relaxed">
-                <CheckCircle2 className="w-4 h-4 text-[#FF5500] shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
                 <span>{point}</span>
               </li>
             ))}
@@ -321,7 +321,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
         {/* FAQ Section with Rich Schema Alignment */}
         <section className="mt-14 pt-8 border-t border-stone-200">
           <div className="flex items-center gap-2 mb-6">
-            <HelpCircle className="w-5 h-5 text-[#FF5500]" />
+            <HelpCircle className="w-5 h-5 text-secondary" />
             <h2 className="text-xl sm:text-2xl font-black font-bayon uppercase tracking-wide text-slate-900">
               Pertanyaan Populer (FAQ)
             </h2>
@@ -360,7 +360,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
             href="https://wa.me/6285713899441?text=Halo%20Sebooth,%20saya%20baca%20artikel%20di%20website%20dan%20tertarik%20sewa%20photobooth%20untuk%20event%20di%20Semarang!"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-[#FF5500] to-[#FF2200] hover:opacity-95 active:scale-95 text-white font-black text-xs sm:text-sm tracking-wider uppercase shadow-lg transition-all"
+            className="mt-5 inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-secondary to-orange-press hover:opacity-95 active:scale-95 text-white font-black text-xs sm:text-sm tracking-wider uppercase shadow-lg transition-all"
           >
             <MessageCircle className="w-4 h-4 fill-white" />
             <span>Chat WhatsApp Sebooth Sekarang</span>
@@ -383,7 +383,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
                 <span className="text-[10px] font-black uppercase text-orange-600 tracking-wider">
                   {rel.category}
                 </span>
-                <h3 className="mt-1 text-sm font-bold text-slate-900 group-hover:text-[#FF5500] transition-colors line-clamp-2">
+                <h3 className="mt-1 text-sm font-bold text-slate-900 group-hover:text-secondary transition-colors line-clamp-2">
                   {rel.title}
                 </h3>
                 <p className="mt-1 text-[11px] text-slate-500 flex items-center gap-1">

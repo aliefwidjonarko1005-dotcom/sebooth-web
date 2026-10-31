@@ -118,7 +118,7 @@ export default function AdminPage() {
         <p className="mt-2 text-[#1A1A1A]/50 text-sm">Akun Anda tidak terdaftar sebagai admin.</p>
         <p className="mt-1 text-[#1A1A1A]/30 text-xs">Hubungi super admin untuk mendapatkan akses.</p>
         <div className="mt-6 flex gap-3">
-          <Link href="/profile" className="px-6 py-3 rounded-xl bg-[#0F3D2E] text-white font-bold text-sm hover:bg-[#195240] transition-all">My Photos</Link>
+          <Link href="/profile" className="px-6 py-3 rounded-xl bg-primary text-white font-bold text-sm hover:bg-[#195240] transition-all">My Photos</Link>
           <Link href="/" className="px-6 py-3 rounded-xl bg-[#1A1A1A]/5 text-[#1A1A1A] font-bold text-sm hover:bg-[#1A1A1A]/10 transition-all">Beranda</Link>
         </div>
       </div>
@@ -139,13 +139,13 @@ export default function AdminPage() {
       <nav className="sticky top-0 z-50 bg-white border-b border-[#1A1A1A]/5 shadow-2xs">
         <div className="container mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="text-[#1A1A1A]/50 hover:text-[#0F3D2E] transition-colors p-1.5 rounded-lg hover:bg-black/5" title="Ke Beranda">
+            <Link href="/" className="text-[#1A1A1A]/50 hover:text-primary transition-colors p-1.5 rounded-lg hover:bg-black/5" title="Ke Beranda">
               <Home className="w-5 h-5" />
             </Link>
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-[#0F3D2E]" />
+                <ShieldCheck className="w-4 h-4 text-primary" />
                 <span className="font-extrabold text-sm sm:text-base text-[#1A1A1A]">Sebooth Admin Hub</span>
               </div>
             </div>
@@ -154,7 +154,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/profile"
-              className="text-xs font-bold text-[#0F3D2E] hover:underline hidden sm:inline"
+              className="text-xs font-bold text-primary hover:underline hidden sm:inline"
             >
               Lihat Galeri Sesi
             </Link>
@@ -172,7 +172,7 @@ export default function AdminPage() {
 
       {/* Toast Notification */}
       {msg && (
-        <div className="fixed top-18 left-1/2 -translate-x-1/2 z-50 bg-[#0F3D2E] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-lg animate-bounce flex items-center gap-2">
+        <div className="fixed top-18 left-1/2 -translate-x-1/2 z-50 bg-primary text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-lg animate-bounce flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-300" />
           {msg}
         </div>
@@ -187,7 +187,7 @@ export default function AdminPage() {
               onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition-all ${
                 tab === t.key 
-                  ? 'bg-[#0F3D2E] text-white shadow-xs' 
+                  ? 'bg-primary text-white shadow-xs' 
                   : 'text-[#1A1A1A]/60 hover:bg-[#1A1A1A]/5 hover:text-[#1A1A1A]'
               }`}
             >
@@ -246,12 +246,12 @@ export default function AdminPage() {
                   value={newAdminEmail} 
                   onChange={e => setNewAdminEmail(e.target.value)}
                   placeholder="admin-baru@gmail.com" 
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0F3D2E]/20 focus:border-[#0F3D2E]"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
                 <button 
                   onClick={addAdmin} 
                   disabled={addingAdmin}
-                  className="px-5 py-2.5 rounded-xl bg-[#0F3D2E] text-white font-bold text-sm hover:bg-[#195240] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-sm hover:bg-[#195240] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   <Plus className="w-4 h-4" /> Undang Admin
                 </button>

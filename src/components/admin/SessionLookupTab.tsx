@@ -239,7 +239,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
           }}
           className={`p-5 rounded-2xl border text-left transition-all ${
             statusFilter === 'all' && policyFilter === 'all'
-              ? 'bg-[#0F3D2E]/5 border-[#0F3D2E] shadow-sm'
+              ? 'bg-primary/5 border-primary shadow-sm'
               : 'bg-white border-[#1A1A1A]/10 hover:border-[#1A1A1A]/30'
           }`}
         >
@@ -247,7 +247,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
             <span className="text-xs font-bold text-[#1A1A1A]/60 uppercase tracking-wider">
               Total Sesi Foto
             </span>
-            <span className="p-2 rounded-xl bg-[#0F3D2E]/10 text-[#0F3D2E]">
+            <span className="p-2 rounded-xl bg-primary/10 text-primary">
               <Layers className="w-4 h-4" />
             </span>
           </div>
@@ -329,7 +329,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold text-[#1A1A1A] flex items-center gap-2">
-              <Search className="w-5 h-5 text-[#0F3D2E]" />
+              <Search className="w-5 h-5 text-primary" />
               Session & Claim Inspector
             </h2>
             <p className="text-xs text-[#1A1A1A]/60 mt-1">
@@ -358,7 +358,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Masukkan Session ID (contoh: 0a8ff50b-67a4-4fb6-9377-12c6ff7a71b0)..."
-              className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0F3D2E]/20 focus:border-[#0F3D2E] transition-all"
+              className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             />
             <Search className="w-4 h-4 text-[#1A1A1A]/40 absolute left-4 top-1/2 -translate-y-1/2" />
             {searchQuery && (
@@ -375,7 +375,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
           <button
             type="submit"
             disabled={loading || !searchQuery.trim()}
-            className="px-6 py-3 rounded-xl bg-[#0F3D2E] text-white font-bold text-sm hover:bg-[#185340] disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+            className="px-6 py-3 rounded-xl bg-primary text-white font-bold text-sm hover:bg-[#185340] disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer"
           >
             {loading ? <SeboothLoader variant="mini" className="w-4 h-4" /> : <Search className="w-4 h-4" />}
             Inspeksi Sesi
@@ -479,7 +479,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                 href={`/access/${result.session.id}`}
                 target="_blank"
                 rel="noreferrer"
-                className="px-3.5 py-2 rounded-xl bg-[#0F3D2E] text-white text-xs font-bold hover:bg-[#185340] transition-all flex items-center gap-1.5 shadow-sm"
+                className="px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-[#185340] transition-all flex items-center gap-1.5 shadow-sm"
               >
                 <ExternalLink className="w-3.5 h-3.5" /> Buka QR Link
               </a>
@@ -498,7 +498,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
             {/* Left Column: User & Contact Information */}
             <div className="space-y-4">
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/50 flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-[#0F3D2E]" />
+                <User className="w-3.5 h-3.5 text-primary" />
                 Informasi Pengklaim (Customer)
               </h4>
 
@@ -539,7 +539,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                       {result.user.email && (
                         <button
                           onClick={() => handleCopy(result.user!.email!, 'email')}
-                          className="text-[11px] font-bold text-[#0F3D2E] hover:underline"
+                          className="text-[11px] font-bold text-primary hover:underline"
                         >
                           {copiedId === 'email' ? 'Tersalin' : 'Salin'}
                         </button>
@@ -591,7 +591,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
             {/* Right Column: Session & Queue Details */}
             <div className="space-y-4">
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/50 flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-[#0F3D2E]" />
+                <Calendar className="w-3.5 h-3.5 text-primary" />
                 Rincian Sesi & Antrean
               </h4>
 
@@ -636,7 +636,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                 {/* Media Summary Count */}
                 <div className="pt-2 border-t border-[#1A1A1A]/5">
                   <span className="text-[11px] font-semibold text-[#1A1A1A]/50 block mb-2 flex items-center gap-1">
-                    <Film className="w-3 h-3 text-[#0F3D2E]" />
+                    <Film className="w-3 h-3 text-primary" />
                     Total File Media Terkumpul
                   </span>
 
@@ -650,7 +650,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                     <span className="px-3 py-1.5 rounded-xl bg-white border border-[#1A1A1A]/10 text-xs font-bold text-[#1A1A1A] shadow-2xs">
                       🎥 {result.mediaSummary.lives} Live Video
                     </span>
-                    <span className="px-3 py-1.5 rounded-xl bg-[#0F3D2E]/10 border border-[#0F3D2E]/20 text-xs font-extrabold text-[#0F3D2E]">
+                    <span className="px-3 py-1.5 rounded-xl bg-primary/10 border border-primary/20 text-xs font-extrabold text-primary">
                       Total: {result.mediaSummary.total} Media
                     </span>
                   </div>
@@ -671,7 +671,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
               <h3 className="text-lg font-bold text-[#1A1A1A] flex items-center gap-2">
-                <Layers className="w-5 h-5 text-[#0F3D2E]" />
+                <Layers className="w-5 h-5 text-primary" />
                 Daftar & Penjelajah Sesi Photobooth
               </h3>
               <p className="text-xs text-[#1A1A1A]/60 mt-0.5">
@@ -686,7 +686,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                   onClick={() => setViewMode('list')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                     viewMode === 'list'
-                      ? 'bg-white text-[#0F3D2E] shadow-xs'
+                      ? 'bg-white text-primary shadow-xs'
                       : 'text-[#1A1A1A]/50 hover:text-[#1A1A1A]'
                   }`}
                   title="Tampilan Tabel / List"
@@ -698,7 +698,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                   onClick={() => setViewMode('grid')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                     viewMode === 'grid'
-                      ? 'bg-white text-[#0F3D2E] shadow-xs'
+                      ? 'bg-white text-primary shadow-xs'
                       : 'text-[#1A1A1A]/50 hover:text-[#1A1A1A]'
                   }`}
                   title="Tampilan Grid Kartu"
@@ -714,7 +714,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                 className="px-3 py-2 rounded-xl border border-[#1A1A1A]/10 hover:bg-[#F9F9F9] text-[#1A1A1A] text-xs font-semibold flex items-center gap-1.5 disabled:opacity-50 transition-all cursor-pointer"
                 title="Segarkan data sesi"
               >
-                {listLoading ? <SeboothLoader variant="mini" className="w-3.5 h-3.5 text-[#0F3D2E]" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                {listLoading ? <SeboothLoader variant="mini" className="w-3.5 h-3.5 text-primary" /> : <RefreshCw className="w-3.5 h-3.5" />}
                 <span>Refresh</span>
               </button>
             </div>
@@ -729,7 +729,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                 value={filterSearch}
                 onChange={(e) => setFilterSearch(e.target.value)}
                 placeholder="Cari event atau ID..."
-                className="w-full pl-9 pr-8 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#0F3D2E]/20 focus:border-[#0F3D2E] transition-all"
+                className="w-full pl-9 pr-8 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               />
               <Search className="w-3.5 h-3.5 text-[#1A1A1A]/40 absolute left-3 top-1/2 -translate-y-1/2" />
               {filterSearch && (
@@ -748,7 +748,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as any)}
-                  className="w-full pl-8 pr-3 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#0F3D2E]/20 focus:border-[#0F3D2E] transition-all appearance-none cursor-pointer"
+                  className="w-full pl-8 pr-3 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer"
                 >
                   <option value="all">Semua Status Klaim</option>
                   <option value="claimed">Claimed (Sudah Diklaim)</option>
@@ -763,7 +763,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
               <select
                 value={policyFilter}
                 onChange={(e) => setPolicyFilter(e.target.value as any)}
-                className="w-full px-3 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#0F3D2E]/20 focus:border-[#0F3D2E] transition-all appearance-none cursor-pointer"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer"
               >
                 <option value="all">Semua Kebijakan</option>
                 <option value="legacy">Bebas Batas Waktu (Legacy)</option>
@@ -777,7 +777,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full pl-8 pr-3 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#0F3D2E]/20 focus:border-[#0F3D2E] transition-all appearance-none cursor-pointer"
+                  className="w-full pl-8 pr-3 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer"
                 >
                   <option value="newest">Urut: Terbaru (Default)</option>
                   <option value="oldest">Urut: Terlama</option>
@@ -812,7 +812,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                 setPolicyFilter('all')
                 setSortBy('newest')
               }}
-              className="mt-4 px-4 py-2 rounded-xl bg-[#0F3D2E] text-white text-xs font-bold hover:bg-[#185340] transition-colors cursor-pointer"
+              className="mt-4 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-[#185340] transition-colors cursor-pointer"
             >
               Reset Semua Filter
             </button>
@@ -841,8 +841,8 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                   return (
                     <tr
                       key={s.id}
-                      className={`hover:bg-[#0F3D2E]/5 transition-colors ${
-                        isSelected ? 'bg-[#0F3D2E]/10 font-medium' : ''
+                      className={`hover:bg-primary/5 transition-colors ${
+                        isSelected ? 'bg-primary/10 font-medium' : ''
                       }`}
                     >
                       {/* Index */}
@@ -927,7 +927,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                         <div className="inline-flex items-center gap-1.5">
                           <button
                             onClick={() => handleSelectSession(s.id)}
-                            className="px-2.5 py-1.5 rounded-lg bg-[#0F3D2E] text-white hover:bg-[#185340] text-[11px] font-bold transition-all shadow-2xs flex items-center gap-1 cursor-pointer"
+                            className="px-2.5 py-1.5 rounded-lg bg-primary text-white hover:bg-[#185340] text-[11px] font-bold transition-all shadow-2xs flex items-center gap-1 cursor-pointer"
                             title="Inspeksi detail sesi ini"
                           >
                             <Search className="w-3 h-3" />
@@ -963,8 +963,8 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                   key={s.id}
                   className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
                     isSelected
-                      ? 'border-[#0F3D2E] bg-[#0F3D2E]/5 shadow-sm ring-2 ring-[#0F3D2E]/20'
-                      : 'border-[#1A1A1A]/10 bg-white hover:border-[#0F3D2E]/40 hover:shadow-xs'
+                      ? 'border-primary bg-primary/5 shadow-sm ring-2 ring-primary/20'
+                      : 'border-[#1A1A1A]/10 bg-white hover:border-primary/40 hover:shadow-xs'
                   }`}
                 >
                   <div>
@@ -1033,7 +1033,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
                   <div className="mt-4 pt-3 border-t border-[#1A1A1A]/5 flex items-center justify-between gap-2">
                     <button
                       onClick={() => handleSelectSession(s.id)}
-                      className="flex-1 py-1.5 px-3 rounded-lg bg-[#0F3D2E] text-white hover:bg-[#185340] text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
+                      className="flex-1 py-1.5 px-3 rounded-lg bg-primary text-white hover:bg-[#185340] text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
                     >
                       <Search className="w-3 h-3" />
                       Inspeksi

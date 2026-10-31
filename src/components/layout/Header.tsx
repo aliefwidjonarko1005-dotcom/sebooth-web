@@ -89,7 +89,7 @@ export function Header() {
           aria-label="Buka Menu Navigasi"
           className="w-11 h-11 rounded-full bg-black/65 backdrop-blur-xl border border-white/25 flex items-center justify-center text-white shadow-[0_8px_24px_rgba(0,0,0,0.5)] active:scale-95 hover:bg-black/85 transition-all cursor-pointer group"
         >
-          <Menu className="w-5 h-5 text-white group-hover:text-[#FF5500] transition-colors" />
+          <Menu className="w-5 h-5 text-white group-hover:text-secondary transition-colors" />
         </button>
 
         {/* Small Brand Pill Next to Hamburger */}
@@ -168,7 +168,7 @@ export function Header() {
                           {item.name}
                         </span>
                         {isActive && (
-                          <span className="w-2 h-2 rounded-full bg-[#FF5500] shadow-[0_0_8px_#FF5500]" />
+                          <span className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_var(--color-secondary)]" />
                         )}
                       </Link>
                     );

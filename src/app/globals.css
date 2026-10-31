@@ -9,7 +9,11 @@
   --color-secondary: #ff4500;
   --color-blue-dark: #00113a;
   --color-blue-deep: #002366;
+  /* Lighter navy for chips sitting on a navy background */
+  --color-navy-raised: #0239a0;
   --color-orange-accent: #ff4500;
+  /* Hover/pressed shade of the brand orange */
+  --color-orange-press: #e63e00;
   --color-cream-soft: #f8f9fa;
   --color-blue-light: #eef2ff;
 
@@ -24,16 +28,6 @@
 
 :root {
   --font-bayon: "Bayon", Impact, sans-serif;
-  --c-blue: #002366;
-  --c-dark-blue: #00113a;
-  --c-orange: #ff4500;
-  --c-red: #002366;
-  --c-yellow: #ff4500;
-  --c-white: #ffffff;
-  --c-dark-white: #f8f9fa;
-  --c-light-blue: #eef2ff;
-  --c-light-pink: #f8f9fa;
-  --c-pink: #eef2ff;
   --background: #f8f9fa;
   --foreground: #002366;
 }
@@ -263,7 +257,7 @@ body {
   position: relative;
   height: 6px;
   margin: 0 22px;
-  background: radial-gradient(circle, #00113a 2.6px, transparent 3px) 0 0 / 14px 6px repeat-x;
+  background: radial-gradient(circle, var(--color-blue-dark) 2.6px, transparent 3px) 0 0 / 14px 6px repeat-x;
 }
 .booking-ticket .ticket-perf::before,
 .booking-ticket .ticket-perf::after {
@@ -273,7 +267,7 @@ body {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #00113a;
+  background: var(--color-blue-dark);
   translate: 0 -50%;
 }
 .booking-ticket .ticket-perf::before { left: -36px; }
@@ -288,7 +282,7 @@ body {
     height: auto;
     margin: 0;
     translate: -50% 0;
-    background: radial-gradient(circle, #00113a 2.6px, transparent 3px) 0 0 / 6px 14px repeat-y;
+    background: radial-gradient(circle, var(--color-blue-dark) 2.6px, transparent 3px) 0 0 / 6px 14px repeat-y;
   }
   .booking-ticket .ticket-perf::before,
   .booking-ticket .ticket-perf::after { left: 50%; right: auto; translate: -50% 0; }

@@ -28,7 +28,7 @@ export default function FrameEventsAdminPage() {
                 <h1 className="font-bayon text-[44px] leading-none uppercase">Frame acara</h1>
                 <p className="text-[17px]">{message}</p>
                 {state.status === "signed-out" && (
-                    <Link href="/login?redirect=/admin/frame-events" className="h-12 px-6 rounded-full bg-[#ff4500] text-[#00113a] font-bold inline-flex items-center">
+                    <Link href="/login?redirect=/admin/frame-events" className="h-12 px-6 rounded-full bg-[#ff4500] text-blue-dark font-bold inline-flex items-center">
                         Masuk
                     </Link>
                 )}
@@ -88,7 +88,7 @@ export default function FrameEventsAdminPage() {
             <div className="fixed bottom-0 inset-x-0 px-5 pt-3 pb-[max(16px,env(safe-area-inset-bottom))] bg-[#f8f9fa]">
                 <button
                     onClick={() => setEditing("new")}
-                    className="w-full max-w-3xl mx-auto h-14 rounded-full bg-[#ff4500] text-[#00113a] text-[16px] font-bold flex items-center justify-center gap-2"
+                    className="w-full max-w-3xl mx-auto h-14 rounded-full bg-[#ff4500] text-blue-dark text-[16px] font-bold flex items-center justify-center gap-2"
                 >
                     <Plus className="w-5 h-5" /> Acara baru
                 </button>

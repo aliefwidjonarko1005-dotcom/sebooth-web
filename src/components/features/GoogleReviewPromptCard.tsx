@@ -74,7 +74,7 @@ export default function GoogleReviewPromptCard({
       style={{ backgroundColor: '#121620' }}
     >
       {/* Subtle Sebooth Brand Orange Ambient Glow in the Top-Right Corner */}
-      <div className="absolute -top-16 -right-16 w-44 h-44 rounded-full bg-[#FF5500]/20 blur-3xl pointer-events-none" />
+      <div className="absolute -top-16 -right-16 w-44 h-44 rounded-full bg-secondary/20 blur-3xl pointer-events-none" />
       <div className="absolute -bottom-16 -left-16 w-36 h-36 rounded-full bg-[#002366]/40 blur-2xl pointer-events-none" />
 
       {/* Left Column: Google Identity, Badge, Headline & Stars */}
@@ -87,7 +87,7 @@ export default function GoogleReviewPromptCard({
         <div>
           {/* Top Pill Tags & Stars */}
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className="px-2.5 py-0.5 rounded-full bg-[#FF5500]/25 text-[#FF7A29] text-[10px] font-extrabold uppercase tracking-wider border border-[#FF5500]/40 flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-full bg-secondary/25 text-[#FF7A29] text-[10px] font-extrabold uppercase tracking-wider border border-secondary/40 flex items-center gap-1">
               <Sparkles className="w-3 h-3" />
               <span>GOOGLE REVIEW</span>
             </span>

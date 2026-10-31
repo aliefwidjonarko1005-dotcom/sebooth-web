@@ -163,7 +163,7 @@ export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
                 </div>
                 <button
                     onClick={() => setShowCreateForm(true)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0F3D2E] text-white text-sm font-bold hover:bg-[#195240] transition-all"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold hover:bg-[#195240] transition-all"
                 >
                     <Plus className="w-4 h-4" /> Buat Event
                 </button>
@@ -207,7 +207,7 @@ export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
                             </div>
                         </div>
                         <button onClick={handleCreateEvent} disabled={creating}
-                            className="w-full bg-[#0F3D2E] text-white font-bold text-sm rounded-xl py-2.5 flex items-center justify-center gap-2 hover:bg-[#195240] transition-all disabled:opacity-60">
+                            className="w-full bg-primary text-white font-bold text-sm rounded-xl py-2.5 flex items-center justify-center gap-2 hover:bg-[#195240] transition-all disabled:opacity-60">
                             {creating ? <SeboothLoader variant="mini" className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                             Buat Event
                         </button>
@@ -230,7 +230,7 @@ export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
                         <div key={event.id}
                             className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
                                 selectedEventId === event.id
-                                    ? "bg-[#0F3D2E]/5 border-[#0F3D2E]/30"
+                                    ? "bg-primary/5 border-primary/30"
                                     : "bg-[#F9F9F9] border-[#1A1A1A]/10 hover:border-[#1A1A1A]/20"
                             }`}
                             onClick={() => setSelectedEventId(event.id)}
@@ -286,7 +286,7 @@ export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
                             <button
                                 onClick={() => doAction("call_next")}
                                 disabled={actionLoading === "call_next" || status.totalWaiting === 0}
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0F3D2E] text-white text-sm font-bold hover:bg-[#195240] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-bold hover:bg-[#195240] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {actionLoading === "call_next" ? <SeboothLoader variant="mini" className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                                 Panggil Berikutnya
@@ -318,7 +318,7 @@ export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
                                 >
                                     <div className="pt-3 border-t border-[#1A1A1A]/10">
                                         <p className="text-xs text-[#1A1A1A]/50 mb-3">
-                                            Scan untuk ambil antrean: <span className="font-bold text-[#0F3D2E]">{baseUrl}/queue/{selectedEventId}</span>
+                                            Scan untuk ambil antrean: <span className="font-bold text-primary">{baseUrl}/queue/{selectedEventId}</span>
                                         </p>
                                         <QueueQrCode url={`${baseUrl}/queue/${selectedEventId}`} />
                                     </div>
@@ -329,8 +329,8 @@ export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
 
                     {/* Current serving */}
                     {status.currentTicket && (
-                        <div className="bg-[#0F3D2E]/5 border border-[#0F3D2E]/20 rounded-2xl p-4">
-                            <p className="text-xs font-black text-[#0F3D2E]/60 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4">
+                            <p className="text-xs font-black text-primary/60 uppercase tracking-wider mb-3 flex items-center gap-2">
                                 <Zap className="w-3.5 h-3.5" /> Sedang Dilayani
                             </p>
                             <TicketRow
@@ -394,9 +394,9 @@ function TicketRow({
     const isLoading = (action: string) => actionLoading === action + ticket.id;
 
     return (
-        <div className={`flex items-center justify-between gap-3 p-3 rounded-xl ${isCurrent ? "bg-[#0F3D2E]/10" : "bg-[#F9F9F9]"}`}>
+        <div className={`flex items-center justify-between gap-3 p-3 rounded-xl ${isCurrent ? "bg-primary/10" : "bg-[#F9F9F9]"}`}>
             <div className="flex items-center gap-3 min-w-0">
-                <span className={`font-black tabular-nums text-xl shrink-0 ${isCurrent ? "text-[#0F3D2E]" : "text-[#1A1A1A]"}`}>
+                <span className={`font-black tabular-nums text-xl shrink-0 ${isCurrent ? "text-primary" : "text-[#1A1A1A]"}`}>
                     #{String(ticket.queue_number).padStart(3, "0")}
                 </span>
                 <div className="min-w-0">

@@ -99,7 +99,7 @@ export const ActivitiesSlider: React.FC = () => {
                         </span>
                       </div>
 
-                      <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-[#FF5500] transition-colors line-clamp-2 leading-snug">
+                      <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-secondary transition-colors line-clamp-2 leading-snug">
                         {item.title}
                       </h3>
 
@@ -113,7 +113,7 @@ export const ActivitiesSlider: React.FC = () => {
                   <div className="p-3.5 sm:p-4 pt-0">
                     <Link
                       href={`/artikel/${item.slug}`}
-                      className="w-full py-2 px-3 rounded-xl bg-stone-100 group-hover:bg-[#FF5500] group-hover:text-white text-slate-800 font-bold text-xs flex items-center justify-between transition-all"
+                      className="w-full py-2 px-3 rounded-xl bg-stone-100 group-hover:bg-secondary group-hover:text-white text-slate-800 font-bold text-xs flex items-center justify-between transition-all"
                     >
                       <span>Baca Cerita Lengkap</span>
                       <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />

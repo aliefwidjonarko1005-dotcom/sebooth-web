@@ -819,7 +819,7 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
                     href={`https://wa.me/6285713899441?text=${encodeURIComponent(`Halo Sebooth, saya mau pakai template frame "${selectedFrame.title}" untuk acara saya!`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full rounded-full py-2.5 sm:py-3.5 px-4 sm:px-6 bg-[#FF4500] hover:bg-[#e63e00] text-white font-extrabold text-xs xs:text-sm sm:text-base text-center tracking-wide border border-white/20 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full rounded-full py-2.5 sm:py-3.5 px-4 sm:px-6 bg-[#FF4500] hover:bg-orange-press text-white font-extrabold text-xs xs:text-sm sm:text-base text-center tracking-wide border border-white/20 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <span>Pakai Frame Ini Untuk Acara Saya</span>
                   </a>

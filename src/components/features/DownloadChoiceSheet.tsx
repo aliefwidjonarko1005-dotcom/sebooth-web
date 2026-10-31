@@ -269,7 +269,7 @@ export default function DownloadChoiceSheet({ open, files, zipName, onClose, onD
                 <button
                   type="button"
                   onClick={() => finish(zipCount, 'zip')}
-                  className="flex h-12 items-center justify-center gap-2 rounded-full bg-[#002366] text-[15px] font-bold text-white transition-colors hover:bg-[#00113A] cursor-pointer"
+                  className="flex h-12 items-center justify-center gap-2 rounded-full bg-[#002366] text-[15px] font-bold text-white transition-colors hover:bg-blue-dark cursor-pointer"
                 >
                   <Check className="h-5 w-5" />
                   Selesai
@@ -306,7 +306,7 @@ export default function DownloadChoiceSheet({ open, files, zipName, onClose, onD
                 <button
                   type="button"
                   onClick={() => finish(files.length, 'separate')}
-                  className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#002366] text-[15px] font-bold text-white transition-colors hover:bg-[#00113A] cursor-pointer"
+                  className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#002366] text-[15px] font-bold text-white transition-colors hover:bg-blue-dark cursor-pointer"
                 >
                   <Check className="h-5 w-5" />
                   Selesai

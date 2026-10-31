@@ -120,7 +120,7 @@ export default function AnalyticsInsightsTab({
   return (
     <div className="space-y-6">
       {/* ─── Top Header & Live Status ─── */}
-      <div className="bg-gradient-to-r from-[#0F3D2E] via-[#14533D] to-[#0A291E] p-6 sm:p-7 rounded-3xl text-white shadow-md relative overflow-hidden">
+      <div className="bg-gradient-to-r from-primary via-primary to-blue-dark p-6 sm:p-7 rounded-3xl text-white shadow-md relative overflow-hidden">
         {/* Subtle decorative circles */}
         <div className="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-white/5 blur-2xl pointer-events-none" />
         <div className="absolute right-40 -bottom-16 w-40 h-40 rounded-full bg-emerald-400/10 blur-xl pointer-events-none" />
@@ -254,7 +254,7 @@ export default function AnalyticsInsightsTab({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h2 className="text-base font-bold text-[#1A1A1A] flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-[#0F3D2E]" />
+                  <Activity className="w-4 h-4 text-primary" />
                   Tren Aktivitas Sesi (7 Hari Terakhir)
                 </h2>
                 <p className="text-xs text-[#1A1A1A]/60 mt-0.5">
@@ -268,7 +268,7 @@ export default function AnalyticsInsightsTab({
                   onClick={() => setActiveChartTab('sessions')}
                   className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
                     activeChartTab === 'sessions'
-                      ? 'bg-white text-[#0F3D2E] shadow-2xs'
+                      ? 'bg-white text-primary shadow-2xs'
                       : 'text-[#1A1A1A]/50 hover:text-[#1A1A1A]'
                   }`}
                 >
@@ -312,7 +312,7 @@ export default function AnalyticsInsightsTab({
                         <div
                           className={`w-full rounded-t-xl transition-all duration-500 ${
                             activeChartTab === 'sessions'
-                              ? isToday ? 'bg-[#0F3D2E]' : 'bg-[#0F3D2E]/80 group-hover:bg-[#0F3D2E]'
+                              ? isToday ? 'bg-primary' : 'bg-primary/80 group-hover:bg-primary'
                               : isToday ? 'bg-emerald-600' : 'bg-emerald-500/80 group-hover:bg-emerald-600'
                           }`}
                           style={{ height: `${Math.max(heightPercent, 4)}%` }}
@@ -339,7 +339,7 @@ export default function AnalyticsInsightsTab({
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm sm:text-base font-bold text-[#1A1A1A] flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-[#0F3D2E]" />
+                  <Clock className="w-4 h-4 text-primary" />
                   Jam Operasional Paling Ramai (Peak Hours)
                 </h3>
                 <p className="text-xs text-[#1A1A1A]/60 mt-0.5">
@@ -378,7 +378,7 @@ export default function AnalyticsInsightsTab({
           <div className="bg-white p-5 sm:p-6 rounded-2xl border border-[#1A1A1A]/10 shadow-xs space-y-4">
             <div>
               <h3 className="text-sm sm:text-base font-bold text-[#1A1A1A] flex items-center gap-2">
-                <Layers className="w-4 h-4 text-[#0F3D2E]" />
+                <Layers className="w-4 h-4 text-primary" />
                 Distribusi Format Media
               </h3>
               <p className="text-xs text-[#1A1A1A]/60 mt-0.5">
@@ -460,7 +460,7 @@ export default function AnalyticsInsightsTab({
           {/* Antrean & Operasional Kiosk */}
           <div className="bg-white p-5 sm:p-6 rounded-2xl border border-[#1A1A1A]/10 shadow-xs space-y-3">
             <h3 className="text-sm sm:text-base font-bold text-[#1A1A1A] flex items-center gap-2">
-              <Ticket className="w-4 h-4 text-[#0F3D2E]" />
+              <Ticket className="w-4 h-4 text-primary" />
               Kinerja Antrean Kiosk
             </h3>
 
@@ -479,7 +479,7 @@ export default function AnalyticsInsightsTab({
               {onNavigateToUserClaims && (
                 <button
                   onClick={onNavigateToUserClaims}
-                  className="w-full py-2.5 px-3 rounded-xl bg-[#0F3D2E]/10 hover:bg-[#0F3D2E] text-[#0F3D2E] hover:text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 px-3 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5"
                 >
                   <Users className="w-3.5 h-3.5" />
                   Lihat Rincian Klaim Pengguna
@@ -497,7 +497,7 @@ export default function AnalyticsInsightsTab({
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-sm sm:text-base font-bold text-[#1A1A1A] flex items-center gap-2">
-                <Award className="w-4 h-4 text-[#0F3D2E]" />
+                <Award className="w-4 h-4 text-primary" />
                 Event Photobooth Teraktif
               </h3>
               <p className="text-xs text-[#1A1A1A]/60 mt-0.5">
@@ -517,7 +517,7 @@ export default function AnalyticsInsightsTab({
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-md bg-[#0F3D2E]/10 text-[#0F3D2E] text-[10px] font-black flex items-center justify-center flex-shrink-0">
+                      <span className="w-5 h-5 rounded-md bg-primary/10 text-primary text-[10px] font-black flex items-center justify-center flex-shrink-0">
                         {i + 1}
                       </span>
                       <h4 className="font-extrabold text-xs sm:text-sm text-[#1A1A1A] truncate">
@@ -545,7 +545,7 @@ export default function AnalyticsInsightsTab({
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-sm sm:text-base font-bold text-[#1A1A1A] flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#0F3D2E]" />
+                <Clock className="w-4 h-4 text-primary" />
                 Sesi Terbaru
               </h3>
               <p className="text-xs text-[#1A1A1A]/60 mt-0.5">
@@ -586,7 +586,7 @@ export default function AnalyticsInsightsTab({
                   {onInspectSession && (
                     <button
                       onClick={() => onInspectSession(s.id)}
-                      className="text-[11px] font-bold text-[#0F3D2E] hover:underline flex items-center gap-1 flex-shrink-0"
+                      className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1 flex-shrink-0"
                     >
                       Cek <ChevronRight className="w-3 h-3" />
                     </button>

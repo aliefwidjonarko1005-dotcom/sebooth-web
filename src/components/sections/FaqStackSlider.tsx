@@ -87,8 +87,8 @@ const FOLDERS: FaqFolder[] = [
     tabLabel: "Teknis",
     gradientId: "grad-faq-technical",
     stops: [
-      { offset: "0%", color: "#00113a" },
-      { offset: "100%", color: "#00113a" },
+      { offset: "0%", color: "var(--color-blue-dark)" },
+      { offset: "100%", color: "var(--color-blue-dark)" },
     ],
     tabTextColor: "text-white",
     tabPosition: "middle",
@@ -201,7 +201,7 @@ export function FaqStackSlider({ isActive = true }: FaqStackSliderProps) {
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}
-          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black font-bayon uppercase tracking-normal sm:tracking-wide text-[#00113a] leading-tight drop-shadow-xs"
+          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black font-bayon uppercase tracking-normal sm:tracking-wide text-blue-dark leading-tight drop-shadow-xs"
         >
           FREQUENTLY ASK QUESTION
         </motion.h2>
@@ -255,7 +255,7 @@ export function FaqStackSlider({ isActive = true }: FaqStackSliderProps) {
                   <defs>
                     <linearGradient id={folder.gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
                       {folder.stops.map((stop, i) => (
-                        <stop key={i} offset={stop.offset} stopColor={stop.color} />
+                        <stop key={i} offset={stop.offset} style={{ stopColor: stop.color }} />
                       ))}
                     </linearGradient>
                   </defs>

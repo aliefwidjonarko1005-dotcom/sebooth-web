@@ -20,7 +20,7 @@ import { SeboothLoader } from "@/components/ui/SeboothLoader";
 const FRAME_TEMPLATES = [
   { id: 'classic', name: 'Classic White', bg: '#ffffff', border: 'none', textColor: '#1A1A1A', subColor: '#666', subText: 'THE PREMIUM EXPERIENCE' },
   { id: 'dark', name: 'Night Edition', bg: '#1A1A1A', border: '2px solid #333', textColor: '#ffffff', subColor: '#888', subText: 'NIGHT EDITION' },
-  { id: 'elegant', name: 'Wedding Elegant', bg: '#F9F6F0', border: '4px solid #D4AF37', textColor: '#0F3D2E', subColor: '#D4AF37', subText: 'WEDDING COLLECTION' },
+  { id: 'elegant', name: 'Wedding Elegant', bg: '#F9F6F0', border: '4px solid #D4AF37', textColor: '#002366', subColor: '#D4AF37', subText: 'WEDDING COLLECTION' },
 ]
 
 type TabKey = 'strip' | 'gif' | 'live' | 'photos'
@@ -354,7 +354,7 @@ export default function SessionDetailPage() {
                   <div className="w-full mt-3 flex items-center justify-between gap-2 px-1">
                     <button 
                       onClick={() => downloadFile(strip.url, 'strip.jpg')} 
-                      className="flex-1 py-3 rounded-full bg-gradient-to-r from-[#FF5500] to-[#FF2200] hover:opacity-95 active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
+                      className="flex-1 py-3 rounded-full bg-gradient-to-r from-secondary to-orange-press hover:opacity-95 active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
                     >
                       <Download className="w-4 h-4" /> 
                       <span>Simpan Strip HD</span>
@@ -383,7 +383,7 @@ export default function SessionDetailPage() {
                   </div>
                   <button 
                     onClick={() => downloadFile(gif.url, 'animation.gif')} 
-                    className="w-full mt-3 py-3 rounded-full bg-gradient-to-r from-[#FF5500] to-[#FF2200] hover:opacity-95 active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
+                    className="w-full mt-3 py-3 rounded-full bg-gradient-to-r from-secondary to-orange-press hover:opacity-95 active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
                   >
                     <Download className="w-4 h-4" /> 
                     <span>Simpan GIF Animation</span>
@@ -420,7 +420,7 @@ export default function SessionDetailPage() {
                   </div>
                   <button 
                     onClick={() => downloadFile(live.url, `live_photo_${liveIdx + 1}.mp4`)} 
-                    className="w-full mt-3 py-3 rounded-full bg-gradient-to-r from-[#FF5500] to-[#FF2200] hover:opacity-95 active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
+                    className="w-full mt-3 py-3 rounded-full bg-gradient-to-r from-secondary to-orange-press hover:opacity-95 active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
                   >
                     <Download className="w-4 h-4" /> 
                     <span>Simpan Live Video HD</span>
@@ -467,7 +467,7 @@ export default function SessionDetailPage() {
               </div>
               <button 
                 onClick={handleDownloadAll} 
-                className="mt-5 w-full py-3.5 rounded-full bg-[#181B34] hover:bg-black active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
+                className="mt-5 w-full py-3.5 rounded-full bg-blue-dark hover:bg-black active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
               >
                 <Download className="w-4 h-4" /> 
                 <span>Simpan Semua Foto ({photos.length})</span>

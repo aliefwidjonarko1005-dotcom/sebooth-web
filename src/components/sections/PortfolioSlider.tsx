@@ -250,7 +250,7 @@ export function PortfolioSlider({ isActive = true }: PortfolioSliderProps) {
             </span>
             <button
               onClick={() => window.dispatchEvent(new CustomEvent("sebooth:next-slide"))}
-              className="px-8 py-3.5 rounded-full bg-[#FF4500] hover:bg-[#e63e00] text-white font-black font-bayon uppercase tracking-wider text-base shadow-lg hover:shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+              className="px-8 py-3.5 rounded-full bg-[#FF4500] hover:bg-orange-press text-white font-black font-bayon uppercase tracking-wider text-base shadow-lg hover:shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
             >
               <span>LANJUT KE PRICING & PAKET</span>
               <ChevronDown className="w-4 h-4" />

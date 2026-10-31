@@ -451,7 +451,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
 
         {/* ─── 1. HERO ─── */}
         <section className="pt-1">
-          <h1 className="text-[30px] sm:text-[40px] font-black font-bayon uppercase text-[#181B34] tracking-tight leading-none">
+          <h1 className="text-[30px] sm:text-[40px] font-black font-bayon uppercase text-blue-dark tracking-tight leading-none">
             Foto & Video Sesi Kamu
           </h1>
           <p className="mt-2 text-[14px] text-slate-600 leading-relaxed">

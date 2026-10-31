@@ -208,11 +208,11 @@ export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
             </span>
           )}
           {activeIndex === 0 && (
-            <span className="text-[9.5px] xs:text-xs sm:text-sm font-extrabold tracking-[0.2em] uppercase text-[#F59E0B] group-hover:text-[#FF5500] transition-colors drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] filter">
+            <span className="text-[9.5px] xs:text-xs sm:text-sm font-extrabold tracking-[0.2em] uppercase text-[#F59E0B] group-hover:text-secondary transition-colors drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] filter">
               SCROLL UNTUK GANTI SLIDE
             </span>
           )}
-          <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/25 flex items-center justify-center group-hover:border-[#FF5500] group-hover:bg-[#FF5500]/30 transition-all shadow-lg">
+          <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/25 flex items-center justify-center group-hover:border-secondary group-hover:bg-secondary/30 transition-all shadow-lg">
             <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-white drop-shadow-md" />
           </div>
         </button>

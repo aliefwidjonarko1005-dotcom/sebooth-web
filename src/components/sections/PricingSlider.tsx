@@ -196,9 +196,9 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
     // Exact matching background gradient classes of the destination target slide
     let colorGradient = "bg-[#002366]"; // Slide 1 (Center Hero Overview)
     if (targetSlide === 0) {
-      colorGradient = "bg-[#00113a]"; // Slide 0 (All You Can Photo)
+      colorGradient = "bg-blue-dark"; // Slide 0 (All You Can Photo)
     } else if (targetSlide === 2) {
-      colorGradient = "bg-[#00113a]"; // Slide 2 (Batch Booking)
+      colorGradient = "bg-blue-dark"; // Slide 2 (Batch Booking)
     }
 
     setSwipeRipple({
@@ -259,7 +259,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
   const isAllYouCanActive = isAllYouCan || (!selectedPackage && activeSlide === 0);
   const isBatchActive = isBatch || (!selectedPackage && activeSlide === 2);
 
-  const currentBgColor = isAllYouCanActive || isBatchActive ? "#00113a" : "#002366";
+  const currentBgColor = isAllYouCanActive || isBatchActive ? "var(--color-blue-dark)" : "var(--color-primary)";
 
   // Helper to determine semi-circle button colors and targets based on activeSlide
   const getSideButtonConfig = (direction: "left" | "right") => {
@@ -310,8 +310,8 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
             }}
             className={`absolute w-[120vmax] h-[120vmax] -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none z-0 ${
               isAllYouCan
-                ? "bg-[#00113a]"
-                : "bg-[#00113a]"
+                ? "bg-blue-dark"
+                : "bg-blue-dark"
             }`}
           />
         )}
@@ -355,9 +355,9 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
         <div
           className={`absolute inset-0 pointer-events-none z-0 transition-opacity duration-500 ${
             isAllYouCanActive
-              ? "bg-[#00113a]"
+              ? "bg-blue-dark"
               : isBatchActive
-              ? "bg-[#00113a]"
+              ? "bg-blue-dark"
               : "bg-[#002366]"
           }`}
         />
@@ -424,7 +424,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                   />
 
                   <div className="relative z-10 mt-auto mb-[34px] lg:mb-[40px] xl:mb-[44px] w-full px-6 lg:px-7 flex flex-col items-center text-center">
-                    <h3 className="text-xl lg:text-2xl font-black font-bayon text-[#181B34] tracking-tight uppercase leading-tight">
+                    <h3 className="text-xl lg:text-2xl font-black font-bayon text-blue-dark tracking-tight uppercase leading-tight">
                       All You Can Photo
                     </h3>
                     <p className="text-[9.5px] lg:text-[10.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[200px] lg:max-w-[215px]">
@@ -453,7 +453,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         e.stopPropagation();
                         handleSelectPackage("all-you-can", e);
                       }}
-                      className="bg-[#FF4500] hover:bg-[#e63e00] text-white font-black uppercase text-[10.5px] lg:text-[11.5px] tracking-wider px-6 lg:px-7 py-2.5 lg:py-3 rounded-full shadow-[0_8px_18px_rgba(230,77,0,0.35)] border border-orange-300/40 group-hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+                      className="bg-[#FF4500] hover:bg-orange-press text-white font-black uppercase text-[10.5px] lg:text-[11.5px] tracking-wider px-6 lg:px-7 py-2.5 lg:py-3 rounded-full shadow-[0_8px_18px_rgba(230,77,0,0.35)] border border-orange-300/40 group-hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
                     >
                       <span>PILIH PAKET INI</span>
                       <ArrowUpRight className="w-3.5 h-3.5 stroke-[3] text-white" />
@@ -485,7 +485,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
 
                   <div className="flex-1 flex flex-col justify-between px-3 lg:px-4 pt-3 pb-2 text-center">
                     <div>
-                      <h3 className="text-2xl lg:text-3xl font-black font-bayon text-[#181B34] tracking-tight uppercase leading-tight">
+                      <h3 className="text-2xl lg:text-3xl font-black font-bayon text-blue-dark tracking-tight uppercase leading-tight">
                         PILIH PAKET PHOTOBOOTH KAMU
                       </h3>
                       <p className="text-xs lg:text-[13px] text-slate-500 font-medium leading-snug mt-1 max-w-[270px] mx-auto">
@@ -496,13 +496,13 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                     <div className="mt-2 flex gap-2">
                       <button
                         onClick={(e) => handleSelectPackage("all-you-can", e)}
-                        className="flex-1 bg-[#FF4500] hover:bg-[#e63e00] text-white font-black uppercase text-[11px] lg:text-xs tracking-wider py-3 rounded-full shadow-md border border-orange-300/40 active:scale-95 transition-transform cursor-pointer"
+                        className="flex-1 bg-[#FF4500] hover:bg-orange-press text-white font-black uppercase text-[11px] lg:text-xs tracking-wider py-3 rounded-full shadow-md border border-orange-300/40 active:scale-95 transition-transform cursor-pointer"
                       >
                         ALL YOU CAN
                       </button>
                       <button
                         onClick={(e) => handleSelectPackage("batch-booking", e)}
-                        className="flex-1 bg-[#002366] hover:bg-[#00113a] text-white font-black uppercase text-[11px] lg:text-xs tracking-wider py-3 rounded-full shadow-md border border-white/30 active:scale-95 transition-transform cursor-pointer"
+                        className="flex-1 bg-[#002366] hover:bg-blue-dark text-white font-black uppercase text-[11px] lg:text-xs tracking-wider py-3 rounded-full shadow-md border border-white/30 active:scale-95 transition-transform cursor-pointer"
                       >
                         BATCH BOOKING
                       </button>
@@ -529,7 +529,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                   />
 
                   <div className="relative z-10 mt-auto mb-[34px] lg:mb-[40px] xl:mb-[44px] w-full px-6 lg:px-7 flex flex-col items-center text-center">
-                    <h3 className="text-xl lg:text-2xl font-black font-bayon text-[#181B34] tracking-tight uppercase leading-tight">
+                    <h3 className="text-xl lg:text-2xl font-black font-bayon text-blue-dark tracking-tight uppercase leading-tight">
                       Batch Booking
                     </h3>
                     <p className="text-[9.5px] lg:text-[10.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[200px] lg:max-w-[215px]">
@@ -559,7 +559,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         e.stopPropagation();
                         handleSelectPackage("batch-booking", e);
                       }}
-                      className="bg-[#FF4500] hover:bg-[#e63e00] text-white font-black uppercase text-[10.5px] lg:text-[11.5px] tracking-wider px-6 lg:px-7 py-2.5 lg:py-3 rounded-full shadow-[0_8px_18px_rgba(230,77,0,0.35)] border border-orange-300/40 group-hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+                      className="bg-[#FF4500] hover:bg-orange-press text-white font-black uppercase text-[10.5px] lg:text-[11.5px] tracking-wider px-6 lg:px-7 py-2.5 lg:py-3 rounded-full shadow-[0_8px_18px_rgba(230,77,0,0.35)] border border-orange-300/40 group-hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
                     >
                       <span>PILIH PAKET INI</span>
                       <ArrowUpRight className="w-3.5 h-3.5 stroke-[3] text-white" />
@@ -615,7 +615,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                   />
 
                   <div className="relative z-10 mt-auto mb-[34px] lg:mb-[40px] xl:mb-[44px] w-full px-6 lg:px-7 flex flex-col items-center text-center">
-                    <h3 className="text-xl lg:text-2xl font-black font-bayon text-[#181B34] tracking-tight uppercase leading-tight">
+                    <h3 className="text-xl lg:text-2xl font-black font-bayon text-blue-dark tracking-tight uppercase leading-tight">
                       {isAllYouCan ? "All You Can Photo" : "Batch Booking"}
                     </h3>
                     <p className="text-[9.5px] lg:text-[10.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[200px] lg:max-w-[215px]">
@@ -672,19 +672,19 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       {isAllYouCan ? "PILIH DURASI UNLIMITED KAMU" : "PILIH KUOTA BATCH BOOKING KAMU"}
                     </h2>
                     <div className="flex items-center gap-1.5 sm:gap-2 mt-2.5 text-white flex-nowrap overflow-x-auto no-scrollbar">
-                      <span className="flex items-center gap-1.5 bg-[#0239A0] text-white px-2.5 sm:px-3 py-1.5 rounded-full border border-blue-300/30 text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-md hover:bg-[#022e85] transition-all shrink-0">
+                      <span className="flex items-center gap-1.5 bg-navy-raised text-white px-2.5 sm:px-3 py-1.5 rounded-full border border-blue-300/30 text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-md transition-all shrink-0">
                         <QrCode className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-300 shrink-0" />
                         <span>Softfile Live QR</span>
                       </span>
-                      <span className="flex items-center gap-1.5 bg-[#0239A0] text-white px-2.5 sm:px-3 py-1.5 rounded-full border border-blue-300/30 text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-md hover:bg-[#022e85] transition-all shrink-0">
+                      <span className="flex items-center gap-1.5 bg-navy-raised text-white px-2.5 sm:px-3 py-1.5 rounded-full border border-blue-300/30 text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-md transition-all shrink-0">
                         <Frame className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-300 shrink-0" />
                         <span>Custom Frame</span>
                       </span>
-                      <span className="flex items-center gap-1.5 bg-[#0239A0] text-white px-2.5 sm:px-3 py-1.5 rounded-full border border-blue-300/30 text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-md hover:bg-[#022e85] transition-all shrink-0">
+                      <span className="flex items-center gap-1.5 bg-navy-raised text-white px-2.5 sm:px-3 py-1.5 rounded-full border border-blue-300/30 text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-md transition-all shrink-0">
                         <UserCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-300 shrink-0" />
                         <span>Crew On-Site</span>
                       </span>
-                      <span className="flex items-center gap-1.5 bg-[#0239A0] text-white px-2.5 sm:px-3 py-1.5 rounded-full border border-blue-300/30 text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-md hover:bg-[#022e85] transition-all shrink-0">
+                      <span className="flex items-center gap-1.5 bg-navy-raised text-white px-2.5 sm:px-3 py-1.5 rounded-full border border-blue-300/30 text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-md transition-all shrink-0">
                         <PartyPopper className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-300 shrink-0" />
                         <span>Fun Props Box</span>
                       </span>
@@ -716,7 +716,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                           >
                             <div>
                               <div className="flex items-center gap-3">
-                                <h4 className="text-2xl sm:text-3xl lg:text-[30px] font-black font-bayon text-[#181B34] uppercase leading-none tracking-wide">
+                                <h4 className="text-2xl sm:text-3xl lg:text-[30px] font-black font-bayon text-blue-dark uppercase leading-none tracking-wide">
                                   {pkg.name}
                                 </h4>
                               </div>
@@ -770,7 +770,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                           >
                             <div>
                               <div className="flex items-center gap-3">
-                                <h4 className="text-2xl sm:text-3xl lg:text-[30px] font-black font-bayon text-[#181B34] uppercase leading-none tracking-wide">
+                                <h4 className="text-2xl sm:text-3xl lg:text-[30px] font-black font-bayon text-blue-dark uppercase leading-none tracking-wide">
                                   {pkg.name}
                                 </h4>
                               </div>
@@ -852,7 +852,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         priority
                       />
                       <div className="relative z-10 mt-auto mb-[26px] xs:mb-[30px] w-full px-5 xs:px-6 flex flex-col items-center text-center">
-                        <h3 className="text-xl font-black font-bayon text-[#181B34] tracking-tight uppercase leading-tight">
+                        <h3 className="text-xl font-black font-bayon text-blue-dark tracking-tight uppercase leading-tight">
                           All You Can Photo
                         </h3>
                         <p className="text-[9px] xs:text-[9.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[190px]">
@@ -879,7 +879,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                             e.stopPropagation();
                             handleSelectPackage("all-you-can", e);
                           }}
-                          className="bg-[#FF4500] active:bg-[#e63e00] text-white font-black uppercase text-[10.5px] tracking-wider px-6 py-2 rounded-full shadow-[0_6px_16px_rgba(230,77,0,0.35)] border border-orange-300/40 flex items-center gap-1"
+                          className="bg-[#FF4500] active:bg-orange-press text-white font-black uppercase text-[10.5px] tracking-wider px-6 py-2 rounded-full shadow-[0_6px_16px_rgba(230,77,0,0.35)] border border-orange-300/40 flex items-center gap-1"
                         >
                           <span>PILIH PAKET INI</span>
                           <ArrowUpRight className="w-3 h-3 stroke-[3] text-white" />
@@ -909,7 +909,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                       </div>
                       <div className="flex-1 flex flex-col justify-between px-2 pt-2.5 pb-1.5 text-center">
                         <div>
-                          <h3 className="text-xl xs:text-2xl font-black font-bayon text-[#181B34] tracking-tight uppercase leading-tight">
+                          <h3 className="text-xl xs:text-2xl font-black font-bayon text-blue-dark tracking-tight uppercase leading-tight">
                             PILIH PAKET PHOTOBOOTH KAMU
                           </h3>
                           <p className="text-[11px] text-slate-500 font-medium leading-tight mt-1 max-w-[260px] mx-auto">
@@ -947,7 +947,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                         priority
                       />
                       <div className="relative z-10 mt-auto mb-[26px] xs:mb-[30px] w-full px-5 xs:px-6 flex flex-col items-center text-center">
-                        <h3 className="text-xl font-black font-bayon text-[#181B34] tracking-tight uppercase leading-tight">
+                        <h3 className="text-xl font-black font-bayon text-blue-dark tracking-tight uppercase leading-tight">
                           Batch Booking
                         </h3>
                         <p className="text-[9px] xs:text-[9.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[190px]">
@@ -974,7 +974,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                             e.stopPropagation();
                             handleSelectPackage("batch-booking", e);
                           }}
-                          className="bg-[#FF4500] active:bg-[#e63e00] text-white font-black uppercase text-[10.5px] tracking-wider px-6 py-2 rounded-full shadow-[0_6px_16px_rgba(230,77,0,0.35)] border border-orange-300/40 flex items-center gap-1"
+                          className="bg-[#FF4500] active:bg-orange-press text-white font-black uppercase text-[10.5px] tracking-wider px-6 py-2 rounded-full shadow-[0_6px_16px_rgba(230,77,0,0.35)] border border-orange-300/40 flex items-center gap-1"
                         >
                           <span>PILIH PAKET INI</span>
                           <ArrowUpRight className="w-3 h-3 stroke-[3] text-white" />
@@ -1024,19 +1024,19 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                   </h3>
 
                   <div className="flex items-center gap-1.5 mt-2 text-white flex-nowrap overflow-x-auto no-scrollbar pb-0.5">
-                    <span className="flex items-center gap-1 bg-[#0239A0] text-white px-2.5 py-1 rounded-full border border-blue-300/30 text-[10px] sm:text-[11px] font-bold whitespace-nowrap shadow-md shrink-0">
+                    <span className="flex items-center gap-1 bg-navy-raised text-white px-2.5 py-1 rounded-full border border-blue-300/30 text-[10px] sm:text-[11px] font-bold whitespace-nowrap shadow-md shrink-0">
                       <QrCode className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-sky-300 shrink-0" />
                       <span>Softfile Live QR</span>
                     </span>
-                    <span className="flex items-center gap-1 bg-[#0239A0] text-white px-2.5 py-1 rounded-full border border-blue-300/30 text-[10px] sm:text-[11px] font-bold whitespace-nowrap shadow-md shrink-0">
+                    <span className="flex items-center gap-1 bg-navy-raised text-white px-2.5 py-1 rounded-full border border-blue-300/30 text-[10px] sm:text-[11px] font-bold whitespace-nowrap shadow-md shrink-0">
                       <Frame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-sky-300 shrink-0" />
                       <span>Custom Frame</span>
                     </span>
-                    <span className="flex items-center gap-1 bg-[#0239A0] text-white px-2.5 py-1 rounded-full border border-blue-300/30 text-[10px] sm:text-[11px] font-bold whitespace-nowrap shadow-md shrink-0">
+                    <span className="flex items-center gap-1 bg-navy-raised text-white px-2.5 py-1 rounded-full border border-blue-300/30 text-[10px] sm:text-[11px] font-bold whitespace-nowrap shadow-md shrink-0">
                       <UserCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-sky-300 shrink-0" />
                       <span>Crew On-Site</span>
                     </span>
-                    <span className="flex items-center gap-1 bg-[#0239A0] text-white px-2.5 py-1 rounded-full border border-blue-300/30 text-[10px] sm:text-[11px] font-bold whitespace-nowrap shadow-md shrink-0">
+                    <span className="flex items-center gap-1 bg-navy-raised text-white px-2.5 py-1 rounded-full border border-blue-300/30 text-[10px] sm:text-[11px] font-bold whitespace-nowrap shadow-md shrink-0">
                       <PartyPopper className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-sky-300 shrink-0" />
                       <span>Fun Props Box</span>
                     </span>
@@ -1107,7 +1107,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
 
                         {/* Title & Sub-tagline */}
                         <div className="my-auto py-1 flex flex-col items-center justify-center">
-                          <h4 className="text-xl xs:text-2xl font-black font-bayon text-[#181B34] uppercase leading-none tracking-tight">
+                          <h4 className="text-xl xs:text-2xl font-black font-bayon text-blue-dark uppercase leading-none tracking-tight">
                             {pkg.name}
                           </h4>
                           <span className="text-[9.5px] xs:text-[10.5px] font-extrabold text-slate-400 mt-1 uppercase tracking-wider">
@@ -1125,7 +1125,7 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
                           className={`w-full text-white font-black uppercase text-[10.5px] xs:text-[11.5px] py-2.5 rounded-xl shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition-all ${
                             isBatch
                               ? "bg-[#002366] border border-white/30"
-                              : "bg-[#FF4500] hover:bg-[#e63e00]"
+                              : "bg-[#FF4500] hover:bg-orange-press"
                           }`}
                         >
                           <MessageCircle className="w-4 h-4 fill-current shrink-0" />

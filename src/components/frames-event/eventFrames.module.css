@@ -7,7 +7,7 @@
   --tint: #eef2ff;
   --ink: #002366;
   --ink-soft: #4d5f8c;
-  --deep: #00113a;
+  --deep: var(--color-blue-dark);
   --accent: #ff4500;
   --margin: 20px;
   --radius: 20px;
@@ -199,7 +199,7 @@
 .btnPrev { background: var(--tint); color: var(--ink); }
 .btnPrev:hover { background: #dfe6fb; }
 .btnNext { background: var(--accent); color: #ffffff; }
-.btnNext:hover { background: #e63e00; }
+.btnNext:hover { background: var(--color-orange-press); }
 
 @media (min-width: 1024px) {
   .viewer { min-height: 100svh; padding-bottom: 40px; }
@@ -363,7 +363,7 @@
 }
 .links a:hover { background: rgba(255, 255, 255, 0.18); }
 .links li:nth-child(2) a { background: var(--accent); color: var(--deep); }
-.links li:nth-child(2) a:hover { background: #e63e00; }
+.links li:nth-child(2) a:hover { background: var(--color-orange-press); }
 .imprint {
   margin-top: 56px;
   margin-bottom: 0;
