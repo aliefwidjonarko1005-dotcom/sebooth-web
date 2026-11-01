@@ -1,5 +1,6 @@
 import { SlideDeckLanding } from "@/components/slides/SlideDeckLanding";
 import { LANDING_SLIDES } from "@/config/landingSlides";
+import { ARTICLES_DATA } from "@/data/articles";
 
 // ═══════════════════════════════════════════════════════
 // Pure Static Edge Generation (Zero-Latency Edge CDN)
@@ -18,12 +19,22 @@ export const metadata = {
   },
 };
 
+// Only what the "Cerita Sebooth" slide shows: the full article data stays on the server, out of the browser bundle
+const latestArticles = ARTICLES_DATA.slice(0, 3).map(({ slug, title, date, readTime, coverImage, excerpt }) => ({
+  slug,
+  title,
+  date,
+  readTime,
+  coverImage,
+  excerpt,
+}));
+
 export default function Home() {
   return (
     <>
       {/* The hero headline is baked into the slide artwork, so the page's one H1 lives here for search and screen readers */}
       <h1 className="sr-only">Sebooth Photobooth Semarang &amp; Tembalang — {LANDING_SLIDES[0]?.subtitle}</h1>
-      <SlideDeckLanding slides={LANDING_SLIDES} />
+      <SlideDeckLanding slides={LANDING_SLIDES} latestArticles={latestArticles} />
     </>
   );
 }

@@ -1,0 +1,49 @@
+TASTESKILL · INSPECT   http://localhost:3000/
+
+MEASURED (first viewport listed)
+  typefaces       Hanken Grotesk 100%
+  sizes in use    12 / 13 / 14 / 16 px
+  colour          page #f8f9fa · sections #1d43c4 #ffffff #000000 #001845 #eef2ff #002366 · button #ff4500
+  page            1 screens · 57 words · 5 images · hero media 100% img
+  headings        0 · longest 0 line(s) · median - words
+
+FAIL — fix every one of these
+  [numbering] @1440px (+768)  Decorative index numbers: "[01]", "[02]", "[03]", "[04]", "[05]", "[06]"
+      → Remove them. If order truly matters, write it into the words ("First, …") or use a real <ol>.
+  [gradient] @1440px (+768, 390)  2 gradient fill(s): div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0 | div.absolute.inset-0 → linear-gradient(to top, oklab(0 0 0 / 0.75) 0%, rgba(0, 0, 0, 0) 50%, oklab(0 0 0 / 0.4) 100%)
+      → Use a flat colour or a real image. The only gradient allowed by default is a neutral scrim over a photo for legibility.
+  [shadow] @1440px (+768, 390)  1 box-shadow(s) on elements at rest: a.group.inline-flex → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0
+      → Remove. Separate surfaces with a tone step or space. Shadows are for things that really float (menus, dialogs, sticky bars).
+  [few-pictures] @1440px  Only 3 picture(s) on the page (3 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.
+      → Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve.
+  [small-text] @1440px (+768)  7 text blocks under 13px.
+      → Nothing meant to be read goes below 13px.
+  [late-title] @1440px (+768, 390)  The title is not readable 1.2s after the page loaded (it has no size yet).
+      → Put the headline in the HTML, painted on the first frame; the load sequence only adds arrival and is settled by 1.2s (references/motion.md, "Load sequence in 1.2 seconds"). No preloader, no gate, no waiting for the load event.
+  [no-title] @1440px (+768, 390)  The page has no visible h1.
+      → Give the first screen a clear title in an h1 that says what this is (a name with what it does, the product with what it is for, the event with its date and place).
+
+WARN — fix, or be able to defend
+  [glass] @1440px (+768, 390)  9 backdrop-blur surfaces.
+      → One blurred sticky bar at most; glass cards are a tell.
+  [pill-nav] @1440px  Floating rounded pill navigation.
+      → Use a plain bar: wordmark left, a few links, one action.
+  [no-footage] @1440px  No video anywhere on the page.
+      → Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject.
+  [no-hero] @1440px (+768, 390)  No headline found in the first viewport.
+      → The first screen needs a clear focal statement or image.
+  [outlined-box] @768px  1 box(es) drawn with a 1px outline.
+      → Prefer a filled surface or no box.
+  [small-text] @390px  1 text block(s) under 13px.
+      → Nothing meant to be read goes below 13px.
+
+LOOK AT THE RENDER — open these with your image viewer / Read tool before saying anything about quality:
+  desktop 1440px  .taste-skill/polish-before/home/desktop-fold.jpg
+                  .taste-skill/polish-before/home/desktop-page-01.jpg
+  tablet 768px    .taste-skill/polish-before/home/tablet-fold.jpg
+                  .taste-skill/polish-before/home/tablet-page-01.jpg
+  mobile 390px    .taste-skill/polish-before/home/mobile-fold.jpg
+                  .taste-skill/polish-before/home/mobile-page-01.jpg
+
+report: .taste-skill/polish-before/home/report.json
+RESULT: 7 FAIL, 6 WARN — not done.

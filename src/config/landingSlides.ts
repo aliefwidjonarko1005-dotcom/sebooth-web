@@ -2,7 +2,7 @@ export interface SlideCta {
   text: string;
   href: string;
   isExternal?: boolean;
-  variant?: "primary" | "secondary" | "whatsapp" | "gold";
+  variant?: "primary" | "secondary" | "whatsapp";
   position?: "bottom-center" | "bottom-right" | "bottom-left" | "center-right";
 }
 
@@ -109,11 +109,11 @@ export const LANDING_SLIDES: LandingSlide[] = [
   {
     id: "contact",
     slideNumber: "07",
-    title: "Frequently Ask Question",
+    title: "Frequently Asked Questions",
     subtitle: "Belum menemukan jawaban? Yuk, ngobrol langsung dengan tim kami!",
     desktopImage: "/images/slides/desktop/slide-06-contact.svg",
     mobileImage: "/images/slides/mobile/slide-06-contact.svg",
-    alt: "Sebooth Frequently Ask Question",
+    alt: "Sebooth Frequently Asked Questions",
     bgFallbackColor: "#FFFFFF",
     ctas: [],
   },

@@ -1,0 +1,76 @@
+▲ Next.js 16.1.1 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 11.0s
+  Running TypeScript ...
+  Collecting page data using 11 workers ...
+⚠ Using edge runtime on a page currently disables static generation for that page
+  Generating static pages using 11 workers (0/86) ...
+  Generating static pages using 11 workers (21/86) 
+  Generating static pages using 11 workers (42/86) 
+  Generating static pages using 11 workers (64/86) 
+✓ Generating static pages using 11 workers (86/86) in 2.6s
+  Finalizing page optimization ...
+
+Route (app)                                                                 Revalidate  Expire
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about                                                                          1m      1y
+├ ƒ /access/[id]
+├ ƒ /access/[id]/review
+├ ○ /admin
+├ ○ /admin/frame-events
+├ ƒ /api/admin/frame-designs
+├ ƒ /api/admin/frame-events
+├ ƒ /api/admin/insights
+├ ƒ /api/admin/me
+├ ƒ /api/admin/session-lookup
+├ ƒ /api/admin/user-claims
+├ ƒ /api/admin/visual-archive
+├ ƒ /api/ai/pose-ideas
+├ ƒ /api/ai/story-caption
+├ ƒ /api/download
+├ ƒ /api/image
+├ ƒ /api/queue/[eventId]/status
+├ ƒ /api/queue/check-in
+├ ƒ /api/queue/events
+├ ƒ /api/queue/generate-session-token
+├ ƒ /api/queue/join
+├ ƒ /api/queue/link-session
+├ ƒ /api/queue/operator/action
+├ ƒ /api/queue/push/subscribe
+├ ƒ /api/queue/stream/[eventId]
+├ ƒ /api/queue/ticket/[ticketId]
+├ ƒ /api/queue/webhook
+├ ○ /artikel
+├ ● /artikel/[slug]
+│ ├ /artikel/rekomendasi-photobooth-tembalang-event-kampus-wisuda-undip
+│ ├ /artikel/vendor-photobooth-semarang-murah-terbaik-untuk-wedding-event
+│ ├ /artikel/sewa-photobooth-cetak-instan-semarang-vending-machine-pertama
+│ └ [+66 more paths]
+├ ○ /frames                                                                         1m      1y
+├ ○ /frames/event                                                                   1m      1y
+├ ƒ /frames/event/[slug]
+├ ƒ /frames/event/[slug]/qr
+├ ○ /icon.png
+├ ○ /login
+├ ƒ /news/[id]
+├ ○ /partnership                                                                    1m      1y
+├ ○ /profile
+├ ƒ /profile/[sessionId]
+├ ƒ /queue
+├ ƒ /queue/[eventId]
+├ ƒ /queue/[eventId]/display
+├ ƒ /queue/[eventId]/ticket/[ticketId]
+├ ○ /register
+├ ○ /robots.txt
+└ ○ /sitemap.xml
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+

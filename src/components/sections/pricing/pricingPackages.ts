@@ -35,7 +35,7 @@ export const DETAILED_PACKAGES: Record<PackageType, DetailedPackage[]> = {
       category: "all-you-can",
       durationOrQuota: "3 Jam Non-stop",
       price: "",
-      badge: "PALING LAKU 🔥",
+      badge: "PALING LAKU",
       features: [
         "Cetak Sepuasnya 3 Jam Penuh",
         "Softfile HD, GIF & Live QR Download",
@@ -100,7 +100,7 @@ export const DETAILED_PACKAGES: Record<PackageType, DetailedPackage[]> = {
       category: "batch-booking",
       durationOrQuota: "200 Lembar",
       price: "",
-      badge: "REKOMENDASI 🔥",
+      badge: "REKOMENDASI",
       features: [
         "Cetak Instan Photostrip",
         "Softfile Unlimited via Instant Live QR",

@@ -1,0 +1,32 @@
+TASTESKILL · INSPECT   http://localhost:3100/partnership
+
+MEASURED (first viewport listed)
+  hero headline   "THE BEST FRIEND OF EOS & WOS."  7 words · 2 line(s) · 104px (7.2vw) · Bayon 400 · tracking -0.001em · leading 0.92
+  @768px          2 line(s) · 72px
+  @390px          2 line(s) · 52px
+  typefaces       Hanken Grotesk 79%, Bayon 21%
+  sizes in use    18 / 20 / 40 / 72 / 104 px   body 18px / 1.63
+  colour          page #f8f9fa · sections #002366 #ff4500 · button #ff4500
+  page            2.9 screens · 134 words · 6 images · hero media none
+  headings        6 · longest 2 line(s) · median 2 words
+
+FAIL — fix every one of these
+  [late-title] @1440px (+768, 390)  The title is not readable 1.2s after the page loaded (something lies over it).
+      → Put the headline in the HTML, painted on the first frame; the load sequence only adds arrival and is settled by 1.2s (references/motion.md, "Load sequence in 1.2 seconds"). No preloader, no gate, no waiting for the load event.
+  [covered-text] @1440px (+768, 390)  Large text lies under another element at some scroll position: "THE BEST FRIEND OF EOS & WOS." (screen 1, 100% hidden)
+      → Nothing may sit on top of a headline or statement. Move the picture, shorten the pinned run, or raise the text above it (z-index) and give it a ground.
+
+WARN — fix, or be able to defend
+  [no-footage] @1440px  No video anywhere on the page.
+      → Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject.
+
+LOOK AT THE RENDER — open these with your image viewer / Read tool before saying anything about quality:
+  desktop 1440px  .taste-skill/prod-after/partnership/desktop-fold.jpg
+                  .taste-skill/prod-after/partnership/desktop-page-01.jpg
+  tablet 768px    .taste-skill/prod-after/partnership/tablet-fold.jpg
+                  .taste-skill/prod-after/partnership/tablet-page-01.jpg
+  mobile 390px    .taste-skill/prod-after/partnership/mobile-fold.jpg
+                  .taste-skill/prod-after/partnership/mobile-page-01.jpg
+
+report: .taste-skill/prod-after/partnership/report.json
+RESULT: 2 FAIL, 1 WARN — not done.

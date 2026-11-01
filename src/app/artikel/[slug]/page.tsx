@@ -1,13 +1,12 @@
-import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
-import { ARTICLES_DATA, ArticleItem } from '@/data/articles'
-import {
-  ArrowLeft, Calendar, Clock, MapPin,
-  CheckCircle2, HelpCircle, MessageCircle, Sparkles, ChevronRight
-} from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
+import { ArticleTile } from '@/components/artikel/ArticleCards'
+import { ARTICLES_DATA } from '@/data/articles'
+import { CATEGORY_IDS } from '@/data/articleCategories'
+import { whatsappUrl } from '@/config/social'
 
 interface ArticlePageProps {
   params: Promise<{
@@ -82,7 +81,14 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
     notFound()
   }
 
-  const relatedArticles = ARTICLES_DATA.filter((a) => a.id !== article.id).slice(0, 4)
+  // Same category first, starting after this article so each page links onward to different ones
+  const peers = ARTICLES_DATA.filter((a) => a.category === article.category)
+  const position = peers.indexOf(article)
+  const relatedArticles = [
+    ...peers.slice(position + 1),
+    ...peers.slice(0, position),
+    ...ARTICLES_DATA.filter((a) => a.category !== article.category),
+  ].slice(0, 4)
 
   // JSON-LD Breadcrumb Schema
   const breadcrumbSchema = {
@@ -149,8 +155,13 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
     })),
   }
 
+  const crumbClass =
+    'underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white'
+  const sectionHeadingClass =
+    'font-bayon text-[1.75rem] leading-[1.05] text-primary uppercase md:text-[2.5rem]'
+
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-slate-900 pb-28">
+    <div className="min-h-svh">
       {/* ── JSON-LD Structured Data Injection ── */}
       <script
         type="application/ld+json"
@@ -165,237 +176,170 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      {/* ── Top Header Navigation ── */}
-      <header className="sticky top-0 z-30 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-stone-200/80 px-4 sm:px-8 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link
-            href="/artikel"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold tracking-wider text-slate-700 hover:text-black transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
-            <span>SEMUA ARTIKEL</span>
-          </Link>
+      <article>
+        {/* ── Hero: where you are, the title, what it covers, and its picture ── */}
+        <header className="bg-primary px-5 pt-20 pb-14 text-white md:px-10 md:pt-28 md:pb-24">
+          <div className="mx-auto grid max-w-6xl gap-y-8 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-start md:gap-x-16">
+            <div>
+              <nav aria-label="Breadcrumb" className="text-sm text-white/80 md:text-base">
+                <Link href="/" className={crumbClass}>Home</Link>
+                <span aria-hidden="true"> / </span>
+                <Link href="/artikel" className={crumbClass}>Artikel</Link>
+                <span aria-hidden="true"> / </span>
+                <Link href={`/artikel#${CATEGORY_IDS[article.category]}`} className={`${crumbClass} capitalize`}>
+                  {article.category.toLowerCase()}
+                </Link>
+              </nav>
 
-          <Link
-            href="/"
-            aria-label="Sebooth, ke beranda"
-          className="flex items-center hover:opacity-80 transition-opacity"
-          >
-            <Image src="/images/logo/sebooth-navy.svg" alt="Sebooth Photobooth" width={67} height={28} unoptimized className="h-auto w-auto" style={{ height: 28 }} />
-          </Link>
-        </div>
-      </header>
+              {/* H1 Title (Unique across the page) */}
+              <h1 className="mt-6 font-bayon text-[2rem] leading-[1.05] uppercase md:text-[clamp(2.5rem,4.6vw,4rem)]">
+                {article.title}
+              </h1>
 
-      {/* ── Main Article Container ── */}
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12">
-        {/* Breadcrumb List */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-slate-500 mb-6 flex-wrap">
-          <Link href="/" className="hover:text-slate-900 transition-colors">Home</Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <Link href="/artikel" className="hover:text-slate-900 transition-colors">Artikel</Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-slate-900 font-semibold truncate max-w-[200px] sm:max-w-xs">{article.category}</span>
-        </nav>
+              <p className="mt-5 text-sm text-white/80 md:text-base">
+                {article.date} · {article.readTime} · Semarang & Tembalang
+              </p>
 
-        {/* Category & Metadata */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-wrap mb-4">
-          <span className="px-3 py-1 rounded-full bg-orange-500/10 text-secondary font-black text-[11px] uppercase tracking-wider">
-            {article.category}
-          </span>
-          <span className="text-xs text-slate-500 flex items-center gap-1">
-            <Calendar className="w-3.5 h-3.5" />
-            {article.date}
-          </span>
-          <span className="text-xs text-slate-500">•</span>
-          <span className="text-xs text-slate-500 flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5" />
-            {article.readTime}
-          </span>
-          <span className="text-xs text-slate-500">•</span>
-          <span className="text-xs text-slate-500 flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5" />
-            Semarang & Tembalang
-          </span>
-        </div>
+              <p className="mt-5 text-xl leading-snug md:text-[1.375rem]">
+                {article.excerpt}
+              </p>
+            </div>
 
-        {/* H1 Title (Unique across the page) */}
-        <h1 className="text-2xl sm:text-4xl md:text-5xl font-black font-bayon uppercase tracking-wide text-slate-900 leading-tight">
-          {article.title}
-        </h1>
-
-        <p className="mt-4 text-base sm:text-lg text-slate-700 leading-relaxed font-medium">
-          {article.excerpt}
-        </p>
-
-        {/* Cover Photo */}
-        <div className="relative aspect-[16/9] w-full rounded-3xl overflow-hidden my-8 shadow-md border border-stone-200">
-          <Image
-            src={article.coverImage}
-            alt={`${article.title} - Layanan ${article.targetKeyword} Sebooth`}
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 768px"
-            className="object-cover"
-            unoptimized
-          />
-        </div>
-
-        {/* Key Highlights Box */}
-        <div className="p-6 rounded-2xl bg-orange-50/70 border border-orange-200/80 my-8">
-          <div className="flex items-center gap-2 text-sm font-black text-orange-950 uppercase tracking-wider mb-3">
-            <Sparkles className="w-4 h-4 text-secondary" />
-            <h2 className="text-sm font-black text-orange-950 uppercase tracking-wider">Poin Utama Pembahasan</h2>
+            {/* Cover Photo */}
+            <div className="relative aspect-[4/5] overflow-hidden rounded-lg">
+              <Image
+                src={article.coverImage.replace('/thumbs/', '/hd/')}
+                alt={`${article.title} - Layanan ${article.targetKeyword} Sebooth`}
+                fill
+                priority
+                sizes="(min-width: 768px) 40vw, 100vw"
+                className="object-cover"
+              />
+            </div>
           </div>
-          <ul className="space-y-2">
-            {article.highlights.map((point, idx) => (
-              <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 leading-relaxed">
-                <CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
-                <span>{point}</span>
-              </li>
+        </header>
+
+        {/* ── Reading column ── */}
+        <div className="mx-auto max-w-2xl px-5 py-12 text-[17px] leading-relaxed text-blue-dark md:py-20 md:text-lg">
+          {/* Key Highlights */}
+          <section className="rounded-lg bg-white p-5 md:p-8">
+            <h2 className={sectionHeadingClass}>Poin Utama Pembahasan</h2>
+            <ul className="mt-4 list-disc space-y-2 pl-5 marker:text-secondary">
+              {article.highlights.map((point, idx) => (
+                <li key={idx}>{point}</li>
+              ))}
+            </ul>
+          </section>
+
+          {/* Article Body Content (Introduction) */}
+          <div className="mt-10 space-y-5">
+            {article.content.map((paragraph, pIdx) => (
+              <p key={pIdx}>{paragraph}</p>
             ))}
-          </ul>
-        </div>
+          </div>
 
-        {/* Article Body Content (Introduction) */}
-        <div className="prose prose-slate max-w-none text-slate-800 space-y-5 text-sm sm:text-base leading-relaxed">
-          {article.content.map((paragraph, pIdx) => (
-            <p key={pIdx}>
-              {paragraph}
-            </p>
-          ))}
-        </div>
+          {/* Structured Sections (H2 & H3 Hierarchy + Tables) */}
+          {article.sections?.map((section, sIdx) => (
+            <section key={sIdx} className="mt-12 md:mt-16">
+              <h2 className={sectionHeadingClass}>{section.heading}</h2>
 
-        {/* Structured Sections (H2 & H3 Hierarchy + Tables) */}
-        {article.sections && article.sections.length > 0 && (
-          <div className="mt-8 space-y-10">
-            {article.sections.map((section, sIdx) => (
-              <section key={sIdx} className="space-y-4">
-                <h2 className="text-xl sm:text-2xl font-black font-bayon uppercase tracking-wide text-slate-900 border-b border-stone-200/80 pb-2">
-                  {section.heading}
-                </h2>
+              {section.subheading && (
+                <h3 className="mt-3 text-xl leading-snug font-bold md:text-[1.375rem]">
+                  {section.subheading}
+                </h3>
+              )}
 
-                {section.subheading && (
-                  <h3 className="text-sm sm:text-base font-bold text-slate-700">
-                    {section.subheading}
-                  </h3>
-                )}
+              <div className="mt-4 space-y-5">
+                {section.paragraphs.map((p, pIdx) => (
+                  <p key={pIdx}>{p}</p>
+                ))}
+              </div>
 
-                <div className="space-y-4 text-sm sm:text-base text-slate-700 leading-relaxed">
-                  {section.paragraphs.map((p, pIdx) => (
-                    <p key={pIdx}>{p}</p>
-                  ))}
-                </div>
-
-                {/* Optional Responsive Comparison Table */}
-                {section.table && (
-                  <div className="mt-6 overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-sm">
-                    <table className="w-full text-left text-xs sm:text-sm border-collapse">
-                      <thead>
-                        <tr className="bg-orange-50/80 border-b border-stone-200">
-                          {section.table.headers.map((th, thIdx) => (
-                            <th key={thIdx} className="p-3 sm:p-4 font-bold text-slate-900 whitespace-nowrap">
-                              {th}
-                            </th>
+              {/* Wide tables scroll inside their own region, running to the screen edge on phones */}
+              {section.table && (
+                <div
+                  role="region"
+                  aria-label={section.heading}
+                  tabIndex={0}
+                  className="-mx-5 mt-6 overflow-x-auto px-5 focus-visible:outline-2 focus-visible:outline-secondary md:mx-0 md:px-0"
+                >
+                  <table
+                    className="w-full border-collapse text-left text-sm leading-snug md:text-base"
+                    style={{ minWidth: `${section.table.headers.length * 9}rem` }}
+                  >
+                    <thead>
+                      <tr className="border-b-2 border-primary">
+                        {section.table.headers.map((th, thIdx) => (
+                          <th key={thIdx} scope="col" className="py-3 pr-4 font-bold text-primary">
+                            {th}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {section.table.rows.map((row, rIdx) => (
+                        <tr key={rIdx} className="border-b border-slate-200">
+                          {row.map((cell, cIdx) => (
+                            <td key={cIdx} className={`py-3 pr-4 align-top ${cIdx === 0 ? 'font-bold' : ''}`}>
+                              {cell}
+                            </td>
                           ))}
                         </tr>
-                      </thead>
-                      <tbody>
-                        {section.table.rows.map((row, rIdx) => (
-                          <tr key={rIdx} className="border-b border-stone-100 hover:bg-stone-50/80 transition-colors">
-                            {row.map((cell, cIdx) => (
-                              <td key={cIdx} className={`p-3 sm:p-4 ${cIdx === 0 ? 'font-semibold text-slate-900' : 'text-slate-600'}`}>
-                                {cell}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </section>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
+          ))}
+
+          {/* FAQ Section with Rich Schema Alignment */}
+          <section className="mt-12 md:mt-16">
+            <h2 className={sectionHeadingClass}>Pertanyaan Populer (FAQ)</h2>
+            <div className="mt-6 space-y-6">
+              {article.faqs.map((faq, fIdx) => (
+                <div key={fIdx}>
+                  <h3 className="font-bold">{faq.question}</h3>
+                  <p className="mt-1.5">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </article>
+
+      {/* ── Related Articles ── */}
+      <section className="bg-white px-5 py-14 md:px-10 md:py-24">
+        <div className="mx-auto max-w-6xl">
+          <h2 className={sectionHeadingClass}>Artikel Terkait Lainnya</h2>
+          <div className="mt-8 grid gap-x-6 gap-y-8 md:mt-12 md:grid-cols-4">
+            {relatedArticles.map((rel) => (
+              <ArticleTile key={rel.id} article={rel} />
             ))}
           </div>
-        )}
+        </div>
+      </section>
 
-        {/* FAQ Section with Rich Schema Alignment */}
-        <section className="mt-14 pt-8 border-t border-stone-200">
-          <div className="flex items-center gap-2 mb-6">
-            <HelpCircle className="w-5 h-5 text-secondary" />
-            <h2 className="text-xl sm:text-2xl font-black font-bayon uppercase tracking-wide text-slate-900">
-              Pertanyaan Populer (FAQ)
-            </h2>
-          </div>
-
-          <div className="space-y-4">
-            {article.faqs.map((faq, fIdx) => (
-              <div
-                key={fIdx}
-                className="p-5 rounded-2xl bg-white border border-stone-200 shadow-sm"
-              >
-                <h3 className="font-bold text-sm sm:text-base text-slate-900 mb-2">
-                  {faq.question}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  {faq.answer}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Floating / Embedded WhatsApp CTA Card */}
-        <div className="mt-14 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#002366] to-[#001338] text-white shadow-xl text-center flex flex-col items-center">
-          <span className="px-3 py-1 rounded-full bg-white/10 text-white text-[10px] font-black uppercase tracking-widest mb-3">
-            SEWA PHOTOBOOTH SEMARANG & TEMBALANG
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black font-bayon uppercase tracking-wide">
+      {/* ── Close: from reading to booking ── */}
+      <section className="bg-secondary px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="max-w-[20ch] font-bayon text-[1.75rem] leading-[1.05] text-blue-dark uppercase md:text-[2.5rem]">
             Mau Bikin Acara Kamu di Semarang Makin Seru?
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-slate-300 max-w-md">
+          <p className="mt-4 max-w-[52ch] text-[17px] leading-relaxed font-medium text-blue-dark md:text-lg">
             Konsultasikan tanggal event, pilih paket yang pas, dan dapatkan penawaran harga terbaik dari tim Sebooth hari ini!
           </p>
-
           <a
-            href="https://wa.me/6285713899441?text=Halo%20Sebooth,%20saya%20baca%20artikel%20di%20website%20dan%20tertarik%20sewa%20photobooth%20untuk%20event%20di%20Semarang!"
+            href={whatsappUrl('Halo Sebooth, saya baca artikel di website dan tertarik sewa photobooth untuk event di Semarang!')}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-secondary to-orange-press hover:opacity-95 active:scale-95 text-white font-black text-xs sm:text-sm tracking-wider uppercase shadow-lg transition-all"
+            className="mt-8 inline-flex min-h-14 items-center gap-3 rounded-full bg-blue-dark px-7 text-[17px] font-bold text-white transition-colors hover:bg-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-dark active:scale-[0.98] md:text-lg"
           >
-            <MessageCircle className="w-4 h-4 fill-white" />
-            <span>Chat WhatsApp Sebooth Sekarang</span>
+            <MessageCircle className="h-5 w-5" aria-hidden="true" />
+            Chat WhatsApp Sebooth
           </a>
         </div>
-
-        {/* Related Articles */}
-        <section className="mt-14 pt-8 border-t border-stone-200">
-          <h2 className="text-lg sm:text-xl font-black font-bayon uppercase tracking-wide text-slate-900 mb-5">
-            Artikel Terkait Lainnya
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {relatedArticles.map((rel) => (
-              <Link
-                key={rel.id}
-                href={`/artikel/${rel.slug}`}
-                className="group p-4 rounded-2xl bg-white border border-stone-200 hover:border-orange-500 shadow-sm transition-all"
-              >
-                <span className="text-[10px] font-black uppercase text-orange-600 tracking-wider">
-                  {rel.category}
-                </span>
-                <h3 className="mt-1 text-sm font-bold text-slate-900 group-hover:text-secondary transition-colors line-clamp-2">
-                  {rel.title}
-                </h3>
-                <p className="mt-1 text-[11px] text-slate-500 flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {rel.readTime}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </section>
-      </main>
+      </section>
     </div>
   )
 }
-

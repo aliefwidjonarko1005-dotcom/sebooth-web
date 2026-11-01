@@ -1,0 +1,1992 @@
+{
+ "url": "http://localhost:3000/about",
+ "at": "2026-11-01T04:28:17.588Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 3,
+   "filled": [
+    1,
+    0.71,
+    0.7
+   ],
+   "motion": {
+    "elements": 29,
+    "css": 22,
+    "transitions": 2,
+    "scripted": 5,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 1987,
+     "screens": 2.2,
+     "words": 158,
+     "img": 2,
+     "video": 0,
+     "canvas": 0,
+     "svg": 2,
+     "sections": 3,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "AB.",
+     "words": 1,
+     "chars": 3,
+     "lines": 1,
+     "size": 320,
+     "vw": 22.2,
+     "font": "Hanken Grotesk",
+     "weight": 900,
+     "tracking": 0,
+     "leading": 1,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "right",
+     "widthRatio": 0.35,
+     "top": 554,
+     "tag": "div",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "MEMBANGUN Kenangan.",
+     "words": 2,
+     "lines": 2,
+     "size": 96,
+     "font": "Hanken Grotesk"
+    },
+    "headings": [
+     {
+      "text": "MEMBANGUN Kenangan.",
+      "words": 2,
+      "chars": 19,
+      "lines": 2,
+      "size": 96,
+      "vw": 6.7,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.43,
+      "top": 172,
+      "mixedFonts": [
+       "Hanken Grotesk",
+       "Hanken Grotesk italic"
+      ],
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "AB.",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 320,
+      "vw": 22.2,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.35,
+      "top": 554,
+      "tag": "div",
+      "kind": "heading"
+     },
+     {
+      "text": "OUR MISSION",
+      "words": 2,
+      "chars": 11,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 1.11,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.43,
+      "top": 1006,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "OUR VISION",
+      "words": 2,
+      "chars": 10,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 1.11,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.36,
+      "top": 1074,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "01",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.003,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.02,
+      "top": 1104,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "02",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.003,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.02,
+      "top": 1248,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "03",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.003,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.02,
+      "top": 1392,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "\"EVERY PICTURE TELLS A STORY. Let us help you write yours.\"",
+      "words": 11,
+      "chars": 59,
+      "lines": 2,
+      "size": 60,
+      "vw": 4.2,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.62,
+      "top": 1734,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 8,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": 2,
+     "mixedFontHeadings": 1
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      13,
+      14,
+      18,
+      20,
+      24,
+      30,
+      36,
+      48,
+      60,
+      96,
+      320
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 24,
+      "leading": 1.63,
+      "weight": 700,
+      "tracking": -0.003,
+      "contrast": 14.7
+     },
+     "measureChars": 57,
+     "max": {
+      "size": 320,
+      "vw": 22.2,
+      "font": "Hanken Grotesk",
+      "text": "AB."
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.96,
+     "centerShare": 0.05,
+     "smallText": 0
+    },
+    "eyebrows": [
+     {
+      "text": "[ OUR STORY ]",
+      "above": "MEMBANGUN Kenangan.",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 18,
+      "top": 128
+     },
+     {
+      "text": "Sebooth Photo Booth",
+      "above": "AB.",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 427
+     },
+     {
+      "text": "LANGKAH KECIL",
+      "above": "OUR MISSION",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 970
+     },
+     {
+      "text": "MIMPI BESAR",
+      "above": "OUR VISION",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 1020
+     }
+    ],
+    "numbered": [
+     {
+      "text": "01",
+      "size": 30,
+      "top": 1104
+     },
+     {
+      "text": "02",
+      "size": 30,
+      "top": 1248
+     },
+     {
+      "text": "03",
+      "size": 30,
+      "top": 1392
+     }
+    ],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#002366",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#ffffff",
+       "share": 0.62
+      },
+      {
+       "color": "#002366",
+       "share": 0.33
+      },
+      {
+       "color": "#ff4500",
+       "share": 0.05
+      },
+      {
+       "color": "#d4af37",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "BOOK NOW",
+       "ratio": 3.4,
+       "need": 4.5,
+       "size": 13.1,
+       "fg": "#ffffff",
+       "bg": "#ff4500"
+      },
+      {
+       "text": "MIMPI BESAR",
+       "ratio": 4.3,
+       "need": 4.5,
+       "size": 14,
+       "fg": "#ff4500",
+       "bg": "#002366"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 0,
+     "radius": "pill",
+     "height": 38,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 1,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 4,
+     "shadowOverlay": 3,
+     "shadowSamples": [
+      "div.bg-primary.p-12 → rgb(255, 69, 0) 6px 6px 0px 0px",
+      "div.flex.gap-6 → rgb(0, 0, 0) 6px 6px 0px 0px",
+      "div.flex.gap-6 → rgb(0, 35, 102) 6px 6px 0px 0px",
+      "div.flex.gap-6 → rgb(255, 69, 0) 6px 6px 0px 0px"
+     ],
+     "gradients": 1,
+     "scrims": 0,
+     "gradientSamples": [
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0"
+     ],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": false,
+       "top": 1078
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 9,
+     "fixed": true,
+     "height": 60,
+     "floatingPill": true,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "hanken grotesk fallback",
+     "__nextjs-geist"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 1987,
+    "margins": {
+     "left": 80,
+     "right": 0
+    },
+    "sections": [
+     {
+      "sel": "section.px-6.md:px-20",
+      "tag": "section",
+      "top": 0,
+      "height": 874,
+      "words": 54,
+      "media": 0,
+      "middle": 317,
+      "heading": {
+       "text": "Membangun",
+       "size": 96,
+       "tag": "h1"
+      },
+      "left": 80,
+      "right": 306,
+      "textLeft": 80,
+      "textRight": 306,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-24.px-6",
+      "tag": "section",
+      "top": 874,
+      "height": 732,
+      "words": 98,
+      "media": 0,
+      "middle": 114,
+      "heading": {
+       "text": "Our Vision",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 130,
+      "right": 134,
+      "textLeft": 130,
+      "textRight": 134,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-32.px-6",
+      "tag": "section",
+      "top": 1606,
+      "height": 381,
+      "words": 11,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Let us help you write yours.",
+       "size": 60,
+       "tag": "h2"
+      },
+      "left": 368,
+      "right": 384,
+      "textLeft": 368,
+      "textRight": 384,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "MEMBANGUN Kenangan.",
+      "size": 96,
+      "top": 172,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 827,
+      "n": 6
+     },
+     {
+      "x": 80,
+      "n": 4
+     },
+     {
+      "x": 130,
+      "n": 2
+     },
+     {
+      "x": 744,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 13,
+    "bodySize": 24,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.2,
+    "voidBox": {
+     "x": 0,
+     "y": 420,
+     "w": 720,
+     "h": 360
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 3,
+   "filled": [
+    1,
+    0.68,
+    0.76
+   ],
+   "motion": {
+    "elements": 30,
+    "css": 24,
+    "transitions": 2,
+    "scripted": 4,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 2766,
+     "screens": 2.7,
+     "words": 158,
+     "img": 2,
+     "video": 0,
+     "canvas": 0,
+     "svg": 2,
+     "sections": 3,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "AB.",
+     "words": 1,
+     "chars": 3,
+     "lines": 1,
+     "size": 320,
+     "vw": 41.7,
+     "font": "Hanken Grotesk",
+     "weight": 900,
+     "tracking": 0,
+     "leading": 1,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "right",
+     "widthRatio": 0.65,
+     "top": 944,
+     "tag": "div",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "MEMBANGUN Kenangan.",
+     "words": 2,
+     "lines": 2,
+     "size": 96,
+     "font": "Hanken Grotesk"
+    },
+    "headings": [
+     {
+      "text": "MEMBANGUN Kenangan.",
+      "words": 2,
+      "chars": 19,
+      "lines": 2,
+      "size": 96,
+      "vw": 12.5,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.36,
+      "top": 172,
+      "mixedFonts": [
+       "Hanken Grotesk",
+       "Hanken Grotesk italic"
+      ],
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "AB.",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 320,
+      "vw": 41.7,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.65,
+      "top": 944,
+      "tag": "div",
+      "kind": "heading"
+     },
+     {
+      "text": "OUR MISSION",
+      "words": 2,
+      "chars": 11,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 1.11,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.36,
+      "top": 1396,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "OUR VISION",
+      "words": 2,
+      "chars": 10,
+      "lines": 2,
+      "size": 36,
+      "vw": 4.7,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 1.11,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.23,
+      "top": 1464,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "01",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.003,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.04,
+      "top": 1494,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "02",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.003,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.04,
+      "top": 1746,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "03",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.003,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.04,
+      "top": 1978,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "\"EVERY PICTURE TELLS A STORY. Let us help you write yours.\"",
+      "words": 11,
+      "chars": 59,
+      "lines": 4,
+      "size": 60,
+      "vw": 7.8,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.79,
+      "top": 2388,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 8,
+     "maxLines": 4,
+     "over2Lines": 1,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": 2,
+     "mixedFontHeadings": 1
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      13,
+      14,
+      18,
+      20,
+      24,
+      30,
+      36,
+      48,
+      60,
+      96,
+      320
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 24,
+      "leading": 1.63,
+      "weight": 700,
+      "tracking": -0.003,
+      "contrast": 14.7
+     },
+     "measureChars": 20,
+     "max": {
+      "size": 320,
+      "vw": 41.7,
+      "font": "Hanken Grotesk",
+      "text": "AB."
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.96,
+     "centerShare": 0.05,
+     "smallText": 0
+    },
+    "eyebrows": [
+     {
+      "text": "[ OUR STORY ]",
+      "above": "MEMBANGUN Kenangan.",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 18,
+      "top": 128
+     },
+     {
+      "text": "LANGKAH KECIL",
+      "above": "OUR MISSION",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 1360
+     },
+     {
+      "text": "MIMPI BESAR",
+      "above": "OUR VISION",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 1410
+     }
+    ],
+    "numbered": [
+     {
+      "text": "01",
+      "size": 30,
+      "top": 1494
+     },
+     {
+      "text": "02",
+      "size": 30,
+      "top": 1746
+     },
+     {
+      "text": "03",
+      "size": 30,
+      "top": 1978
+     }
+    ],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#002366",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#ffffff",
+       "share": 0.62
+      },
+      {
+       "color": "#002366",
+       "share": 0.33
+      },
+      {
+       "color": "#ff4500",
+       "share": 0.05
+      },
+      {
+       "color": "#d4af37",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "BOOK NOW",
+       "ratio": 3.4,
+       "need": 4.5,
+       "size": 13.1,
+       "fg": "#ffffff",
+       "bg": "#ff4500"
+      },
+      {
+       "text": "MIMPI BESAR",
+       "ratio": 4.3,
+       "need": 4.5,
+       "size": 14,
+       "fg": "#ff4500",
+       "bg": "#002366"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 2,
+     "radius": "pill",
+     "height": 57,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 1,
+     "heroLabels": [
+      "BOOK NOW"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 4,
+     "shadowOverlay": 3,
+     "shadowSamples": [
+      "div.bg-primary.p-12 → rgb(255, 69, 0) 6px 6px 0px 0px",
+      "div.flex.gap-6 → rgb(0, 0, 0) 6px 6px 0px 0px",
+      "div.flex.gap-6 → rgb(0, 35, 102) 6px 6px 0px 0px",
+      "div.flex.gap-6 → rgb(255, 69, 0) 6px 6px 0px 0px"
+     ],
+     "gradients": 1,
+     "scrims": 0,
+     "gradientSamples": [
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0"
+     ],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 1,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 1,
+     "boxRadius": 99,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": false,
+       "top": 1468
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 8,
+     "fixed": true,
+     "height": 87,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "__nextjs-geist"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 2766,
+    "margins": {
+     "left": 80,
+     "right": 0
+    },
+    "sections": [
+     {
+      "sel": "section.px-6.md:px-20",
+      "tag": "section",
+      "top": 0,
+      "height": 1264,
+      "words": 54,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Membangun",
+       "size": 96,
+       "tag": "h1"
+      },
+      "left": 80,
+      "right": 115,
+      "textLeft": 80,
+      "textRight": 115,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-24.px-6",
+      "tag": "section",
+      "top": 1264,
+      "height": 996,
+      "words": 98,
+      "media": 0,
+      "middle": 103,
+      "heading": {
+       "text": "Our Vision",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 130,
+      "right": 106,
+      "textLeft": 130,
+      "textRight": 106,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-32.px-6",
+      "tag": "section",
+      "top": 2260,
+      "height": 506,
+      "words": 11,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Let us help you write yours.",
+       "size": 60,
+       "tag": "h2"
+      },
+      "left": 123,
+      "right": 123,
+      "textLeft": 123,
+      "textRight": 123,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "MEMBANGUN Kenangan.",
+      "size": 96,
+      "top": 172,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 491,
+      "n": 6
+     },
+     {
+      "x": 80,
+      "n": 4
+     },
+     {
+      "x": 130,
+      "n": 2
+     },
+     {
+      "x": 408,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 13,
+    "bodySize": 24,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 4,
+   "filled": [
+    0.99,
+    0.89,
+    0.7,
+    0.83
+   ],
+   "motion": {
+    "elements": 26,
+    "css": 20,
+    "transitions": 1,
+    "scripted": 5,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 3134,
+     "screens": 3.7,
+     "words": 148,
+     "img": 2,
+     "video": 0,
+     "canvas": 0,
+     "svg": 2,
+     "sections": 3,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "MEMBANGUN Kenangan.",
+     "words": 2,
+     "chars": 19,
+     "lines": 2,
+     "size": 48,
+     "vw": 12.3,
+     "font": "Hanken Grotesk",
+     "weight": 900,
+     "tracking": -0.05,
+     "leading": 0.9,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.88,
+     "top": 140,
+     "mixedFonts": [
+      "Hanken Grotesk",
+      "Hanken Grotesk italic"
+     ],
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "MEMBANGUN Kenangan.",
+     "words": 2,
+     "lines": 2,
+     "size": 48,
+     "font": "Hanken Grotesk"
+    },
+    "headings": [
+     {
+      "text": "MEMBANGUN Kenangan.",
+      "words": 2,
+      "chars": 19,
+      "lines": 2,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 140,
+      "mixedFonts": [
+       "Hanken Grotesk",
+       "Hanken Grotesk italic"
+      ],
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "AB.",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 320,
+      "vw": 82.1,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 1.28,
+      "top": 925,
+      "tag": "div",
+      "kind": "heading"
+     },
+     {
+      "text": "OUR VISION",
+      "words": 2,
+      "chars": 10,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 1.2,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.62,
+      "top": 1445,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "OUR MISSION",
+      "words": 2,
+      "chars": 11,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 1.2,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 1998,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "01",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.003,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.09,
+      "top": 2092,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "02",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.003,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.09,
+      "top": 2304,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "03",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.003,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.09,
+      "top": 2488,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "\"EVERY PICTURE TELLS A STORY. Let us help you write yours.\"",
+      "words": 11,
+      "chars": 59,
+      "lines": 4,
+      "size": 36,
+      "vw": 9.2,
+      "font": "Hanken Grotesk",
+      "weight": 900,
+      "tracking": -0.042,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 2850,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 8,
+     "maxLines": 4,
+     "over2Lines": 1,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": 1,
+     "mixedFontHeadings": 1
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      14,
+      18,
+      20,
+      30,
+      36,
+      48,
+      320
+     ],
+     "sizeCount": 7,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 20,
+      "leading": 1.63,
+      "weight": 700,
+      "tracking": -0.004,
+      "contrast": 14.7
+     },
+     "measureChars": 27,
+     "max": {
+      "size": 320,
+      "vw": 82.1,
+      "font": "Hanken Grotesk",
+      "text": "AB."
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.96,
+     "centerShare": 0.06,
+     "smallText": 0
+    },
+    "eyebrows": [
+     {
+      "text": "[ OUR STORY ]",
+      "above": "MEMBANGUN Kenangan.",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 18,
+      "top": 96
+     },
+     {
+      "text": "MIMPI BESAR",
+      "above": "OUR VISION",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 1391
+     },
+     {
+      "text": "LANGKAH KECIL",
+      "above": "OUR MISSION",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 1962
+     }
+    ],
+    "numbered": [
+     {
+      "text": "01",
+      "size": 30,
+      "top": 2092
+     },
+     {
+      "text": "02",
+      "size": 30,
+      "top": 2304
+     },
+     {
+      "text": "03",
+      "size": 30,
+      "top": 2488
+     }
+    ],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#002366",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      },
+      {
+       "color": "#0f172b",
+       "top": 749,
+       "hsl": {
+        "h": 223,
+        "s": 0.48,
+        "l": 0.11
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#ffffff",
+       "share": 0.6
+      },
+      {
+       "color": "#002366",
+       "share": 0.34
+      },
+      {
+       "color": "#ff4500",
+       "share": 0.05
+      }
+     ],
+     "button": null,
+     "lowContrast": [
+      {
+       "text": "MIMPI BESAR",
+       "ratio": 4.3,
+       "need": 4.5,
+       "size": 14,
+       "fg": "#ff4500",
+       "bg": "#002366"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 1,
+     "radius": "pill",
+     "height": 40,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 4,
+     "shadowOverlay": 3,
+     "shadowSamples": [
+      "div.bg-primary.p-12 → rgb(255, 69, 0) 6px 6px 0px 0px",
+      "div.flex.gap-6 → rgb(0, 0, 0) 6px 6px 0px 0px",
+      "div.flex.gap-6 → rgb(0, 35, 102) 6px 6px 0px 0px",
+      "div.flex.gap-6 → rgb(255, 69, 0) 6px 6px 0px 0px"
+     ],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 2,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": false,
+       "top": 2066
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 0,
+     "fixed": true,
+     "height": 0,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "hanken grotesk"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 3134,
+    "margins": {
+     "left": 24,
+     "right": 36
+    },
+    "sections": [
+     {
+      "sel": "section.px-6.md:px-20",
+      "tag": "section",
+      "top": 0,
+      "height": 1245,
+      "words": 54,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Membangun",
+       "size": 48,
+       "tag": "h1"
+      },
+      "left": 24,
+      "right": 36,
+      "textLeft": 24,
+      "textRight": 36,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-24.px-6",
+      "tag": "section",
+      "top": 1245,
+      "height": 1477,
+      "words": 98,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Our Vision",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 53,
+      "textLeft": 24,
+      "textRight": 53,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-32.px-6",
+      "tag": "section",
+      "top": 2722,
+      "height": 412,
+      "words": 11,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Let us help you write yours.",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 39,
+      "right": 37,
+      "textLeft": 39,
+      "textRight": 37,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [
+     {
+      "top": 2584,
+      "height": 264
+     }
+    ],
+    "h1s": [
+     {
+      "text": "MEMBANGUN Kenangan.",
+      "size": 48,
+      "top": 140,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 107,
+      "n": 6
+     },
+     {
+      "x": 24,
+      "n": 5
+     },
+     {
+      "x": 74,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 13,
+    "bodySize": 20,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "mixed-font-headline",
+   "width": 1440,
+   "message": "1 headline(s) switch typeface or to italic mid-line (the \"one italic serif word\" move).",
+   "fix": "Set the whole headline in one face. Emphasis comes from the words.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "eyebrow",
+   "width": 1440,
+   "message": "4 eyebrow/kicker label(s) above headings: \"[ OUR STORY ]\" above \"MEMBANGUN Kenangan.\"; \"Sebooth Photo Booth\" above \"AB.\"; \"LANGKAH KECIL\" above \"OUR MISSION\"; \"MIMPI BESAR\" above \"OUR VISION\"",
+   "fix": "Delete them. If the label carried real information, fold it into the headline or the supporting sentence.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "numbering",
+   "width": 1440,
+   "message": "Decorative index numbers: \"01\", \"02\", \"03\"",
+   "fix": "Remove them. If order truly matters, write it into the words (\"First, …\") or use a real <ol>.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "gradient",
+   "width": 1440,
+   "message": "1 gradient fill(s): div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0",
+   "fix": "Use a flat colour or a real image. The only gradient allowed by default is a neutral scrim over a photo for legibility.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "shadow",
+   "width": 1440,
+   "message": "4 box-shadow(s) on elements at rest: div.bg-primary.p-12 → rgb(255, 69, 0) 6px 6px 0px 0px | div.flex.gap-6 → rgb(0, 0, 0) 6px 6px 0px 0px | div.flex.gap-6 → rgb(0, 35, 102) 6px 6px 0px 0px",
+   "fix": "Remove. Separate surfaces with a tone step or space. Shadows are for things that really float (menus, dialogs, sticky bars).",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "pill-nav",
+   "width": 1440,
+   "message": "Floating rounded pill navigation.",
+   "fix": "Use a plain bar: wordmark left, a few links, one action."
+  },
+  {
+   "level": "WARN",
+   "id": "contrast",
+   "width": 1440,
+   "message": "Low-contrast text: \"BOOK NOW\" 3.4:1 needs 4.5:1; \"MIMPI BESAR\" 4.3:1 needs 4.5:1",
+   "fix": "Darken or lighten the text colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "size-count",
+   "width": 1440,
+   "message": "11 different font sizes (13, 14, 18, 20, 24, 30, 36, 48, 60, 96, 320).",
+   "fix": "A page needs about five: display, heading, lead, body, small.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "first-action",
+   "width": 1440,
+   "message": "No visible button in the first screen.",
+   "fix": "Give the one primary action a real button in the first screen (a filled or solid-bordered control, 44px or taller), not only a link in the navigation."
+  },
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 0 picture(s) on the page (0 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "WARN",
+   "id": "off-centre",
+   "width": 1440,
+   "message": "The margins differ: 80px on the left, 0px on the right, at 1440px.",
+   "fix": "Put the navigation and the content on one pair of margins; check for padding on one side only, a scrollbar gutter, or a header on another inset than the page.",
+   "alsoAt": [
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "headline-lines",
+   "width": 768,
+   "message": "1 headline(s) wrap past two lines at 768px: \"\"EVERY PICTURE TELLS A STORY. Let us help you wr\" → 4 lines (11 words, 60px)",
+   "fix": "Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 32px or less."
+  },
+  {
+   "level": "WARN",
+   "id": "outlined-box",
+   "width": 768,
+   "message": "1 box(es) drawn with a 1px outline.",
+   "fix": "Prefer a filled surface or no box."
+  },
+  {
+   "level": "FAIL",
+   "id": "off-centre",
+   "width": 768,
+   "message": "The page sits off-centre: its content comes to 80px from the left edge but only to 0px from the right, at 768px.",
+   "fix": "Give the page one pair of equal margins. Check the wrapper for a max-width without margin-inline: auto, a grid with an empty last column, or padding on one side only. If one side is meant to hold air, it must still be closed by something that reaches the margin (a picture, the navigation's last item, a figure)."
+  },
+  {
+   "level": "FAIL",
+   "id": "headline-lines",
+   "width": 390,
+   "message": "1 headline(s) wrap past two lines at 390px: \"\"EVERY PICTURE TELLS A STORY. Let us help you wr\" → 4 lines (11 words, 36px)",
+   "fix": "Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 24px or less."
+  },
+  {
+   "level": "WARN",
+   "id": "glass",
+   "width": 390,
+   "message": "2 backdrop-blur surfaces.",
+   "fix": "One blurred sticky bar at most; glass cards are a tell."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\about\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\about\\desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\about\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\about\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\about\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\about\\mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

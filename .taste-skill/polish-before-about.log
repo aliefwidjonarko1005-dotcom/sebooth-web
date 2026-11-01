@@ -1,0 +1,60 @@
+TASTESKILL · INSPECT   http://localhost:3000/about
+
+MEASURED (first viewport listed)
+  hero headline   "AB."  1 words · 1 line(s) · 320px (22.2vw) · Hanken Grotesk 900 · tracking 0em · leading 1
+  @768px          1 line(s) · 320px
+  @390px          2 line(s) · 48px
+  typefaces       Hanken Grotesk 100%
+  sizes in use    13 / 14 / 18 / 20 / 24 / 30 / 36 / 48 / 60 / 96 / 320 px   body 24px / 1.63
+  colour          page #f8f9fa · sections #002366 · button #ff4500
+  page            2.2 screens · 158 words · 2 images · hero media none
+  headings        8 · longest 2 line(s) · median 2 words
+
+FAIL — fix every one of these
+  [eyebrow] @1440px (+768, 390)  4 eyebrow/kicker label(s) above headings: "[ OUR STORY ]" above "MEMBANGUN Kenangan."; "Sebooth Photo Booth" above "AB."; "LANGKAH KECIL" above "OUR MISSION"; "MIMPI BESAR" above "OUR VISION"
+      → Delete them. If the label carried real information, fold it into the headline or the supporting sentence.
+  [numbering] @1440px (+768, 390)  Decorative index numbers: "01", "02", "03"
+      → Remove them. If order truly matters, write it into the words ("First, …") or use a real <ol>.
+  [gradient] @1440px (+768)  1 gradient fill(s): div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0
+      → Use a flat colour or a real image. The only gradient allowed by default is a neutral scrim over a photo for legibility.
+  [shadow] @1440px (+768, 390)  4 box-shadow(s) on elements at rest: div.bg-primary.p-12 → rgb(255, 69, 0) 6px 6px 0px 0px | div.flex.gap-6 → rgb(0, 0, 0) 6px 6px 0px 0px | div.flex.gap-6 → rgb(0, 35, 102) 6px 6px 0px 0px
+      → Remove. Separate surfaces with a tone step or space. Shadows are for things that really float (menus, dialogs, sticky bars).
+  [few-pictures] @1440px  Only 0 picture(s) on the page (0 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.
+      → Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve.
+  [headline-lines] @768px  1 headline(s) wrap past two lines at 768px: ""EVERY PICTURE TELLS A STORY. Let us help you wr" → 4 lines (11 words, 60px)
+      → Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 32px or less.
+  [off-centre] @768px  The page sits off-centre: its content comes to 80px from the left edge but only to 0px from the right, at 768px.
+      → Give the page one pair of equal margins. Check the wrapper for a max-width without margin-inline: auto, a grid with an empty last column, or padding on one side only. If one side is meant to hold air, it must still be closed by something that reaches the margin (a picture, the navigation's last item, a figure).
+  [headline-lines] @390px  1 headline(s) wrap past two lines at 390px: ""EVERY PICTURE TELLS A STORY. Let us help you wr" → 4 lines (11 words, 36px)
+      → Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 24px or less.
+
+WARN — fix, or be able to defend
+  [mixed-font-headline] @1440px (+768, 390)  1 headline(s) switch typeface or to italic mid-line (the "one italic serif word" move).
+      → Set the whole headline in one face. Emphasis comes from the words.
+  [pill-nav] @1440px  Floating rounded pill navigation.
+      → Use a plain bar: wordmark left, a few links, one action.
+  [contrast] @1440px (+768, 390)  Low-contrast text: "BOOK NOW" 3.4:1 needs 4.5:1; "MIMPI BESAR" 4.3:1 needs 4.5:1
+      → Darken or lighten the text colour.
+  [size-count] @1440px (+768)  11 different font sizes (13, 14, 18, 20, 24, 30, 36, 48, 60, 96, 320).
+      → A page needs about five: display, heading, lead, body, small.
+  [first-action] @1440px  No visible button in the first screen.
+      → Give the one primary action a real button in the first screen (a filled or solid-bordered control, 44px or taller), not only a link in the navigation.
+  [no-footage] @1440px  No video anywhere on the page.
+      → Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject.
+  [off-centre] @1440px (+390)  The margins differ: 80px on the left, 0px on the right, at 1440px.
+      → Put the navigation and the content on one pair of margins; check for padding on one side only, a scrollbar gutter, or a header on another inset than the page.
+  [outlined-box] @768px  1 box(es) drawn with a 1px outline.
+      → Prefer a filled surface or no box.
+  [glass] @390px  2 backdrop-blur surfaces.
+      → One blurred sticky bar at most; glass cards are a tell.
+
+LOOK AT THE RENDER — open these with your image viewer / Read tool before saying anything about quality:
+  desktop 1440px  .taste-skill/polish-before/about/desktop-fold.jpg
+                  .taste-skill/polish-before/about/desktop-page-01.jpg
+  tablet 768px    .taste-skill/polish-before/about/tablet-fold.jpg
+                  .taste-skill/polish-before/about/tablet-page-01.jpg
+  mobile 390px    .taste-skill/polish-before/about/mobile-fold.jpg
+                  .taste-skill/polish-before/about/mobile-page-01.jpg
+
+report: .taste-skill/polish-before/about/report.json
+RESULT: 8 FAIL, 9 WARN — not done.

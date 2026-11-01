@@ -1,0 +1,1510 @@
+{
+ "url": "http://localhost:3000/frames/event/fisipmars-party",
+ "at": "2026-10-31T13:26:21.734Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 3,
+   "filled": [
+    0.56,
+    0.61,
+    0.68
+   ],
+   "motion": {
+    "elements": 43,
+    "css": 35,
+    "transitions": 7,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 1858,
+     "screens": 2.1,
+     "words": 109,
+     "img": 9,
+     "video": 0,
+     "canvas": 0,
+     "svg": 2,
+     "sections": 2,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 6,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "11.1.webp",
+      "11.2.webp",
+      "11.1.webp",
+      "11.2.webp",
+      "11.3.webp",
+      "11.4.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 1,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "FISIPMARS PARTY",
+     "words": 2,
+     "chars": 15,
+     "lines": 1,
+     "size": 88,
+     "vw": 6.1,
+     "font": "Bayon",
+     "weight": 400,
+     "tracking": -0.01,
+     "leading": 0.95,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "left",
+     "widthRatio": 0.36,
+     "top": 72,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "FISIPMARS PARTY",
+     "words": 2,
+     "lines": 1,
+     "size": 88,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "FISIPMARS PARTY",
+      "words": 2,
+      "chars": 15,
+      "lines": 1,
+      "size": 88,
+      "vw": 6.1,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.36,
+      "top": 72,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "FISIPMARS PARTY ELECTRIC NEON",
+      "words": 4,
+      "chars": 29,
+      "lines": 2,
+      "size": 36,
+      "vw": 2.5,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.26,
+      "top": 772,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "SEMUA FRAME ACARA INI",
+      "words": 4,
+      "chars": 21,
+      "lines": 1,
+      "size": 56,
+      "vw": 3.9,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 1057,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "SAMPAI KETEMU DI BOOTH",
+      "words": 4,
+      "chars": 22,
+      "lines": 1,
+      "size": 72,
+      "vw": 5,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.46,
+      "top": 1638,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 4,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.87,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.13,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      15,
+      16,
+      18,
+      36,
+      56,
+      72,
+      88
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 16,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": -0.005,
+      "contrast": 18.4
+     },
+     "measureChars": 52,
+     "max": {
+      "size": 88,
+      "vw": 6.1,
+      "font": "Bayon",
+      "text": "Fisipmars Party"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.38,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f8f9fa",
+       "top": 0,
+       "hsl": {
+        "h": 210,
+        "s": 0.17,
+        "l": 0.98
+       }
+      },
+      {
+       "color": "#eef2ff",
+       "top": 180,
+       "hsl": {
+        "h": 226,
+        "s": 1,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#00113a",
+       "top": 1574,
+       "hsl": {
+        "h": 222,
+        "s": 1,
+        "l": 0.11
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#002366",
+       "share": 0.44
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.4
+      },
+      {
+       "color": "#4d5f8c",
+       "share": 0.14
+      },
+      {
+       "color": "#ff4500",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Sedang dilihat",
+       "ratio": 3.3,
+       "need": 4.5,
+       "size": 13,
+       "fg": "#ff4500",
+       "bg": "#f8f9fa"
+      },
+      {
+       "text": "Sewa Sebooth untuk acaramu",
+       "ratio": 3.4,
+       "need": 4.5,
+       "size": 15,
+       "fg": "#ffffff",
+       "bg": "#ff4500"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 0,
+     "radius": "pill",
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 5,
+     "boxRadius": 20,
+     "squareMedia": 0,
+     "roundedMedia": 8,
+     "mediaRadius": 20,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.4
+     },
+     {
+      "type": "img",
+      "ratio": 0.19
+     }
+    ],
+    "nav": {
+     "links": 2,
+     "fixed": false,
+     "height": 64,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "hanken grotesk fallback",
+     "bayon"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 1858,
+    "margins": {
+     "left": 32,
+     "right": 32
+    },
+    "sections": [
+     {
+      "sel": "section.eventFrames_viewer__AcykE",
+      "tag": "section",
+      "top": 0,
+      "height": 937,
+      "words": 30,
+      "media": 4,
+      "middle": 1066,
+      "heading": {
+       "text": "Fisipmars Party",
+       "size": 88,
+       "tag": "h1"
+      },
+      "left": 32,
+      "right": 0,
+      "textLeft": 32,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.eventFrames_wrap__cqTSV.eventFrames_index__Gj1mG",
+      "tag": "section",
+      "top": 937,
+      "height": 638,
+      "words": 35,
+      "media": 4,
+      "middle": 20,
+      "heading": {
+       "text": "Semua frame acara ini",
+       "size": 56,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 32,
+      "textLeft": 32,
+      "textRight": 92,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.eventFrames_footer__ckzAE",
+      "tag": "footer",
+      "top": 1574,
+      "height": 284,
+      "words": 43,
+      "media": 0,
+      "middle": 319,
+      "heading": {
+       "text": "Sampai ketemu di booth",
+       "size": 72,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 52,
+      "textLeft": 32,
+      "textRight": 52,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "FISIPMARS PARTY",
+      "size": 88,
+      "top": 72,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 32,
+      "n": 2
+     },
+     {
+      "x": 358,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 3,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.15,
+    "voidBox": {
+     "x": 0,
+     "y": 240,
+     "w": 300,
+     "h": 660
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 2,
+   "filled": [
+    0.59,
+    0.56
+   ],
+   "motion": {
+    "elements": 30,
+    "css": 23,
+    "transitions": 6,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 1705,
+     "screens": 1.7,
+     "words": 109,
+     "img": 9,
+     "video": 0,
+     "canvas": 0,
+     "svg": 2,
+     "sections": 2,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 6,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "11.1.webp",
+      "11.2.webp",
+      "11.1.webp",
+      "11.2.webp",
+      "11.3.webp",
+      "11.4.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 1,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "FISIPMARS PARTY",
+     "words": 2,
+     "chars": 15,
+     "lines": 1,
+     "size": 80.6,
+     "vw": 10.5,
+     "font": "Bayon",
+     "weight": 400,
+     "tracking": -0.01,
+     "leading": 0.95,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.92,
+     "top": 72,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "FISIPMARS PARTY",
+     "words": 2,
+     "lines": 1,
+     "size": 80.6,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "FISIPMARS PARTY",
+      "words": 2,
+      "chars": 15,
+      "lines": 1,
+      "size": 80.6,
+      "vw": 10.5,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 72,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "FISIPMARS PARTY ELECTRIC NEON",
+      "words": 4,
+      "chars": 29,
+      "lines": 1,
+      "size": 28,
+      "vw": 3.6,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.003,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 693,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "SEMUA FRAME ACARA INI",
+      "words": 4,
+      "chars": 21,
+      "lines": 1,
+      "size": 46.1,
+      "vw": 6,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 919,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "SAMPAI KETEMU DI BOOTH",
+      "words": 4,
+      "chars": 22,
+      "lines": 3,
+      "size": 61.4,
+      "vw": 8,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.43,
+      "top": 1378,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 4,
+     "maxLines": 3,
+     "over2Lines": 1,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.87,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.13,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      15,
+      16,
+      18,
+      28,
+      46,
+      61,
+      81
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 16,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": -0.005,
+      "contrast": 18.4
+     },
+     "measureChars": 41,
+     "max": {
+      "size": 80.6,
+      "vw": 10.5,
+      "font": "Bayon",
+      "text": "Fisipmars Party"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.38,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f8f9fa",
+       "top": 0,
+       "hsl": {
+        "h": 210,
+        "s": 0.17,
+        "l": 0.98
+       }
+      },
+      {
+       "color": "#eef2ff",
+       "top": 235,
+       "hsl": {
+        "h": 226,
+        "s": 1,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#00113a",
+       "top": 1314,
+       "hsl": {
+        "h": 222,
+        "s": 1,
+        "l": 0.11
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#002366",
+       "share": 0.44
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.4
+      },
+      {
+       "color": "#4d5f8c",
+       "share": 0.14
+      },
+      {
+       "color": "#ff4500",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Sedang dilihat",
+       "ratio": 3.3,
+       "need": 4.5,
+       "size": 13,
+       "fg": "#ff4500",
+       "bg": "#f8f9fa"
+      },
+      {
+       "text": "Sewa Sebooth untuk acaramu",
+       "ratio": 3.4,
+       "need": 4.5,
+       "size": 15,
+       "fg": "#ffffff",
+       "bg": "#ff4500"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 0,
+     "radius": "pill",
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 9,
+     "boxRadius": 20,
+     "squareMedia": 0,
+     "roundedMedia": 4,
+     "mediaRadius": 20,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.38
+     },
+     {
+      "type": "img",
+      "ratio": 0.08
+     }
+    ],
+    "nav": {
+     "links": 2,
+     "fixed": false,
+     "height": 64,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "hanken grotesk fallback",
+     "bayon",
+     "__nextjs-geist"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 1705,
+    "margins": {
+     "left": 32,
+     "right": 32
+    },
+    "sections": [
+     {
+      "sel": "section.eventFrames_viewer__AcykE",
+      "tag": "section",
+      "top": 0,
+      "height": 863,
+      "words": 30,
+      "media": 4,
+      "middle": 989,
+      "heading": {
+       "text": "Fisipmars Party",
+       "size": 81,
+       "tag": "h1"
+      },
+      "left": 32,
+      "right": 0,
+      "textLeft": 32,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.eventFrames_wrap__cqTSV.eventFrames_index__Gj1mG",
+      "tag": "section",
+      "top": 863,
+      "height": 451,
+      "words": 35,
+      "media": 4,
+      "middle": 20,
+      "heading": {
+       "text": "Semua frame acara ini",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 32,
+      "textLeft": 32,
+      "textRight": 44,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.eventFrames_footer__ckzAE",
+      "tag": "footer",
+      "top": 1314,
+      "height": 390,
+      "words": 43,
+      "media": 0,
+      "middle": 157,
+      "heading": {
+       "text": "Sampai ketemu di booth",
+       "size": 61,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 52,
+      "textLeft": 32,
+      "textRight": 52,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "FISIPMARS PARTY",
+      "size": 81,
+      "top": 72,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 32,
+      "n": 4
+     }
+    ],
+    "leftBlocks": 4,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 3,
+   "filled": [
+    0.64,
+    0.73,
+    0.79
+   ],
+   "motion": {
+    "elements": 37,
+    "css": 32,
+    "transitions": 4,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 1769,
+     "screens": 2.1,
+     "words": 109,
+     "img": 9,
+     "video": 0,
+     "canvas": 0,
+     "svg": 2,
+     "sections": 2,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 6,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "11.1.webp",
+      "11.2.webp",
+      "11.1.webp",
+      "11.2.webp",
+      "11.3.webp",
+      "11.4.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 1,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "FISIPMARS PARTY",
+     "words": 2,
+     "chars": 15,
+     "lines": 1,
+     "size": 41,
+     "vw": 10.5,
+     "font": "Bayon",
+     "weight": 400,
+     "tracking": -0.01,
+     "leading": 0.95,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.9,
+     "top": 72,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "FISIPMARS PARTY",
+     "words": 2,
+     "lines": 1,
+     "size": 41,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "FISIPMARS PARTY",
+      "words": 2,
+      "chars": 15,
+      "lines": 1,
+      "size": 41,
+      "vw": 10.5,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 72,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "FISIPMARS PARTY ELECTRIC NEON",
+      "words": 4,
+      "chars": 29,
+      "lines": 1,
+      "size": 28,
+      "vw": 7.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.003,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 466,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "SEMUA FRAME ACARA INI",
+      "words": 4,
+      "chars": 21,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 701,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "SAMPAI KETEMU DI BOOTH",
+      "words": 4,
+      "chars": 22,
+      "lines": 1,
+      "size": 36,
+      "vw": 9.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 1387,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 4,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.87,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.13,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      15,
+      16,
+      18,
+      28,
+      32,
+      36,
+      41
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 16,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": -0.005,
+      "contrast": 18.4
+     },
+     "measureChars": 44,
+     "max": {
+      "size": 41,
+      "vw": 10.5,
+      "font": "Bayon",
+      "text": "Fisipmars Party"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.38,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f8f9fa",
+       "top": 0,
+       "hsl": {
+        "h": 210,
+        "s": 0.17,
+        "l": 0.98
+       }
+      },
+      {
+       "color": "#00113a",
+       "top": 1323,
+       "hsl": {
+        "h": 222,
+        "s": 1,
+        "l": 0.11
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#002366",
+       "share": 0.44
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.4
+      },
+      {
+       "color": "#4d5f8c",
+       "share": 0.14
+      },
+      {
+       "color": "#ff4500",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Sedang dilihat",
+       "ratio": 3.3,
+       "need": 4.5,
+       "size": 13,
+       "fg": "#ff4500",
+       "bg": "#f8f9fa"
+      },
+      {
+       "text": "Sewa Sebooth untuk acaramu",
+       "ratio": 3.4,
+       "need": 4.5,
+       "size": 15,
+       "fg": "#ffffff",
+       "bg": "#ff4500"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 0,
+     "radius": "pill",
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 9,
+     "boxRadius": 20,
+     "squareMedia": 0,
+     "roundedMedia": 4,
+     "mediaRadius": 20,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.29
+     }
+    ],
+    "nav": {
+     "links": 2,
+     "fixed": false,
+     "height": 64,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "hanken grotesk fallback",
+     "bayon",
+     "__nextjs-geist"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 1769,
+    "margins": {
+     "left": 20,
+     "right": 20
+    },
+    "sections": [
+     {
+      "sel": "section.eventFrames_viewer__AcykE",
+      "tag": "section",
+      "top": 0,
+      "height": 645,
+      "words": 30,
+      "media": 4,
+      "middle": 595,
+      "heading": {
+       "text": "Fisipmars Party",
+       "size": 41,
+       "tag": "h1"
+      },
+      "left": 20,
+      "right": 0,
+      "textLeft": 20,
+      "textRight": 20,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.eventFrames_wrap__cqTSV.eventFrames_index__Gj1mG",
+      "tag": "section",
+      "top": 645,
+      "height": 679,
+      "words": 35,
+      "media": 4,
+      "middle": 0,
+      "heading": {
+       "text": "Semua frame acara ini",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 20,
+      "textLeft": 20,
+      "textRight": 25,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.eventFrames_footer__ckzAE",
+      "tag": "footer",
+      "top": 1323,
+      "height": 445,
+      "words": 43,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Sampai ketemu di booth",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 43,
+      "textLeft": 20,
+      "textRight": 43,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "FISIPMARS PARTY",
+      "size": 41,
+      "top": 72,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 20,
+      "n": 4
+     }
+    ],
+    "leftBlocks": 4,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "contrast",
+   "width": 1440,
+   "message": "Low-contrast text: \"Sedang dilihat\" 3.3:1 needs 4.5:1; \"Sewa Sebooth untuk acaramu\" 3.4:1 needs 4.5:1",
+   "fix": "Darken or lighten the text colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "first-action",
+   "width": 1440,
+   "message": "No visible button in the first screen.",
+   "fix": "Give the one primary action a real button in the first screen (a filled or solid-bordered control, 44px or taller), not only a link in the navigation.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "WARN",
+   "id": "side-scroll",
+   "width": 1440,
+   "message": "1 row(s) scroll sideways with content past their edge.",
+   "fix": "Jurors and most visitors read a row cut at the edge as clipped, not as scrollable. Wrap it onto more lines, or end it inside the grid.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "headline-lines",
+   "width": 768,
+   "message": "1 headline(s) wrap past two lines at 768px: \"SAMPAI KETEMU DI BOOTH\" → 3 lines (4 words, 61.4px)",
+   "fix": "Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 32px or less."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\inspect\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\inspect\\desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\inspect\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\inspect\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\inspect\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\inspect\\mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

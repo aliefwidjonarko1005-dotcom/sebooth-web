@@ -72,7 +72,7 @@ export function DesktopPricingStage({
               />
 
               <div className="relative z-10 mt-auto mb-[34px] lg:mb-[40px] xl:mb-[44px] w-full px-6 lg:px-7 flex flex-col items-center text-center">
-                <h3 className="text-xl lg:text-2xl font-black font-bayon text-blue-dark tracking-tight uppercase leading-tight">
+                <h3 className="text-xl lg:text-2xl font-bayon text-blue-dark tracking-tight uppercase leading-tight">
                   All You Can Photo
                 </h3>
                 <p className="text-[9.5px] lg:text-[10.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[200px] lg:max-w-[215px]">
@@ -133,7 +133,7 @@ export function DesktopPricingStage({
 
               <div className="flex-1 flex flex-col justify-between px-3 lg:px-4 pt-3 pb-2 text-center">
                 <div>
-                  <h3 className="text-2xl lg:text-3xl font-black font-bayon text-blue-dark tracking-tight uppercase leading-tight">
+                  <h3 className="text-2xl lg:text-3xl font-bayon text-blue-dark tracking-tight uppercase leading-tight">
                     PILIH PAKET PHOTOBOOTH KAMU
                   </h3>
                   <p className="text-xs lg:text-[13px] text-slate-500 font-medium leading-snug mt-1 max-w-[270px] mx-auto">
@@ -177,7 +177,7 @@ export function DesktopPricingStage({
               />
 
               <div className="relative z-10 mt-auto mb-[34px] lg:mb-[40px] xl:mb-[44px] w-full px-6 lg:px-7 flex flex-col items-center text-center">
-                <h3 className="text-xl lg:text-2xl font-black font-bayon text-blue-dark tracking-tight uppercase leading-tight">
+                <h3 className="text-xl lg:text-2xl font-bayon text-blue-dark tracking-tight uppercase leading-tight">
                   Batch Booking
                 </h3>
                 <p className="text-[9.5px] lg:text-[10.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[200px] lg:max-w-[215px]">
@@ -263,7 +263,7 @@ export function DesktopPricingStage({
               />
 
               <div className="relative z-10 mt-auto mb-[34px] lg:mb-[40px] xl:mb-[44px] w-full px-6 lg:px-7 flex flex-col items-center text-center">
-                <h3 className="text-xl lg:text-2xl font-black font-bayon text-blue-dark tracking-tight uppercase leading-tight">
+                <h3 className="text-xl lg:text-2xl font-bayon text-blue-dark tracking-tight uppercase leading-tight">
                   {isAllYouCan ? "All You Can Photo" : "Batch Booking"}
                 </h3>
                 <p className="text-[9.5px] lg:text-[10.5px] text-slate-500 font-semibold leading-snug mt-0.5 max-w-[200px] lg:max-w-[215px]">
@@ -316,7 +316,7 @@ export function DesktopPricingStage({
                 transition={{ duration: 0.35, delay: 0.1 }}
                 className="mb-3 text-left"
               >
-                <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black font-bayon text-white uppercase tracking-tight leading-none drop-shadow-md">
+                <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-bayon text-white uppercase tracking-tight leading-none drop-shadow-md">
                   {isAllYouCan ? "PILIH DURASI UNLIMITED KAMU" : "PILIH KUOTA BATCH BOOKING KAMU"}
                 </h2>
                 <div className="flex items-center gap-1.5 sm:gap-2 mt-2.5 text-white flex-nowrap overflow-x-auto no-scrollbar">
@@ -364,7 +364,7 @@ export function DesktopPricingStage({
                       >
                         <div>
                           <div className="flex items-center gap-3">
-                            <h4 className="text-2xl sm:text-3xl lg:text-[30px] font-black font-bayon text-blue-dark uppercase leading-none tracking-wide">
+                            <h4 className="text-2xl sm:text-3xl lg:text-[30px] font-bayon text-blue-dark uppercase leading-none tracking-wide">
                               {pkg.name}
                             </h4>
                           </div>
@@ -418,7 +418,7 @@ export function DesktopPricingStage({
                       >
                         <div>
                           <div className="flex items-center gap-3">
-                            <h4 className="text-2xl sm:text-3xl lg:text-[30px] font-black font-bayon text-blue-dark uppercase leading-none tracking-wide">
+                            <h4 className="text-2xl sm:text-3xl lg:text-[30px] font-bayon text-blue-dark uppercase leading-none tracking-wide">
                               {pkg.name}
                             </h4>
                           </div>

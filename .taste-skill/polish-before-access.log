@@ -1,0 +1,59 @@
+TASTESKILL · INSPECT   http://localhost:3000/access/97446c24-85ae-4a23-aa87-b881e102eb39
+
+MEASURED (first viewport listed)
+  hero headline   "FOTO & VIDEO SESI KAMU"  5 words · 1 line(s) · 40px (2.8vw) · Bayon 900 · tracking -0.025em · leading 1
+  @768px          1 line(s) · 40px
+  typefaces       Hanken Grotesk 96%, Bayon 4%
+  sizes in use    10 / 11 / 12 / 13 / 14 / 15 / 16 / 18 / 40 px   body 15px / 1.63
+  colour          page #f8f9fa · sections #faf8f5 · button #0f172b
+  page            2.3 screens · 146 words · 8 images · hero media 8% img
+  headings        1 · longest 1 line(s) · median - words
+
+FAIL — fix every one of these
+  [gradient] @1440px (+768)  9 gradient fill(s): div.absolute.inset-0 → linear-gradient(to top, oklab(0 0 0 / 0.6) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%) | div.absolute.inset-0 → linear-gradient(to top, oklab(0 0 0 / 0.6) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%) | div.absolute.inset-0 → linear-gradient(to top, oklab(0 0 0 / 0.6) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%)
+      → Use a flat colour or a real image. The only gradient allowed by default is a neutral scrim over a photo for legibility.
+  [shadow] @1440px (+768)  9 box-shadow(s) on elements at rest: div#tour-claim-first-media.group.relative → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0 | div.group.relative → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0 | div.group.relative → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0
+      → Remove. Separate surfaces with a tone step or space. Shadows are for things that really float (menus, dialogs, sticky bars).
+  [button-fx] @1440px (+768)  Buttons with gradient fill and shadow/glow.
+      → Flat fill, one colour.
+  [hairline] @1440px (+768)  4 thin rule(s)/divider line(s): header.sticky.top-0 1440px | button.min-h-[52px].flex 808px | button.min-h-[52px].flex 808px | footer.text-center.py-6 1440px
+      → Delete. Separate with space, a tone change, or scale. Lines are only for real tables and form fields.
+  [outlined-box] @1440px (+768)  9 boxes drawn with a 1px outline.
+      → Define a surface by its fill (one tone step from the page) or leave the content unboxed.
+  [small-text] @1440px (+768)  11 text blocks under 13px.
+      → Nothing meant to be read goes below 13px.
+  [focal-point] @1440px  The first screen has no dominant element: the largest type is 40px (2.8vw) and no single picture holds a third of the viewport.
+      → Make one thing lead: the headline at display size, or one large picture. A grid of many small pictures is not one thing; in blind tests jurors marked a first screen without a headline down every time. On the strongest studied sites the largest type has a median of 8.4vw.
+  [off-centre] @1440px  The page sits off-centre: its content comes to 161px from the left edge but only to 68px from the right, at 1440px.
+      → Give the page one pair of equal margins. Check the wrapper for a max-width without margin-inline: auto, a grid with an empty last column, or padding on one side only. If one side is meant to hold air, it must still be closed by something that reaches the margin (a picture, the navigation's last item, a figure).
+  [empty-screens] @1440px  3 of 3 desktop screens are almost empty ground (under 20% of the screen holds text, a picture or a colour field): screens 1, 2, 3.
+      → An empty screen is a rest only once per page. Elsewhere it means the section is underbuilt: set its content larger, give it the full information, put it on a colour field, or cut it.
+  [no-title] @390px  The page has no visible h1.
+      → Give the first screen a clear title in an h1 that says what this is (a name with what it does, the product with what it is for, the event with its date and place).
+  [reduced-hidden] @1440px  With reduced motion requested, 3 text block(s) on the first screen stay invisible: "Lihat detail", "Lihat detail", "Lihat detail"
+      → Put every hidden starting state inside @media (prefers-reduced-motion: no-preference); the reduced page is the finished page (references/motion.md §8).
+
+WARN — fix, or be able to defend
+  [palette-cream] @1440px (+768)  Yellow-cream background (section #faf8f5).
+      → Use the drawn palette. If you want warmth, take a low-chroma stone or bone, not a yellow cream.
+  [contrast] @1440px (+768)  Low-contrast text: "© 2026 Sebooth Indonesia · Digital Photo" 2.6:1 needs 4.5:1
+      → Darken or lighten the text colour.
+  [body-size] @1440px (+768)  Body text is 15px.
+      → Body copy 16–20px.
+  [no-poster] @1440px (+768)  1 clip(s) without a poster.
+      → Give every clip a poster frame: in the study of 100 Sites of the Day only 31% had one, and the blank or grey boxes before the clips played were recorded as faults (references/imagery.md §11).
+  [first-action] @390px  No visible button in the first phone screen.
+      → On a phone the first screen still holds the headline, the supporting sentence and the action; move navigation into one row or a menu so it does not push them down.
+  [no-hero] @390px  No headline found in the first viewport.
+      → The first screen needs a clear focal statement or image.
+
+LOOK AT THE RENDER — open these with your image viewer / Read tool before saying anything about quality:
+  desktop 1440px  .taste-skill/polish-before/access/desktop-fold.jpg
+                  .taste-skill/polish-before/access/desktop-page-01.jpg
+  tablet 768px    .taste-skill/polish-before/access/tablet-fold.jpg
+                  .taste-skill/polish-before/access/tablet-page-01.jpg
+  mobile 390px    .taste-skill/polish-before/access/mobile-fold.jpg
+                  .taste-skill/polish-before/access/mobile-page-01.jpg
+
+report: .taste-skill/polish-before/access/report.json
+RESULT: 11 FAIL, 6 WARN — not done.

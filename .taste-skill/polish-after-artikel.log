@@ -1,0 +1,44 @@
+TASTESKILL · INSPECT   http://localhost:3000/artikel
+
+MEASURED (first viewport listed)
+  hero headline   "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG"  6 words · 2 line(s) · 96px (6.7vw) · Bayon 400 · tracking -0.001em · leading 0.95
+  @768px          2 line(s) · 79.9px
+  @390px          2 line(s) · 40.6px
+  typefaces       Hanken Grotesk 99%
+  sizes in use    16 / 18 / 32 / 64 / 96 px   body 16px / 1.5
+  colour          page #f8f9fa · sections #002366 #ffffff #ff4500 · button #ff4500
+  page            17.9 screens · 2873 words · 71 images · hero media none
+  headings        17 · longest 4 line(s) · median 5 words
+
+FAIL — fix every one of these
+  [headline-lines] @1440px  4 headline(s) wrap past two lines at 1440px: "Rekomendasi Photobooth Tembalang Murah untuk Eve" → 3 lines (10 words, 32px); "Sewa Photobooth Cetak Instan Semarang: Inovasi V" → 3 lines (9 words, 32px); "Photobooth Semarang untuk Lamaran di Rumah: Inti" → 3 lines (10 words, 32px); "Pekan Ekonomi Teknik di Widya Puraya: Sensasi Ph" → 4 lines (15 words, 32px)
+      → Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 36px or less.
+  [late-title] @1440px (+768, 390)  The title is not readable 1.2s after the page loaded (something lies over it).
+      → Put the headline in the HTML, painted on the first frame; the load sequence only adds arrival and is settled by 1.2s (references/motion.md, "Load sequence in 1.2 seconds"). No preloader, no gate, no waiting for the load event.
+  [covered-text] @1440px (+768, 390)  Large text lies under another element at some scroll position: "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG" (screen 1, 100% hidden); "KAMPUS & WISUDA" (screen 1, 100% hidden); "EVENT SEMARANG" (screen 6, 100% hidden); "WEDDING" (screen 1, 100% hidden)
+      → Nothing may sit on top of a headline or statement. Move the picture, shorten the pinned run, or raise the text above it (z-index) and give it a ground.
+  [headline-lines] @768px  5 headline(s) wrap past two lines at 768px: "Rekomendasi Photobooth Tembalang Murah untuk Eve" → 3 lines (10 words, 32px); "Sewa Photobooth Cetak Instan Semarang: Inovasi V" → 3 lines (9 words, 32px); "Photobooth Semarang untuk Lamaran di Rumah: Inti" → 3 lines (10 words, 32px); "Pekan Ekonomi Teknik di Widya Puraya: Sensasi Ph" → 5 lines (15 words, 32px)
+      → Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 32px or less.
+  [headline-lines] @390px  5 headline(s) wrap past two lines at 390px: "Rekomendasi Photobooth Tembalang Murah untuk Eve" → 3 lines (10 words, 22px); "Sewa Photobooth Cetak Instan Semarang: Inovasi V" → 3 lines (9 words, 22px); "Photobooth Semarang untuk Lamaran di Rumah: Inti" → 3 lines (10 words, 22px); "Pekan Ekonomi Teknik di Widya Puraya: Sensasi Ph" → 4 lines (15 words, 22px)
+      → Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 24px or less.
+
+WARN — fix, or be able to defend
+  [no-footage] @1440px  No video anywhere on the page.
+      → Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject.
+  [first-action] @390px  No visible button in the first phone screen.
+      → On a phone the first screen still holds the headline, the supporting sentence and the action; move navigation into one row or a menu so it does not push them down.
+
+LOOK AT THE RENDER — open these with your image viewer / Read tool before saying anything about quality:
+  desktop 1440px  .taste-skill/polish-after/artikel/desktop-fold.jpg
+                  .taste-skill/polish-after/artikel/desktop-page-01.jpg
+                  .taste-skill/polish-after/artikel/desktop-page-02.jpg
+                  .taste-skill/polish-after/artikel/desktop-page-03.jpg
+  tablet 768px    .taste-skill/polish-after/artikel/tablet-fold.jpg
+                  .taste-skill/polish-after/artikel/tablet-page-01.jpg
+                  .taste-skill/polish-after/artikel/tablet-page-02.jpg
+  mobile 390px    .taste-skill/polish-after/artikel/mobile-fold.jpg
+                  .taste-skill/polish-after/artikel/mobile-page-01.jpg
+                  .taste-skill/polish-after/artikel/mobile-page-02.jpg
+
+report: .taste-skill/polish-after/artikel/report.json
+RESULT: 5 FAIL, 2 WARN — not done.

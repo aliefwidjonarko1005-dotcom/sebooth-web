@@ -1,0 +1,62 @@
+TASTESKILL · INSPECT   http://localhost:3000/partnership
+
+MEASURED (first viewport listed)
+  hero headline   "THE BEST FRIEND OF EOS & WOS."  7 words · 2 line(s) · 96px (6.7vw) · Hanken Grotesk 900 · tracking -0.05em · leading 1
+  @768px          3 line(s) · 96px
+  @390px          3 line(s) · 60px
+  typefaces       Hanken Grotesk 100%
+  sizes in use    13 / 14 / 18 / 24 / 36 / 48 / 96 px   body 14px / 1.63
+  colour          page #f8f9fa · button #ff4500
+  page            1.9 screens · 139 words · 2 images · hero media none
+  headings        3 · longest 2 line(s) · median 3 words
+
+FAIL — fix every one of these
+  [eyebrow] @1440px (+768, 390)  1 eyebrow/kicker label(s) above headings: "[ For Event Professionals ]" above "THE BEST FRIEND OF EOS & WOS."
+      → Delete them. If the label carried real information, fold it into the headline or the supporting sentence.
+  [gradient] @1440px (+768)  1 gradient fill(s): div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0
+      → Use a flat colour or a real image. The only gradient allowed by default is a neutral scrim over a photo for legibility.
+  [shadow] @1440px (+768, 390)  5 box-shadow(s) on elements at rest: a.inline-flex.items-center → rgb(255, 69, 0) 6px 6px 0px 0px | div.bg-primary.p-8 → rgb(255, 69, 0) 6px 6px 0px 0px | div.bg-primary.p-8 → rgb(0, 35, 102) 6px 6px 0px 0px
+      → Remove. Separate surfaces with a tone step or space. Shadows are for things that really float (menus, dialogs, sticky bars).
+  [button-fx] @1440px (+768, 390)  Buttons with shadow/glow.
+      → Flat fill, one colour.
+  [icon-cards] @1440px (+768, 390)  1 row(s) of identical cards each topped with a small icon (3 cards).
+      → Replace with one composed section from the direction: a narrative split, a list set in large type, or real imagery per item.
+  [contrast] @1440px (+768, 390)  Unreadable text: "The Best Friend of EOs & WOs." 1.1:1 (#ffffff on #f8f9fa); "Partner Benefits" 1.1:1 (#ffffff on #f8f9fa)
+      → Raise contrast to at least 4.5:1 for text, 3:1 for large display.
+  [body-size] @1440px (+768, 390)  Body text is 14px (the size most of the running text is set in).
+      → Body copy 16–20px. Map small sizes from blueprints onto your body step.
+  [few-pictures] @1440px  Only 0 picture(s) on the page (0 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.
+      → Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve.
+  [headline-lines] @768px  1 headline(s) wrap past two lines at 768px: "THE BEST FRIEND OF EOS & WOS." → 3 lines (7 words, 96px)
+      → Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 32px or less.
+  [headline-lines] @390px  1 headline(s) wrap past two lines at 390px: "THE BEST FRIEND OF EOS & WOS." → 3 lines (7 words, 60px)
+      → Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 24px or less.
+  [late-title] @390px  The title is not readable 1.2s after the page loaded (something lies over it).
+      → Put the headline in the HTML, painted on the first frame; the load sequence only adds arrival and is settled by 1.2s (references/motion.md, "Load sequence in 1.2 seconds"). No preloader, no gate, no waiting for the load event.
+
+WARN — fix, or be able to defend
+  [micro-label] @1440px (+768, 390)  1 tiny uppercase letter-spaced label(s): "[ For Event Professionals ]"
+      → Prefer sentence case at body size.
+  [pill-nav] @1440px  Floating rounded pill navigation.
+      → Use a plain bar: wordmark left, a few links, one action.
+  [no-footage] @1440px  No video anywhere on the page.
+      → Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject.
+  [off-centre] @1440px  The margins differ: 104px on the left, 142px on the right, at 1440px.
+      → Put the navigation and the content on one pair of margins; check for padding on one side only, a scrollbar gutter, or a header on another inset than the page.
+  [hero-void] @1440px  29% of the first screen is one empty block (480×780px at 960,120).
+      → Place the void on purpose or fill it: move the picture, the film or one fact into it, grow the headline to meet it, or shrink the screen to its content. A void reads as placed only when something closes it on the far side and it is the screen's one rest.
+  [outlined-box] @768px  1 box(es) drawn with a 1px outline.
+      → Prefer a filled surface or no box.
+  [glass] @390px  2 backdrop-blur surfaces.
+      → One blurred sticky bar at most; glass cards are a tell.
+
+LOOK AT THE RENDER — open these with your image viewer / Read tool before saying anything about quality:
+  desktop 1440px  .taste-skill/polish-before/partnership/desktop-fold.jpg
+                  .taste-skill/polish-before/partnership/desktop-page-01.jpg
+  tablet 768px    .taste-skill/polish-before/partnership/tablet-fold.jpg
+                  .taste-skill/polish-before/partnership/tablet-page-01.jpg
+  mobile 390px    .taste-skill/polish-before/partnership/mobile-fold.jpg
+                  .taste-skill/polish-before/partnership/mobile-page-01.jpg
+
+report: .taste-skill/polish-before/partnership/report.json
+RESULT: 11 FAIL, 7 WARN — not done.

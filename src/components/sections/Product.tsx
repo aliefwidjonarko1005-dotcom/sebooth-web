@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
+import { useModalFocus } from '@/lib/useModalFocus'
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -103,9 +104,11 @@ interface ProductProps {
 export function Product({ initialData = {}, isActive = true }: ProductProps) {
   const [activeIdx, setActiveIdx] = useState(0)
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null)
-  const [isLiked, setIsLiked] = useState<Record<string, boolean>>({})
   const [isHovered, setIsHovered] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const detailRef = useRef<HTMLDivElement>(null)
+  const closeDetail = useCallback(() => setSelectedProduct(null), [])
+  useModalFocus(selectedProduct !== null, detailRef, closeDetail)
 
   useEffect(() => {
     setMounted(true)
@@ -152,11 +155,6 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
     touchStartX.current = null
   }
 
-  const toggleLike = (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation()
-    setIsLiked((prev) => ({ ...prev, [id]: !prev[id] }))
-  }
-
   return (
     <section 
       id="product" 
@@ -170,7 +168,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
         
         {/* ── SECTION TITLE (CENTERED & SAFE TOP MARGIN) ── */}
         <div className="flex flex-col items-center text-center w-full px-2 shrink-0 pt-0.5">
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black font-bayon text-[#002366] uppercase tracking-tight leading-none sm:leading-tight drop-shadow-sm text-center mb-0.5">
+          <h2 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-bayon text-primary uppercase leading-none text-center">
             SEBUTIN APA YANG KAMU MAU!
           </h2>
         </div>
@@ -203,7 +201,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
 
               // On mobile screens (< 640px), calculate hardware-composited 2D transforms
               if (typeof window !== 'undefined' && window.innerWidth < 640) {
-                translateX = diff * 85
+                translateX = diff * 100
                 rotateY = diff * -8
                 translateZ = -Math.abs(diff) * 50
                 scale = isActive ? 1 : 0.85
@@ -232,10 +230,10 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                     pointerEvents: isDirectNeighbor || isActive ? 'auto' : 'none',
                     cursor: isActive ? 'default' : 'pointer'
                   }}
-                  className="w-[200px] xs:w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] xl:w-[320px] h-[280px] xs:h-[310px] sm:h-[360px] md:h-[390px] lg:h-[410px] xl:h-[430px] max-h-[50vh] shrink-0 [backface-visibility:hidden] select-none"
+                  className="w-[240px] min-[375px]:w-[270px] md:w-[280px] lg:w-[300px] xl:w-[320px] h-[350px] min-[375px]:h-[400px] lg:h-[410px] xl:h-[430px] max-h-[58svh] shrink-0 [backface-visibility:hidden] select-none"
                 >
                   {/* ── CARD MODEL (PROPORTIONAL VERTICAL PORTRAIT + PROGRESSIVE BLUR) ── */}
-                  <div className={`relative w-full h-full rounded-[24px] sm:rounded-[36px] overflow-hidden border-2 border-white/35 shadow-[0_20px_50px_rgba(0,0,0,0.65)] bg-zinc-900 group flex flex-col justify-between ${
+                  <div className={`relative w-full h-full rounded-2xl overflow-hidden shadow-[0_12px_32px_rgba(0,17,58,0.35)] bg-blue-dark group flex flex-col justify-between ${
                     !isActive ? 'hover:brightness-110 transition-all cursor-pointer' : ''
                   }`}>
                     {/* Inactive card transparent click interceptor shield */}
@@ -257,68 +255,41 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                       className="object-cover object-center w-full h-full transition-transform duration-700 group-hover:scale-105"
                     />
 
-                    {/* Card Top Action Controls */}
-                    <div className="relative z-20 p-2.5 sm:p-4 flex items-center justify-between gap-1.5">
-                      <button 
-                        onClick={(e) => toggleLike(prod.id, e)}
-                        className="w-8 h-8 sm:w-9.5 sm:h-9.5 rounded-full bg-black/60 border border-white/25 flex items-center justify-center text-white hover:bg-black/80 transition-all shadow-md pointer-events-auto"
-                        title="Favorite"
-                      >
-                        <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isLiked[prod.id] ? 'fill-red-500 text-red-500' : 'text-white'}`} />
-                      </button>
-
-                      <button 
+                    {/* Card Top Action: the one real control, opens the detail sheet */}
+                    <div className="relative z-20 flex justify-end p-2 sm:p-3">
+                      <button
                         onClick={(e) => {
                           e.stopPropagation()
                           setSelectedProduct(prod)
                         }}
-                        className="px-2.5 sm:px-3 py-1 rounded-full bg-white/25 border border-white/30 text-white text-[10px] sm:text-[11px] font-bold tracking-wider flex items-center gap-1 hover:bg-white/40 transition-all shadow-md uppercase pointer-events-auto"
+                        className="min-h-11 cursor-pointer rounded-full bg-blue-dark px-4 text-sm font-bold text-white transition-colors hover:bg-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white pointer-events-auto"
                       >
-                        <Maximize2 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                        <span>Expand</span>
-                      </button>
-
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedProduct(prod)
-                        }}
-                        className="w-8 h-8 sm:w-9.5 sm:h-9.5 rounded-full bg-black/60 border border-white/25 flex items-center justify-center text-white hover:bg-black/80 transition-all shadow-md pointer-events-auto"
-                        title="More Options"
-                      >
-                        <MoreHorizontal className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        Detail
                       </button>
                     </div>
 
                     {/* ── CLEAN GRADIENT OVERLAY SYSTEM (LIGHTWEIGHT 60FPS) ── */}
-                    <div className="absolute inset-x-0 bottom-0 h-[65%] pointer-events-none overflow-hidden rounded-b-[24px] sm:rounded-b-[36px] z-10 bg-gradient-to-t from-black/95 via-black/75 via-black/35 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 h-[65%] pointer-events-none overflow-hidden z-10 bg-gradient-to-t from-black/95 via-black/75 via-black/35 to-transparent" />
 
                     {/* Card Bottom Content Container */}
-                    <div className="relative z-20 inset-x-0 p-2.5 xs:p-3 sm:p-4 md:p-5 pt-3 sm:pt-4 flex flex-col justify-end text-left">
-                      {/* Badge Pill */}
-                      <div className="mb-0.5 sm:mb-1">
-                        <span className="text-[7.5px] sm:text-[9px] font-extrabold uppercase tracking-widest text-orange-300 bg-black/60 border border-orange-400/40 px-2 py-0.5 rounded-full">
-                          {prod.badge}
-                        </span>
-                      </div>
-
+                    <div className="relative z-20 inset-x-0 p-3 sm:p-4 flex flex-col justify-end text-left">
                       {/* Title */}
-                      <h3 className="text-sm xs:text-base sm:text-xl font-extrabold text-white leading-tight mb-0.5 sm:mb-1 tracking-tight drop-shadow-md">
+                      <h3 className="text-[17px] sm:text-xl font-bold text-white leading-tight">
                         {prod.title}
                       </h3>
 
                       {/* Subtitle / Description */}
-                      <p className="line-clamp-2 text-[9.5px] xs:text-[10px] sm:text-[11.5px] text-white/85 leading-tight mb-2 sm:mb-3 font-medium">
+                      <p className="line-clamp-2 mt-1 mb-3 text-sm text-white leading-snug">
                         {prod.desc}
                       </p>
 
-                      {/* CTA Button ("Mau ini dong" - Orange-to-Purple Gradient Pill) */}
+                      {/* CTA Button */}
                       <a
                         href={`https://wa.me/6285713899441?text=${encodeURIComponent(prod.waText)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="w-full rounded-full py-1.5 xs:py-2 sm:py-2.5 px-3 sm:px-4 bg-[#FF4500] hover:bg-orange-press text-white font-extrabold text-xs sm:text-sm text-center tracking-wide border border-white/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer pointer-events-auto"
+                        className="w-full min-h-11 rounded-full px-3 sm:px-4 bg-secondary hover:bg-white text-blue-dark font-bold text-[15px] text-center transition-colors active:scale-[0.98] flex items-center justify-center gap-1.5 cursor-pointer pointer-events-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                       >
                         <span>{prod.ctaText}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -332,9 +303,9 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
         </div>
 
         {/* ── TRUSTED BY SECTION WITH INFINITE AUTO-SLIDING LOGO MARQUEE (CENTERED) ── */}
-        <div className="w-full max-w-md mx-auto pt-1.5 sm:pt-2 border-t border-black/10 flex flex-col items-center text-center shrink-0 relative z-30 mt-auto mb-11 sm:mb-1">
-          <span className="text-[8px] sm:text-[9.5px] font-extrabold uppercase tracking-widest text-[#002366]/60 block mb-1 text-center">
-            TRUSTED BY
+        <div className="w-full max-w-md mx-auto pt-1.5 sm:pt-2 flex flex-col items-center text-center shrink-0 relative z-30 mt-auto mb-11 sm:mb-1">
+          <span className="text-sm font-bold text-primary block mb-1 text-center">
+            Trusted by
           </span>
 
           {/* Infinite Marquee Track Container */}
@@ -376,26 +347,31 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
               onClick={() => setSelectedProduct(null)}
-              className="fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-3 xs:p-4 sm:p-6"
+              className="fixed inset-0 z-[9999] bg-blue-dark/80 flex items-end justify-center md:items-center md:p-6"
             >
               <motion.div
-                initial={{ scale: 0.92, y: 15 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.92, y: 15 }}
+                ref={detailRef}
+                role="dialog"
+                aria-modal="true"
+                aria-label={selectedProduct.title}
+                initial={{ y: 32 }}
+                animate={{ y: 0 }}
+                exit={{ y: 32 }}
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 style={{ willChange: "transform, opacity" }}
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-xl md:max-w-2xl bg-zinc-900 border border-white/20 rounded-[20px] sm:rounded-[28px] overflow-hidden shadow-2xl text-white p-4 xs:p-5 sm:p-7 flex flex-col md:flex-row gap-4 sm:gap-6 max-h-[86vh] overflow-y-auto [transform:translate3d(0,0,0)] [backface-visibility:hidden]"
+                className="relative w-full md:max-w-2xl bg-primary rounded-t-2xl md:rounded-2xl text-white p-5 md:p-7 flex flex-col md:flex-row gap-4 md:gap-6 max-h-[92svh] overflow-y-auto"
               >
                 <button
-                  onClick={() => setSelectedProduct(null)}
-                  className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/70 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all"
+                  onClick={closeDetail}
+                  aria-label="Tutup detail layanan"
+                  className="absolute top-2 right-2 z-10 h-12 w-12 cursor-pointer rounded-full bg-blue-dark flex items-center justify-center text-white transition-colors hover:text-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
-                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <X className="h-6 w-6" aria-hidden="true" />
                 </button>
 
                 {/* Left Product Image (Enlarged & Clean without overlay badges) */}
-                <div className="relative w-full md:w-1/2 h-56 xs:h-64 sm:h-72 md:h-auto min-h-[220px] xs:min-h-[250px] md:min-h-[340px] rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-black/40">
+                <div className="relative w-full md:w-1/2 h-64 md:h-auto md:min-h-[340px] rounded-lg overflow-hidden shrink-0">
                   <Image
                     src={selectedProduct.image}
                     alt={selectedProduct.title}
@@ -407,29 +383,26 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
                 </div>
 
                 <div className="flex flex-col justify-between w-full md:w-1/2 text-left">
-                  <div>
-                    <h3 className="text-lg xs:text-xl sm:text-2xl font-extrabold text-white mb-0.5 sm:mb-1 font-bayon uppercase tracking-tight">{selectedProduct.title}</h3>
-                    <p className="text-[11px] xs:text-xs text-orange-400 font-bold uppercase tracking-wider mb-2 sm:mb-3">{selectedProduct.subtitle}</p>
-                    <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mb-3 sm:mb-4 font-medium">{selectedProduct.desc}</p>
+                  <div className="text-[17px] leading-relaxed">
+                    <h3 className="font-bayon text-[2rem] leading-[1.05] uppercase">{selectedProduct.title}</h3>
+                    <p className="mt-1.5 font-bold">{selectedProduct.subtitle}</p>
+                    <p className="mt-3">{selectedProduct.desc}</p>
 
-                    <div className="space-y-1.5 sm:space-y-2 mb-4 sm:mb-5">
-                      <h4 className="text-[10.5px] xs:text-xs font-bold uppercase text-white/70 tracking-widest">Fitur Utama:</h4>
+                    <h4 className="mt-4 font-bold">Fitur Utama</h4>
+                    <ul className="mt-1 mb-5 list-disc space-y-1 pl-5 marker:text-secondary">
                       {selectedProduct.features.map((feat, fIdx) => (
-                        <div key={fIdx} className="flex items-center gap-1.5 xs:gap-2 text-[11px] xs:text-xs sm:text-sm text-gray-200 font-medium">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-orange-400 shrink-0" />
-                          <span>{feat}</span>
-                        </div>
+                        <li key={fIdx}>{feat}</li>
                       ))}
-                    </div>
+                    </ul>
                   </div>
 
                   <a
                     href={`https://wa.me/6285713899441?text=${encodeURIComponent(selectedProduct.waText)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full rounded-full py-2.5 sm:py-3.5 px-4 sm:px-6 bg-[#FF4500] hover:bg-orange-press text-white font-bold text-xs xs:text-sm sm:text-base text-center tracking-wide border border-white/20 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                    className="w-full min-h-14 rounded-full px-5 bg-secondary hover:bg-white text-blue-dark font-bold text-[17px] text-center transition-colors active:scale-[0.98] flex items-center justify-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   >
-                    <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                    <MessageCircle className="h-5 w-5" aria-hidden="true" />
                     <span>Mau ini dong (Konsultasi WA)</span>
                   </a>
                 </div>

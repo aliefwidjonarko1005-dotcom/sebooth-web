@@ -1,0 +1,44 @@
+TASTESKILL · INSPECT   http://localhost:3000/about
+
+MEASURED (first viewport listed)
+  hero headline   "MEMBANGUN KENANGAN."  2 words · 2 line(s) · 120px (8.3vw) · Bayon 400 · tracking -0.001em · leading 0.9
+  @768px          2 line(s) · 76.8px
+  @390px          2 line(s) · 64px
+  typefaces       Hanken Grotesk 88%, Bayon 12%
+  sizes in use    13 / 18 / 28 / 40 / 72 / 120 px   body 18px / 1.63
+  colour          page #f8f9fa · sections #002366 #ffffff #ff4500 · button #ff4500
+  page            3.6 screens · 146 words · 6 images · hero media none
+  headings        9 · longest 3 line(s) · median 2 words
+
+FAIL — fix every one of these
+  [gradient] @1440px (+768)  1 gradient fill(s): div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0
+      → Use a flat colour or a real image. The only gradient allowed by default is a neutral scrim over a photo for legibility.
+
+WARN — fix, or be able to defend
+  [pill-nav] @1440px  Floating rounded pill navigation.
+      → Use a plain bar: wordmark left, a few links, one action.
+  [contrast] @1440px (+768)  Low-contrast text: "BOOK NOW" 3.4:1 needs 4.5:1
+      → Darken or lighten the text colour.
+  [first-action] @1440px  No visible button in the first screen.
+      → Give the one primary action a real button in the first screen (a filled or solid-bordered control, 44px or taller), not only a link in the navigation.
+  [no-footage] @1440px  No video anywhere on the page.
+      → Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject.
+  [hero-void] @1440px  36% of the first screen is one empty block (960×480px at 480,420).
+      → Place the void on purpose or fill it: move the picture, the film or one fact into it, grow the headline to meet it, or shrink the screen to its content. A void reads as placed only when something closes it on the far side and it is the screen's one rest.
+  [long-pin] @1440px  The same large text stays on screen for 3 screens in a row: "OUR VISION"; "OUR MISSION"
+      → A pinned element earns two screens, and something must change at each. Shorten the run or give every screen its own content.
+  [outlined-box] @768px  1 box(es) drawn with a 1px outline.
+      → Prefer a filled surface or no box.
+  [glass] @390px  2 backdrop-blur surfaces.
+      → One blurred sticky bar at most; glass cards are a tell.
+
+LOOK AT THE RENDER — open these with your image viewer / Read tool before saying anything about quality:
+  desktop 1440px  .taste-skill/polish-after/about/desktop-fold.jpg
+                  .taste-skill/polish-after/about/desktop-page-01.jpg
+  tablet 768px    .taste-skill/polish-after/about/tablet-fold.jpg
+                  .taste-skill/polish-after/about/tablet-page-01.jpg
+  mobile 390px    .taste-skill/polish-after/about/mobile-fold.jpg
+                  .taste-skill/polish-after/about/mobile-page-01.jpg
+
+report: .taste-skill/polish-after/about/report.json
+RESULT: 1 FAIL, 8 WARN — not done.

@@ -1,0 +1,38 @@
+TASTESKILL · INSPECT   http://localhost:3100/about
+
+MEASURED (first viewport listed)
+  hero headline   "MEMBANGUN KENANGAN."  2 words · 2 line(s) · 120px (8.3vw) · Bayon 400 · tracking -0.001em · leading 0.9
+  @768px          2 line(s) · 76.8px
+  @390px          2 line(s) · 64px
+  typefaces       Hanken Grotesk 83%, Bayon 17%
+  sizes in use    18 / 28 / 40 / 72 / 120 px   body 18px / 1.63
+  colour          page #f8f9fa · sections #002366 #ffffff #ff4500 · button #ff4500
+  page            3.6 screens · 146 words · 6 images · hero media none
+  headings        9 · longest 3 line(s) · median 2 words
+
+FAIL — fix every one of these
+  [late-title] @1440px (+768, 390)  The title is not readable 1.2s after the page loaded (something lies over it).
+      → Put the headline in the HTML, painted on the first frame; the load sequence only adds arrival and is settled by 1.2s (references/motion.md, "Load sequence in 1.2 seconds"). No preloader, no gate, no waiting for the load event.
+  [covered-text] @1440px (+768, 390)  Large text lies under another element at some scroll position: "MEMBANGUN KENANGAN." (screen 1, 100% hidden); "Sebooth lahir dari sebuah pertanyaan sederhana: " (screen 1, 100% hidden)
+      → Nothing may sit on top of a headline or statement. Move the picture, shorten the pinned run, or raise the text above it (z-index) and give it a ground.
+
+WARN — fix, or be able to defend
+  [first-action] @1440px (+390)  No visible button in the first screen.
+      → Give the one primary action a real button in the first screen (a filled or solid-bordered control, 44px or taller), not only a link in the navigation.
+  [no-footage] @1440px  No video anywhere on the page.
+      → Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject.
+  [hero-void] @1440px  36% of the first screen is one empty block (960×480px at 480,420).
+      → Place the void on purpose or fill it: move the picture, the film or one fact into it, grow the headline to meet it, or shrink the screen to its content. A void reads as placed only when something closes it on the far side and it is the screen's one rest.
+  [long-pin] @1440px  The same large text stays on screen for 3 screens in a row: "OUR VISION"; "OUR MISSION"
+      → A pinned element earns two screens, and something must change at each. Shorten the run or give every screen its own content.
+
+LOOK AT THE RENDER — open these with your image viewer / Read tool before saying anything about quality:
+  desktop 1440px  .taste-skill/prod-after/about/desktop-fold.jpg
+                  .taste-skill/prod-after/about/desktop-page-01.jpg
+  tablet 768px    .taste-skill/prod-after/about/tablet-fold.jpg
+                  .taste-skill/prod-after/about/tablet-page-01.jpg
+  mobile 390px    .taste-skill/prod-after/about/mobile-fold.jpg
+                  .taste-skill/prod-after/about/mobile-page-01.jpg
+
+report: .taste-skill/prod-after/about/report.json
+RESULT: 2 FAIL, 4 WARN — not done.

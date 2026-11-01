@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   Download,
   XCircle,
@@ -10,7 +11,6 @@ import {
   Check,
   ChevronLeft,
   ArrowRight,
-  Eye,
   X,
   HelpCircle,
 } from 'lucide-react'
@@ -398,50 +398,47 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       </div>
 
       {/* ─── TOP APP BAR ─── */}
-      <header className="sticky top-0 z-40 w-full bg-[#FAF8F5]/95 sm:bg-[#FAF8F5]/90 sm:backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3 min-w-0">
+      <header className="sticky top-0 z-40 w-full bg-[#FAF8F5] px-2 sm:px-4 py-1.5 flex items-center justify-between">
+        <div className="flex items-center gap-1 min-w-0">
           <Link
             href="/"
-            className="w-9 h-9 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-100/70 flex items-center justify-center text-slate-700 transition-colors shrink-0 shadow-xs cursor-pointer"
+            className="w-11 h-11 rounded-full hover:bg-white flex items-center justify-center text-blue-dark transition-colors shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
             title="Kembali ke Beranda"
             aria-label="Kembali ke Beranda"
           >
-            <ChevronLeft className="w-4 h-4 stroke-[2.2]" />
+            <ChevronLeft className="w-5 h-5" aria-hidden="true" />
           </Link>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-black font-bayon text-base sm:text-lg uppercase tracking-wider text-[#002366]">
-                SEBOOTH<span className="text-[#FF4500]">.</span>
-              </span>
-              <span className="text-slate-300">/</span>
-              <span className="text-xs text-slate-600 font-medium truncate max-w-[150px] sm:max-w-xs">
+              <Image src="/images/logo/sebooth-navy.svg" alt="Sebooth" width={67} height={28} unoptimized priority className="h-auto w-auto shrink-0" style={{ height: 28 }} />
+              <span className="text-sm text-slate-600 truncate max-w-[130px] sm:max-w-xs">
                 {session.event_name || 'Softfile Sesi'}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center shrink-0">
           {/* Share Button */}
           <button
             id="tour-claim-share-btn"
             onClick={handleShare}
-            className="w-9 h-9 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-100/70 text-slate-700 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+            className="w-11 h-11 rounded-full hover:bg-white text-blue-dark flex items-center justify-center transition-colors cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
             title="Bagikan Tautan Sesi Ini"
             aria-label="Bagikan Tautan"
           >
-            <Share2 className="w-4 h-4 stroke-[2]" />
+            <Share2 className="w-5 h-5" aria-hidden="true" />
           </button>
 
           {/* Interactive Tour / Help Button */}
           <button
             id="tour-claim-help-btn"
             onClick={guide.start}
-            className="w-9 h-9 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-100/70 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+            className="w-11 h-11 rounded-full hover:bg-white text-blue-dark flex items-center justify-center transition-colors cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
             title="Buka Panduan Penggunaan"
             aria-label="Panduan Penggunaan"
           >
-            <HelpCircle className="w-4 h-4 stroke-[2]" />
+            <HelpCircle className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
       </header>
@@ -451,7 +448,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
 
         {/* ─── 1. HERO ─── */}
         <section className="pt-1">
-          <h1 className="text-[30px] sm:text-[40px] font-black font-bayon uppercase text-blue-dark tracking-tight leading-none">
+          <h1 className="text-[min(9.6vw,2.25rem)] sm:text-[56px] font-bayon uppercase text-blue-dark leading-none">
             Foto & Video Sesi Kamu
           </h1>
           <p className="mt-2 text-[14px] text-slate-600 leading-relaxed">
@@ -477,10 +474,10 @@ export default function AccessSessionClient({ session: initialSession, sessionId
         {/* ─── 4. MEDIA GALLERY GRID ─── */}
         <section>
           <div id="tour-claim-tip-banner" className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-3 px-0.5">
-            <h2 className="text-[16px] font-bold text-slate-900 tracking-tight">
+            <h2 className="text-[17px] font-bold text-blue-dark">
               Semua media ({mediaList.length})
             </h2>
-            <p className="text-[13px] text-slate-500">
+            <p className="text-sm text-slate-600">
               Ketuk untuk lihat penuh, tahan untuk simpan cepat di HP
             </p>
           </div>
@@ -508,7 +505,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                   viewport={{ once: true, margin: '0px 0px -40px 0px' }}
                   transition={{ duration: 0.36, delay: reduceMotion ? 0 : Math.min(idx, 8) * 0.06, ease: [0.22, 1, 0.36, 1] }}
                   onClick={() => setPreviewIndex(idx)}
-                  className={`group relative rounded-xl overflow-hidden bg-slate-950 border border-slate-200 shadow-xs hover:shadow-md transition-shadow cursor-pointer flex items-center justify-center select-auto ${
+                  className={`group relative rounded-lg overflow-hidden bg-blue-dark cursor-pointer flex items-center justify-center select-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
                     isStrip ? 'aspect-[2/3] row-span-1' : 'aspect-[3/4]'
                   }`}
                   style={{
@@ -540,29 +537,23 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                   )}
 
                   {/* Top-Left Media Type Badge */}
-                  <div className="absolute top-2.5 left-2.5 z-20 pointer-events-none">
-                    <span className="px-2 py-0.5 rounded-md bg-black/60 text-white/95 text-[10px] font-medium tracking-wide uppercase border border-white/10 shadow-xs">
+                  <div className="absolute top-2 left-2 z-20 pointer-events-none">
+                    <span className="block px-2 py-0.5 rounded-md bg-blue-dark/80 text-white text-[13px] font-medium">
                       {item.label}
                     </span>
                   </div>
 
-                  {/* Top-Right Apple Liquid Glass Circular Download Button */}
+                  {/* Top-Right Download: a 44px target around a 32px circle */}
                   <button
                     onClick={(e) => handleDownloadSingle(e, item, idx)}
-                    className="absolute top-2.5 right-2.5 z-30 w-8 h-8 rounded-full bg-black/50 hover:bg-black/65 text-white border border-white/30 flex items-center justify-center shadow-sm active:scale-90 transition-[background-color,transform] cursor-pointer"
+                    className="group/save absolute top-0.5 right-0.5 z-30 w-11 h-11 flex items-center justify-center text-white active:scale-90 transition-transform cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white"
                     title={`Unduh ${item.label}`}
                     aria-label={`Unduh ${item.label}`}
                   >
-                    <Download className="w-3.5 h-3.5 stroke-[2.4]" />
-                  </button>
-
-                  {/* Bottom Hover Preview Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3 pointer-events-none">
-                    <span className="text-[11px] font-medium text-white/95 flex items-center gap-1.5">
-                      <Eye className="w-3.5 h-3.5 stroke-[2]" />
-                      Lihat detail
+                    <span className="flex w-8 h-8 items-center justify-center rounded-full bg-blue-dark/80 transition-colors group-hover/save:bg-blue-dark">
+                      <Download className="w-4 h-4" aria-hidden="true" />
                     </span>
-                  </div>
+                  </button>
                 </motion.div>
               )
             })}
@@ -576,20 +567,20 @@ export default function AccessSessionClient({ session: initialSession, sessionId
               Suka hasilnya?
             </h2>
             <p className="mt-0.5 text-[14px] text-slate-600">Langkah kecil yang sangat membantu tim Sebooth.</p>
-            <div className="mt-3 flex flex-col divide-y divide-slate-100">
+            <div className="mt-1 flex flex-col">
               {storyPhotos.length > 0 && (
-                <button type="button" onClick={() => openStory()} className="min-h-[52px] flex items-center justify-between gap-3 text-left cursor-pointer group">
+                <button type="button" onClick={() => openStory()} className="min-h-[52px] flex items-center justify-between gap-3 text-left cursor-pointer group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
                   <span className="text-[15px] font-medium text-slate-900">Bikin Story Instagram dari fotomu</span>
-                  <ArrowRight className="w-4 h-4 text-slate-400 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="w-5 h-5 text-slate-500 transition-transform group-hover:translate-x-1" />
                 </button>
               )}
-              <button type="button" onClick={() => openSheet('rating')} className="min-h-[52px] flex items-center justify-between gap-3 text-left cursor-pointer group">
+              <button type="button" onClick={() => openSheet('rating')} className="min-h-[52px] flex items-center justify-between gap-3 text-left cursor-pointer group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
                 <span className="text-[15px] font-medium text-slate-900">Beri rating dan ulasan Google</span>
-                <ArrowRight className="w-4 h-4 text-slate-400 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-5 h-5 text-slate-500 transition-transform group-hover:translate-x-1" />
               </button>
-              <button type="button" onClick={() => openSheet('instagram')} className="min-h-[52px] flex items-center justify-between gap-3 text-left cursor-pointer group">
+              <button type="button" onClick={() => openSheet('instagram')} className="min-h-[52px] flex items-center justify-between gap-3 text-left cursor-pointer group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
                 <span className="text-[15px] font-medium text-slate-900">Follow @{INSTAGRAM_HANDLE} di Instagram</span>
-                <ArrowRight className="w-4 h-4 text-slate-400 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-5 h-5 text-slate-500 transition-transform group-hover:translate-x-1" />
               </button>
             </div>
           </section>
@@ -623,7 +614,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                       setPreviewIndex(null)
                       openStory(previewMedia.id)
                     }}
-                    className="min-h-[40px] px-4 rounded-full bg-white/10 hover:bg-white/20 text-white text-[14px] font-semibold flex items-center gap-1.5 cursor-pointer"
+                    className="min-h-11 px-4 rounded-full bg-white/10 hover:bg-white/20 text-white text-[14px] font-semibold flex items-center gap-1.5 cursor-pointer"
                   >
                     <Share2 className="w-4 h-4 stroke-[2.2]" />
                     <span>Story</span>
@@ -631,7 +622,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                 )}
                 <button
                   onClick={(e) => handleDownloadSingle(e, previewMedia, previewIndex)}
-                  className="min-h-[40px] px-4 rounded-full bg-white text-slate-900 text-[14px] font-semibold flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
+                  className="min-h-11 px-4 rounded-full bg-white text-slate-900 text-[14px] font-semibold flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
                 >
                   <Download className="w-4 h-4 stroke-[2.2]" />
                   <span>Unduh</span>
@@ -639,7 +630,7 @@ export default function AccessSessionClient({ session: initialSession, sessionId
                 <button
                   id="tour-lightbox-close"
                   onClick={() => setPreviewIndex(null)}
-                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+                  className="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
                   aria-label="Tutup preview"
                 >
                   <X className="w-5 h-5" />
@@ -712,8 +703,8 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       </AnimatePresence>
 
       {/* ─── FOOTER ─── */}
-      <footer className="text-center py-6 mt-auto border-t border-slate-200/80 bg-white mb-32 sm:mb-28">
-        <p className="text-[11px] text-slate-400 font-medium">
+      <footer className="text-center pb-6 mt-auto mb-32 sm:mb-28">
+        <p className="text-[13px] text-slate-600">
           &copy; 2026 Sebooth Indonesia &middot; Digital Photobooth Experience
         </p>
       </footer>

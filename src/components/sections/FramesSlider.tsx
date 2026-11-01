@@ -1,10 +1,13 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import { frameImage } from '@/data/frameEvents'
+import { whatsappUrl } from '@/config/social'
+import { useModalFocus } from '@/lib/useModalFocus'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, X, ShieldAlert, Sparkles, Eye, CheckCircle2, Lock } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 export interface FrameCardItem {
   id: string
@@ -478,6 +481,41 @@ const FRAME_ITEMS: FrameCardItem[] = [
   }
 ]
 
+function FrameCard({ item, large = false, isLoopCopy, onOpen }: {
+  item: FrameCardItem
+  large?: boolean
+  /** The marquee renders every card twice to loop: the copies stay out of the tab order and screen readers */
+  isLoopCopy: boolean
+  onOpen: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-hidden={isLoopCopy || undefined}
+      tabIndex={isLoopCopy ? -1 : undefined}
+      className={`group shrink-0 cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${large ? "w-[380px] md:w-[420px]" : "w-[210px] min-[375px]:w-[240px]"}`}
+    >
+      <span className={`relative block overflow-hidden rounded-lg bg-blue-dark ${large ? "h-[245px] md:h-[270px]" : "h-[120px] min-[375px]:h-[135px]"}`}>
+        <Image
+          src={frameImage(item.image, "thumb")}
+          alt={item.title}
+          fill
+          unoptimized
+          draggable={false}
+          loading="lazy"
+          sizes={large ? "450px" : "240px"}
+          className="object-cover object-center select-none pointer-events-none transition-transform duration-500 group-hover:scale-105"
+          style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
+        />
+      </span>
+      <span className="mt-1.5 block truncate text-sm font-bold text-white capitalize">
+        {item.category.toLowerCase()}
+      </span>
+    </button>
+  )
+}
+
 interface FramesSliderProps {
   initialData?: Record<string, string>
   isActive?: boolean
@@ -488,6 +526,9 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
   const [selectedFrame, setSelectedFrame] = useState<FrameCardItem | null>(null)
   const [isHovered, setIsHovered] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const frameDialogRef = useRef<HTMLDivElement>(null)
+  const closeFrame = useCallback(() => setSelectedFrame(null), [])
+  useModalFocus(selectedFrame !== null, frameDialogRef, closeFrame)
 
   useEffect(() => {
     setMounted(true)
@@ -523,192 +564,64 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
     touchStartX.current = null
   }
 
-  const getThumbUrl = (imgPath: string) => {
-    return imgPath.replace('/images/frames/', '/images/frames/thumb/').replace(/\.(png|jpg|jpeg)$/i, '.webp');
-  }
-
-  const getModalUrl = (imgPath: string) => {
-    return imgPath.replace('/images/frames/', '/images/frames/modal/').replace(/\.(png|jpg|jpeg)$/i, '.webp');
-  }
-
   return (
     <section
       id="frames"
-      className="relative w-full h-[100svh] min-h-[100svh] bg-[#002366] text-white pt-16 sm:pt-20 md:pt-24 lg:pt-28 pb-4 sm:pb-12 px-3 sm:px-8 lg:px-16 overflow-hidden select-none flex flex-col justify-center items-center gap-2 sm:gap-5"
+      className="relative w-full h-[100svh] min-h-[100svh] bg-primary text-white pt-16 sm:pt-20 md:pt-24 lg:pt-28 pb-4 sm:pb-12 px-3 sm:px-8 lg:px-16 overflow-hidden select-none flex flex-col justify-center items-center gap-2 sm:gap-5"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onContextMenu={(e) => e.preventDefault()}
     >
-      {/* ── AMBIENT VIBRANT ORANGE MULTI-STOP GRADIENT BACKGROUND ── */}
-
-      {/* Dominant Fiery Orange Core Aura (Desktop only for max mobile 60fps performance) */}
-
-      {/* Abstract Bright Amber & Vivid Crimson Ambient Blur Accent Blobs */}
-
       {/* ── SECTION HEADER ── */}
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center text-center mb-1 sm:mb-4 px-2">
-        <h2 className="text-3xl xs:text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black font-bayon text-white uppercase tracking-tight leading-none text-center drop-shadow-[0_8px_32px_rgba(0,0,0,0.95)] filter">
+        <h2 className="text-[min(8.4vw,2.5rem)] sm:text-6xl md:text-7xl lg:text-8xl font-bayon text-white uppercase leading-none text-center whitespace-nowrap">
           PILIH FRAME AESTHETIC-MU!
         </h2>
 
-        <p className="text-xs xs:text-sm sm:text-lg text-white/95 font-medium tracking-wide max-w-xs xs:max-w-sm sm:max-w-2xl mt-1 sm:mt-2.5 leading-snug sm:leading-relaxed text-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] filter">
+        <p className="text-[15px] sm:text-lg text-white max-w-sm sm:max-w-2xl mt-2 sm:mt-3 leading-snug text-center">
           Ratusan pilihan template photostrip beresolusi tinggi. Klik kartu mana saja untuk melihat preview frame pilihanmu!
         </p>
       </div>
 
       {/* ── CONTINUOUS INFINITE SLIDING MARQUEE TRACK (ZERO MASK-IMAGE FOR ULTRA 60FPS) ── */}
       <div className="relative z-10 w-full overflow-hidden select-none pt-1 sm:pt-4 pb-4 sm:pb-16 md:pb-20">
-        {/* Hardware-friendly Left & Right Fade Overlays */}
-        <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-[#002366] to-transparent z-20 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-[#002366] to-transparent z-20 pointer-events-none" />
-
         {/* MOBILE 2-TIER STACKED ROWS (Visible only on < sm screens) */}
-        <div className="flex sm:hidden flex-col gap-2 xs:gap-3 py-1">
-          {/* Mobile Row 1 (Sliding Left) */}
-          <div 
-            className="animate-marquee-frames flex items-center gap-2 xs:gap-2.5 py-0.5"
-            style={{
-              animationPlayState: isActive ? "running" : "paused",
-            }}
-          >
-            {[...row1Items, ...row1Items].map((item, idx) => (
-              <div
-                key={`m1-${item.id}-${idx}`}
-                onClick={() => setSelectedFrame(item)}
-                className={`relative w-[210px] xs:w-[240px] rounded-[16px] overflow-hidden shrink-0 cursor-pointer border border-white/25 flex flex-col p-2 xs:p-2.5 bg-gradient-to-br ${item.cardBgGradient} group gap-1.5 shadow-md will-change-transform`}
-              >
-                <div className="relative z-20 flex items-center justify-between gap-1">
-                  <span className={`text-[8px] xs:text-[9px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full border bg-black/50 ${item.badgeBg}`}>
-                    {item.category}
-                  </span>
-                  <div className="w-4.5 h-4.5 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white/80">
-                    <Lock className="w-2.5 h-2.5 text-orange-300" />
-                  </div>
-                </div>
-                <div className="relative w-full h-[120px] xs:h-[135px] rounded-lg overflow-hidden border border-white/25 bg-black/20 flex items-center justify-center group/img">
-                  <Image
-                    src={getThumbUrl(item.image)}
-                    alt={item.title}
-                    fill
-                    unoptimized
-                    draggable={false}
-                    loading="lazy"
-                    sizes="240px"
-                    className="object-cover object-center select-none pointer-events-none"
-                  />
-                  <div className="absolute inset-0 z-20 bg-black/0 cursor-pointer flex items-center justify-center group-hover/img:bg-black/35 transition-all">
-                    <div className="opacity-0 group-hover/img:opacity-100 transition-opacity px-2.5 py-1 rounded-full bg-black/90 text-white text-[10px] font-bold flex items-center gap-1 border border-white/30">
-                      <Eye className="w-3 h-3 text-orange-400" />
-                      <span>Preview</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Mobile Row 2 (Sliding Right - Reverse Direction) */}
-          <div 
-            className="animate-marquee-frames-reverse flex items-center gap-2 xs:gap-2.5 py-0.5"
-            style={{
-              animationPlayState: isActive ? "running" : "paused",
-            }}
-          >
-            {[...row2Items, ...row2Items].map((item, idx) => (
-              <div
-                key={`m2-${item.id}-${idx}`}
-                onClick={() => setSelectedFrame(item)}
-                className={`relative w-[210px] xs:w-[240px] rounded-[16px] overflow-hidden shrink-0 cursor-pointer border border-white/25 flex flex-col p-2 xs:p-2.5 bg-gradient-to-br ${item.cardBgGradient} group gap-1.5 shadow-md will-change-transform`}
-              >
-                <div className="relative z-20 flex items-center justify-between gap-1">
-                  <span className={`text-[8px] xs:text-[9px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full border bg-black/50 ${item.badgeBg}`}>
-                    {item.category}
-                  </span>
-                  <div className="w-5 h-5 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white/80">
-                    <Lock className="w-2.5 h-2.5 text-orange-300" />
-                  </div>
-                </div>
-                <div className="relative w-full h-[120px] xs:h-[135px] rounded-lg overflow-hidden border border-white/25 bg-black/20 flex items-center justify-center group/img">
-                  <Image
-                    src={getThumbUrl(item.image)}
-                    alt={item.title}
-                    fill
-                    unoptimized
-                    draggable={false}
-                    loading="lazy"
-                    sizes="240px"
-                    className="object-cover object-center select-none pointer-events-none"
-                  />
-                  <div className="absolute inset-0 z-20 bg-black/0 cursor-pointer flex items-center justify-center group-hover/img:bg-black/35 transition-all">
-                    <div className="opacity-0 group-hover/img:opacity-100 transition-opacity px-2.5 py-1 rounded-full bg-black/90 text-white text-[10px] font-bold flex items-center gap-1 border border-white/30">
-                      <Eye className="w-3 h-3 text-orange-400" />
-                      <span>Preview</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="flex sm:hidden flex-col gap-3 py-1">
+          {[
+            { items: row1Items, direction: "animate-marquee-frames" },
+            { items: row2Items, direction: "animate-marquee-frames-reverse" },
+          ].map(({ items, direction }) => (
+            <div
+              key={direction}
+              className={`${direction} flex items-start gap-2.5 py-0.5`}
+              style={{ animationPlayState: isActive ? "running" : "paused" }}
+            >
+              {[...items, ...items].map((item, idx) => (
+                <FrameCard
+                  key={`${direction}-${item.id}-${idx}`}
+                  item={item}
+                  isLoopCopy={idx >= items.length}
+                  onOpen={() => setSelectedFrame(item)}
+                />
+              ))}
+            </div>
+          ))}
         </div>
 
         {/* DESKTOP / TABLET SINGLE ROW (Visible on >= sm screens) */}
-        <div 
-          className="hidden sm:flex animate-marquee-frames items-center gap-3 sm:gap-5 py-4 sm:py-6 md:py-8"
-          style={{
-            animationPlayState: isActive ? "running" : "paused",
-          }}
+        <div
+          className="hidden sm:flex animate-marquee-frames items-start gap-5 py-4 sm:py-6 md:py-8"
+          style={{ animationPlayState: isActive ? "running" : "paused" }}
         >
           {/* Repeated 2x to guarantee endless seamless looping */}
           {[...FRAME_ITEMS, ...FRAME_ITEMS].map((item, idx) => (
-            <motion.div
+            <FrameCard
               key={`d-${item.id}-${idx}`}
-              onClick={() => setSelectedFrame(item)}
-              whileHover={{ y: -6, scale: 1.03 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="relative w-[380px] md:w-[420px] rounded-[24px] overflow-hidden shrink-0 cursor-pointer border border-white/25 sm:border-2 flex flex-col p-3.5 bg-gradient-to-br ${item.cardBgGradient} group gap-2.5 shadow-xl"
-            >
-              {/* Top Category Badge & Protected Indicator */}
-              <div className="relative z-20 flex items-center justify-between gap-1.5">
-                <span className={`text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full border backdrop-blur-md ${item.badgeBg}`}>
-                  {item.category}
-                </span>
-
-                <div className="w-6 h-6 rounded-full bg-black/30 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/80" title="Protected Preview">
-                  <Lock className="w-3 h-3 text-orange-300" />
-                </div>
-              </div>
-
-              {/* Photostrip Frame Image Display */}
-              <div className="relative w-full h-[245px] md:h-[270px] rounded-xl overflow-hidden shadow-xs border border-white/25 bg-black/20 flex items-center justify-center group/img">
-                <Image
-                  src={getThumbUrl(item.image)}
-                  alt={item.title}
-                  fill
-                  unoptimized
-                  draggable={false}
-                  loading="lazy"
-                  sizes="450px"
-                  className="object-cover object-center select-none pointer-events-none transition-transform duration-500 group-hover/img:scale-105"
-                  style={{
-                    WebkitTouchCallout: 'none',
-                    WebkitUserSelect: 'none',
-                    userSelect: 'none'
-                  }}
-                />
-
-                {/* Anti-Copy Invisible Overlay Shield & Hover Preview Indicator */}
-                <div
-                  className="absolute inset-0 z-20 bg-black/0 cursor-pointer flex items-center justify-center group-hover/img:bg-black/35 transition-all duration-300"
-                  onContextMenu={(e) => e.preventDefault()}
-                  onDragStart={(e) => e.preventDefault()}
-                >
-                  <div className="opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-md text-white text-xs font-bold flex items-center gap-1.5 border border-white/30 shadow-lg">
-                    <Eye className="w-3.5 h-3.5 text-orange-400" />
-                    <span>Preview Frame</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+              item={item}
+              large
+              isLoopCopy={idx >= FRAME_ITEMS.length}
+              onOpen={() => setSelectedFrame(item)}
+            />
           ))}
         </div>
       </div>
@@ -723,37 +636,42 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
               onClick={() => setSelectedFrame(null)}
-              className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center p-3 sm:p-6 select-none"
+              className="fixed inset-0 z-[9999] bg-blue-dark/80 flex items-end justify-center md:items-center md:p-6 select-none"
               onContextMenu={(e) => e.preventDefault()}
               onDragStart={(e) => e.preventDefault()}
             >
               <motion.div
-                initial={{ scale: 0.92, y: 15 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.92, y: 15 }}
+                ref={frameDialogRef}
+                role="dialog"
+                aria-modal="true"
+                aria-label={selectedFrame.title}
+                initial={{ y: 32 }}
+                animate={{ y: 0 }}
+                exit={{ y: 32 }}
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 style={{ willChange: "transform, opacity" }}
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-xl lg:max-w-4xl bg-zinc-950 border border-white/20 rounded-[20px] sm:rounded-[32px] overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.9)] text-white p-3.5 xs:p-4 sm:p-7 flex flex-col md:flex-row gap-4 sm:gap-6 max-h-[86vh] overflow-y-auto [transform:translate3d(0,0,0)] [backface-visibility:hidden]"
+                className="relative w-full md:max-w-xl lg:max-w-4xl bg-primary rounded-t-2xl md:rounded-2xl text-white p-5 md:p-7 flex flex-col lg:flex-row gap-4 lg:gap-6 max-h-[92svh] overflow-y-auto"
                 onContextMenu={(e) => e.preventDefault()}
               >
                 {/* Close Button */}
                 <button
-                  onClick={() => setSelectedFrame(null)}
-                  className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all cursor-pointer"
+                  onClick={closeFrame}
+                  aria-label="Tutup preview frame"
+                  className="absolute top-2 right-2 z-30 h-12 w-12 rounded-full bg-blue-dark flex items-center justify-center text-white transition-colors hover:text-secondary cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
-                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <X className="h-6 w-6" aria-hidden="true" />
                 </button>
 
                 {/* Left Side: Expanded Uncropped Frame Image Preview Container with STRICT Protection */}
                 <div 
-                  className="relative w-full md:w-[56%] lg:w-[60%] h-[280px] xs:h-[330px] sm:h-[420px] md:h-[480px] rounded-xl sm:rounded-2xl overflow-hidden border border-white/20 bg-black/90 shrink-0 flex items-center justify-center select-none"
+                  className="relative w-full lg:w-[60%] h-[280px] min-[375px]:h-[320px] lg:h-[480px] rounded-lg overflow-hidden bg-blue-dark shrink-0 flex items-center justify-center select-none"
                   onContextMenu={(e) => e.preventDefault()}
                   onDragStart={(e) => e.preventDefault()}
                 >
                   {/* Photo Frame Display (Full Uncropped Display) */}
                   <Image
-                    src={getModalUrl(selectedFrame.image)}
+                    src={frameImage(selectedFrame.image, "modal")}
                     alt={selectedFrame.title}
                     fill
                     unoptimized
@@ -770,8 +688,8 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
 
                   {/* Diagonal Protection Watermark */}
                   <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center overflow-hidden">
-                    <div className="rotate-[-25deg] text-[8px] xs:text-[9px] sm:text-xs font-black tracking-[0.2em] sm:tracking-[0.25em] text-white/25 uppercase border-y border-white/20 py-1 sm:py-1.5 px-6 sm:px-12 bg-black/20 backdrop-blur-[1px] whitespace-nowrap">
-                      ✦ SEBOOTH PREVIEW ONLY • PROTECTED FRAME ✦
+                    <div className="rotate-[-25deg] text-sm font-bold text-white/35 whitespace-nowrap">
+                      Sebooth preview only · Protected frame
                     </div>
                   </div>
 
@@ -784,42 +702,33 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
                 </div>
 
                 {/* Right Side: Frame Metadata & Info */}
-                <div className="flex flex-col justify-between w-full md:w-[46%] lg:w-[42%] text-left gap-3 sm:gap-4">
-                  <div>
-                    <h3 className="text-lg xs:text-xl sm:text-2xl font-extrabold text-white mb-0.5 sm:mb-1 uppercase font-bayon tracking-tight">
+                <div className="flex flex-col justify-between w-full lg:w-[42%] text-left gap-4">
+                  <div className="text-[17px] leading-relaxed">
+                    <h3 className="font-bayon text-[2rem] leading-[1.05] uppercase">
                       {selectedFrame.title}
                     </h3>
-                    <p className="text-[11px] xs:text-xs sm:text-sm text-gray-300 leading-relaxed mb-3 sm:mb-4 font-medium">
-                      {selectedFrame.desc}
-                    </p>
+                    <p className="mt-2">{selectedFrame.desc}</p>
 
                     {/* Features List */}
-                    <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
-                      <h4 className="text-[10px] xs:text-[11px] sm:text-xs font-extrabold uppercase text-white/70 tracking-widest flex items-center gap-1.5">
-                        <Sparkles className="w-3 h-3 text-orange-400" />
-                        <span>Fitur & Spesifikasi Frame:</span>
-                      </h4>
+                    <h4 className="mt-4 font-bold">Fitur & Spesifikasi Frame</h4>
+                    <ul className="mt-1 list-disc space-y-1 pl-5 marker:text-secondary">
                       {selectedFrame.features.map((feat, fIdx) => (
-                        <div key={fIdx} className="flex items-center gap-1.5 text-[11px] xs:text-xs sm:text-sm text-gray-200 font-medium">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                          <span>{feat}</span>
-                        </div>
+                        <li key={fIdx}>{feat}</li>
                       ))}
-                    </div>
+                    </ul>
 
                     {/* Security Notice */}
-                    <div className="p-2 xs:p-2.5 sm:p-3 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-300 text-[10px] sm:text-[11px] font-medium flex items-start gap-1.5 mb-3 sm:mb-4">
-                      <ShieldAlert className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
-                      <span>Template frame ini terlindungi hak cipta Sebooth. Untuk memesan frame custom event kamu, hubungi tim Sebooth via WhatsApp.</span>
-                    </div>
+                    <p className="mt-4 text-sm text-white/80">
+                      Template frame ini terlindungi hak cipta Sebooth. Untuk memesan frame custom event kamu, hubungi tim Sebooth via WhatsApp.
+                    </p>
                   </div>
 
                   {/* WhatsApp Order / Booking Button */}
                   <a
-                    href={`https://wa.me/6285713899441?text=${encodeURIComponent(`Halo Sebooth, saya mau pakai template frame "${selectedFrame.title}" untuk acara saya!`)}`}
+                    href={whatsappUrl(`Halo Sebooth, saya mau pakai template frame "${selectedFrame.title}" untuk acara saya!`)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full rounded-full py-2.5 sm:py-3.5 px-4 sm:px-6 bg-[#FF4500] hover:bg-orange-press text-white font-extrabold text-xs xs:text-sm sm:text-base text-center tracking-wide border border-white/20 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full min-h-14 rounded-full px-5 bg-secondary hover:bg-white text-blue-dark font-bold text-[17px] text-center transition-colors active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   >
                     <span>Pakai Frame Ini Untuk Acara Saya</span>
                   </a>

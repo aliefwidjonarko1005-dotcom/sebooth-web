@@ -1,0 +1,1080 @@
+{
+ "url": "http://localhost:3000/",
+ "at": "2026-11-01T04:23:28.770Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    1
+   ],
+   "motion": {
+    "elements": 23,
+    "css": 22,
+    "transitions": 0,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 900,
+     "screens": 1,
+     "words": 57,
+     "img": 5,
+     "video": 0,
+     "canvas": 0,
+     "svg": 5,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 3,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "bg_slide_1.webp",
+      "bg_slide_1.webp",
+      "overlay_slide_1.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": null,
+    "h1": {
+     "text": "Sebooth Photobooth Semarang & Tembalang — Momen seru, cetak instan & softfile langsung ke HP kamu",
+     "words": 16,
+     "lines": 1,
+     "size": 16,
+     "font": "Hanken Grotesk"
+    },
+    "headings": [],
+    "headingSummary": {
+     "count": 0,
+     "maxLines": 0,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      12,
+      13,
+      14,
+      16
+     ],
+     "sizeCount": 4,
+     "notLoaded": [],
+     "body": null,
+     "measureChars": null,
+     "max": {
+      "size": 16,
+      "vw": 1.1,
+      "font": "Hanken Grotesk",
+      "text": "SEBOOTH-IN SEKARANG"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 1,
+     "centerShare": 0.73,
+     "smallText": 7
+    },
+    "eyebrows": [],
+    "numbered": [
+     {
+      "text": "[01]",
+      "size": 12,
+      "top": 334
+     },
+     {
+      "text": "[02]",
+      "size": 12,
+      "top": 382
+     },
+     {
+      "text": "[03]",
+      "size": 12,
+      "top": 418
+     },
+     {
+      "text": "[04]",
+      "size": 12,
+      "top": 454
+     },
+     {
+      "text": "[05]",
+      "size": 12,
+      "top": 490
+     },
+     {
+      "text": "[06]",
+      "size": 12,
+      "top": 526
+     },
+     {
+      "text": "[07]",
+      "size": 12,
+      "top": 562
+     }
+    ],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#1d43c4",
+       "top": 0,
+       "hsl": {
+        "h": 226,
+        "s": 0.74,
+        "l": 0.44
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#000000",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 0
+       }
+      },
+      {
+       "color": "#001845",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.14
+       }
+      },
+      {
+       "color": "#eef2ff",
+       "top": 900,
+       "hsl": {
+        "h": 226,
+        "s": 1,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#002366",
+       "top": 1800,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#ffffff",
+       "share": 0.78
+      },
+      {
+       "color": "#d4af37",
+       "share": 0.13
+      },
+      {
+       "color": "#f59e0b",
+       "share": 0.08
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 3,
+     "inHero": 3,
+     "radius": "pill",
+     "height": 38,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 2,
+     "heroLabels": [
+      "BOOK NOW",
+      "SEBOOTH-IN SEKARANG"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 1,
+     "shadowOverlay": 11,
+     "shadowSamples": [
+      "a.group.inline-flex → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0"
+     ],
+     "gradients": 2,
+     "scrims": 0,
+     "gradientSamples": [
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0",
+      "div.absolute.inset-0 → linear-gradient(to top, oklab(0 0 0 / 0.75) 0%, rgba(0, 0, 0, 0) 50%, oklab(0 0 0 / 0.4) 100%)"
+     ],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 9,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 3,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 1
+     },
+     {
+      "type": "img",
+      "ratio": 0.33
+     }
+    ],
+    "nav": {
+     "links": 9,
+     "fixed": true,
+     "height": 68,
+     "floatingPill": true,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "hanken grotesk fallback"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 900,
+    "margins": {
+     "left": null,
+     "right": null
+    },
+    "sections": [],
+    "gaps": [],
+    "h1s": [],
+    "edgeText": [],
+    "edges": [],
+    "leftBlocks": 0,
+    "bodySize": 16,
+    "stage": true,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": [
+    "SyntaxError: Invalid or unexpected token"
+   ]
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    1
+   ],
+   "motion": {
+    "elements": 18,
+    "css": 17,
+    "transitions": 0,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 1024,
+     "screens": 1,
+     "words": 57,
+     "img": 5,
+     "video": 0,
+     "canvas": 0,
+     "svg": 5,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 3,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "bg_slide_1.webp",
+      "bg_slide_1.webp",
+      "overlay_slide_1.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": null,
+    "h1": {
+     "text": "Sebooth Photobooth Semarang & Tembalang — Momen seru, cetak instan & softfile langsung ke HP kamu",
+     "words": 16,
+     "lines": 1,
+     "size": 16,
+     "font": "Hanken Grotesk"
+    },
+    "headings": [],
+    "headingSummary": {
+     "count": 0,
+     "maxLines": 0,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      12,
+      13,
+      14,
+      16
+     ],
+     "sizeCount": 4,
+     "notLoaded": [],
+     "body": null,
+     "measureChars": null,
+     "max": {
+      "size": 16,
+      "vw": 2.1,
+      "font": "Hanken Grotesk",
+      "text": "SEBOOTH-IN SEKARANG"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 1,
+     "centerShare": 0.73,
+     "smallText": 7
+    },
+    "eyebrows": [],
+    "numbered": [
+     {
+      "text": "[01]",
+      "size": 12,
+      "top": 396
+     },
+     {
+      "text": "[02]",
+      "size": 12,
+      "top": 444
+     },
+     {
+      "text": "[03]",
+      "size": 12,
+      "top": 480
+     },
+     {
+      "text": "[04]",
+      "size": 12,
+      "top": 516
+     },
+     {
+      "text": "[05]",
+      "size": 12,
+      "top": 552
+     },
+     {
+      "text": "[06]",
+      "size": 12,
+      "top": 588
+     },
+     {
+      "text": "[07]",
+      "size": 12,
+      "top": 624
+     }
+    ],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#1d43c4",
+       "top": 0,
+       "hsl": {
+        "h": 226,
+        "s": 0.74,
+        "l": 0.44
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#000000",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 0
+       }
+      },
+      {
+       "color": "#001845",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.14
+       }
+      },
+      {
+       "color": "#eef2ff",
+       "top": 1024,
+       "hsl": {
+        "h": 226,
+        "s": 1,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#002366",
+       "top": 2048,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#ffffff",
+       "share": 0.78
+      },
+      {
+       "color": "#d4af37",
+       "share": 0.13
+      },
+      {
+       "color": "#f59e0b",
+       "share": 0.08
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 3,
+     "inHero": 3,
+     "radius": "pill",
+     "height": 57,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 2,
+     "heroLabels": [
+      "BOOK NOW",
+      "SEBOOTH-IN SEKARANG"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 1,
+     "shadowOverlay": 11,
+     "shadowSamples": [
+      "a.group.inline-flex → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0"
+     ],
+     "gradients": 2,
+     "scrims": 0,
+     "gradientSamples": [
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0",
+      "div.absolute.inset-0 → linear-gradient(to top, oklab(0 0 0 / 0.75) 0%, rgba(0, 0, 0, 0) 50%, oklab(0 0 0 / 0.4) 100%)"
+     ],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 1,
+     "dashed": 0,
+     "blurred": 9,
+     "roundedBoxes": 1,
+     "boxRadius": 99,
+     "squareMedia": 3,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 1
+     },
+     {
+      "type": "img",
+      "ratio": 0.24
+     },
+     {
+      "type": "svg",
+      "ratio": 0.11
+     }
+    ],
+    "nav": {
+     "links": 8,
+     "fixed": true,
+     "height": 87,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "hanken grotesk fallback"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 1024,
+    "margins": {
+     "left": null,
+     "right": null
+    },
+    "sections": [],
+    "gaps": [],
+    "h1s": [],
+    "edgeText": [],
+    "edges": [],
+    "leftBlocks": 0,
+    "bodySize": 16,
+    "stage": true,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": [
+    "SyntaxError: Invalid or unexpected token"
+   ]
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    0.99
+   ],
+   "motion": {
+    "elements": 18,
+    "css": 17,
+    "transitions": 0,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 844,
+     "screens": 1,
+     "words": 24,
+     "img": 5,
+     "video": 0,
+     "canvas": 0,
+     "svg": 5,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 3,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "bg_slide_1.webp",
+      "bg_slide_1.webp",
+      "overlay_slide_1.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": null,
+    "h1": {
+     "text": "Sebooth Photobooth Semarang & Tembalang — Momen seru, cetak instan & softfile langsung ke HP kamu",
+     "words": 16,
+     "lines": 1,
+     "size": 16,
+     "font": "Hanken Grotesk"
+    },
+    "headings": [],
+    "headingSummary": {
+     "count": 0,
+     "maxLines": 0,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      10,
+      14
+     ],
+     "sizeCount": 2,
+     "notLoaded": [],
+     "body": null,
+     "measureChars": null,
+     "max": {
+      "size": 14,
+      "vw": 3.6,
+      "font": "Hanken Grotesk",
+      "text": "SEBOOTH-IN SEKARANG"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 1,
+     "centerShare": 0.56,
+     "smallText": 1
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#1d43c4",
+       "top": 0,
+       "hsl": {
+        "h": 226,
+        "s": 0.74,
+        "l": 0.44
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#000000",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 0
+       }
+      },
+      {
+       "color": "#001845",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.14
+       }
+      },
+      {
+       "color": "#eef2ff",
+       "top": 844,
+       "hsl": {
+        "h": 226,
+        "s": 1,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#002366",
+       "top": 1688,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#f59e0b",
+       "share": 0.56
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.44
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 2,
+     "radius": "pill",
+     "height": 40,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 1,
+     "heroLabels": [
+      "SEBOOTH-IN SEKARANG"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 1,
+     "shadowOverlay": 3,
+     "shadowSamples": [
+      "a.group.inline-flex → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0"
+     ],
+     "gradients": 1,
+     "scrims": 0,
+     "gradientSamples": [
+      "div.absolute.inset-0 → linear-gradient(to top, oklab(0 0 0 / 0.75) 0%, rgba(0, 0, 0, 0) 50%, oklab(0 0 0 / 0.4) 100%)"
+     ],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 2,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 2,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 1
+     },
+     {
+      "type": "svg",
+      "ratio": 0.13
+     },
+     {
+      "type": "img",
+      "ratio": 0.11
+     }
+    ],
+    "nav": {
+     "links": 0,
+     "fixed": true,
+     "height": 0,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "hanken grotesk fallback"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 844,
+    "margins": {
+     "left": null,
+     "right": null
+    },
+    "sections": [],
+    "gaps": [],
+    "h1s": [],
+    "edgeText": [],
+    "edges": [],
+    "leftBlocks": 0,
+    "bodySize": 16,
+    "stage": true,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": [
+    "SyntaxError: Invalid or unexpected token"
+   ]
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "numbering",
+   "width": 1440,
+   "message": "Decorative index numbers: \"[01]\", \"[02]\", \"[03]\", \"[04]\", \"[05]\", \"[06]\"",
+   "fix": "Remove them. If order truly matters, write it into the words (\"First, …\") or use a real <ol>.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "gradient",
+   "width": 1440,
+   "message": "2 gradient fill(s): div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0 | div.absolute.inset-0 → linear-gradient(to top, oklab(0 0 0 / 0.75) 0%, rgba(0, 0, 0, 0) 50%, oklab(0 0 0 / 0.4) 100%)",
+   "fix": "Use a flat colour or a real image. The only gradient allowed by default is a neutral scrim over a photo for legibility.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "shadow",
+   "width": 1440,
+   "message": "1 box-shadow(s) on elements at rest: a.group.inline-flex → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+   "fix": "Remove. Separate surfaces with a tone step or space. Shadows are for things that really float (menus, dialogs, sticky bars).",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "glass",
+   "width": 1440,
+   "message": "9 backdrop-blur surfaces.",
+   "fix": "One blurred sticky bar at most; glass cards are a tell.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "pill-nav",
+   "width": 1440,
+   "message": "Floating rounded pill navigation.",
+   "fix": "Use a plain bar: wordmark left, a few links, one action."
+  },
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 3 picture(s) on the page (3 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "FAIL",
+   "id": "small-text",
+   "width": 1440,
+   "message": "7 text blocks under 13px.",
+   "fix": "Nothing meant to be read goes below 13px.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "no-hero",
+   "width": 1440,
+   "message": "No headline found in the first viewport.",
+   "fix": "The first screen needs a clear focal statement or image.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "late-title",
+   "width": 1440,
+   "message": "The title is not readable 1.2s after the page loaded (it has no size yet).",
+   "fix": "Put the headline in the HTML, painted on the first frame; the load sequence only adds arrival and is settled by 1.2s (references/motion.md, \"Load sequence in 1.2 seconds\"). No preloader, no gate, no waiting for the load event.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "no-title",
+   "width": 1440,
+   "message": "The page has no visible h1.",
+   "fix": "Give the first screen a clear title in an h1 that says what this is (a name with what it does, the product with what it is for, the event with its date and place).",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "outlined-box",
+   "width": 768,
+   "message": "1 box(es) drawn with a 1px outline.",
+   "fix": "Prefer a filled surface or no box."
+  },
+  {
+   "level": "WARN",
+   "id": "small-text",
+   "width": 390,
+   "message": "1 text block(s) under 13px.",
+   "fix": "Nothing meant to be read goes below 13px."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\home\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\home\\desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\home\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\home\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\home\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\polish-before\\home\\mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

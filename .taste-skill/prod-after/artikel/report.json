@@ -1,0 +1,2329 @@
+{
+ "url": "http://localhost:3100/artikel",
+ "at": "2026-11-01T12:53:22.192Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 12,
+   "filled": [
+    1,
+    0.71,
+    0.71,
+    0.71,
+    0.71,
+    0.71,
+    0.71,
+    0.71,
+    0.71,
+    0.71,
+    0.71,
+    0.72
+   ],
+   "motion": {
+    "elements": 88,
+    "css": 87,
+    "transitions": 1,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 16068,
+     "screens": 17.9,
+     "words": 2873,
+     "img": 71,
+     "video": 0,
+     "canvas": 0,
+     "svg": 3,
+     "sections": 7,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 52,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fimages%2Fproducts%2Fmini_studio_boo",
+      "photo_61a3d975_2.webp",
+      "photo_49ab1cee_2.webp",
+      "photo_6905e5ec_4.webp",
+      "vending_machine_booth.webp",
+      "vending_machine_booth.webp",
+      "partner_sebooth.webp",
+      "strip_08408b39.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+     "words": 6,
+     "chars": 40,
+     "lines": 2,
+     "size": 96,
+     "vw": 6.7,
+     "font": "Bayon",
+     "weight": 400,
+     "tracking": -0.001,
+     "leading": 0.95,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.8,
+     "top": 128,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+     "words": 6,
+     "lines": 2,
+     "size": 96,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+      "words": 6,
+      "chars": 40,
+      "lines": 2,
+      "size": 96,
+      "vw": 6.7,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.8,
+      "top": 128,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "KAMPUS & WISUDA 21 ARTIKEL",
+      "words": 5,
+      "chars": 26,
+      "lines": 1,
+      "size": 32,
+      "vw": 2.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.39,
+      "top": 358,
+      "mixedFonts": [
+       "Bayon",
+       "Hanken Grotesk"
+      ],
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "EVENT SEMARANG 17 ARTIKEL",
+      "words": 4,
+      "chars": 25,
+      "lines": 1,
+      "size": 32,
+      "vw": 2.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.39,
+      "top": 406,
+      "mixedFonts": [
+       "Bayon",
+       "Hanken Grotesk"
+      ],
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "WEDDING 3 ARTIKEL",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 32,
+      "vw": 2.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.39,
+      "top": 454,
+      "mixedFonts": [
+       "Bayon",
+       "Hanken Grotesk"
+      ],
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "KONSER & FESTIVAL 6 ARTIKEL",
+      "words": 5,
+      "chars": 27,
+      "lines": 1,
+      "size": 32,
+      "vw": 2.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.39,
+      "top": 502,
+      "mixedFonts": [
+       "Bayon",
+       "Hanken Grotesk"
+      ],
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "TIPS & PANDUAN 22 ARTIKEL",
+      "words": 5,
+      "chars": 25,
+      "lines": 1,
+      "size": 32,
+      "vw": 2.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.39,
+      "top": 550,
+      "mixedFonts": [
+       "Bayon",
+       "Hanken Grotesk"
+      ],
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "KAMPUS & WISUDA",
+      "words": 3,
+      "chars": 15,
+      "lines": 1,
+      "size": 64,
+      "vw": 4.4,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.8,
+      "top": 806,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "EVENT SEMARANG",
+      "words": 2,
+      "chars": 14,
+      "lines": 1,
+      "size": 64,
+      "vw": 4.4,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.8,
+      "top": 4695,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "WEDDING",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 64,
+      "vw": 4.4,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.8,
+      "top": 7947,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "KONSER & FESTIVAL",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 64,
+      "vw": 4.4,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.8,
+      "top": 9201,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "TIPS & PANDUAN",
+      "words": 3,
+      "chars": 14,
+      "lines": 1,
+      "size": 64,
+      "vw": 4.4,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.8,
+      "top": 11277,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "MAU SEBOOTH DI ACARAMU?",
+      "words": 4,
+      "chars": 23,
+      "lines": 1,
+      "size": 64,
+      "vw": 4.4,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.8,
+      "top": 15729,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 12,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 5,
+     "centered": 0,
+     "medianWords": 3,
+     "mixedFontHeadings": 5
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.99,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.01,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      16,
+      18,
+      24,
+      32,
+      64,
+      96
+     ],
+     "sizeCount": 6,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 16,
+      "leading": 1.5,
+      "weight": 400,
+      "tracking": -0.005,
+      "contrast": 18.4
+     },
+     "measureChars": 34,
+     "max": {
+      "size": 96,
+      "vw": 6.7,
+      "font": "Bayon",
+      "text": "Cerita, Event & Tips Photobooth Semarang"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.01,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#002366",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 694,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#ff4500",
+       "top": 15617,
+       "hsl": {
+        "h": 16,
+        "s": 1,
+        "l": 0.5
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#00113a",
+       "share": 0.87
+      },
+      {
+       "color": "#45556c",
+       "share": 0.11
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.02
+      },
+      {
+       "color": "#002366",
+       "share": 0
+      },
+      {
+       "color": "#ff4500",
+       "share": 0
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 3,
+     "inHero": 0,
+     "radius": "pill",
+     "height": 40,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 1,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 1,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 69,
+     "mediaRadius": 8,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.31
+     }
+    ],
+    "nav": {
+     "links": 9,
+     "fixed": true,
+     "height": 64,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "bayon"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 16068,
+    "margins": {
+     "left": 144,
+     "right": 144
+    },
+    "sections": [
+     {
+      "sel": "section.bg-primary.px-5",
+      "tag": "section",
+      "top": 0,
+      "height": 694,
+      "words": 44,
+      "media": 0,
+      "middle": 318,
+      "heading": {
+       "text": "Cerita, Event & Tips Photobooth Semarang",
+       "size": 96,
+       "tag": "h1"
+      },
+      "left": 144,
+      "right": 144,
+      "textLeft": 144,
+      "textRight": 144,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#kampus-wisuda.px-5.py-16",
+      "tag": "section",
+      "top": 694,
+      "height": 3889,
+      "words": 918,
+      "media": 21,
+      "middle": 24,
+      "heading": {
+       "text": "KAMPUS & WISUDA",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 144,
+      "right": 144,
+      "textLeft": 144,
+      "textRight": 144,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#event-semarang.px-5.py-16",
+      "tag": "section",
+      "top": 4583,
+      "height": 3252,
+      "words": 749,
+      "media": 17,
+      "middle": 24,
+      "heading": {
+       "text": "EVENT SEMARANG",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 144,
+      "right": 144,
+      "textLeft": 144,
+      "textRight": 145,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#wedding.px-5.py-16",
+      "tag": "section",
+      "top": 7835,
+      "height": 1255,
+      "words": 134,
+      "media": 3,
+      "middle": 24,
+      "heading": {
+       "text": "WEDDING",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 144,
+      "right": 144,
+      "textLeft": 144,
+      "textRight": 149,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#konser-festival.px-5.py-16",
+      "tag": "section",
+      "top": 9089,
+      "height": 2076,
+      "words": 272,
+      "media": 6,
+      "middle": 24,
+      "heading": {
+       "text": "KONSER & FESTIVAL",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 144,
+      "right": 144,
+      "textLeft": 144,
+      "textRight": 146,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tips-panduan.px-5.py-16",
+      "tag": "section",
+      "top": 11165,
+      "height": 4452,
+      "words": 979,
+      "media": 22,
+      "middle": 24,
+      "heading": {
+       "text": "TIPS & PANDUAN",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 144,
+      "right": 144,
+      "textLeft": 144,
+      "textRight": 145,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.bg-secondary.px-5",
+      "tag": "section",
+      "top": 15617,
+      "height": 451,
+      "words": 24,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Mau Sebooth di acaramu?",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 144,
+      "right": 685,
+      "textLeft": 144,
+      "textRight": 685,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+      "size": 96,
+      "top": 128,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 144,
+      "n": 45
+     },
+     {
+      "x": 732,
+      "n": 40
+     },
+     {
+      "x": 1026,
+      "n": 40
+     },
+     {
+      "x": 438,
+      "n": 22
+     }
+    ],
+    "leftBlocks": 147,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.07,
+    "voidBox": {
+     "x": 0,
+     "y": 120,
+     "w": 120,
+     "h": 780
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 12,
+   "filled": [
+    1,
+    0.9,
+    0.54,
+    0.49,
+    0.59,
+    0.43,
+    0.28,
+    0.41,
+    0.51,
+    0.63,
+    0.83,
+    0.32
+   ],
+   "motion": {
+    "elements": 85,
+    "css": 84,
+    "transitions": 1,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 19132,
+     "screens": 18.7,
+     "words": 2873,
+     "img": 71,
+     "video": 0,
+     "canvas": 0,
+     "svg": 3,
+     "sections": 7,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 58,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fimages%2Fproducts%2Fmini_studio_boo",
+      "photo_61a3d975_2.webp",
+      "photo_49ab1cee_2.webp",
+      "photo_6905e5ec_4.webp",
+      "vending_machine_booth.webp",
+      "vending_machine_booth.webp",
+      "partner_sebooth.webp",
+      "strip_08408b39.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+     "words": 6,
+     "chars": 40,
+     "lines": 2,
+     "size": 79.9,
+     "vw": 10.4,
+     "font": "Bayon",
+     "weight": 400,
+     "tracking": -0.001,
+     "leading": 0.95,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.9,
+     "top": 128,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+     "words": 6,
+     "lines": 2,
+     "size": 79.9,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+      "words": 6,
+      "chars": 40,
+      "lines": 2,
+      "size": 79.9,
+      "vw": 10.4,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 128,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "KAMPUS & WISUDA 21 ARTIKEL",
+      "words": 5,
+      "chars": 26,
+      "lines": 1,
+      "size": 32,
+      "vw": 4.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.43,
+      "top": 328,
+      "mixedFonts": [
+       "Bayon",
+       "Hanken Grotesk"
+      ],
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "EVENT SEMARANG 17 ARTIKEL",
+      "words": 4,
+      "chars": 25,
+      "lines": 1,
+      "size": 32,
+      "vw": 4.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.43,
+      "top": 376,
+      "mixedFonts": [
+       "Bayon",
+       "Hanken Grotesk"
+      ],
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "WEDDING 3 ARTIKEL",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 32,
+      "vw": 4.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.43,
+      "top": 424,
+      "mixedFonts": [
+       "Bayon",
+       "Hanken Grotesk"
+      ],
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "KONSER & FESTIVAL 6 ARTIKEL",
+      "words": 5,
+      "chars": 27,
+      "lines": 1,
+      "size": 32,
+      "vw": 4.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.43,
+      "top": 472,
+      "mixedFonts": [
+       "Bayon",
+       "Hanken Grotesk"
+      ],
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "TIPS & PANDUAN 22 ARTIKEL",
+      "words": 5,
+      "chars": 25,
+      "lines": 1,
+      "size": 32,
+      "vw": 4.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.43,
+      "top": 520,
+      "mixedFonts": [
+       "Bayon",
+       "Hanken Grotesk"
+      ],
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "KAMPUS & WISUDA",
+      "words": 3,
+      "chars": 15,
+      "lines": 1,
+      "size": 64,
+      "vw": 8.3,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 776,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "EVENT SEMARANG",
+      "words": 2,
+      "chars": 14,
+      "lines": 1,
+      "size": 64,
+      "vw": 8.3,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 5663,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "WEDDING",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 64,
+      "vw": 8.3,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 9911,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "KONSER & FESTIVAL",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 64,
+      "vw": 8.3,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 11330,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "TIPS & PANDUAN",
+      "words": 3,
+      "chars": 14,
+      "lines": 1,
+      "size": 64,
+      "vw": 8.3,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 13340,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "MAU SEBOOTH DI ACARAMU?",
+      "words": 4,
+      "chars": 23,
+      "lines": 1,
+      "size": 64,
+      "vw": 8.3,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 18793,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 12,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 5,
+     "centered": 0,
+     "medianWords": 3,
+     "mixedFontHeadings": 5
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.99,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.01,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      16,
+      18,
+      24,
+      32,
+      64,
+      80
+     ],
+     "sizeCount": 6,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 16,
+      "leading": 1.5,
+      "weight": 400,
+      "tracking": -0.005,
+      "contrast": 18.4
+     },
+     "measureChars": 27,
+     "max": {
+      "size": 79.9,
+      "vw": 10.4,
+      "font": "Bayon",
+      "text": "Cerita, Event & Tips Photobooth Semarang"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.01,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#002366",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 664,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#ff4500",
+       "top": 18681,
+       "hsl": {
+        "h": 16,
+        "s": 1,
+        "l": 0.5
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#00113a",
+       "share": 0.87
+      },
+      {
+       "color": "#45556c",
+       "share": 0.11
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.02
+      },
+      {
+       "color": "#002366",
+       "share": 0
+      },
+      {
+       "color": "#ff4500",
+       "share": 0
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 3,
+     "inHero": 2,
+     "radius": "pill",
+     "height": 40,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 1,
+     "heroLabels": [
+      "BOOK NOW"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 1,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 69,
+     "mediaRadius": 8,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 9,
+     "fixed": true,
+     "height": 64,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "bayon"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 19132,
+    "margins": {
+     "left": 40,
+     "right": 40
+    },
+    "sections": [
+     {
+      "sel": "section.bg-primary.px-5",
+      "tag": "section",
+      "top": 0,
+      "height": 664,
+      "words": 44,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Cerita, Event & Tips Photobooth Semarang",
+       "size": 80,
+       "tag": "h1"
+      },
+      "left": 40,
+      "right": 40,
+      "textLeft": 40,
+      "textRight": 40,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#kampus-wisuda.px-5.py-16",
+      "tag": "section",
+      "top": 664,
+      "height": 4888,
+      "words": 918,
+      "media": 21,
+      "middle": 24,
+      "heading": {
+       "text": "KAMPUS & WISUDA",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 40,
+      "right": 40,
+      "textLeft": 40,
+      "textRight": 41,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#event-semarang.px-5.py-16",
+      "tag": "section",
+      "top": 5551,
+      "height": 4248,
+      "words": 691,
+      "media": 17,
+      "middle": 24,
+      "heading": {
+       "text": "EVENT SEMARANG",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 40,
+      "right": 40,
+      "textLeft": 40,
+      "textRight": 43,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#wedding.px-5.py-16",
+      "tag": "section",
+      "top": 9799,
+      "height": 1419,
+      "words": 134,
+      "media": 3,
+      "middle": 24,
+      "heading": {
+       "text": "WEDDING",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 40,
+      "right": 40,
+      "textLeft": 40,
+      "textRight": 44,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#konser-festival.px-5.py-16",
+      "tag": "section",
+      "top": 11218,
+      "height": 2010,
+      "words": 272,
+      "media": 6,
+      "middle": 24,
+      "heading": {
+       "text": "KONSER & FESTIVAL",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 40,
+      "right": 40,
+      "textLeft": 40,
+      "textRight": 41,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tips-panduan.px-5.py-16",
+      "tag": "section",
+      "top": 13228,
+      "height": 5453,
+      "words": 979,
+      "media": 22,
+      "middle": 24,
+      "heading": {
+       "text": "TIPS & PANDUAN",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 40,
+      "right": 40,
+      "textLeft": 40,
+      "textRight": 41,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.bg-secondary.px-5",
+      "tag": "section",
+      "top": 18681,
+      "height": 451,
+      "words": 24,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Mau Sebooth di acaramu?",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 40,
+      "right": 117,
+      "textLeft": 40,
+      "textRight": 117,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+      "size": 80,
+      "top": 128,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 40,
+      "n": 57
+     },
+     {
+      "x": 515,
+      "n": 54
+     },
+     {
+      "x": 277,
+      "n": 36
+     }
+    ],
+    "leftBlocks": 147,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 12,
+   "filled": [
+    1,
+    0.93,
+    0.7,
+    0.64,
+    0.59,
+    0.4,
+    0.44,
+    0.37,
+    0.43,
+    0.73,
+    0.65,
+    0.31
+   ],
+   "motion": {
+    "elements": 85,
+    "css": 84,
+    "transitions": 1,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 15299,
+     "screens": 18.1,
+     "words": 1416,
+     "img": 71,
+     "video": 0,
+     "canvas": 0,
+     "svg": 3,
+     "sections": 7,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 5,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fimages%2Fproducts%2Fmini_studio_boo",
+      "image?url=%2Fimages%2Fproducts%2Fvending_machine",
+      "image?url=%2Fimages%2Fgallery%2Fhd%2Fphoto_52362",
+      "image?url=%2Fimages%2Fgallery%2Fhd%2Fphoto_69650",
+      "image?url=%2Fimages%2Fgallery%2Fhd%2Fstrip_0bf86"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+     "words": 6,
+     "chars": 40,
+     "lines": 2,
+     "size": 40.6,
+     "vw": 10.4,
+     "font": "Bayon",
+     "weight": 400,
+     "tracking": -0.002,
+     "leading": 0.95,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.9,
+     "top": 96,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+     "words": 6,
+     "lines": 2,
+     "size": 40.6,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+      "words": 6,
+      "chars": 40,
+      "lines": 2,
+      "size": 40.6,
+      "vw": 10.4,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 96,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "KAMPUS & WISUDA",
+      "words": 3,
+      "chars": 15,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.52,
+      "top": 348,
+      "tag": "span",
+      "kind": "statement"
+     },
+     {
+      "text": "EVENT SEMARANG",
+      "words": 2,
+      "chars": 14,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.49,
+      "top": 396,
+      "tag": "span",
+      "kind": "statement"
+     },
+     {
+      "text": "WEDDING",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.25,
+      "top": 444,
+      "tag": "span",
+      "kind": "statement"
+     },
+     {
+      "text": "KONSER & FESTIVAL",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.55,
+      "top": 492,
+      "tag": "span",
+      "kind": "statement"
+     },
+     {
+      "text": "TIPS & PANDUAN",
+      "words": 3,
+      "chars": 14,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.46,
+      "top": 540,
+      "tag": "span",
+      "kind": "statement"
+     },
+     {
+      "text": "KAMPUS & WISUDA",
+      "words": 3,
+      "chars": 15,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 700,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "EVENT SEMARANG",
+      "words": 2,
+      "chars": 14,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 4656,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "WEDDING",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 7996,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "KONSER & FESTIVAL",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 9206,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "TIPS & PANDUAN",
+      "words": 3,
+      "chars": 14,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 10901,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "MAU SEBOOTH DI ACARAMU?",
+      "words": 4,
+      "chars": 23,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 14972,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 12,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 5,
+     "centered": 0,
+     "medianWords": 3,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.98,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.02,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      14,
+      17,
+      20,
+      32,
+      41
+     ],
+     "sizeCount": 5,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 17,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": -0.005,
+      "contrast": 14.7
+     },
+     "measureChars": 41,
+     "max": {
+      "size": 40.6,
+      "vw": 10.4,
+      "font": "Bayon",
+      "text": "Cerita, Event & Tips Photobooth Semarang"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.02,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#002366",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 636,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#ff4500",
+       "top": 14892,
+       "hsl": {
+        "h": 16,
+        "s": 1,
+        "l": 0.5
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#00113a",
+       "share": 0.72
+      },
+      {
+       "color": "#45556c",
+       "share": 0.24
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.03
+      },
+      {
+       "color": "#002366",
+       "share": 0.01
+      },
+      {
+       "color": "#ff4500",
+       "share": 0
+      }
+     ],
+     "button": {
+      "bg": "#00113a",
+      "hsl": {
+       "h": 222,
+       "s": 1,
+       "l": 0.11
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 0,
+     "radius": "pill",
+     "height": 56,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 1,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 5,
+     "mediaRadius": 8,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 0,
+     "fixed": true,
+     "height": 0,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "bayon"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 15299,
+    "margins": {
+     "left": 20,
+     "right": 20
+    },
+    "sections": [
+     {
+      "sel": "section.bg-primary.px-5",
+      "tag": "section",
+      "top": 0,
+      "height": 636,
+      "words": 44,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Cerita, Event & Tips Photobooth Semarang",
+       "size": 41,
+       "tag": "h1"
+      },
+      "left": 20,
+      "right": 20,
+      "textLeft": 20,
+      "textRight": 20,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#kampus-wisuda.px-5.py-16",
+      "tag": "section",
+      "top": 636,
+      "height": 3957,
+      "words": 400,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "KAMPUS & WISUDA",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 20,
+      "textLeft": 20,
+      "textRight": 21,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#event-semarang.px-5.py-16",
+      "tag": "section",
+      "top": 4592,
+      "height": 3340,
+      "words": 324,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "EVENT SEMARANG",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 20,
+      "textLeft": 20,
+      "textRight": 23,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#wedding.px-5.py-16",
+      "tag": "section",
+      "top": 7932,
+      "height": 1210,
+      "words": 82,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "WEDDING",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 20,
+      "textLeft": 20,
+      "textRight": 24,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#konser-festival.px-5.py-16",
+      "tag": "section",
+      "top": 9142,
+      "height": 1695,
+      "words": 141,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "KONSER & FESTIVAL",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 20,
+      "textLeft": 20,
+      "textRight": 22,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tips-panduan.px-5.py-16",
+      "tag": "section",
+      "top": 10837,
+      "height": 4055,
+      "words": 416,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "TIPS & PANDUAN",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 20,
+      "textLeft": 20,
+      "textRight": 20,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.bg-secondary.px-5",
+      "tag": "section",
+      "top": 14892,
+      "height": 407,
+      "words": 24,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Mau Sebooth di acaramu?",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 35,
+      "textLeft": 20,
+      "textRight": 35,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG",
+      "size": 41,
+      "top": 96,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 132,
+      "n": 64
+     },
+     {
+      "x": 20,
+      "n": 19
+     }
+    ],
+    "leftBlocks": 83,
+    "bodySize": 17,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "mixed-font-headline",
+   "width": 1440,
+   "message": "5 headline(s) switch typeface or to italic mid-line (the \"one italic serif word\" move).",
+   "fix": "Set the whole headline in one face. Emphasis comes from the words.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "first-action",
+   "width": 1440,
+   "message": "No visible button in the first screen.",
+   "fix": "Give the one primary action a real button in the first screen (a filled or solid-bordered control, 44px or taller), not only a link in the navigation.",
+   "alsoAt": [
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "FAIL",
+   "id": "late-title",
+   "width": 1440,
+   "message": "The title is not readable 1.2s after the page loaded (something lies over it).",
+   "fix": "Put the headline in the HTML, painted on the first frame; the load sequence only adds arrival and is settled by 1.2s (references/motion.md, \"Load sequence in 1.2 seconds\"). No preloader, no gate, no waiting for the load event.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "covered-text",
+   "width": 1440,
+   "message": "Large text lies under another element at some scroll position: \"CERITA, EVENT & TIPS PHOTOBOOTH SEMARANG\" (screen 1, 100% hidden); \"KAMPUS & WISUDA\" (screen 1, 100% hidden); \"EVENT SEMARANG\" (screen 1, 100% hidden); \"WEDDING\" (screen 1, 100% hidden)",
+   "fix": "Nothing may sit on top of a headline or statement. Move the picture, shorten the pinned run, or raise the text above it (z-index) and give it a ground.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\artikel\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\artikel\\desktop-page-01.jpg",
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\artikel\\desktop-page-02.jpg",
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\artikel\\desktop-page-03.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\artikel\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\artikel\\tablet-page-01.jpg",
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\artikel\\tablet-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\artikel\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\artikel\\mobile-page-01.jpg",
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\artikel\\mobile-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

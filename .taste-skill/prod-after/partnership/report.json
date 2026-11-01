@@ -1,0 +1,1502 @@
+{
+ "url": "http://localhost:3100/partnership",
+ "at": "2026-11-01T12:54:25.316Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 3,
+   "filled": [
+    1,
+    0.3,
+    0.3
+   ],
+   "motion": {
+    "elements": 27,
+    "css": 18,
+    "transitions": 1,
+    "scripted": 8,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 2622,
+     "screens": 2.9,
+     "words": 134,
+     "img": 6,
+     "video": 0,
+     "canvas": 0,
+     "svg": 4,
+     "sections": 3,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 4,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fimages%2Fgallery%2Fhd%2Fstrip_49ab1",
+      "image?url=%2Fimages%2Fgallery%2Fhd%2Fstrip_a429b",
+      "image?url=%2Fimages%2Fgallery%2Fhd%2Fstrip_6e34e",
+      "image?url=%2Fimages%2Fgallery%2Fhd%2Fphoto_5b47b"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "THE BEST FRIEND OF EOS & WOS.",
+     "words": 7,
+     "chars": 29,
+     "lines": 2,
+     "size": 104,
+     "vw": 7.2,
+     "font": "Bayon",
+     "weight": 400,
+     "tracking": -0.001,
+     "leading": 0.92,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.8,
+     "top": 160,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "THE BEST FRIEND OF EOS & WOS.",
+     "words": 7,
+     "lines": 2,
+     "size": 104,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "THE BEST FRIEND OF EOS & WOS.",
+      "words": 7,
+      "chars": 29,
+      "lines": 2,
+      "size": 104,
+      "vw": 7.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 0.92,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.8,
+      "top": 160,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "PARTNER BENEFITS",
+      "words": 2,
+      "chars": 16,
+      "lines": 1,
+      "size": 72,
+      "vw": 5,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.8,
+      "top": 1117,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "LUCRATIVE COMMISSION",
+      "words": 2,
+      "chars": 20,
+      "lines": 1,
+      "size": 40,
+      "vw": 2.8,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.32,
+      "top": 1265,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "WHITELABEL OPTION",
+      "words": 2,
+      "chars": 17,
+      "lines": 1,
+      "size": 40,
+      "vw": 2.8,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.32,
+      "top": 1388,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "DEDICATED COORDINATOR",
+      "words": 2,
+      "chars": 21,
+      "lines": 1,
+      "size": 40,
+      "vw": 2.8,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.32,
+      "top": 1539,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "JOIN OUR NETWORK",
+      "words": 3,
+      "chars": 16,
+      "lines": 1,
+      "size": 72,
+      "vw": 5,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.39,
+      "top": 2097,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 6,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 2,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.79,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.21,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      18,
+      20,
+      40,
+      72,
+      104
+     ],
+     "sizeCount": 5,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 18,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": -0.004,
+      "contrast": 17.5
+     },
+     "measureChars": 52,
+     "max": {
+      "size": 104,
+      "vw": 7.2,
+      "font": "Bayon",
+      "text": "The Best Friend of EOs & WOs."
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.21,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#002366",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      },
+      {
+       "color": "#ff4500",
+       "top": 1758,
+       "hsl": {
+        "h": 16,
+        "s": 1,
+        "l": 0.5
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#00113a",
+       "share": 0.55
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.36
+      },
+      {
+       "color": "#002366",
+       "share": 0.09
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 4,
+     "inHero": 1,
+     "radius": "pill",
+     "height": 56,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 1,
+     "heroLabels": [
+      "Minta Rate Card via WhatsApp"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 1,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 1,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 9,
+     "fixed": true,
+     "height": 64,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "bayon"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 2622,
+    "margins": {
+     "left": 144,
+     "right": 144
+    },
+    "sections": [
+     {
+      "sel": "section.bg-primary.px-5",
+      "tag": "section",
+      "top": 0,
+      "height": 957,
+      "words": 41,
+      "media": 3,
+      "middle": 12,
+      "heading": {
+       "text": "The Best Friend of EOs & WOs.",
+       "size": 104,
+       "tag": "h1"
+      },
+      "left": 144,
+      "right": 144,
+      "textLeft": 144,
+      "textRight": 557,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.px-5.py-24",
+      "tag": "section",
+      "top": 957,
+      "height": 801,
+      "words": 66,
+      "media": 0,
+      "middle": 23,
+      "heading": {
+       "text": "Partner Benefits",
+       "size": 72,
+       "tag": "h2"
+      },
+      "left": 144,
+      "right": 308,
+      "textLeft": 144,
+      "textRight": 308,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.bg-secondary.px-5",
+      "tag": "section",
+      "top": 1758,
+      "height": 865,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "THE BEST FRIEND OF EOS & WOS.",
+      "size": 104,
+      "top": 160,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 144,
+      "n": 3
+     }
+    ],
+    "leftBlocks": 3,
+    "bodySize": 18,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.2,
+    "voidBox": {
+     "x": 0,
+     "y": 720,
+     "w": 1440,
+     "h": 180
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 3,
+   "filled": [
+    1,
+    0.68,
+    0.78
+   ],
+   "motion": {
+    "elements": 28,
+    "css": 15,
+    "transitions": 1,
+    "scripted": 12,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 2239,
+     "screens": 2.2,
+     "words": 134,
+     "img": 6,
+     "video": 0,
+     "canvas": 0,
+     "svg": 4,
+     "sections": 3,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 1,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fimages%2Fgallery%2Fhd%2Fphoto_5b47b"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "THE BEST FRIEND OF EOS & WOS.",
+     "words": 7,
+     "chars": 29,
+     "lines": 2,
+     "size": 72,
+     "vw": 9.4,
+     "font": "Bayon",
+     "weight": 400,
+     "tracking": -0.001,
+     "leading": 0.92,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.9,
+     "top": 160,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "THE BEST FRIEND OF EOS & WOS.",
+     "words": 7,
+     "lines": 2,
+     "size": 72,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "THE BEST FRIEND OF EOS & WOS.",
+      "words": 7,
+      "chars": 29,
+      "lines": 2,
+      "size": 72,
+      "vw": 9.4,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 0.92,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 160,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "PARTNER BENEFITS",
+      "words": 2,
+      "chars": 16,
+      "lines": 1,
+      "size": 72,
+      "vw": 9.4,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 889,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "LUCRATIVE COMMISSION",
+      "words": 2,
+      "chars": 20,
+      "lines": 2,
+      "size": 40,
+      "vw": 5.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.35,
+      "top": 1038,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "WHITELABEL OPTION",
+      "words": 2,
+      "chars": 17,
+      "lines": 2,
+      "size": 40,
+      "vw": 5.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.35,
+      "top": 1190,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "DEDICATED COORDINATOR",
+      "words": 2,
+      "chars": 21,
+      "lines": 2,
+      "size": 40,
+      "vw": 5.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.35,
+      "top": 1341,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "JOIN OUR NETWORK",
+      "words": 3,
+      "chars": 16,
+      "lines": 2,
+      "size": 72,
+      "vw": 9.4,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.001,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.43,
+      "top": 1733,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 6,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 2,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.79,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.21,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      16,
+      18,
+      20,
+      40,
+      72
+     ],
+     "sizeCount": 5,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 18,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": -0.004,
+      "contrast": 17.5
+     },
+     "measureChars": 36,
+     "max": {
+      "size": 72,
+      "vw": 9.4,
+      "font": "Bayon",
+      "text": "The Best Friend of EOs & WOs."
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.21,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#002366",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      },
+      {
+       "color": "#ff4500",
+       "top": 1589,
+       "hsl": {
+        "h": 16,
+        "s": 1,
+        "l": 0.5
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#00113a",
+       "share": 0.55
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.36
+      },
+      {
+       "color": "#002366",
+       "share": 0.09
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 4,
+     "inHero": 3,
+     "radius": "pill",
+     "height": 56,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 1,
+     "heroLabels": [
+      "BOOK NOW",
+      "Minta Rate Card via WhatsApp"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 1,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 1,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 9,
+     "fixed": true,
+     "height": 64,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "bayon"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 2239,
+    "margins": {
+     "left": 40,
+     "right": 40
+    },
+    "sections": [
+     {
+      "sel": "section.bg-primary.px-5",
+      "tag": "section",
+      "top": 0,
+      "height": 729,
+      "words": 41,
+      "media": 0,
+      "middle": 12,
+      "heading": {
+       "text": "The Best Friend of EOs & WOs.",
+       "size": 72,
+       "tag": "h1"
+      },
+      "left": 40,
+      "right": 40,
+      "textLeft": 40,
+      "textRight": 217,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.px-5.py-24",
+      "tag": "section",
+      "top": 729,
+      "height": 860,
+      "words": 66,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Partner Benefits",
+       "size": 72,
+       "tag": "h2"
+      },
+      "left": 40,
+      "right": 41,
+      "textLeft": 40,
+      "textRight": 41,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.bg-secondary.px-5",
+      "tag": "section",
+      "top": 1589,
+      "height": 650,
+      "words": 23,
+      "media": 1,
+      "middle": 92,
+      "heading": {
+       "text": "Join Our Network",
+       "size": 72,
+       "tag": "h2"
+      },
+      "left": 40,
+      "right": 43,
+      "textLeft": 400,
+      "textRight": 43,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "THE BEST FRIEND OF EOS & WOS.",
+      "size": 72,
+      "top": 160,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 40,
+      "n": 3
+     },
+     {
+      "x": 400,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 5,
+    "bodySize": 18,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 4,
+   "filled": [
+    1,
+    0.61,
+    1,
+    1
+   ],
+   "motion": {
+    "elements": 28,
+    "css": 15,
+    "transitions": 1,
+    "scripted": 12,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 2611,
+     "screens": 3.1,
+     "words": 124,
+     "img": 6,
+     "video": 0,
+     "canvas": 0,
+     "svg": 4,
+     "sections": 3,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 1,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fimages%2Fgallery%2Fhd%2Fphoto_5b47b"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "THE BEST FRIEND OF EOS & WOS.",
+     "words": 7,
+     "chars": 29,
+     "lines": 2,
+     "size": 52,
+     "vw": 13.3,
+     "font": "Bayon",
+     "weight": 400,
+     "tracking": -0.002,
+     "leading": 0.92,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.9,
+     "top": 112,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "THE BEST FRIEND OF EOS & WOS.",
+     "words": 7,
+     "lines": 2,
+     "size": 52,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "THE BEST FRIEND OF EOS & WOS.",
+      "words": 7,
+      "chars": 29,
+      "lines": 2,
+      "size": 52,
+      "vw": 13.3,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 0.92,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 112,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "PARTNER BENEFITS",
+      "words": 2,
+      "chars": 16,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 1051,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "LUCRATIVE COMMISSION",
+      "words": 2,
+      "chars": 20,
+      "lines": 1,
+      "size": 28,
+      "vw": 7.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.003,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 1144,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "WHITELABEL OPTION",
+      "words": 2,
+      "chars": 17,
+      "lines": 1,
+      "size": 28,
+      "vw": 7.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.003,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 1315,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "DEDICATED COORDINATOR",
+      "words": 2,
+      "chars": 21,
+      "lines": 1,
+      "size": 28,
+      "vw": 7.2,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.003,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 1486,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "JOIN OUR NETWORK",
+      "words": 3,
+      "chars": 16,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Bayon",
+      "weight": 400,
+      "tracking": -0.002,
+      "leading": 0.95,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 2278,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 6,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 2,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.85,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.15,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      17,
+      20,
+      28,
+      48,
+      52
+     ],
+     "sizeCount": 5,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 17,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": -0.005,
+      "contrast": 17.5
+     },
+     "measureChars": 35,
+     "max": {
+      "size": 52,
+      "vw": 13.3,
+      "font": "Bayon",
+      "text": "The Best Friend of EOs & WOs."
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.15,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#002366",
+       "top": 0,
+       "hsl": {
+        "h": 219,
+        "s": 1,
+        "l": 0.2
+       }
+      },
+      {
+       "color": "#ff4500",
+       "top": 1705,
+       "hsl": {
+        "h": 16,
+        "s": 1,
+        "l": 0.5
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#00113a",
+       "share": 0.58
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.32
+      },
+      {
+       "color": "#002366",
+       "share": 0.09
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 1,
+     "radius": "pill",
+     "height": 56,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Minta Rate Card via WhatsApp"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 1,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 1,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.1
+     },
+     {
+      "type": "img",
+      "ratio": 0.1
+     },
+     {
+      "type": "img",
+      "ratio": 0.1
+     }
+    ],
+    "nav": {
+     "links": 0,
+     "fixed": true,
+     "height": 0,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "bayon"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 2611,
+    "margins": {
+     "left": 20,
+     "right": 20
+    },
+    "sections": [
+     {
+      "sel": "section.bg-primary.px-5",
+      "tag": "section",
+      "top": 0,
+      "height": 955,
+      "words": 41,
+      "media": 3,
+      "middle": 0,
+      "heading": {
+       "text": "The Best Friend of EOs & WOs.",
+       "size": 52,
+       "tag": "h1"
+      },
+      "left": 20,
+      "right": 20,
+      "textLeft": 20,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.px-5.py-24",
+      "tag": "section",
+      "top": 955,
+      "height": 750,
+      "words": 66,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Partner Benefits",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 20,
+      "textLeft": 20,
+      "textRight": 20,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.bg-secondary.px-5",
+      "tag": "section",
+      "top": 1705,
+      "height": 906,
+      "words": 23,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 20,
+      "right": 20,
+      "textLeft": 20,
+      "textRight": 46,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "THE BEST FRIEND OF EOS & WOS.",
+      "size": 52,
+      "top": 112,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 20,
+      "n": 5
+     }
+    ],
+    "leftBlocks": 5,
+    "bodySize": 17,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "FAIL",
+   "id": "late-title",
+   "width": 1440,
+   "message": "The title is not readable 1.2s after the page loaded (something lies over it).",
+   "fix": "Put the headline in the HTML, painted on the first frame; the load sequence only adds arrival and is settled by 1.2s (references/motion.md, \"Load sequence in 1.2 seconds\"). No preloader, no gate, no waiting for the load event.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "covered-text",
+   "width": 1440,
+   "message": "Large text lies under another element at some scroll position: \"THE BEST FRIEND OF EOS & WOS.\" (screen 1, 100% hidden)",
+   "fix": "Nothing may sit on top of a headline or statement. Move the picture, shorten the pinned run, or raise the text above it (z-index) and give it a ground.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\partnership\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\partnership\\desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\partnership\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\partnership\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\partnership\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\prod-after\\partnership\\mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

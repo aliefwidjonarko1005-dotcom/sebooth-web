@@ -1,0 +1,1241 @@
+{
+ "url": "http://localhost:3000/frames",
+ "at": "2026-10-31T13:00:59.106Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 2,
+   "filled": [
+    0.15,
+    0.13
+   ],
+   "motion": {
+    "elements": 30,
+    "css": 20,
+    "transitions": 1,
+    "scripted": 9,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 939,
+     "screens": 1,
+     "words": 63,
+     "img": 4,
+     "video": 0,
+     "canvas": 0,
+     "svg": 10,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 2,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "frame_1782219522924.png",
+      "frame_1782219860035.png"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "OUR DESIGN FRAMES",
+     "words": 3,
+     "chars": 17,
+     "lines": 1,
+     "size": 60,
+     "vw": 4.2,
+     "font": "Bayon",
+     "weight": 900,
+     "tracking": -0.05,
+     "leading": 1,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.47,
+     "top": 170,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "OUR DESIGN FRAMES",
+     "words": 3,
+     "lines": 1,
+     "size": 60,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "OUR DESIGN FRAMES",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 60,
+      "vw": 4.2,
+      "font": "Bayon",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.47,
+      "top": 170,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.96,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.04,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      18,
+      20,
+      60
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 15,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": -0.005,
+      "contrast": 7.6
+     },
+     "measureChars": 37,
+     "max": {
+      "size": 60,
+      "vw": 4.2,
+      "font": "Bayon",
+      "text": "Our Design Frames"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 2,
+     "microLabelShare": 0.052,
+     "microSamples": [
+      "Classic",
+      "Classic Strip"
+     ],
+     "upperShare": 0.61,
+     "centerShare": 0.46,
+     "smallText": 2
+    },
+    "eyebrows": [
+     {
+      "text": "Kembali ke Beranda",
+      "above": "OUR DESIGN FRAMES",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": true,
+      "size": 16,
+      "top": 80
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [],
+     "textColors": [
+      {
+       "color": "#002366",
+       "share": 0.29
+      },
+      {
+       "color": "#45556c",
+       "share": 0.2
+      },
+      {
+       "color": "#002467",
+       "share": 0.17
+      },
+      {
+       "color": "#0f172b",
+       "share": 0.15
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.15
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "BOOK NOW",
+       "ratio": 3.4,
+       "need": 4.5,
+       "size": 13.1,
+       "fg": "#ffffff",
+       "bg": "#ff4500"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 7,
+     "inHero": 7,
+     "radius": "pill",
+     "height": 34,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 4,
+     "heroLabels": [
+      "BOOK NOW",
+      "KEMBALI KE BERANDA",
+      "CLASSIC",
+      "CLASSIC STRIP",
+      "Panduan"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 6,
+     "shadowOverlay": 6,
+     "shadowSamples": [
+      "div.mb-12.flex → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "button.px-4.py-2 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "div.bg-white/12.backdrop-blur-lg → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "span.p-3.bg-white/90 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0"
+     ],
+     "gradients": 3,
+     "scrims": 2,
+     "gradientSamples": [
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0",
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 50%, rgba(0, 0,",
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 50%, rgba(0, 0,"
+     ],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 2,
+     "dashed": 0,
+     "blurred": 8,
+     "roundedBoxes": 7,
+     "boxRadius": 24,
+     "squareMedia": 0,
+     "roundedMedia": 2,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 9,
+     "fixed": true,
+     "height": 68,
+     "floatingPill": true,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "bayon",
+     "__nextjs-geist"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 939,
+    "margins": {
+     "left": 185,
+     "right": 185
+    },
+    "sections": [],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "OUR DESIGN FRAMES",
+      "size": 60,
+      "top": 170,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [],
+    "leftBlocks": 0,
+    "bodySize": 18,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.13,
+    "voidBox": {
+     "x": 900,
+     "y": 480,
+     "w": 540,
+     "h": 300
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    0.23
+   ],
+   "motion": {
+    "elements": 40,
+    "css": 31,
+    "transitions": 0,
+    "scripted": 9,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 1024,
+     "screens": 1,
+     "words": 63,
+     "img": 4,
+     "video": 0,
+     "canvas": 0,
+     "svg": 10,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "OUR DESIGN FRAMES",
+     "words": 3,
+     "chars": 17,
+     "lines": 1,
+     "size": 60,
+     "vw": 7.8,
+     "font": "Bayon",
+     "weight": 900,
+     "tracking": -0.05,
+     "leading": 1,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.88,
+     "top": 170,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "OUR DESIGN FRAMES",
+     "words": 3,
+     "lines": 1,
+     "size": 60,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "OUR DESIGN FRAMES",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 60,
+      "vw": 7.8,
+      "font": "Bayon",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 170,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.96,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.04,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      18,
+      20,
+      60
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 15,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": -0.005,
+      "contrast": 7.6
+     },
+     "measureChars": 37,
+     "max": {
+      "size": 60,
+      "vw": 7.8,
+      "font": "Bayon",
+      "text": "Our Design Frames"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 2,
+     "microLabelShare": 0.052,
+     "microSamples": [
+      "Classic",
+      "Classic Strip"
+     ],
+     "upperShare": 0.61,
+     "centerShare": 0.46,
+     "smallText": 2
+    },
+    "eyebrows": [
+     {
+      "text": "Kembali ke Beranda",
+      "above": "OUR DESIGN FRAMES",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": true,
+      "size": 16,
+      "top": 80
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [],
+     "textColors": [
+      {
+       "color": "#002366",
+       "share": 0.29
+      },
+      {
+       "color": "#45556c",
+       "share": 0.2
+      },
+      {
+       "color": "#002467",
+       "share": 0.17
+      },
+      {
+       "color": "#0f172b",
+       "share": 0.15
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.15
+      }
+     ],
+     "button": {
+      "bg": "#ff4500",
+      "hsl": {
+       "h": 16,
+       "s": 1,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "BOOK NOW",
+       "ratio": 3.4,
+       "need": 4.5,
+       "size": 13.1,
+       "fg": "#ffffff",
+       "bg": "#ff4500"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 7,
+     "inHero": 7,
+     "radius": "pill",
+     "height": 34,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 4,
+     "heroLabels": [
+      "BOOK NOW",
+      "KEMBALI KE BERANDA",
+      "CLASSIC",
+      "CLASSIC STRIP",
+      "Panduan"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 6,
+     "shadowOverlay": 6,
+     "shadowSamples": [
+      "div.mb-12.flex → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "button.px-4.py-2 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "div.bg-white/12.backdrop-blur-lg → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "span.p-3.bg-white/90 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0"
+     ],
+     "gradients": 3,
+     "scrims": 2,
+     "gradientSamples": [
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0",
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 50%, rgba(0, 0,",
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 50%, rgba(0, 0,"
+     ],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 3,
+     "dashed": 0,
+     "blurred": 8,
+     "roundedBoxes": 8,
+     "boxRadius": 99,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 8,
+     "fixed": true,
+     "height": 87,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "hanken grotesk fallback",
+     "bayon"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 1024,
+    "margins": {
+     "left": 41,
+     "right": 41
+    },
+    "sections": [
+     {
+      "sel": "div.mb-16.text-center",
+      "tag": "div",
+      "top": 170,
+      "height": 132,
+      "words": 10,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 71,
+      "right": 71,
+      "textLeft": 71,
+      "textRight": 71,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 490,
+      "height": 253,
+      "words": 9,
+      "media": 0,
+      "middle": 52,
+      "heading": {
+       "text": "Farewell BEM Undip",
+       "size": 20,
+       "tag": "h3"
+      },
+      "left": 45,
+      "right": 273,
+      "textLeft": 45,
+      "textRight": 273,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "OUR DESIGN FRAMES",
+      "size": 60,
+      "top": 170,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [],
+    "leftBlocks": 0,
+    "bodySize": 18,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 2,
+   "filled": [
+    0.33,
+    0.26
+   ],
+   "motion": {
+    "elements": 33,
+    "css": 24,
+    "transitions": 0,
+    "scripted": 9,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 1379,
+     "screens": 1.6,
+     "words": 53,
+     "img": 4,
+     "video": 0,
+     "canvas": 0,
+     "svg": 10,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 2,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "frame_1782219522924.png",
+      "frame_1782219860035.png"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "OUR DESIGN FRAMES",
+     "words": 3,
+     "chars": 17,
+     "lines": 1,
+     "size": 36,
+     "vw": 9.2,
+     "font": "Bayon",
+     "weight": 900,
+     "tracking": -0.05,
+     "leading": 1,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.88,
+     "top": 170,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "OUR DESIGN FRAMES",
+     "words": 3,
+     "lines": 1,
+     "size": 36,
+     "font": "Bayon"
+    },
+    "headings": [
+     {
+      "text": "OUR DESIGN FRAMES",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 36,
+      "vw": 9.2,
+      "font": "Bayon",
+      "weight": 900,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 170,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Hanken Grotesk",
+       "share": 0.95,
+       "mono": false
+      },
+      {
+       "family": "Bayon",
+       "share": 0.05,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      18,
+      20,
+      36
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Hanken Grotesk",
+      "size": 15,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": -0.005,
+      "contrast": 7.6
+     },
+     "measureChars": 38,
+     "max": {
+      "size": 36,
+      "vw": 9.2,
+      "font": "Bayon",
+      "text": "Our Design Frames"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 2,
+     "microLabelShare": 0.061,
+     "microSamples": [
+      "Classic",
+      "Classic Strip"
+     ],
+     "upperShare": 0.55,
+     "centerShare": 0.53,
+     "smallText": 2
+    },
+    "eyebrows": [
+     {
+      "text": "Kembali ke Beranda",
+      "above": "OUR DESIGN FRAMES",
+      "upper": true,
+      "tracked": false,
+      "mono": false,
+      "pill": true,
+      "size": 16,
+      "top": 80
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8f9fa",
+     "bodyBgHsl": {
+      "h": 210,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [],
+     "textColors": [
+      {
+       "color": "#002366",
+       "share": 0.34
+      },
+      {
+       "color": "#45556c",
+       "share": 0.23
+      },
+      {
+       "color": "#002467",
+       "share": 0.2
+      },
+      {
+       "color": "#0f172b",
+       "share": 0.18
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#0f172b"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 6,
+     "inHero": 6,
+     "radius": "pill",
+     "height": 34,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 3,
+     "heroLabels": [
+      "KEMBALI KE BERANDA",
+      "CLASSIC",
+      "CLASSIC STRIP",
+      "Panduan",
+      "Lanjut"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 6,
+     "shadowOverlay": 6,
+     "shadowSamples": [
+      "div.mb-12.flex → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "button.px-4.py-2 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "div.bg-white/12.backdrop-blur-lg → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "span.p-3.bg-white/90 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0"
+     ],
+     "gradients": 2,
+     "scrims": 2,
+     "gradientSamples": [
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 50%, rgba(0, 0,",
+      "div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 50%, rgba(0, 0,"
+     ],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 3,
+     "dashed": 0,
+     "blurred": 9,
+     "roundedBoxes": 8,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 2,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.17
+     }
+    ],
+    "nav": {
+     "links": 0,
+     "fixed": true,
+     "height": 0,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "hanken grotesk",
+     "hanken grotesk fallback",
+     "bayon",
+     "__nextjs-geist"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 1379,
+    "margins": {
+     "left": 38,
+     "right": 38
+    },
+    "sections": [
+     {
+      "sel": "div.absolute.top-40",
+      "tag": "div",
+      "top": 160,
+      "height": 400,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.absolute.bottom-40",
+      "tag": "div",
+      "top": 819,
+      "height": 400,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.container.mx-auto",
+      "tag": "div",
+      "top": 80,
+      "height": 1203,
+      "words": 29,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Our Design Frames",
+       "size": 36,
+       "tag": "h1"
+      },
+      "left": 38,
+      "right": 38,
+      "textLeft": 38,
+      "textRight": 38,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "OUR DESIGN FRAMES",
+      "size": 36,
+      "top": 170,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [],
+    "leftBlocks": 0,
+    "bodySize": 18,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "eyebrow",
+   "width": 1440,
+   "message": "1 eyebrow/kicker label(s) above headings: \"Kembali ke Beranda\" (pill) above \"OUR DESIGN FRAMES\"",
+   "fix": "Delete them. If the label carried real information, fold it into the headline or the supporting sentence.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "micro-label",
+   "width": 1440,
+   "message": "2 tiny uppercase letter-spaced label(s): \"Classic\", \"Classic Strip\"",
+   "fix": "Prefer sentence case at body size.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "gradient",
+   "width": 1440,
+   "message": "3 gradient fill(s): div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.25) 50%, rgba(0, 0 | div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 50%, rgba(0, 0, | div.absolute.top-0 → linear-gradient(to right, rgba(0, 0, 0, 0) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 50%, rgba(0, 0,",
+   "fix": "Use a flat colour or a real image. The only gradient allowed by default is a neutral scrim over a photo for legibility.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "shadow",
+   "width": 1440,
+   "message": "6 box-shadow(s) on elements at rest: div.mb-12.flex → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0 | button.px-4.py-2 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0 | div.bg-white/12.backdrop-blur-lg → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+   "fix": "Remove. Separate surfaces with a tone step or space. Shadows are for things that really float (menus, dialogs, sticky bars).",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "outlined-box",
+   "width": 1440,
+   "message": "2 box(es) drawn with a 1px outline.",
+   "fix": "Prefer a filled surface or no box."
+  },
+  {
+   "level": "WARN",
+   "id": "glass",
+   "width": 1440,
+   "message": "8 backdrop-blur surfaces.",
+   "fix": "One blurred sticky bar at most; glass cards are a tell.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "pill-nav",
+   "width": 1440,
+   "message": "Floating rounded pill navigation.",
+   "fix": "Use a plain bar: wordmark left, a few links, one action."
+  },
+  {
+   "level": "WARN",
+   "id": "contrast",
+   "width": 1440,
+   "message": "Low-contrast text: \"BOOK NOW\" 3.4:1 needs 4.5:1",
+   "fix": "Darken or lighten the text colour.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "body-size",
+   "width": 1440,
+   "message": "Body text is 15px.",
+   "fix": "Body copy 16–20px.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 2 picture(s) on the page (2 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "WARN",
+   "id": "small-text",
+   "width": 1440,
+   "message": "2 text block(s) under 13px.",
+   "fix": "Nothing meant to be read goes below 13px.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "focal-point",
+   "width": 1440,
+   "message": "The first screen has no dominant element: the largest type is 60px (4.2vw) and no single picture holds a third of the viewport.",
+   "fix": "Make one thing lead: the headline at display size, or one large picture. A grid of many small pictures is not one thing; in blind tests jurors marked a first screen without a headline down every time. On the strongest studied sites the largest type has a median of 8.4vw."
+  },
+  {
+   "level": "FAIL",
+   "id": "empty-screens",
+   "width": 1440,
+   "message": "2 of 2 desktop screens are almost empty ground (under 20% of the screen holds text, a picture or a colour field): screens 1, 2.",
+   "fix": "An empty screen is a rest only once per page. Elsewhere it means the section is underbuilt: set its content larger, give it the full information, put it on a colour field, or cut it."
+  },
+  {
+   "level": "FAIL",
+   "id": "outlined-box",
+   "width": 768,
+   "message": "3 boxes drawn with a 1px outline.",
+   "fix": "Define a surface by its fill (one tone step from the page) or leave the content unboxed.",
+   "alsoAt": [
+    390
+   ]
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\before\\frames\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\before\\frames\\desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\before\\frames\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\before\\frames\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\before\\frames\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\AXIOO HYPE R5\\Documents\\2026\\06 Sebooth Proposal Company Profile\\sebooth-website\\.taste-skill\\before\\frames\\mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

@@ -1,7 +1,7 @@
 # Project: Sebooth Website (Web Portal & Kiosk Harness)
 
 ## Purpose & Scope
-Web portal for Sebooth Photobooth users to access, view, and download digital assets (softfiles) via QR code redirection from physical photobooths. Functions as the public website with product showcases, interactive pricing, dynamic frame templates, 54-article SEO content hub, live digital queue system, and full admin CMS panel.
+Web portal for Sebooth Photobooth users to access, view, and download digital assets (softfiles) via QR code redirection from physical photobooths. Functions as the public website with product showcases, interactive pricing, dynamic frame templates, 69-article SEO content hub, live digital queue system, and full admin CMS panel.
 
 ---
 
@@ -10,7 +10,7 @@ Before modifying code, load the relevant module context from `_harness/routing.m
 
 | Task Area | Key Files & Routes | Details |
 |---|---|---|
-| **SEO & Articles** | `src/data/articles.ts`, `src/app/artikel/`, `LocalBusinessSchema.tsx` | 54 long-form E-E-A-T articles, 3-5% keyword density, JSON-LD schemas |
+| **SEO & Articles** | `src/data/articles.ts`, `src/app/artikel/`, `LocalBusinessSchema.tsx` | 69 long-form E-E-A-T articles, 3-5% keyword density, JSON-LD schemas |
 | **QR Claim & Softfiles** | `src/app/access/[id]/`, `AccessSessionClient.tsx`, `api/image/route.ts` | Editorial design, crash-proof Sharp loader, 1-tap Google Review widget |
 | **Digital Queue System** | `src/app/queue/`, `queueActions.ts`, `pushSender.ts`, `QueueOperatorTab.tsx` | Auth-gated queue, Web Push, proximity tier, scan QR session link |
 | **Slide Deck Landing** | `src/components/slides/`, `landingSlides.ts`, `Product.tsx`, `FramesSlider.tsx` | 6-slide vertical discrete transitions, 100svh lock, Coverflow 3D |
@@ -76,6 +76,8 @@ Before modifying code, load the relevant module context from `_harness/routing.m
 - **Phase 8J: 15-Article Anti-Slop SEO Deployment (Photobooth Semarang & Tembalang)**: Deployed 15 high-intent, anti-slop E-E-A-T articles (artikel-40 to artikel-54) targeting Google Trends search queries for Photobooth Semarang and Photobooth Tembalang (pricing breakdown, wedding ballroom, campus BEM expo, graduation Muladi Dome, corporate gathering, sweet 17, photostrip 2x6 vs 4R, Canva frame tutorial, and outdoor lighting). Achieved 100% pass rate on 11-point DomainRank SEO audit across all 54 articles with 3.0%–5.0% natural keyword token density.
 
 - **Phase 8K: Download-First Review Funnel & Interactive Guide v2**: Removed the review gate on `/access/[id]`: files download first, then a bottom sheet asks for a rating (neutral roulette dial), a Google Review (optional topic chips, copy only on tap) and an Instagram follow (`src/config/social.ts`). Replaced `InteractiveTour` with a shared guide engine (`src/components/guide/`) with animated spotlight, gesture glyphs and "do it to continue" steps on claim, profile, queue, ticket and frames pages, plus a swipe cue on the homepage.
+
+- **Phase 8L: Anti-Slop UI Polish (Public Pages)**: Replaced the floating glass nav with a plain bar (desktop) and corner tab (mobile), now also on `/artikel` routes. Rebuilt About, Partnership, the article hub and article detail on one language: navy hero, Hanken body at 17px+, Bayon headings without fake bold, real Sebooth prints and photos, orange close. Homepage slides lost imitation controls (Pinterest save/like, fake favourite), invented Instagram posts, emoji and 7–11px labels. `/frames` serves webp (`frameImage`) instead of 4.6 MB PNGs; article data no longer reaches the homepage bundle. Shared modal behaviour lives in `useModalFocus`.
 
 *Exhaustive granular changelog archive: [_harness/changelog_archive.md](file:///c:/Users/AXIOO%20HYPE%20R5/Documents/2026/06%20Sebooth%20Proposal%20Company%20Profile/sebooth-website/_harness/changelog_archive.md).*
 

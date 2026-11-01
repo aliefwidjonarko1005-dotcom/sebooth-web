@@ -34,7 +34,7 @@ Semua warna dikalibrasi secara ketat. **AI Purple/Neon Blue glows secara eksplis
 | **Navy Deep** | `#00113A` (`blue-dark`) | Warna teks judul display utama (H1). Menggantikan pure black `#000000`. |
 | **Slate Ink** | `#0F172A` | Teks heading sekunder dan label teks berbobot tebal. |
 | **Muted Slate** | `#64748B` | Teks deskripsi, keterangan tanggal, instruksi sekunder (max 65ch). |
-| **Whisper Border** | `rgba(226, 232, 240, 0.8)` / `#E2E8F0` | Garis batas 1px pada kartu, pemisah header, dan tombol outline. |
+| **Tone Step** | `#FFFFFF` di atas `#FAF8F5` | Pemisah permukaan. Tidak memakai garis 1px, bayangan, atau kaca di halaman ini. |
 | **Amber Warning** | `#D97706` / `#FEF3C7` | Banner retensi 3 hari (peringatan simpan sementara ke akun). |
 | **Emerald Safe** | `#059669` / `#ECFDF5` | Status sukses klaim, verifikasi permanen, dan badge akun tertaut. |
 | **Rose Alert** | `#E11D48` / `#FFF1F2` | Notifikasi error / sesi kedaluwarsa. |
@@ -45,15 +45,14 @@ Semua warna dikalibrasi secara ketat. **AI Purple/Neon Blue glows secara eksplis
 
 ### Font Stacks
 1. **Display & Brand Headlines**: `Bayon`, `sans-serif` (uppercase, track-tight, high-impact poster aesthetic khas Sebooth).
-2. **Body & Interface**: `Poppins`, system sans-serif (`font-sans`), clean, humanis, sangat terbaca di layar HP resolusi tinggi.
-3. **Numbers & Timers**: `ui-monospace`, `JetBrains Mono`, `tabular-nums` untuk countdown timer, ukuran media, dan progress unduhan.
+2. **Body & Interface**: `Hanken Grotesk` (`font-sans`), jelas dibaca di layar HP.
+3. **Numbers & Timers**: `Hanken Grotesk` dengan `tabular-nums` untuk hitung mundur dan penghitung unduhan.
 
 ### Skala Tipografi
-- **Hero Title (H1)**: `clamp(1.875rem, 5vw, 3rem)` — `font-bayon font-black uppercase text-blue-dark tracking-tight`.
-- **Section Headers (H2/H3)**: `1rem` – `1.25rem` (`font-bold text-slate-900 tracking-tight`).
-- **Kicker Badge**: `11px` (`font-extrabold uppercase tracking-widest text-secondary`).
-- **Body Text**: `0.875rem` (`14px`) pada desktop, `0.75rem` – `0.8125rem` (`12–13px`) pada mobile (`text-slate-600 leading-relaxed`).
-- **Micro Metadata & Hints**: `10px` – `11px` (`text-slate-400 font-medium`).
+- **Hero Title (H1)**: `min(9.6vw, 2.25rem)` di HP, `56px` dari `sm` ke atas, `font-bayon uppercase text-blue-dark`. Bayon hanya punya satu bobot, jadi tanpa `font-black`.
+- **Section Headers (H2/H3)**: `16px` – `17px` (`font-bold text-blue-dark`).
+- **Body Text**: `14px` – `15px` (`text-slate-600` untuk keterangan, `text-slate-900` untuk teks utama).
+- **Teks terkecil**: `13px` (`text-slate-600`). Tidak ada teks di bawah ukuran ini dan tidak ada label kecil huruf kapital berjarak.
 
 ### Larangan Tipografi (Banned Patterns)
 - **Dilarang** menggunakan font `Inter` default (menghilangkan karakter personal brand).
@@ -66,12 +65,12 @@ Semua warna dikalibrasi secara ketat. **AI Purple/Neon Blue glows secara eksplis
 ## 4. Component Stylings & Interaction Specifications
 
 ### 4.1 Sticky Top App Bar
-- **Struktur**: Ketinggian `56px`, `sticky top-0 z-40`, background `#FAF8F5` dengan `backdrop-blur-md` 90% opacity, border bawah 1px `border-slate-200/80`.
-- **Elemen Kiri**: Tombol kembali 36×36px (`rounded-xl`, border 1px, chevron), logo tipografi `SEBOOTH.` (Navy `#002366` + Orange dot), separator slash `/`, dan judul acara ter-truncate.
+- **Struktur**: Tinggi `56px`, `sticky top-0 z-40`, latar `#FAF8F5` solid tanpa blur dan tanpa garis bawah.
+- **Elemen Kiri**: Tombol kembali 44×44px (chevron tanpa bingkai), logo `sebooth-navy.svg`, dan judul acara ter-truncate.
 - **Elemen Kanan**:
   - Tombol **Galeri Akun** (tampil hanya jika sesi sudah diklaim).
-  - Tombol **Bagikan Tautan** (36×36px icon button, trigger Web Share API / copy clipboard).
-  - Tombol **Panduan Penggunaan** (36×36px icon button, trigger Interactive Tour).
+  - Tombol **Bagikan Tautan** (44×44px icon button, trigger Web Share API / copy clipboard).
+  - Tombol **Panduan Penggunaan** (44×44px icon button, trigger Interactive Tour).
 
 ### 4.2 Status & Retention Callout Banners
 Kartu status berada tepat di bawah header dan mengadopsi 4 status dinamis:
@@ -90,7 +89,7 @@ Kartu status berada tepat di bawah header dan mengadopsi 4 status dinamis:
    - Peringatan unduh instan sebelum rotasi file server berkala.
 
 ### 4.3 Hero Section & Primary Action Stack
-- **Judul**: Kicker `KOLEKSI SOFTFILE` berwarna `#FF4500` (`secondary`), diikuti headline raksasa `Foto & Video Sesi Kamu` dalam `font-bayon`.
+- **Judul**: Headline `Foto & Video Sesi Kamu` dalam `font-bayon`, tanpa label kecil di atasnya.
 - **Sub-info**: `[Nama Event] · [Jumlah Media] media · [Hari, Tanggal Jam]`.
 - **Action Buttons**:
   - **Tombol Utama: "Unduh Semua Media"**:
@@ -118,9 +117,8 @@ Kartu status berada tepat di bawah header dan mengadopsi 4 status dinamis:
   - Pose Tunggal: `aspect-[3/4]` (rasio standar potret studio).
   - Video / GIF Live: `aspect-[3/4]` atau `aspect-[2/3]` dengan atribut autoplay, loop, muted, dan playsInline.
 - **Detail Overlay Tiap Kartu**:
-  - Chip label di sudut kiri atas: Frosted glass hitam (`bg-black/55 backdrop-blur-md`), teks putih `10px uppercase`.
-  - Tombol unduh mandiri di sudut kanan atas: Tombol melayang 32×32px kaca frosted hitam (`bg-black/50 hover:bg-black/80`).
-  - Efek hover: Skala halus foto `scale-[1.02]`, gradien gelap halus bawah dengan teks *"Lihat detail"*.
+  - Chip label di sudut kiri atas: latar `bg-blue-dark/80` tanpa blur, teks putih `13px` huruf biasa.
+  - Tombol unduh mandiri di sudut kanan atas: lingkaran 32×32px `bg-blue-dark/80` di dalam area sentuh 44×44px.
   - Native Touch Support: `-webkit-touch-callout: default` agar tamu bisa melakukan long-press langsung di browser Safari/Chrome untuk opsi simpan foto sistem.
 
 ### 4.6 Lightbox Detail Modal

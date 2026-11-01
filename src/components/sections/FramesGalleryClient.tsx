@@ -1,16 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, Search, X, ZoomIn, Download, ExternalLink } from "lucide-react";
-import Link from "next/link";
+import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Guide from "@/components/guide/Guide";
 import GuideLauncher from "@/components/guide/GuideLauncher";
 import { useGuide } from "@/components/guide/useGuide";
 import { FRAMES_GUIDE, GUIDE_KEYS } from "@/config/guides";
+import { whatsappUrl } from "@/config/social";
+import { useModalFocus } from "@/lib/useModalFocus";
 
+import { frameImage } from "@/data/frameEvents";
 import { DEFAULT_FRAMES, type FrameItem } from "@/data/frames";
 
 export { DEFAULT_FRAMES, type FrameItem };
@@ -19,26 +22,66 @@ interface FramesGalleryClientProps {
     initialFrames: FrameItem[];
 }
 
+// A CMS frame may sit under /images/frames/ without a webp copy: fall back to its original once
+function useOriginalOnError(original: string) {
+    return (e: React.SyntheticEvent<HTMLImageElement>) => {
+        const img = e.currentTarget;
+        if (img.dataset.fellBack) return;
+        img.dataset.fellBack = "1";
+        img.src = original;
+    };
+}
+
+function FrameTile({ frame, id, onOpen }: { frame: FrameItem; id?: string; onOpen: () => void }) {
+    const handleError = useOriginalOnError(frame.image_url);
+    return (
+        <button
+            id={id}
+            onClick={onOpen}
+            className="group block w-full cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-secondary"
+        >
+            <span className="relative block aspect-[5/4] overflow-hidden rounded-lg bg-white">
+                {frame.image_url ? (
+                    <Image
+                        src={frameImage(frame.image_url, "thumb")}
+                        alt={frame.title}
+                        fill
+                        unoptimized
+                        sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                        onError={handleError}
+                        className="object-contain transition-transform duration-500 select-none group-hover:scale-[1.03]"
+                    />
+                ) : (
+                    <span className="flex h-full items-center justify-center text-sm text-slate-600">Belum ada gambar</span>
+                )}
+            </span>
+            <span className="mt-2.5 block font-bayon text-lg leading-tight text-primary uppercase decoration-secondary decoration-2 underline-offset-2 group-hover:underline">
+                {frame.title}
+            </span>
+            <span className="mt-1 block text-sm text-slate-600 capitalize">
+                {(frame.category || "General").toLowerCase()}
+            </span>
+        </button>
+    );
+}
+
 export function FramesGalleryClient({ initialFrames }: FramesGalleryClientProps) {
     const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [activeLightboxFrame, setActiveLightboxFrame] = useState<FrameItem | null>(null);
-    const [imageRatios, setImageRatios] = useState<Record<string, number>>({});
     const guide = useGuide(GUIDE_KEYS.frames, { delay: 2600 });
+    const reduceMotion = useReducedMotion();
+    const dialogRef = useRef<HTMLDivElement>(null);
+    const closeLightbox = useCallback(() => setActiveLightboxFrame(null), []);
+    useModalFocus(activeLightboxFrame !== null, dialogRef, closeLightbox);
+    const handleLightboxImageError = useOriginalOnError(activeLightboxFrame?.image_url ?? "");
 
     // Designs uploaded through the CMS come first, then the built-in catalogue (same id: CMS wins)
     const framesToDisplay = useMemo(() => {
         const ids = new Set((initialFrames ?? []).map((f) => f.id));
         return [...(initialFrames ?? []), ...DEFAULT_FRAMES.filter((f) => !ids.has(f.id))];
     }, [initialFrames]);
-
-    const handleImageLoad = useCallback((frameId: string, e: React.SyntheticEvent<HTMLImageElement>) => {
-        const img = e.currentTarget;
-        if (img.naturalWidth && img.naturalHeight) {
-            setImageRatios(prev => ({ ...prev, [frameId]: img.naturalWidth / img.naturalHeight }));
-        }
-    }, []);
 
     // Categories derived from frames
     const categories = ["All", ...Array.from(new Set(framesToDisplay.map(f => f.category || "General").filter(Boolean)))];
@@ -64,226 +107,161 @@ export function FramesGalleryClient({ initialFrames }: FramesGalleryClientProps)
     }, [searchParams, framesToDisplay]);
 
     return (
-        <div className="min-h-screen bg-transparent pt-20 pb-24">
-            {/* Ambient Background Glows */}
-            <div className="absolute top-40 left-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute bottom-40 right-1/4 w-[400px] h-[400px] bg-[#D4AF37]/5 rounded-full blur-[120px] pointer-events-none" />
-
-            <div className="container mx-auto px-6 max-w-6xl">
-                {/* Back navigation */}
-                <div className="mb-12">
-                    <Link
-                        href="/"
-                        className="inline-flex items-center gap-2 font-bold uppercase tracking-tight text-primary hover:text-text-dark transition-colors px-4 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl"
-                    >
-                        <ArrowLeft className="w-4 h-4" /> Kembali ke Beranda
-                    </Link>
-                </div>
-
-                {/* Header */}
-                <div className="mb-16 text-center max-w-2xl mx-auto">
-                    <h1 className="text-4xl md:text-6xl font-black font-sebooth uppercase tracking-tighter text-text-dark mb-4 leading-none">
+        <div className="min-h-svh pb-24">
+            {/* Hero: what this is, then the two ways to narrow it down */}
+            <section className="bg-primary px-5 pt-24 pb-10 text-white md:px-10 md:pt-32 md:pb-16">
+                <div className="mx-auto max-w-6xl">
+                    <h1 className="font-bayon text-[4rem] leading-[0.9] uppercase md:text-[clamp(4rem,10vw,7.5rem)]">
                         Our Design Frames
                     </h1>
-                    <p className="text-lg font-bold uppercase text-primary/70">
+                    <p className="mt-5 max-w-[40ch] text-xl leading-snug">
                         Koleksi template frame premium untuk melengkapi momen spesial Anda.
                     </p>
-                </div>
 
-                {/* Search & Category Filter Controls */}
-                <div className="mb-12 flex flex-col md:flex-row gap-4 justify-between items-center bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl shadow-sm">
-                    {/* Categories Tabs */}
-                    <div id="guide-frames-categories" className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
+                    {/* Categories run off the screen edge on phones, a cue that the row scrolls */}
+                    <div
+                        id="guide-frames-categories"
+                        className="-mx-5 mt-8 flex gap-2 overflow-x-auto px-5 scrollbar-none md:mx-0 md:mt-10 md:flex-wrap md:overflow-visible md:px-0"
+                    >
                         {categories.map((cat) => (
                             <button
                                 key={cat}
                                 onClick={() => setSelectedCategory(cat)}
+                                aria-pressed={selectedCategory === cat}
                                 className={cn(
-                                    "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-200 whitespace-nowrap",
+                                    "min-h-11 shrink-0 cursor-pointer rounded-full px-4 text-sm font-bold whitespace-nowrap capitalize transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
                                     selectedCategory === cat
-                                        ? "bg-primary text-white shadow-sm"
-                                        : "bg-white/20 hover:bg-white/40 text-text-dark border border-white/30"
+                                        ? "bg-secondary text-blue-dark"
+                                        : "bg-navy-raised text-white hover:bg-white hover:text-blue-dark"
                                 )}
                             >
-                                {cat}
+                                {cat.toLowerCase()}
                             </button>
                         ))}
                     </div>
 
-                    {/* Search Input */}
-                    <div id="guide-frames-search" className="relative w-full md:w-80">
+                    <div id="guide-frames-search" className="relative mt-4 md:max-w-sm">
                         <input
-                            type="text"
+                            type="search"
+                            aria-label="Cari desain frame"
                             placeholder="Cari desain frame..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full px-4 py-2.5 pl-10 rounded-xl bg-white/30 backdrop-blur-md border border-white/40 focus:border-primary/50 text-sm font-bold uppercase tracking-tight text-text-dark placeholder-text-dark/40 outline-none transition-all duration-200"
+                            className="h-12 w-full rounded-full bg-white pr-4 pl-11 text-base text-blue-dark outline-none placeholder:text-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
                         />
-                        <Search className="absolute left-3.5 top-3 w-4 h-4 text-text-dark/40" />
+                        <Search className="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-slate-500" aria-hidden="true" />
                     </div>
                 </div>
+            </section>
 
-                {/* 3-Column Centered Grid */}
-                {filteredFrames.length === 0 ? (
-                    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-16 text-center max-w-md mx-auto">
-                        <p className="text-lg font-bold uppercase text-text-dark/50">Tidak ada frame yang cocok.</p>
-                        <button
-                            onClick={() => { setSearchQuery(""); setSelectedCategory("All"); }}
-                            className="mt-4 px-6 py-2.5 bg-primary text-white text-xs font-black uppercase tracking-wider rounded-xl hover:bg-primary/95 transition-all"
-                        >
-                            Reset Filter
-                        </button>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-center">
-                        {filteredFrames.map((frame, idx) => (
-                            <motion.div
-                                key={frame.id || idx}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.4, delay: Math.min(idx * 0.05, 0.3) }}
-                                className="bg-white/12 backdrop-blur-lg border border-white/20 rounded-3xl p-5 shadow-[0_8px_32px_0_rgba(31,38,135,0.06)] hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] hover:border-white/40 hover:bg-white/20 transition-all duration-300 group flex flex-col items-center"
+            <section className="px-5 pt-8 md:px-10 md:pt-14">
+                <div className="mx-auto max-w-6xl">
+                    {filteredFrames.length === 0 ? (
+                        <div className="py-16 text-center">
+                            <p className="text-xl font-medium text-blue-dark">Tidak ada frame yang cocok.</p>
+                            <button
+                                onClick={() => { setSearchQuery(""); setSelectedCategory("All"); }}
+                                className="mt-5 inline-flex min-h-12 cursor-pointer items-center rounded-full bg-blue-dark px-6 text-base font-bold text-white transition-colors hover:bg-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-dark"
                             >
-                                {/* Shiny Overlay effect */}
-                                <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden rounded-3xl">
-                                    <div className="absolute top-0 -left-[100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 group-hover:animate-shimmer" />
-                                </div>
+                                Reset filter
+                            </button>
+                        </div>
+                    ) : (
+                        <ul className="grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-3 md:gap-x-6 md:gap-y-12 lg:grid-cols-4">
+                            {filteredFrames.map((frame, idx) => (
+                                <li key={frame.id || idx} className="rise-on-scroll">
+                                    <FrameTile
+                                        frame={frame}
+                                        id={idx === 0 ? "guide-frames-first" : undefined}
+                                        onOpen={() => setActiveLightboxFrame(frame)}
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            </section>
 
-                                {/* Frame Image Frame — dynamic aspect ratio */}
-                                <div 
-                                    className="w-full bg-neutral-900/5 rounded-2xl overflow-hidden flex items-center justify-center p-3 relative cursor-pointer group-hover:scale-[1.02] transition-transform duration-300"
-                                    id={idx === 0 ? 'guide-frames-first' : undefined}
-                                    style={{ aspectRatio: imageRatios[frame.id] ? `${imageRatios[frame.id]}` : '3/4' }}
-                                    onClick={() => setActiveLightboxFrame(frame)}
-                                >
-                                    <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30" />
-                                    {frame.image_url ? (
-                                        <img
-                                            src={frame.image_url}
-                                            alt={frame.title}
-                                            onLoad={(e) => handleImageLoad(frame.id, e)}
-                                            className="h-full w-auto object-contain z-10 max-h-full drop-shadow-md select-none pointer-events-none"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-white/20 text-[#1A1A1A]/30 font-bold uppercase text-xs">
-                                            No Image
-                                        </div>
-                                    )}
-                                    
-                                    {/* Glass Overlay Zoom Button */}
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
-                                        <span className="p-3 bg-white/90 backdrop-blur-md rounded-full text-primary shadow-md hover:scale-105 transition-all">
-                                            <ZoomIn className="w-5 h-5" />
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {/* Frame Info */}
-                                <div className="w-full mt-4 text-center">
-                                    <h3 className="text-xl font-black uppercase text-text-dark tracking-tight mb-1 truncate">
-                                        {frame.title}
-                                    </h3>
-                                    <span className="text-xs font-bold uppercase tracking-wider text-primary px-3 py-1 bg-primary/10 rounded-full">
-                                        {frame.category || "General"}
-                                    </span>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            {/* Interactive Lightbox Overlay */}
+            {/* Frame detail: a sheet from the bottom on phones, a centred panel from tablet up */}
             <AnimatePresence>
                 {activeLightboxFrame && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
+                        transition={{ duration: reduceMotion ? 0 : 0.18 }}
+                        onClick={closeLightbox}
+                        className="fixed inset-0 z-[60] flex items-end justify-center bg-blue-dark/80 md:items-center md:p-8"
                     >
-                        {/* Close gesture click area */}
-                        <div className="absolute inset-0" onClick={() => setActiveLightboxFrame(null)} />
-                        
-                        {/* Close button top right */}
-                        <button
-                            onClick={() => setActiveLightboxFrame(null)}
-                            className="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all active:scale-95 cursor-pointer"
-                        >
-                            <X className="w-6 h-6" />
-                        </button>
-
-                        {/* Lightbox Content Container */}
                         <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="relative z-10 bg-neutral-950 border border-white/15 p-6 md:p-8 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col items-center justify-between shadow-2xl overflow-y-auto"
+                            ref={dialogRef}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="frame-dialog-title"
+                            initial={reduceMotion ? false : { y: 32 }}
+                            animate={{ y: 0 }}
+                            exit={reduceMotion ? undefined : { y: 32 }}
+                            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="relative max-h-[92svh] w-full overflow-y-auto rounded-t-2xl bg-primary text-white md:max-w-xl md:rounded-2xl"
                         >
-                            {/* Shiny gloss backdrop inside */}
-                            <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
-
-                            {/* Title & Description details */}
-                            <div className="w-full text-center mb-5">
-                                <h2 className="text-2xl md:text-3xl font-black uppercase text-white tracking-tight leading-tight mb-2 font-sebooth">
-                                    {activeLightboxFrame.title}
-                                </h2>
-                                <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
-                                    <span className="text-xs font-extrabold uppercase tracking-widest text-[#D4AF37] px-3.5 py-1 bg-[#D4AF37]/15 rounded-full border border-[#D4AF37]/30 inline-block">
-                                        {activeLightboxFrame.category || "General"}
-                                    </span>
-                                </div>
-                                {activeLightboxFrame.subtitle && (
-                                    <p className="text-xs md:text-sm font-semibold text-primary/90 tracking-wide mb-2">
-                                        ✨ {activeLightboxFrame.subtitle}
-                                    </p>
-                                )}
-                                {activeLightboxFrame.desc && (
-                                    <p className="text-xs md:text-sm text-gray-300 font-medium leading-relaxed max-w-lg mx-auto">
-                                        {activeLightboxFrame.desc}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Image Container with checked pattern background — dynamic aspect ratio */}
-                            <div 
-                                className="w-full flex-1 bg-[#121212] border border-white/10 rounded-2xl overflow-hidden flex items-center justify-center p-4 relative max-h-[45vh] my-2"
-                                style={{ aspectRatio: imageRatios[activeLightboxFrame.id] ? `${imageRatios[activeLightboxFrame.id]}` : '3/4' }}
+                            <button
+                                onClick={closeLightbox}
+                                aria-label="Tutup preview frame"
+                                className="absolute top-2 right-2 z-10 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-blue-dark text-white transition-colors hover:text-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-95"
                             >
-                                <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:16px_16px] opacity-60" />
-                                <img
-                                    src={activeLightboxFrame.image_url}
+                                <X className="h-6 w-6" aria-hidden="true" />
+                            </button>
+
+                            <div className="relative aspect-[5/4] w-full bg-blue-dark">
+                                <Image
+                                    src={frameImage(activeLightboxFrame.image_url, "modal")}
                                     alt={activeLightboxFrame.title}
-                                    className="h-full w-auto object-contain max-h-full drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)] select-none"
+                                    fill
+                                    unoptimized
+                                    priority
+                                    sizes="(min-width: 768px) 576px, 100vw"
+                                    onError={handleLightboxImageError}
+                                    className="object-contain select-none"
                                 />
                             </div>
 
-                            {/* Features list if available */}
-                            {activeLightboxFrame.features && activeLightboxFrame.features.length > 0 && (
-                                <div className="w-full mt-4 flex flex-wrap gap-2 justify-center">
-                                    {activeLightboxFrame.features.map((feat, fIdx) => (
-                                        <span key={fIdx} className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 rounded-lg">
-                                            ✓ {feat}
-                                        </span>
-                                    ))}
-                                </div>
-                            )}
+                            <div className="px-5 pt-5 text-[17px] leading-relaxed">
+                                <h2 id="frame-dialog-title" className="font-bayon text-[2rem] leading-[1.05] uppercase">
+                                    {activeLightboxFrame.title}
+                                </h2>
+                                <p className="mt-1.5 text-sm text-white/80 capitalize">
+                                    {(activeLightboxFrame.category || "General").toLowerCase()}
+                                </p>
+                                {activeLightboxFrame.subtitle && (
+                                    <p className="mt-4 font-bold">{activeLightboxFrame.subtitle}</p>
+                                )}
+                                {activeLightboxFrame.desc && (
+                                    <p className="mt-2">{activeLightboxFrame.desc}</p>
+                                )}
+                                {activeLightboxFrame.features && activeLightboxFrame.features.length > 0 && (
+                                    <ul className="mt-4 list-disc space-y-1 pl-5 marker:text-secondary">
+                                        {activeLightboxFrame.features.map((feat, fIdx) => (
+                                            <li key={fIdx}>{feat}</li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
 
-                            {/* Action Buttons */}
-                            <div className="w-full mt-6 flex flex-col sm:flex-row gap-3">
+                            {/* Stays in reach however long the description runs */}
+                            <div className="sticky bottom-0 mt-5 flex items-center gap-3 bg-primary px-5 pt-3 pb-[calc(1rem+env(safe-area-inset-bottom))]">
                                 <button
-                                    onClick={() => setActiveLightboxFrame(null)}
-                                    className="flex-1 py-3 border border-white/20 hover:bg-white/5 text-white font-bold uppercase tracking-wider text-xs rounded-xl transition-all"
+                                    onClick={closeLightbox}
+                                    className="min-h-14 cursor-pointer px-3 text-[17px] font-bold text-white underline underline-offset-4 transition-colors hover:text-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                                 >
-                                    Tutup Preview
+                                    Tutup
                                 </button>
                                 <a
                                     id="guide-frames-order"
-                                    href={`https://wa.me/6285713899441?text=${encodeURIComponent(`Halo Sebooth, saya berminat dengan template frame "${activeLightboxFrame.title}" untuk acara saya!`)}`}
+                                    href={whatsappUrl(`Halo Sebooth, saya berminat dengan template frame "${activeLightboxFrame.title}" untuk acara saya!`)}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex-1 py-3 bg-gradient-to-r from-[#FF5E00] to-[#FF3900] text-white font-extrabold uppercase tracking-wider text-xs rounded-xl hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg"
+                                    className="flex min-h-14 flex-1 items-center justify-center rounded-full bg-secondary px-5 text-center text-[17px] font-bold text-blue-dark transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:scale-[0.98]"
                                 >
                                     Pesan Frame Ini Via WA
                                 </a>

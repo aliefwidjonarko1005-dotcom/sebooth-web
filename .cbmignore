@@ -1,0 +1,8 @@
+# Keep the code graph focused on the website source
+agent/
+.agents/
+_harness/
+picture_stocks/
+ui_showcase.html
+public/ui_showcase.html
+build_output.txt
