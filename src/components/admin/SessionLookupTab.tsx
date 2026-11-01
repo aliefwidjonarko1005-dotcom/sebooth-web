@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   XCircle,
   Layers,
@@ -45,6 +45,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
     claimed: 0,
     unclaimed: 0
   })
+  const latestListRequest = useRef(0)
 
   // Auto-lookup if initialSessionId is provided
   useEffect(() => {
@@ -74,6 +75,8 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
   }, [currentPage, debouncedFilterSearch, statusFilter, policyFilter, sortBy, pageSize])
 
   async function fetchSessionsList(pageToFetch = currentPage) {
+    // Only the newest request may update state: an older page's reply would set its page back and refetch forever
+    const requestId = ++latestListRequest.current
     setListLoading(true)
     try {
       const params = new URLSearchParams()
@@ -86,6 +89,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
 
       const res = await fetch(`/api/admin/session-lookup?${params.toString()}`)
       const json = await res.json()
+      if (requestId !== latestListRequest.current) return
       if (json.success) {
         setSessionsList(json.sessions || [])
         if (json.pagination) {
@@ -100,7 +104,7 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
     } catch (err) {
       console.error('Error fetching sessions list:', err)
     } finally {
-      setListLoading(false)
+      if (requestId === latestListRequest.current) setListLoading(false)
     }
   }
 
