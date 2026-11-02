@@ -9,30 +9,30 @@ interface BookshelfViewProps {
   sessionsList: UserSessionDisplayItem[]
   activeSessionIndex: number
   cardRectsRef: React.MutableRefObject<Record<number, { x: number; y: number }>>
-  handleCardClick: (e: React.MouseEvent<HTMLDivElement>, targetIdx: number) => void
+  handleCardClick: (e: React.MouseEvent<HTMLElement>, targetIdx: number) => void
   handleCloseBookshelf: () => void
 }
+
+const BACK_CARD = 'absolute inset-1.5 rounded-xl bg-slate-300 transition-transform duration-200'
 
 /** Gallery View: every session as a stacked album card in a 2–4 column grid. */
 export function BookshelfView({ sessionsList, activeSessionIndex, cardRectsRef, handleCardClick, handleCloseBookshelf }: BookshelfViewProps) {
   return (
-    <div className="w-full max-w-md sm:max-w-2xl md:max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-5 pb-28 sm:pb-32 flex flex-col flex-1">
-      {/* Top Header Bar */}
+    <div className="w-full max-w-md sm:max-w-2xl md:max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-4 pb-28 sm:pb-32 flex flex-col flex-1">
       <div className="flex items-center justify-between mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-[28px] md:text-3xl font-extrabold text-slate-800 tracking-tight font-sans">
+        <h1 className="font-bayon text-[2rem] leading-none text-primary uppercase md:text-[2.5rem]">
           Galeri Sebooth
         </h1>
 
-        <div className="flex items-center gap-2">
-          {/* Close / Return to Focus View */}
-          <button
-            onClick={handleCloseBookshelf}
-            className="w-9 h-9 rounded-xl bg-slate-200/70 hover:bg-slate-300/80 active:scale-90 flex items-center justify-center text-slate-700 transition-all cursor-pointer"
-            title="Kembali ke Tampilan Fokus"
-          >
-            <X className="w-5 h-5 stroke-[2.2]" />
-          </button>
-        </div>
+        {/* Close / Return to Focus View */}
+        <button
+          onClick={handleCloseBookshelf}
+          aria-label="Kembali ke tampilan foto"
+          title="Kembali ke tampilan foto"
+          className="w-11 h-11 rounded-full bg-blue-dark hover:bg-primary active:scale-90 flex items-center justify-center text-white transition-[background-color,transform] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Bookshelf Grid: 2 columns on mobile, 3 on tablet, 4 columns on desktop */}
@@ -42,8 +42,9 @@ export function BookshelfView({ sessionsList, activeSessionIndex, cardRectsRef, 
           const targetIndex = originalIndex >= 0 ? originalIndex : sIdx
 
           return (
-            <div
+            <button
               key={session.id}
+              type="button"
               id={`bookshelf-card-${targetIndex}`}
               ref={(el) => {
                 if (el) {
@@ -57,49 +58,35 @@ export function BookshelfView({ sessionsList, activeSessionIndex, cardRectsRef, 
               onClick={(e) => handleCardClick(e, targetIndex)}
               style={{
                 contentVisibility: 'auto',
-                containIntrinsicSize: '0 240px'
+                containIntrinsicSize: '0 290px'
               }}
-              className="group flex flex-col cursor-pointer select-none active:scale-[0.94] active:brightness-95 transition-all duration-150 ease-out"
+              className="group flex min-w-0 flex-col text-left cursor-pointer select-none active:scale-[0.96] transition-transform duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             >
-              {/* 3D Stacked Album Card (Gambar 1) */}
-              <div className="relative w-full aspect-[3/4] flex items-center justify-center p-1.5">
-                {/* Back Left Card: Stylized photo backing layer (Zero duplicate image requests) */}
-                <div
-                  className="absolute inset-1.5 rounded-[15px] sm:rounded-[17px] bg-gradient-to-tr from-stone-300 via-stone-200 to-stone-100 border border-white/90 shadow-sm will-change-transform transition-transform duration-200 group-hover:-translate-x-2"
-                  style={{
-                    transform: 'translate3d(-8px, -5px, 0) rotate(-7.5deg) scale(0.92)',
-                    transformOrigin: 'center center'
-                  }}
+              {/* Stacked album card: the two backing sheets carry no image, so they cost no requests */}
+              <span className="relative block w-full aspect-[3/4] p-1.5">
+                <span
+                  className={`${BACK_CARD} group-hover:-translate-x-2`}
+                  style={{ transform: 'translate3d(-8px, -5px, 0) rotate(-7.5deg) scale(0.92)' }}
                 />
-
-                {/* Back Right Card: Stylized photo backing layer (Zero duplicate image requests) */}
-                <div
-                  className="absolute inset-1.5 rounded-[15px] sm:rounded-[17px] bg-gradient-to-tl from-stone-300 via-stone-200 to-stone-100 border border-white/90 shadow-sm will-change-transform transition-transform duration-200 group-hover:translate-x-2"
-                  style={{
-                    transform: 'translate3d(8px, -5px, 0) rotate(7.5deg) scale(0.92)',
-                    transformOrigin: 'center center'
-                  }}
+                <span
+                  className={`${BACK_CARD} group-hover:translate-x-2`}
+                  style={{ transform: 'translate3d(8px, -5px, 0) rotate(7.5deg) scale(0.92)' }}
                 />
-
-                {/* Front Center Card */}
-                <div
-                  className="relative w-full h-full rounded-[16px] sm:rounded-[18px] overflow-hidden border-[2.2px] border-white shadow-[0_12px_24px_-6px_rgba(0,0,0,0.18),0_4px_8px_-2px_rgba(0,0,0,0.08)] bg-zinc-950 will-change-transform group-hover:scale-[1.02] transition-transform duration-200"
-                  style={{
-                    transform: 'translate3d(0, 0, 0)',
-                    transformOrigin: 'center center'
-                  }}
-                >
+                <span className="relative block w-full h-full rounded-xl overflow-hidden border-2 border-white bg-slate-200">
                   <ProgressiveImage
                     src={session.stripUrl}
                     placeholder={getBlurPlaceholderUrl(session.rawStripUrl)}
                     fallbackSrc={session.rawStripUrl}
-                    alt={session.title}
+                    alt=""
                     className="w-full h-full object-cover object-top select-none pointer-events-none"
                     loading={Math.abs(targetIndex - activeSessionIndex) < 8 ? 'eager' : 'lazy'}
                   />
-                </div>
-              </div>
-            </div>
+                </span>
+              </span>
+
+              <span className="mt-2 block truncate text-[15px] leading-snug font-bold text-primary">{session.title}</span>
+              <span className="block truncate text-[13px] leading-snug text-slate-600">{session.dateStr}</span>
+            </button>
           )
         })}
       </div>

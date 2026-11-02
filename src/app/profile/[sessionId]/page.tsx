@@ -5,13 +5,8 @@ export const dynamic = 'force-dynamic'
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Download, Image as ImageIcon, Film, Zap, Grid,
-  AlertCircle, ChevronLeft, ChevronRight, ArrowLeft, LogOut, Home,
-  Share2, Bookmark, Check, Sparkles
-} from 'lucide-react'
+import { Download, Image as ImageIcon, Film, Zap, Grid, ArrowLeft, Share2, Check } from 'lucide-react'
 import Link from 'next/link'
-import NextImage from 'next/image'
 import { createClient } from '@/lib/supabase'
 import { SessionData, MediaItem } from '@/types/database'
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
@@ -24,6 +19,11 @@ const FRAME_TEMPLATES = [
 ]
 
 type TabKey = 'strip' | 'gif' | 'live' | 'photos'
+
+const SAVE_BUTTON =
+  'mt-3 flex min-h-14 w-full items-center justify-center gap-2.5 rounded-full bg-secondary px-6 text-[17px] font-bold text-blue-dark transition-colors hover:bg-orange-press focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-[0.98] cursor-pointer'
+const HEADER_BUTTON =
+  'flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-dark text-white transition-[background-color,transform] hover:bg-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-90 cursor-pointer'
 
 /* ─── Helper: Ensure downloads strictly target original uncompressed file ─── */
 function getRawOriginalUrl(url: string | undefined): string {
@@ -250,70 +250,53 @@ export default function SessionDetailPage() {
   ].filter(t => t.available)
 
   return (
-    <div className="min-h-[100svh] bg-[#F7F9FC] text-slate-900 flex flex-col justify-between select-none">
+    <div className="min-h-svh bg-cream-soft text-blue-dark flex flex-col select-none">
       <canvas ref={canvasRef} style={{ display: 'none' }} />
 
       {/* ── Top Header Bar ── */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200/80 px-4 py-3 flex items-center justify-between">
-        <Link 
-          href="/profile" 
-          className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 active:scale-95 transition-all"
-        >
-          <ArrowLeft className="w-5 h-5 stroke-[2.2]" />
+      <header className="sticky top-0 z-40 bg-cream-soft px-4 py-3 flex items-center justify-between gap-3">
+        <Link href="/profile" aria-label="Kembali ke My Photos" title="Kembali ke My Photos" className={HEADER_BUTTON}>
+          <ArrowLeft className="w-5 h-5" />
         </Link>
 
-        <div className="text-center flex-1 mx-3 truncate">
-          <h1 className="text-base font-black font-bayon uppercase text-[#111827] truncate">
+        <div className="min-w-0 flex-1 text-center">
+          <h1 className="truncate font-bayon text-[1.75rem] leading-none text-primary uppercase">
             {session.event_name || `Session #${session.id.slice(0, 6)}`}
           </h1>
-          <p className="text-[10px] font-semibold text-slate-500">
+          <p className="mt-0.5 text-[13px] leading-snug text-slate-600">
             {new Date(session.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={handleShare}
-            className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 active:scale-95 transition-all"
-            title="Bagikan"
-          >
-            <Share2 className="w-4 h-4" />
-          </button>
-        </div>
+        <button type="button" onClick={handleShare} aria-label="Bagikan" title="Bagikan" className={HEADER_BUTTON}>
+          <Share2 className="w-5 h-5" />
+        </button>
       </header>
 
       {/* ── Main Media Stage ── */}
-      <main className="mx-auto max-w-md w-full px-4 pt-4 pb-28 flex-1 flex flex-col items-center">
-        
-        {/* Liquid Glass Media Tab Filter */}
+      <main className="mx-auto max-w-md w-full px-4 pt-2 pb-10 flex-1 flex flex-col items-center">
+
+        {/* Media type tabs */}
         {tabs.length > 1 && (
-          <div className="w-full bg-slate-900/18 max-md:backdrop-blur-md md:backdrop-blur-2xl max-md:backdrop-saturate-150 md:backdrop-saturate-180 border border-white/35 shadow-[0_12px_36px_rgba(0,0,0,0.18),inset_0_1.5px_2px_rgba(255,255,255,0.45),inset_0_-1px_1px_rgba(0,0,0,0.15)] p-1.5 rounded-full flex items-center gap-1 mb-5">
+          <div className="mb-4 flex w-full items-center gap-1 rounded-full bg-white p-1">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.key
               return (
                 <button
                   key={tab.key}
+                  type="button"
                   onClick={() => setActiveTab(tab.key)}
-                  className={`relative flex-1 py-2 rounded-full flex items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-wider transition-all active:scale-95 cursor-pointer ${
-                    isActive
-                      ? 'text-white'
-                      : 'text-slate-700/80 hover:text-slate-950'
+                  aria-pressed={isActive}
+                  className={`relative flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-full text-[15px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                    isActive ? 'text-white' : 'text-primary'
                   }`}
                 >
                   {isActive && (
                     <motion.div
-                      layoutId="liquid-session-tab-indicator"
-                      className="absolute inset-0 rounded-full bg-black/45 md:backdrop-blur-sm border border-white/15 border-t-black/40 border-b-white/25 shadow-[inset_0_2px_5px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(0,0,0,0.75),inset_0_-1px_1px_rgba(255,255,255,0.2)] overflow-hidden"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 440,
-                        damping: 30,
-                        mass: 0.8
-                      }}
-                    >
-                      <div className="absolute top-[1.5px] inset-x-2 h-[38%] rounded-full bg-gradient-to-b from-white/25 to-transparent pointer-events-none" />
-                      <div className="absolute bottom-[1.5px] inset-x-2.5 h-[25%] rounded-full bg-gradient-to-t from-white/15 to-transparent pointer-events-none" />
-                    </motion.div>
+                      layoutId="session-tab-indicator"
+                      className="absolute inset-0 rounded-full bg-primary"
+                      transition={{ type: 'spring', stiffness: 440, damping: 34 }}
+                    />
                   )}
                   <span className="relative z-10 flex items-center justify-center gap-1.5">
                     {tab.icon}
@@ -336,10 +319,10 @@ export default function SessionDetailPage() {
               className="w-full flex flex-col items-center"
             >
               {strip ? (
-                <div className="relative w-full rounded-3xl overflow-hidden shadow-2xl bg-slate-900 border border-slate-200/80 p-2 flex flex-col items-center">
-                  <div className="relative w-full rounded-2xl overflow-hidden flex items-center justify-center bg-slate-950" style={{ maxHeight: '68vh', aspectRatio: '9/16' }}>
-                    <img 
-                      src={isMobile ? `/api/image?url=${encodeURIComponent(strip.url)}&w=480&q=60` : strip.url} 
+                <div className="w-full">
+                  <div className="relative w-full rounded-lg overflow-hidden flex items-center justify-center bg-blue-dark" style={{ maxHeight: '68vh', aspectRatio: '2/3' }}>
+                    <img
+                      src={isMobile ? `/api/image?url=${encodeURIComponent(strip.url)}&w=480&q=60` : strip.url}
                       alt="Photo Strip" 
                       className="w-full h-full object-contain" 
                       loading="lazy"
@@ -351,18 +334,13 @@ export default function SessionDetailPage() {
                     />
                   </div>
 
-                  <div className="w-full mt-3 flex items-center justify-between gap-2 px-1">
-                    <button 
-                      onClick={() => downloadFile(strip.url, 'strip.jpg')} 
-                      className="flex-1 py-3 rounded-full bg-gradient-to-r from-secondary to-orange-press hover:opacity-95 active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
-                    >
-                      <Download className="w-4 h-4" /> 
-                      <span>Simpan Strip HD</span>
-                    </button>
-                  </div>
+                  <button type="button" onClick={() => downloadFile(strip.url, 'strip.jpg')} className={SAVE_BUTTON}>
+                    <Download className="w-5 h-5" aria-hidden="true" />
+                    Simpan Strip HD
+                  </button>
                 </div>
               ) : (
-                <p className="text-slate-400 font-semibold py-16 text-sm">Tidak ada photo strip.</p>
+                <p className="py-16 text-[17px] text-slate-600">Tidak ada photo strip.</p>
               )}
             </motion.section>
           )}
@@ -377,20 +355,17 @@ export default function SessionDetailPage() {
               className="w-full flex flex-col items-center"
             >
               {gif ? (
-                <div className="relative w-full rounded-3xl overflow-hidden shadow-2xl bg-slate-900 border border-slate-200/80 p-2 flex flex-col items-center">
-                  <div className="relative w-full rounded-2xl overflow-hidden flex items-center justify-center bg-slate-950" style={{ maxHeight: '68vh', aspectRatio: '9/16' }}>
+                <div className="w-full">
+                  <div className="relative w-full rounded-lg overflow-hidden flex items-center justify-center bg-blue-dark" style={{ maxHeight: '68vh', aspectRatio: '9/16' }}>
                     <img src={gif.url} alt="GIF Animation" className="w-full h-full object-contain" loading="lazy" />
                   </div>
-                  <button 
-                    onClick={() => downloadFile(gif.url, 'animation.gif')} 
-                    className="w-full mt-3 py-3 rounded-full bg-gradient-to-r from-secondary to-orange-press hover:opacity-95 active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
-                  >
-                    <Download className="w-4 h-4" /> 
-                    <span>Simpan GIF Animation</span>
+                  <button type="button" onClick={() => downloadFile(gif.url, 'animation.gif')} className={SAVE_BUTTON}>
+                    <Download className="w-5 h-5" aria-hidden="true" />
+                    Simpan GIF
                   </button>
                 </div>
               ) : (
-                <p className="text-slate-400 font-semibold py-16 text-sm">Tidak ada GIF.</p>
+                <p className="py-16 text-[17px] text-slate-600">Tidak ada GIF.</p>
               )}
             </motion.section>
           )}
@@ -405,8 +380,8 @@ export default function SessionDetailPage() {
               className="w-full flex flex-col items-center"
             >
               {live ? (
-                <div className="relative w-full rounded-3xl overflow-hidden shadow-2xl bg-slate-900 border border-slate-200/80 p-2 flex flex-col items-center">
-                  <div className="relative w-full rounded-2xl overflow-hidden flex items-center justify-center bg-slate-950" style={{ maxHeight: '68vh', aspectRatio: '9/16' }}>
+                <div className="w-full">
+                  <div className="relative w-full rounded-lg overflow-hidden flex items-center justify-center bg-blue-dark" style={{ maxHeight: '68vh', aspectRatio: '9/16' }}>
                     <video
                       key={live.url}
                       src={live.url}
@@ -418,16 +393,13 @@ export default function SessionDetailPage() {
                       className="w-full h-full object-contain"
                     />
                   </div>
-                  <button 
-                    onClick={() => downloadFile(live.url, `live_photo_${liveIdx + 1}.mp4`)} 
-                    className="w-full mt-3 py-3 rounded-full bg-gradient-to-r from-secondary to-orange-press hover:opacity-95 active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
-                  >
-                    <Download className="w-4 h-4" /> 
-                    <span>Simpan Live Video HD</span>
+                  <button type="button" onClick={() => downloadFile(live.url, `live_photo_${liveIdx + 1}.mp4`)} className={SAVE_BUTTON}>
+                    <Download className="w-5 h-5" aria-hidden="true" />
+                    Simpan Live Video HD
                   </button>
                 </div>
               ) : (
-                <p className="text-slate-400 font-semibold py-16 text-sm">Tidak ada Live Photo.</p>
+                <p className="py-16 text-[17px] text-slate-600">Tidak ada Live Photo.</p>
               )}
             </motion.section>
           )}
@@ -443,7 +415,7 @@ export default function SessionDetailPage() {
             >
               <div className="grid grid-cols-2 gap-3 w-full">
                 {photos.map((p, i) => (
-                  <div key={p.id} className="relative group aspect-square bg-slate-900 rounded-2xl overflow-hidden shadow-md border border-slate-200/80">
+                  <div key={p.id} className="relative aspect-square bg-slate-200 rounded-lg overflow-hidden">
                     <img 
                       src={isMobile ? `/api/image?url=${encodeURIComponent(p.url)}&w=480&q=60` : `/api/image?url=${encodeURIComponent(p.url)}&w=640&q=70`} 
                       alt={`Photo ${i + 1}`} 
@@ -456,21 +428,20 @@ export default function SessionDetailPage() {
                       }}
                     />
                     <button
+                      type="button"
                       onClick={() => downloadFile(p.url, `photo_${i + 1}.jpg`)}
-                      className="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-black/75 backdrop-blur-md flex items-center justify-center text-white hover:bg-orange-600 active:scale-90 transition-all shadow-md cursor-pointer"
-                      title="Download (Ukuran Asli)"
+                      aria-label={`Download foto ${i + 1} (ukuran asli)`}
+                      title="Download (ukuran asli)"
+                      className="absolute right-2 bottom-2 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-blue-dark text-white transition-[background-color,transform] hover:bg-primary active:scale-90"
                     >
-                      <Download className="w-3.5 h-3.5" />
+                      <Download className="w-5 h-5" />
                     </button>
                   </div>
                 ))}
               </div>
-              <button 
-                onClick={handleDownloadAll} 
-                className="mt-5 w-full py-3.5 rounded-full bg-blue-dark hover:bg-black active:scale-95 text-white font-black font-bayon uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
-              >
-                <Download className="w-4 h-4" /> 
-                <span>Simpan Semua Foto ({photos.length})</span>
+              <button type="button" onClick={handleDownloadAll} className={SAVE_BUTTON}>
+                <Download className="w-5 h-5" aria-hidden="true" />
+                Simpan Semua Foto ({photos.length})
               </button>
             </motion.section>
           )}
@@ -479,9 +450,9 @@ export default function SessionDetailPage() {
 
       {/* Copied Toast */}
       {copiedNotification && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-black/85 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg border border-white/20 flex items-center gap-1.5 animate-fade-in">
-          <Check className="w-4 h-4 text-emerald-400" />
-          <span>Link sesi berhasil disalin!</span>
+        <div role="status" className="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex w-max max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full bg-blue-dark px-5 py-3 text-[15px] font-semibold text-white shadow-[0_8px_24px_rgba(0,17,58,0.4)] animate-fade-in">
+          <Check className="w-4 h-4 shrink-0 text-secondary" aria-hidden="true" />
+          <span>Link sesi berhasil disalin</span>
         </div>
       )}
     </div>

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, Globe, X, Check } from "lucide-react";
+import { createPortal } from "react-dom";
+import { Globe, X, Check } from "lucide-react";
 import type { FrameEvent } from "@/data/frameEvents";
 import { photoDisplayUrl } from "@/data/frameEvents";
 import { postAdmin } from "./admin/useFrameAdminData";
@@ -17,6 +18,9 @@ interface Props {
     sessionId?: string;
     sessionTitle?: string;
     media?: Media;
+    /** Styling of the row, so it matches the sheet it sits in. */
+    rowClassName: string;
+    iconClassName: string;
 }
 
 const field =
@@ -26,7 +30,7 @@ const field =
  * Row for the My Photos "Opsi Sesi" sheet, shown to super admins only: sends the photo on screen to
  * the Visual Archive and, if an event is picked, to that event's frame page as a real result.
  */
-export function PublishToSiteOption({ sessionId, sessionTitle, media }: Props) {
+export function PublishToSiteOption({ sessionId, sessionTitle, media, rowClassName, iconClassName }: Props) {
     const [isSuper, setIsSuper] = useState(false);
     const [open, setOpen] = useState(false);
     const [events, setEvents] = useState<FrameEvent[]>([]);
@@ -89,18 +93,13 @@ export function PublishToSiteOption({ sessionId, sessionTitle, media }: Props) {
 
     return (
         <>
-            <button
-                onClick={openSheet}
-                className="w-full py-3 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-800 flex items-center justify-between text-xs font-semibold cursor-pointer transition-colors"
-            >
-                <div className="flex items-center gap-3">
-                    <Globe className="w-4 h-4 text-[#ff4500]" />
-                    <span>Tampilkan di website (super admin)</span>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+            <button type="button" onClick={openSheet} className={rowClassName}>
+                <Globe className={iconClassName} aria-hidden="true" />
+                Tampilkan di website (super admin)
             </button>
 
-            {open && (
+            {/* In a portal: the options sheet scrolls and animates, which would trap a fixed child inside it */}
+            {open && createPortal(
                 <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/50 p-0 sm:p-4" role="dialog" aria-modal="true" aria-label="Tampilkan di website">
                     <div className="w-full max-w-[440px] bg-[#f8f9fa] text-[#002366] rounded-t-[28px] sm:rounded-[28px] p-5 pb-[max(20px,env(safe-area-inset-bottom))] flex flex-col gap-4 max-h-[92svh] overflow-y-auto">
                         <div className="flex items-center justify-between">
@@ -158,7 +157,8 @@ export function PublishToSiteOption({ sessionId, sessionTitle, media }: Props) {
                             </>
                         )}
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </>
     );

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { LayoutGrid, Download, LogOut, HelpCircle, Image as ImageIcon } from 'lucide-react'
-import { LiquidGlassDock } from '@/components/ui/LiquidGlassDock'
+import { Dock } from '@/components/ui/Dock'
 import { SeboothLoader } from '@/components/ui/SeboothLoader'
 
 interface ProfileDockProps {
@@ -38,9 +38,8 @@ export function ProfileDock({
       className="fixed bottom-4 sm:bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none px-4"
       style={{ bottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}
     >
-      <LiquidGlassDock
+      <Dock
         ariaLabel="Navigasi Galeri"
-        surface="dark"
         onHaptic={(type) => triggerHaptic(type || 'tick')}
         activeId={
           isLoggingOut
@@ -58,8 +57,7 @@ export function ProfileDock({
             id: 'gallery',
             domId: 'bottom-nav-bookshelf-btn',
             label: 'Gallery View',
-            icon: <LayoutGrid className="w-5 h-5 stroke-[1.8]" />,
-            activeIcon: <LayoutGrid className="w-5 h-5 stroke-[1.6] fill-white" />,
+            icon: <LayoutGrid className="w-5 h-5" />,
             onSelect: (e) => {
               e.stopPropagation()
               if (!isOverviewMode) handleOpenBookshelf()
@@ -69,8 +67,7 @@ export function ProfileDock({
             id: 'photos',
             domId: 'bottom-nav-photos-btn',
             label: 'Photos View',
-            icon: <ImageIcon className="w-5 h-5 stroke-[1.8]" />,
-            activeIcon: <ImageIcon className="w-5 h-5 stroke-[2] fill-white/25" />,
+            icon: <ImageIcon className="w-5 h-5" />,
             onSelect: (e) => {
               e.stopPropagation()
               if (isOverviewMode) handleCloseBookshelf()
@@ -85,11 +82,10 @@ export function ProfileDock({
               : 'Download',
             disabled: isBundling,
             icon: isBundling ? (
-              <SeboothLoader variant="mini" label="Menyiapkan unduhan" className="w-5 h-5 text-orange-400" />
+              <SeboothLoader variant="mini" label="Menyiapkan unduhan" className="w-5 h-5" />
             ) : (
-              <Download className="w-5 h-5 stroke-[1.8]" />
+              <Download className="w-5 h-5" />
             ),
-            activeIcon: <Download className="w-5 h-5 stroke-[2.4]" />,
             onSelect: (e) => {
               e.stopPropagation()
               handleDownloadBundle(e)
@@ -99,8 +95,7 @@ export function ProfileDock({
             id: 'guide',
             domId: 'bottom-nav-guide-btn',
             label: 'Guide',
-            icon: <HelpCircle className="w-5 h-5 stroke-[1.8]" />,
-            activeIcon: <HelpCircle className="w-5 h-5 stroke-[2.2] fill-white/30" />,
+            icon: <HelpCircle className="w-5 h-5" />,
             onSelect: (e) => {
               e.stopPropagation()
               handleOpenHelp()
@@ -114,11 +109,10 @@ export function ProfileDock({
             tone: 'danger',
             disabled: isLoggingOut,
             icon: isLoggingOut ? (
-              <SeboothLoader variant="mini" className="w-5 h-5 text-rose-400" />
+              <SeboothLoader variant="mini" className="w-5 h-5" />
             ) : (
-              <LogOut className="w-5 h-5 stroke-[1.8]" />
+              <LogOut className="w-5 h-5" />
             ),
-            activeIcon: <LogOut className="w-5 h-5 stroke-[2.2]" />,
             onSelect: (e) => {
               e.stopPropagation()
               handleLogout()

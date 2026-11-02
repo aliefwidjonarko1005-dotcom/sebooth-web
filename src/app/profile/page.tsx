@@ -13,8 +13,6 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  FolderDown,
-  Sparkles,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 import { SessionData } from '@/types/database'
@@ -221,7 +219,7 @@ export default function MyPhotosPage() {
   )
 
   // Handle clicking a card in Bookshelf -> Zoom In to Focus Mode (iOS Photos style)
-  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>, targetIdx: number) => {
+  const handleCardClick = (e: React.MouseEvent<HTMLElement>, targetIdx: number) => {
     triggerHaptic(12)
     const rect = e.currentTarget.getBoundingClientRect()
     const originX = Math.round(rect.left + rect.width / 2)
@@ -698,6 +696,8 @@ export default function MyPhotosPage() {
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         setActiveSessionIndex(prev => (prev > 0 ? prev - 1 : prev))
       } else if (e.key === ' ' || e.key === 'Enter') {
+        // A focused control already answers these keys itself
+        if ((e.target as HTMLElement).closest('a, button, input')) return
         if (currentSession && activeSessionMediaList.length > 1) {
           handleNextMedia(currentSession.id, activeSessionMediaList.length)
         }
@@ -884,7 +884,7 @@ export default function MyPhotosPage() {
   // ── EMPTY STATE (LOGGED IN USER WITHOUT SESSIONS) ──
   if (sessionsList.length === 0) {
     return (
-      <div className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-slate-900 overflow-hidden flex flex-col justify-between select-none font-sans">
+      <div className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-cream-soft text-blue-dark overflow-hidden flex flex-col justify-between select-none font-sans">
         <ProfileEmptyState
           handleLogout={handleLogout}
           isLoggingOut={isLoggingOut}
@@ -903,7 +903,7 @@ export default function MyPhotosPage() {
   }
 
   return (
-    <div className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-[#FAF8F5] text-slate-900 overflow-hidden select-none font-sans">
+    <div className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-cream-soft text-blue-dark overflow-hidden select-none font-sans">
 
       <AnimatePresence initial={false} mode="sync">
         {isOverviewMode ? (
@@ -925,7 +925,7 @@ export default function MyPhotosPage() {
             onScroll={(e) => {
               lastScrollTop.current = e.currentTarget.scrollTop
             }}
-            className="absolute inset-0 w-full h-full overflow-y-auto bg-[#FAF8F5] text-slate-900 flex flex-col font-sans z-10 [transform:translate3d(0,0,0)]"
+            className="absolute inset-0 w-full h-full overflow-y-auto bg-cream-soft text-blue-dark flex flex-col font-sans z-10 [transform:translate3d(0,0,0)]"
           >
             <BookshelfView
               sessionsList={sessionsList}
@@ -950,7 +950,7 @@ export default function MyPhotosPage() {
               transformOrigin: zoomOrigin,
               willChange: 'transform, opacity'
             }}
-            className="absolute inset-0 w-full h-full flex flex-col items-center justify-between bg-[#FAF8F5] z-20 overflow-hidden [transform:translate3d(0,0,0)]"
+            className="absolute inset-0 w-full h-full flex flex-col items-center justify-between bg-cream-soft z-20 overflow-hidden [transform:translate3d(0,0,0)]"
           >
             <div className="w-full max-w-6xl mx-auto h-full flex flex-col justify-between px-4 sm:px-6 md:px-8 pt-3 pb-3 sm:pt-4 sm:pb-4">
 
@@ -959,28 +959,29 @@ export default function MyPhotosPage() {
                 {/* Close button */}
                 <Link
                   href="/"
-                  className="w-10 h-10 flex items-center justify-start text-slate-800 hover:text-black transition-opacity active:scale-95 cursor-pointer"
+                  aria-label="Kembali ke Beranda"
                   title="Kembali ke Beranda"
+                  className="-ml-2.5 w-11 h-11 flex items-center justify-center text-blue-dark transition-transform active:scale-90 cursor-pointer focus-visible:outline-2 focus-visible:outline-primary"
                 >
-                  <X className="w-6 h-6 stroke-[2.2]" />
+                  <X className="w-6 h-6" />
                 </Link>
 
                 {/* Center Title: "My Photos" (Clickable to open Bookshelf Gallery View) */}
-                <button
-                  onClick={handleOpenBookshelf}
-                  className="flex flex-col items-center cursor-pointer group active:scale-95 transition-transform"
-                  title="Buka Galeri Album (Expanded View)"
-                >
-                  <h1 className="text-[18px] sm:text-[20px] font-extrabold text-slate-900 tracking-tight font-sans group-hover:text-orange-600 transition-colors">
-                    My Photos
-                  </h1>
-                  <span className="text-[11px] font-medium text-slate-400 -mt-0.5 group-hover:text-slate-600">
-                    Sesi {activeSessionIndex + 1} dari {sessionsList.length} &bull; Lihat Semua &rarr;
-                  </span>
-                </button>
+                <h1>
+                  <button
+                    onClick={handleOpenBookshelf}
+                    title="Buka Galeri"
+                    className="flex flex-col items-center cursor-pointer transition-transform active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  >
+                    <span className="font-bayon text-[1.75rem] leading-none text-primary uppercase">My Photos</span>
+                    <span className="mt-0.5 text-[13px] leading-snug text-slate-600">
+                      Sesi {activeSessionIndex + 1} dari {sessionsList.length}, lihat semua
+                    </span>
+                  </button>
+                </h1>
 
                 {/* Right Empty Spacer to geometrically center "My Photos" relative to the left close button */}
-                <div className="w-10 h-10 pointer-events-none" />
+                <div className="-mr-2.5 w-11 h-11 pointer-events-none" />
               </header>
 
           {/* Centerpiece: Polaroid Stack Focus Slider */}
@@ -990,27 +991,29 @@ export default function MyPhotosPage() {
             <button
               onClick={() => setActiveSessionIndex(prev => (prev > 0 ? prev - 1 : 0))}
               disabled={activeSessionIndex === 0}
-              className={`hidden md:flex absolute left-2 lg:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-slate-200 text-slate-700 transition-all items-center justify-center ${
+              aria-label="Sesi Sebelumnya"
+              title="Sesi Sebelumnya"
+              className={`hidden md:flex absolute left-2 lg:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-blue-dark text-white transition-colors items-center justify-center ${
                 activeSessionIndex === 0
                   ? 'opacity-30 cursor-not-allowed'
-                  : 'hover:text-slate-950 hover:bg-slate-50 active:scale-90 cursor-pointer'
+                  : 'hover:bg-primary active:scale-90 cursor-pointer'
               }`}
-              title="Sesi Sebelumnya"
             >
-              <ChevronLeft className="w-6 h-6 stroke-[2.4]" />
+              <ChevronLeft className="w-6 h-6" />
             </button>
 
             <button
               onClick={() => setActiveSessionIndex(prev => (prev < sessionsList.length - 1 ? prev + 1 : prev))}
               disabled={activeSessionIndex === sessionsList.length - 1}
-              className={`hidden md:flex absolute right-2 lg:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-slate-200 text-slate-700 transition-all items-center justify-center ${
+              aria-label="Sesi Berikutnya"
+              title="Sesi Berikutnya"
+              className={`hidden md:flex absolute right-2 lg:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-blue-dark text-white transition-colors items-center justify-center ${
                 activeSessionIndex === sessionsList.length - 1
                   ? 'opacity-30 cursor-not-allowed'
-                  : 'hover:text-slate-950 hover:bg-slate-50 active:scale-90 cursor-pointer'
+                  : 'hover:bg-primary active:scale-90 cursor-pointer'
               }`}
-              title="Sesi Berikutnya"
             >
-              <ChevronRight className="w-6 h-6 stroke-[2.4]" />
+              <ChevronRight className="w-6 h-6" />
             </button>
 
             {/* Hidden native switch input for iOS 17.4+ Taptic Engine hardware trigger */}
@@ -1024,7 +1027,7 @@ export default function MyPhotosPage() {
 
             {/* iOS Haptic Touch Ambient Backdrop Dimming */}
             <div
-              className={`fixed inset-0 z-20 bg-black/75 md:backdrop-blur-[8px] pointer-events-none transition-opacity duration-250 ${
+              className={`fixed inset-0 z-20 bg-blue-dark/80 pointer-events-none transition-opacity duration-250 ${
                 touchFeedback === 'peeking' ? 'opacity-100' : 'opacity-0'
               }`}
               aria-hidden="true"
@@ -1056,7 +1059,7 @@ export default function MyPhotosPage() {
               onMouseMove={(e) => handleDragMove(e.clientX)}
               onMouseUp={(e) => handleDragEnd(e.clientX)}
               onMouseLeave={() => handleDragEnd()}
-              className="relative z-30 w-full h-[72vh] xs:h-[75vh] sm:h-[78vh] md:h-[80vh] max-h-[640px] flex items-center justify-start touch-pan-y cursor-grab active:cursor-grabbing overflow-visible select-none"
+              className="relative z-30 w-full h-[64svh] max-h-[640px] flex items-center justify-start touch-pan-y cursor-grab active:cursor-grabbing overflow-visible select-none"
             >
               {/* Slider Track */}
               <div
@@ -1091,7 +1094,7 @@ export default function MyPhotosPage() {
                     <div
                       key={`slot-active-${session.id}`}
                       style={{ width: '100%' }}
-                      className="h-full shrink-0 flex items-center justify-center select-none [transform:translate3d(0,0,0)] [backface-visibility:hidden] px-4 sm:px-12 md:px-24 lg:px-36 opacity-100 scale-100"
+                      className="h-full shrink-0 flex items-center justify-center select-none [transform:translate3d(0,0,0)] [backface-visibility:hidden] sm:px-12 md:px-24 lg:px-36 opacity-100 scale-100"
                       onClick={() => {
                         if (!isCurrentSession) {
                           setActiveSessionIndex(sIdx)
@@ -1102,9 +1105,9 @@ export default function MyPhotosPage() {
                       <div
                         ref={isCurrentSession ? activeCardContainerRef : undefined}
                         id={isCurrentSession ? 'tour-profile-session-card' : undefined}
-                        className={`relative h-full aspect-[2/3] w-auto flex items-center justify-center max-h-[58svh] xs:max-h-[62svh] sm:max-h-[620px] md:max-h-[660px] max-w-[340px] xs:max-w-[380px] sm:max-w-[440px] md:max-w-[480px] ${
+                        className={`relative h-full aspect-[2/3] w-auto flex items-center justify-center max-h-[62svh] max-w-full ${
                           isCurrentSession && touchFeedback === 'peeking'
-                            ? 'z-40 max-md:shadow-[0_16px_40px_-10px_rgba(0,0,0,0.65)] md:shadow-[0_36px_80px_-15px_rgba(0,0,0,0.85),0_15px_30px_-8px_rgba(0,0,0,0.6)] ring-2 ring-white/60 rounded-[24px] xs:rounded-[30px] sm:rounded-[34px]'
+                            ? 'z-40 rounded-2xl ring-2 ring-white shadow-[0_16px_40px_-10px_rgba(0,17,58,0.6)]'
                             : ''
                         }`}
                         style={{
@@ -1114,12 +1117,10 @@ export default function MyPhotosPage() {
                             : 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.28s ease'
                         }}
                       >
-                        {/* iOS Haptic Peek Floating HUD pill (iOS Dynamic Island Style) */}
+                        {/* Tells the holder what letting go will do */}
                         {isCurrentSession && touchFeedback === 'peeking' && (
-                          <div className="absolute -top-14 z-50 px-4 py-2 rounded-full bg-slate-900/90 backdrop-blur-2xl border border-white/30 shadow-[0_12px_36px_rgba(0,0,0,0.55)] text-white text-[12px] font-semibold tracking-wide flex items-center gap-2 pointer-events-none select-none animate-in fade-in zoom-in-95 duration-200 slide-in-from-bottom-3">
-                            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-                            <Sparkles className="w-4 h-4 text-amber-300 fill-amber-300" />
-                            <span className="font-medium text-white/95">Lepas untuk Buka Menu</span>
+                          <div className="absolute -top-14 z-50 whitespace-nowrap rounded-full bg-blue-dark px-4 py-2.5 text-[15px] font-semibold text-white pointer-events-none select-none animate-in fade-in zoom-in-95 duration-200 slide-in-from-bottom-3">
+                            Lepas untuk buka menu
                           </div>
                         )}
 
@@ -1148,7 +1149,7 @@ export default function MyPhotosPage() {
                               className={`absolute inset-0 flex items-center justify-center [contain:paint] ${
                                 isFront
                                   ? isCurrentSession && touchFeedback === 'peeking'
-                                    ? 'z-30 opacity-100 ring-2 ring-white/60 rounded-[22px] xs:rounded-[28px] sm:rounded-[32px] max-md:shadow-xl md:shadow-2xl'
+                                    ? 'z-30 opacity-100 rounded-2xl'
                                     : 'z-20 opacity-100'
                                   : 'z-10 opacity-70 [transform:translate3d(10px,-10px,0)_scale(0.96)_rotate(3.5deg)]'
                               }`}
@@ -1160,7 +1161,7 @@ export default function MyPhotosPage() {
                                   : 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease-out'
                               }}
                             >
-                              <div className="relative w-full h-full rounded-[22px] xs:rounded-[28px] sm:rounded-[32px] overflow-hidden bg-zinc-950 flex items-center justify-center shadow-lg [transform:translate3d(0,0,0)] [backface-visibility:hidden]">
+                              <div className="relative w-full h-full rounded-2xl overflow-hidden bg-slate-200 flex items-center justify-center [transform:translate3d(0,0,0)] [backface-visibility:hidden]">
                                 {shouldPlayVideo ? (
                                   <video
                                     src={med.url}
@@ -1197,7 +1198,7 @@ export default function MyPhotosPage() {
                           id={isCurrentSession ? 'tour-profile-card-actions' : undefined}
                           onMouseDown={(e) => e.stopPropagation()}
                           onTouchStart={(e) => e.stopPropagation()}
-                          className={`absolute top-3.5 right-3.5 z-40 flex items-center gap-1.5 transition-opacity duration-200 ${
+                          className={`absolute top-3 right-3 z-40 flex items-center gap-2 transition-opacity duration-200 ${
                             isCurrentSession ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                           }`}
                         >
@@ -1209,10 +1210,11 @@ export default function MyPhotosPage() {
                               e.preventDefault()
                               handleDownload(e)
                             }}
-                            className="w-8.5 h-8.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-lg active:scale-90 transition-transform cursor-pointer"
+                            aria-label="Download Foto Ini (HD)"
                             title="Download Foto Ini (HD)"
+                            className="w-11 h-11 rounded-full bg-secondary hover:bg-white text-blue-dark flex items-center justify-center active:scale-90 transition-[background-color,transform] cursor-pointer"
                           >
-                            <Download className="w-4 h-4 stroke-[2.4]" />
+                            <Download className="w-5 h-5" />
                           </button>
                           <button
                             onMouseDown={(e) => e.stopPropagation()}
@@ -1222,10 +1224,11 @@ export default function MyPhotosPage() {
                               e.preventDefault()
                               setIsOptionsModalOpen(true)
                             }}
-                            className="w-8.5 h-8.5 rounded-full bg-black/50 hover:bg-black/75 backdrop-blur-sm border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-90 transition-transform cursor-pointer"
+                            aria-label="Opsi Sesi"
                             title="Opsi Sesi"
+                            className="w-11 h-11 rounded-full bg-blue-dark hover:bg-primary text-white flex items-center justify-center active:scale-90 transition-[background-color,transform] cursor-pointer"
                           >
-                            <MoreHorizontal className="w-4 h-4 stroke-[2.2]" />
+                            <MoreHorizontal className="w-5 h-5" />
                           </button>
                         </div>
 
@@ -1238,8 +1241,18 @@ export default function MyPhotosPage() {
 
           </div>
 
+          {/* Which session this is and where in it you are */}
+          {currentSession && (
+            <div className="w-full shrink-0 pt-1 text-center" aria-live="polite">
+              <p className="truncate text-[17px] leading-snug font-bold text-primary">{currentSession.title}</p>
+              <p className="text-[13px] leading-snug text-slate-600">
+                {currentSession.dateStr} · {currentMediaIndex + 1} dari {activeSessionMediaList.length} file
+              </p>
+            </div>
+          )}
+
           {/* Bottom spacing spacer for floating capsule dock */}
-          <div className="w-full h-12 sm:h-14 shrink-0 pointer-events-none" />
+          <div className="w-full h-[4.5rem] sm:h-20 shrink-0 pointer-events-none" />
         </div>
       </motion.div>
     )}
@@ -1291,22 +1304,22 @@ export default function MyPhotosPage() {
 
       {/* Copied Toast */}
       {copiedNotification && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg border border-slate-700 flex items-center gap-1.5 animate-fade-in">
-          <Check className="w-4 h-4 text-emerald-400" />
-          <span>Link berhasil disalin!</span>
+        <div role="status" className="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex w-max max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full bg-blue-dark px-5 py-3 text-[15px] font-semibold text-white shadow-[0_8px_24px_rgba(0,17,58,0.4)] animate-fade-in">
+          <Check className="w-4 h-4 shrink-0 text-secondary" aria-hidden="true" />
+          <span>Link berhasil disalin</span>
         </div>
       )}
 
       {/* Bundle Download Toast */}
       {bundleNotification && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-2xl border border-slate-700 flex items-center gap-2 animate-fade-in">
-          <Check className="w-4 h-4 text-emerald-400 stroke-[2.5]" />
+        <div role="status" className="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex w-max max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full bg-blue-dark px-5 py-3 text-[15px] font-semibold text-white shadow-[0_8px_24px_rgba(0,17,58,0.4)] animate-fade-in">
+          <Check className="w-4 h-4 shrink-0 text-secondary" aria-hidden="true" />
           <span>{bundleNotification}</span>
         </div>
       )}
 
       {/* Spotlight guide: card gestures, Gallery View, download, help */}
-      <Guide steps={profileGuideSteps} open={guide.open} onClose={guide.close} storageKey={GUIDE_KEYS.profile} variant="ios" />
+      <Guide steps={profileGuideSteps} open={guide.open} onClose={guide.close} storageKey={GUIDE_KEYS.profile} />
 
     </div>
   )
