@@ -1,17 +1,28 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { LogIn, Mail, Lock, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
+import { afterAuthPath, safeRedirectPath } from '@/lib/safeRedirect'
+import { whatsappUrl } from '@/config/social'
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
+import { FLOW_BUTTON_ORANGE } from '@/components/ui/FlowHero'
+import {
+  AUTH_LINK,
+  AuthError,
+  AuthShell,
+  FIELD_INPUT,
+  FIELD_LABEL,
+  PasswordField,
+  authErrorMessage,
+  authSwitchHref,
+} from '@/components/auth/AuthForm'
 
 function LoginContent() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const claimId = searchParams.get('claim')
-  const redirectTo = searchParams.get('redirect')
+  const redirectTo = safeRedirectPath(searchParams.get('redirect'))
   const supabase = createClient()
 
   const [email, setEmail] = useState('')
@@ -25,143 +36,76 @@ function LoginContent() {
     setError(null)
 
     try {
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      const { error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
       if (authError) throw authError
 
-      if (authData.user && claimId) {
-        // Link session to user
-        const { error: claimError } = await supabase
-          .from('sessions')
-          .update({ 
-            user_id: authData.user.id,
-            is_claimed: true 
-          })
-          .eq('id', claimId)
-
-        if (claimError) {
-          console.error('Claim error:', claimError)
-        }
-      }
-
-      // Priority: claim (/access/${claimId}) > redirect > profile
-      if (claimId) {
-        window.location.href = `/access/${claimId}`
-      } else if (redirectTo) {
-        window.location.href = redirectTo
-      } else {
-        window.location.href = '/profile'
-      }
+      // Stays in the loading state until the next page opens
+      window.location.href = afterAuthPath(claimId, redirectTo)
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Gagal masuk. Periksa kembali email dan password Anda.'
-      setError(message)
-    } finally {
+      setError(authErrorMessage(err, 'Gagal masuk. Periksa koneksi internetmu, lalu coba lagi.'))
       setLoading(false)
     }
   }
 
   return (
-    <div className="flex min-h-[100svh] items-center justify-center bg-fluid-gradient p-6">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md overflow-hidden rounded-[2rem] bg-white p-8 shadow-2xl ring-1 ring-gray-900/5 md:p-12"
-      >
-        <div className="text-center">
-          <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
-            <LogIn className="h-6 w-6" />
-          </div>
-          <h1 className="mt-4 text-2xl font-black text-gray-900">
-            {claimId ? 'Masuk untuk Klaim' : 'Masuk ke Sebooth'}
-          </h1>
-          <p className="mt-2 text-gray-600">
-            {claimId 
-              ? 'Satu langkah lagi untuk menyimpan sesi fotomu.' 
-              : redirectTo?.startsWith('/queue')
-              ? 'Masuk ke akunmu untuk mengambil nomor antrean.'
-              : 'Akses semua galeri fotomu di sini.'}
-          </p>
-          {claimId && (
-            <div className="mt-4 rounded-xl bg-blue-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-blue-600 ring-1 ring-blue-100">
-              ⚡ Mode Klaim Aktif
-            </div>
-          )}
-          {redirectTo?.startsWith('/queue') && !claimId && (
-            <div className="mt-4 rounded-xl bg-amber-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-amber-700 ring-1 ring-amber-200">
-              🎫 Masuk untuk Ambil Antrean
-            </div>
-          )}
-        </div>
+    <AuthShell
+      title={claimId ? 'Masuk untuk Klaim Foto' : 'Masuk ke Sebooth'}
+      intro={
+        claimId
+          ? 'Satu langkah lagi untuk menyimpan sesi fotomu.'
+          : redirectTo?.startsWith('/queue')
+          ? 'Masuk ke akunmu untuk mengambil nomor antrean.'
+          : 'Akses semua galeri fotomu di sini.'
+      }
+    >
+      <form onSubmit={handleLogin} className="space-y-5">
+        <label className={FIELD_LABEL}>
+          Email
+          <input
+            type="email"
+            required
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={FIELD_INPUT}
+            placeholder="nama@email.com"
+          />
+        </label>
 
-        <form onSubmit={handleLogin} className="mt-10 space-y-6">
-          <div>
-            <label className="text-sm font-bold text-gray-700">Email</label>
-            <div className="relative mt-2">
-              <Mail className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-              <input 
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-2xl border-none bg-gray-100 py-4 pl-12 pr-4 font-medium transition-shadow focus:ring-2 focus:ring-blue-600"
-                placeholder="nama@email.com"
-              />
-            </div>
-          </div>
+        <PasswordField id="login-password" autoComplete="current-password" value={password} onChange={setPassword} />
 
-          <div>
-            <label className="text-sm font-bold text-gray-700">Password</label>
-            <div className="relative mt-2">
-              <Lock className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-              <input 
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-2xl border-none bg-gray-100 py-4 pl-12 pr-4 font-medium transition-shadow focus:ring-2 focus:ring-blue-600"
-                placeholder="••••••••"
-              />
-            </div>
-          </div>
+        {error && <AuthError>{error}</AuthError>}
 
-          {error && (
-            <div className="rounded-xl bg-red-50 p-4 text-sm font-medium text-red-600">
-              {error}
-            </div>
-          )}
+        <button type="submit" disabled={loading} className={`${FLOW_BUTTON_ORANGE} cursor-pointer`}>
+          {loading ? <SeboothLoader variant="mini" label="Sedang masuk" className="h-6 w-6" /> : 'Masuk'}
+        </button>
+      </form>
 
-          <button 
-            type="submit"
-            disabled={loading}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 py-4 font-black text-white shadow-xl transition-all hover:scale-[1.02] active:scale-95 disabled:bg-gray-400"
+      <div className="mt-6">
+        <p>
+          Belum punya akun?{' '}
+          <Link href={authSwitchHref('/register', claimId, redirectTo)} className={AUTH_LINK}>Daftar</Link>
+        </p>
+        <p>
+          Lupa password?{' '}
+          <a
+            href={whatsappUrl('Halo Sebooth, saya lupa password akun Sebooth saya.')}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={AUTH_LINK}
           >
-            {loading ? <SeboothLoader variant="mini" className="h-6 w-6" /> : (
-              <>
-                Masuk <ArrowRight className="h-5 w-5" />
-              </>
-            )}
-          </button>
-        </form>
-
-        <div className="mt-8 flex items-center justify-between text-sm">
-          <button className="text-gray-500 hover:text-blue-600">Lupa Password?</button>
-          <button 
-            onClick={() => {
-              const query = new URLSearchParams()
-              if (claimId) query.set('claim', claimId)
-              if (redirectTo) query.set('redirect', redirectTo)
-              router.push(`/register${query.toString() ? `?${query.toString()}` : ''}`)
-            }}
-            className="font-bold text-blue-600 hover:underline"
-          >
-            Daftar Akun Baru
-          </button>
-        </div>
-      </motion.div>
-    </div>
+            Chat Sebooth
+          </a>
+        </p>
+      </div>
+    </AuthShell>
   )
 }
 
