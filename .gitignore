@@ -51,3 +51,7 @@ picture_stocks
 # local MCP configs (contain API keys)
 .mcp.json
 .agents/mcp_config.json
+
+# playwright
+/test-results/
+/playwright-report/
