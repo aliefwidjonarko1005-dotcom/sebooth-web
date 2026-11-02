@@ -147,7 +147,7 @@ export default function ReviewFunnel({ sessionId, eventName, initialStage, doneN
                 transition={{ type: 'spring', stiffness: 260, damping: 30 }}
               />
             </div>
-            <span className={`text-[12px] ${i <= stepIndex ? 'text-slate-900 font-medium' : 'text-slate-400'}`}>{s.label}</span>
+            <span className={`text-[13px] ${i <= stepIndex ? 'text-slate-900 font-medium' : 'text-slate-400'}`}>{s.label}</span>
           </div>
         ))}
       </div>

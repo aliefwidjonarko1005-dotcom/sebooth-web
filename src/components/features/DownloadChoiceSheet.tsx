@@ -218,7 +218,7 @@ export default function DownloadChoiceSheet({ open, files, zipName, onClose, onD
                   <span className="min-w-0">
                     <span className="flex flex-wrap items-center gap-2 text-[15px] font-bold text-slate-900">
                       Satu file ZIP
-                      <span className="rounded-full bg-[#002366] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">Disarankan</span>
+                      <span className="rounded-full bg-primary px-2 py-0.5 text-[13px] font-bold text-white">Disarankan</span>
                     </span>
                     <span className="mt-1 block text-[13px] leading-relaxed text-slate-500">
                       Sekali unduh, semua file lengkap. Aman di semua browser, termasuk yang memblokir unduhan beruntun.
@@ -295,7 +295,7 @@ export default function DownloadChoiceSheet({ open, files, zipName, onClose, onD
                         type="button"
                         onClick={() => saveOne(file)}
                         aria-label={`Unduh ulang ${file.label}`}
-                        className="flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-slate-100 px-3 text-[12px] font-semibold text-slate-700 transition-colors hover:bg-slate-200 cursor-pointer"
+                        className="flex h-11 shrink-0 items-center gap-1.5 rounded-full bg-slate-100 px-3 text-[13px] font-semibold text-slate-700 transition-colors hover:bg-slate-200 cursor-pointer"
                       >
                         <Download className="h-3.5 w-3.5" />
                         {saved.has(file.name) ? 'Ulangi' : 'Unduh'}

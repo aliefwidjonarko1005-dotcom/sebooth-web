@@ -58,10 +58,7 @@ export default function ClaimStatusStrip({ id, variant, timeString, userName, is
   return (
     <section id={id} className={`w-full rounded-2xl ${copy.tone} px-4 py-3`} aria-label="Status penyimpanan sesi">
       <div className="flex items-center gap-3">
-        <span className="relative flex w-2.5 h-2.5 shrink-0" aria-hidden="true">
-          {variant === 'active' && !reduceMotion && <span className={`absolute inset-0 rounded-full ${copy.dot} animate-ping opacity-60`} />}
-          <span className={`relative w-2.5 h-2.5 rounded-full ${copy.dot}`} />
-        </span>
+        <span className={`w-2.5 h-2.5 shrink-0 rounded-full ${copy.dot}`} aria-hidden="true" />
         <p className="flex-1 min-w-0 text-[14px] leading-snug">
           <span className="font-semibold">{copy.status}</span>
           {variant === 'active' && timeString && <span className="tabular-nums"> · sisa {timeString}</span>}
@@ -71,7 +68,7 @@ export default function ClaimStatusStrip({ id, variant, timeString, userName, is
             type="button"
             onClick={userName ? onClaim : onLogin}
             disabled={isClaiming}
-            className="shrink-0 min-h-[40px] px-4 rounded-full bg-slate-900 text-white text-[13px] font-semibold flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer disabled:opacity-70"
+            className="shrink-0 min-h-11 px-4 rounded-full bg-blue-dark text-white text-sm font-bold flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer disabled:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             {isClaiming ? <SeboothLoader variant="mini" className="w-3.5 h-3.5" /> : null}
             <span>{isClaiming ? 'Menyimpan' : 'Simpan permanen'}</span>
@@ -83,7 +80,7 @@ export default function ClaimStatusStrip({ id, variant, timeString, userName, is
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="mt-1 ml-[22px] min-h-[32px] flex items-center gap-1 text-[13px] font-medium opacity-75 hover:opacity-100 cursor-pointer"
+        className="ml-[22px] min-h-11 flex items-center gap-1 text-sm font-medium cursor-pointer underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-primary"
       >
         Kenapa?
         <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -102,10 +99,10 @@ export default function ClaimStatusStrip({ id, variant, timeString, userName, is
               <p className="text-[14px] leading-relaxed opacity-90">{copy.detail}</p>
               {canClaim && !userName && (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <button type="button" onClick={onLogin} className="min-h-[40px] px-4 rounded-full bg-slate-900 text-white text-[13px] font-semibold flex items-center gap-1.5 cursor-pointer">
+                  <button type="button" onClick={onLogin} className="min-h-11 px-4 rounded-full bg-blue-dark text-white text-sm font-bold flex items-center gap-1.5 cursor-pointer">
                     Masuk <ArrowRight className="w-3.5 h-3.5" />
                   </button>
-                  <button type="button" onClick={onRegister} className="min-h-[40px] px-4 rounded-full bg-white text-slate-900 text-[13px] font-semibold cursor-pointer">
+                  <button type="button" onClick={onRegister} className="min-h-11 px-4 rounded-full bg-white text-blue-dark text-sm font-bold cursor-pointer">
                     Daftar akun baru
                   </button>
                 </div>

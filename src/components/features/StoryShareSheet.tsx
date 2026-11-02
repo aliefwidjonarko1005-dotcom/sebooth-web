@@ -413,7 +413,7 @@ export default function StoryShareSheet({ open, photos, initialPhotoId, sessionI
                     className="w-full min-h-[46px] rounded-xl border border-slate-300 px-3.5 text-[15px] text-slate-900 focus:outline-none focus:border-slate-900"
                     placeholder="Tulis caption"
                   />
-                  <p className="mt-1.5 text-[12px] text-slate-500">{MENTION} otomatis ikut di gambar dan teks yang disalin.</p>
+                  <p className="mt-1.5 text-[13px] text-slate-600">{MENTION} otomatis ikut di gambar dan teks yang disalin.</p>
                 </div>
 
                 <div className="mt-5 flex gap-2">
