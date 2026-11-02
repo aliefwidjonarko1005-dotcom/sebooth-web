@@ -29,15 +29,12 @@ export function emitGuideAction(name: string) {
   window.dispatchEvent(new CustomEvent<string>(ACTION_EVENT, { detail: name }))
 }
 
-export type GuideVariant = 'editorial' | 'brutal' | 'ios'
-
 interface GuideProps {
   steps: GuideStep[]
   open: boolean
   onClose: () => void
   /** localStorage key marked 'true' once the guide is finished or skipped. */
   storageKey: string
-  variant?: GuideVariant
 }
 
 interface Box {
@@ -57,61 +54,18 @@ const SETTLE_MS = 600
 /** Slow fallback check for layout shifts that fire no event (images loading, transforms). */
 const POLL_MS = 400
 
-interface GuideTheme {
-  radius: number
-  dim: string
-  ring: string
-  pulse: string
-  card: string
-  track: string
-  fill: string
-  title: string
-  hint: string
-  secondary: string
-  primary: string
-}
-
-const THEMES: Record<GuideVariant, GuideTheme> = {
-  editorial: {
-    radius: 16,
-    dim: 'rgba(15,23,42,0.6)',
-    ring: '0 0 0 2px #fff',
-    pulse: '#fff',
-    card: 'bg-white rounded-3xl shadow-[0_18px_50px_rgba(15,23,42,0.28)]',
-    track: 'bg-slate-100 rounded-full',
-    fill: 'bg-slate-900 rounded-full',
-    title: 'text-[18px] leading-snug font-bold tracking-tight text-slate-900',
-    hint: 'font-semibold text-slate-900',
-    secondary: 'text-[14px] font-medium text-slate-600 hover:text-slate-900',
-    primary: 'px-5 text-[14px] font-semibold bg-slate-900 rounded-full hover:bg-black'
-  },
-  brutal: {
-    radius: 0,
-    dim: 'rgba(10,10,10,0.68)',
-    ring: '0 0 0 4px #000',
-    pulse: 'var(--color-secondary)',
-    card: 'bg-white border-[3px] border-black hard-shadow-black',
-    track: 'bg-black/15',
-    fill: 'bg-secondary',
-    title: 'text-[18px] leading-snug font-black uppercase tracking-tight text-black',
-    hint: 'font-semibold text-secondary',
-    secondary: 'text-[14px] font-medium text-slate-600 hover:text-slate-900',
-    primary: 'px-5 text-[14px] font-semibold bg-black border-2 border-black uppercase'
-  },
-  // Apple look: system font, large corner radius, iOS blue capsule, page dots instead of a bar
-  ios: {
-    radius: 24,
-    dim: 'rgba(0,0,0,0.5)',
-    ring: '0 0 0 2px rgba(255,255,255,0.92)',
-    pulse: '#fff',
-    card: 'bg-white rounded-[28px] shadow-[0_12px_40px_rgba(0,0,0,0.22),0_0_0_0.5px_rgba(0,0,0,0.06)] [font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif] antialiased',
-    track: '',
-    fill: '',
-    title: 'text-[17px] leading-[22px] font-semibold tracking-[-0.41px] text-black',
-    hint: 'font-medium text-[#007AFF]',
-    secondary: 'text-[15px] text-[#007AFF] active:opacity-50',
-    primary: 'px-6 text-[15px] font-semibold tracking-[-0.24px] bg-[#007AFF] rounded-full active:opacity-80'
-  }
+const theme = {
+  radius: 16,
+  dim: 'rgba(0,17,58,0.72)',
+  ring: '0 0 0 2px #fff',
+  pulse: '#fff',
+  card: 'bg-white rounded-2xl shadow-[0_18px_50px_rgba(0,17,58,0.28)]',
+  track: 'bg-blue-light rounded-full',
+  fill: 'bg-secondary rounded-full',
+  title: 'text-[18px] leading-snug font-bold text-primary',
+  hint: 'font-semibold text-primary',
+  secondary: 'text-[15px] font-medium text-slate-600 hover:text-primary',
+  primary: 'px-5 text-[15px] font-bold bg-primary rounded-full hover:bg-navy-raised'
 }
 
 /**
@@ -124,7 +78,7 @@ const THEMES: Record<GuideVariant, GuideTheme> = {
  * composited div (huge box-shadow) instead of a full-screen SVG mask, so moving it costs a
  * composite, not a repaint.
  */
-export default function Guide({ steps, open, onClose, storageKey, variant = 'editorial' }: GuideProps) {
+export default function Guide({ steps, open, onClose, storageKey }: GuideProps) {
   const reduceMotion = useReducedMotion()
   const [index, setIndex] = useState(0)
   const [hasBox, setHasBox] = useState(false)
@@ -162,8 +116,6 @@ export default function Guide({ steps, open, onClose, storageKey, variant = 'edi
   const gy = useTransform(() => hy.get() + Math.min(hh.get() / 2, hh.get() - 40))
 
   const step = steps[index]
-  const theme = THEMES[variant]
-  const ios = variant === 'ios'
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), [])
@@ -451,39 +403,16 @@ export default function Guide({ steps, open, onClose, storageKey, variant = 'edi
             style={{ width: cardW, x: cx, y: cy }}
           >
             <motion.div initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={spring}>
-              {ios ? (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5" aria-hidden="true">
-                    {steps.map((_, i) => (
-                      <span
-                        key={i}
-                        className={`h-[7px] rounded-full transition-[width,background-color] duration-300 ${i === index ? 'w-[18px] bg-[#007AFF]' : 'w-[7px] bg-black/15'}`}
-                      />
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={finish}
-                    aria-label="Tutup panduan"
-                    className="-mr-2 -my-2 w-11 h-11 shrink-0 flex items-center justify-center cursor-pointer group"
-                  >
-                    <span className="w-[30px] h-[30px] rounded-full bg-[#767680]/[0.12] text-[#3c3c43]/60 flex items-center justify-center group-active:bg-[#767680]/[0.24] transition-colors">
-                      <X className="w-4 h-4 stroke-[2.6]" />
-                    </span>
-                  </button>
-                </div>
-              ) : (
-                <div className={`h-1 ${theme.track} overflow-hidden`}>
-                  <motion.div
-                    className={`h-full origin-left ${theme.fill}`}
-                    initial={false}
-                    animate={{ scaleX: (index + 1) / steps.length }}
-                    transition={spring}
-                  />
-                </div>
-              )}
+              <div className={`h-1 ${theme.track} overflow-hidden`}>
+                <motion.div
+                  className={`h-full origin-left ${theme.fill}`}
+                  initial={false}
+                  animate={{ scaleX: (index + 1) / steps.length }}
+                  transition={spring}
+                />
+              </div>
 
-              <div className={`${ios ? 'mt-3' : 'mt-4'} flex items-start justify-between gap-3`}>
+              <div className="mt-4 flex items-start justify-between gap-3">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     key={index}
@@ -496,7 +425,7 @@ export default function Guide({ steps, open, onClose, storageKey, variant = 'edi
                     <h2 id="guide-title" className={theme.title}>
                       {step.title}
                     </h2>
-                    <p id="guide-body" className={ios ? 'mt-1 text-[15px] leading-[20px] tracking-[-0.24px] text-[#3c3c43]/[0.6]' : 'mt-1.5 text-[15px] leading-relaxed text-slate-600'}>
+                    <p id="guide-body" className="mt-1.5 text-[15px] leading-relaxed text-slate-600">
                       {step.body}
                     </p>
                     {step.gesture && (
@@ -507,20 +436,18 @@ export default function Guide({ steps, open, onClose, storageKey, variant = 'edi
                     )}
                   </motion.div>
                 </AnimatePresence>
-                {!ios && (
                 <button
                   type="button"
                   onClick={finish}
                   aria-label="Tutup panduan"
-                  className="-mr-2 -mt-2 w-10 h-10 shrink-0 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-colors cursor-pointer"
+                  className="-mr-2 -mt-2 w-11 h-11 shrink-0 flex items-center justify-center text-slate-500 hover:text-primary transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
-                )}
               </div>
 
-              <div className={`${ios ? 'mt-5' : 'mt-4'} flex items-center justify-between gap-2`}>
-                <span className={`text-[13px] tabular-nums ${ios ? 'sr-only' : 'text-slate-500'}`} aria-live="polite">
+              <div className="mt-4 flex items-center justify-between gap-2">
+                <span className="text-[13px] tabular-nums text-slate-600" aria-live="polite">
                   {index + 1} dari {steps.length}
                 </span>
                 <div className="flex items-center gap-1">
@@ -541,7 +468,7 @@ export default function Guide({ steps, open, onClose, storageKey, variant = 'edi
                       className={`min-h-[44px] flex items-center gap-1.5 text-white active:scale-95 transition-[transform,opacity] cursor-pointer ${theme.primary}`}
                     >
                       {isLast ? 'Selesai' : 'Lanjut'}
-                      {!isLast && !ios && <ArrowRight className="w-4 h-4" />}
+                      {!isLast && <ArrowRight className="w-4 h-4" />}
                     </button>
                   )}
                 </div>
