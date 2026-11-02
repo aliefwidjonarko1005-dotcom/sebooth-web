@@ -8,22 +8,13 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X,
-  LayoutGrid,
   Download,
   MoreHorizontal,
-  Share2,
   Check,
-  QrCode,
-  ArrowRight,
-  Camera,
-  LogOut,
   ChevronLeft,
   ChevronRight,
   FolderDown,
-  Package,
-  HelpCircle,
   Sparkles,
-  Image as ImageIcon,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 import { SessionData } from '@/types/database'
@@ -31,72 +22,20 @@ import Guide, { emitGuideAction } from '@/components/guide/Guide'
 import ProgressiveImage from '@/components/ui/ProgressiveImage'
 import { useGuide } from '@/components/guide/useGuide'
 import { PROFILE_GUIDE, GUIDE_KEYS } from '@/config/guides'
-import { LiquidGlassDock } from '@/components/ui/LiquidGlassDock'
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
-import { PublishToSiteOption } from "@/components/frames-event/PublishToSiteOption";
 
-export interface SessionMediaItem {
-  id: string
-  url: string
-  hdUrl?: string
-  type: 'strip' | 'photo' | 'gif' | 'video'
-  label: string
-}
-
-export interface UserSessionDisplayItem {
-  id: string
-  title: string
-  author: string
-  location: string
-  dateStr: string
-  avatarUrl: string
-  stripUrl: string
-  rawStripUrl: string
-  badgeCount: number
-  category: string
-  likes: string
-  price: string
-  media: SessionMediaItem[]
-  rawMedia?: any[]
-  attendees: string[]
-}
-
-/**
- * Helper to get optimized, compressed WebP image for ultra-fast rendering & low data usage.
- * Animated GIFs and video MP4s remain untouched.
- * The original uncompressed master file is preserved in `hdUrl` for pristine downloads.
- */
-function getOptimizedDisplayUrl(rawUrl: string, width = 640, quality = 70): string {
-  if (!rawUrl) return ''
-  // If already an /api/image URL, do not double-wrap
-  if (rawUrl.includes('/api/image')) return rawUrl
-  // Bypass animated formats and video streams
-  if (rawUrl.match(/\.(gif|mp4|webm|mov)(\?.*)?$/i)) return rawUrl
-  return `/api/image?url=${encodeURIComponent(rawUrl)}&w=${width}&q=${quality}`
-}
-
-/** ~300-byte blurred stand-in painted instantly while the display WebP loads. */
-function getBlurPlaceholderUrl(rawUrl: string | undefined): string | undefined {
-  if (!rawUrl || rawUrl.match(/\.(gif|mp4|webm|mov)(\?.*)?$/i)) return undefined
-  return getOptimizedDisplayUrl(getRawOriginalUrl(rawUrl), 24, 40)
-}
-
-/**
- * Ensures single and bundle downloads always target the 100% uncompressed master resolution camera file,
- * stripping any proxy /api/image query strings if present.
- */
-function getRawOriginalUrl(url: string | undefined): string {
-  if (!url) return ''
-  if (url.includes('/api/image')) {
-    try {
-      const match = url.match(/[?&]url=([^&]+)/)
-      if (match && match[1]) {
-        return decodeURIComponent(match[1])
-      }
-    } catch {}
-  }
-  return url
-}
+import {
+  SessionMediaItem,
+  UserSessionDisplayItem,
+  getOptimizedDisplayUrl,
+  getBlurPlaceholderUrl,
+  getRawOriginalUrl
+} from '@/components/profile/profileMedia'
+import { ProfileEmptyState } from '@/components/profile/ProfileEmptyState'
+import { ClaimSessionModal } from '@/components/profile/ClaimSessionModal'
+import { BookshelfView } from '@/components/profile/BookshelfView'
+import { ProfileDock } from '@/components/profile/ProfileDock'
+import { SessionOptionsModal } from '@/components/profile/SessionOptionsModal'
 
 export default function MyPhotosPage() {
   const router = useRouter()
@@ -122,7 +61,6 @@ export default function MyPhotosPage() {
   const lastScrollTop = useRef<number>(0)
   const cardRectsRef = useRef<Record<number, { x: number; y: number }>>({})
   const [copiedNotification, setCopiedNotification] = useState(false)
-  const [isGridModalOpen, setIsGridModalOpen] = useState(false)
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false)
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false)
   const [claimInput, setClaimInput] = useState('')
@@ -765,7 +703,6 @@ export default function MyPhotosPage() {
         }
       } else if (e.key === 'Escape') {
         setIsOverviewMode(false)
-        setIsGridModalOpen(false)
         setIsOptionsModalOpen(false)
         setIsClaimModalOpen(false)
       }
@@ -948,122 +885,18 @@ export default function MyPhotosPage() {
   if (sessionsList.length === 0) {
     return (
       <div className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-white text-slate-900 overflow-hidden flex flex-col justify-between select-none font-sans">
-        <div className="w-full max-w-6xl mx-auto h-full flex flex-col justify-between px-4 sm:px-6 md:px-8 pt-3 pb-4">
-          {/* Header */}
-          <header className="w-full max-w-4xl mx-auto pt-1 pb-2 flex items-center justify-between shrink-0 z-20">
-            <Link
-              href="/"
-              className="w-10 h-10 flex items-center justify-start text-slate-800 hover:text-black transition-opacity active:scale-95 cursor-pointer"
-              title="Kembali ke Beranda"
-            >
-              <X className="w-6 h-6 stroke-[2.2]" />
-            </Link>
+        <ProfileEmptyState
+          handleLogout={handleLogout}
+          isLoggingOut={isLoggingOut}
+          setIsClaimModalOpen={setIsClaimModalOpen}
+        />
 
-            <div className="flex flex-col items-center">
-              <h1 className="text-[18px] sm:text-[20px] font-extrabold text-slate-900 tracking-tight font-sans">
-                My Photos
-              </h1>
-              <span className="text-[11px] font-medium text-slate-400 -mt-0.5">
-                0 Sesi Tersimpan
-              </span>
-            </div>
-
-            {/* Log Out */}
-            <button
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-              className="w-9 h-9 flex items-center justify-center text-slate-700 hover:text-rose-600 hover:bg-rose-50 transition-all active:scale-90 cursor-pointer rounded-xl"
-              title="Keluar / Log Out"
-            >
-              {isLoggingOut ? (
-                <SeboothLoader variant="mini" className="w-5 h-5 text-rose-500" />
-              ) : (
-                <LogOut className="w-[20px] h-[20px] stroke-[2.2]" />
-              )}
-            </button>
-          </header>
-
-          {/* Centerpiece: Empty State */}
-          <div className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-center my-auto py-6 text-center max-w-md mx-auto">
-            <div className="w-20 h-20 rounded-3xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500 mb-5 shadow-sm">
-              <Camera className="w-10 h-10 stroke-[1.8]" />
-            </div>
-
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mb-2">
-              Belum Ada Sesi Foto
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed mb-6 px-4">
-              Foto dan video dari photobooth Sebooth yang sudah kamu klaim akan otomatis muncul dan tersimpan di galeri ini.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">
-              <button
-                onClick={() => setIsClaimModalOpen(true)}
-                className="w-full py-3.5 px-6 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-orange-500/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
-              >
-                <QrCode className="w-4 h-4" />
-                <span>Klaim Foto Sekarang</span>
-              </button>
-              <Link
-                href="/"
-                className="w-full py-3.5 px-6 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center"
-              >
-                Ke Beranda
-              </Link>
-            </div>
-          </div>
-
-          <footer className="w-full max-w-4xl mx-auto py-2 text-center text-[11px] text-slate-400">
-            Sebooth Photobooth &copy; {new Date().getFullYear()}
-          </footer>
-        </div>
-
-        {/* Claim Modal in Empty State */}
         {isClaimModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4 animate-fade-in">
-            <div className="w-full max-w-[420px] bg-white border-t sm:border border-slate-200 rounded-t-[32px] sm:rounded-[32px] p-5 shadow-2xl flex flex-col gap-4 text-slate-900 animate-modal-pop">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center">
-                    <QrCode className="w-4 h-4" />
-                  </div>
-                  <h3 className="text-sm font-bold text-slate-900 font-sans">
-                    Klaim Foto Photobooth
-                  </h3>
-                </div>
-                <button
-                  onClick={() => setIsClaimModalOpen(false)}
-                  className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900 cursor-pointer"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Scan QR code di layar kiosk photobooth atau masukkan Session ID di bawah ini untuk menambahkan foto ke galeri kamu:
-              </p>
-
-              <div className="flex flex-col gap-2">
-                <input
-                  type="text"
-                  value={claimInput}
-                  onChange={(e) => setClaimInput(e.target.value)}
-                  placeholder="Masukkan Session ID / UUID..."
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white"
-                />
-                <button
-                  onClick={() => {
-                    if (claimInput.trim()) {
-                      window.location.href = `/access/${claimInput.trim()}`
-                    }
-                  }}
-                  className="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
-                >
-                  Klaim Foto Sekarang
-                </button>
-              </div>
-            </div>
-          </div>
+          <ClaimSessionModal
+            claimInput={claimInput}
+            setClaimInput={setClaimInput}
+            setIsClaimModalOpen={setIsClaimModalOpen}
+          />
         )}
       </div>
     )
@@ -1094,94 +927,13 @@ export default function MyPhotosPage() {
             }}
             className="absolute inset-0 w-full h-full overflow-y-auto bg-[#FAF8F5] text-slate-900 flex flex-col font-sans z-10 [transform:translate3d(0,0,0)]"
           >
-            <div className="w-full max-w-md sm:max-w-2xl md:max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-5 pb-28 sm:pb-32 flex flex-col flex-1">
-              {/* Top Header Bar */}
-              <div className="flex items-center justify-between mb-6 sm:mb-8">
-                <h1 className="text-2xl sm:text-[28px] md:text-3xl font-extrabold text-slate-800 tracking-tight font-sans">
-                  Galeri Sebooth
-                </h1>
-
-                <div className="flex items-center gap-2">
-                  {/* Close / Return to Focus View */}
-                  <button
-                    onClick={handleCloseBookshelf}
-                    className="w-9 h-9 rounded-xl bg-slate-200/70 hover:bg-slate-300/80 active:scale-90 flex items-center justify-center text-slate-700 transition-all cursor-pointer"
-                    title="Kembali ke Tampilan Fokus"
-                  >
-                    <X className="w-5 h-5 stroke-[2.2]" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Bookshelf Grid: 2 columns on mobile, 3 on tablet, 4 columns on desktop */}
-              <div id="tour-profile-bookshelf-grid" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-7 sm:gap-x-6 sm:gap-y-8 md:gap-x-7 md:gap-y-9 lg:gap-x-8 lg:gap-y-10">
-                {sessionsList.map((session, sIdx) => {
-                  const originalIndex = sessionsList.findIndex(s => s.id === session.id)
-                  const targetIndex = originalIndex >= 0 ? originalIndex : sIdx
-
-                  return (
-                    <div
-                      key={session.id}
-                      id={`bookshelf-card-${targetIndex}`}
-                      ref={(el) => {
-                        if (el) {
-                          const rect = el.getBoundingClientRect()
-                          cardRectsRef.current[targetIndex] = {
-                            x: rect.left + rect.width / 2,
-                            y: rect.top + rect.height / 2
-                          }
-                        }
-                      }}
-                      onClick={(e) => handleCardClick(e, targetIndex)}
-                      style={{
-                        contentVisibility: 'auto',
-                        containIntrinsicSize: '0 240px'
-                      }}
-                      className="group flex flex-col cursor-pointer select-none active:scale-[0.94] active:brightness-95 transition-all duration-150 ease-out"
-                    >
-                      {/* 3D Stacked Album Card (Gambar 1) */}
-                      <div className="relative w-full aspect-[3/4] flex items-center justify-center p-1.5">
-                        {/* Back Left Card: Stylized photo backing layer (Zero duplicate image requests) */}
-                        <div
-                          className="absolute inset-1.5 rounded-[15px] sm:rounded-[17px] bg-gradient-to-tr from-stone-300 via-stone-200 to-stone-100 border border-white/90 shadow-sm will-change-transform transition-transform duration-200 group-hover:-translate-x-2"
-                          style={{
-                            transform: 'translate3d(-8px, -5px, 0) rotate(-7.5deg) scale(0.92)',
-                            transformOrigin: 'center center'
-                          }}
-                        />
-
-                        {/* Back Right Card: Stylized photo backing layer (Zero duplicate image requests) */}
-                        <div
-                          className="absolute inset-1.5 rounded-[15px] sm:rounded-[17px] bg-gradient-to-tl from-stone-300 via-stone-200 to-stone-100 border border-white/90 shadow-sm will-change-transform transition-transform duration-200 group-hover:translate-x-2"
-                          style={{
-                            transform: 'translate3d(8px, -5px, 0) rotate(7.5deg) scale(0.92)',
-                            transformOrigin: 'center center'
-                          }}
-                        />
-
-                        {/* Front Center Card */}
-                        <div
-                          className="relative w-full h-full rounded-[16px] sm:rounded-[18px] overflow-hidden border-[2.2px] border-white shadow-[0_12px_24px_-6px_rgba(0,0,0,0.18),0_4px_8px_-2px_rgba(0,0,0,0.08)] bg-zinc-950 will-change-transform group-hover:scale-[1.02] transition-transform duration-200"
-                          style={{
-                            transform: 'translate3d(0, 0, 0)',
-                            transformOrigin: 'center center'
-                          }}
-                        >
-                          <ProgressiveImage
-                            src={session.stripUrl}
-                            placeholder={getBlurPlaceholderUrl(session.rawStripUrl)}
-                            fallbackSrc={session.rawStripUrl}
-                            alt={session.title}
-                            className="w-full h-full object-cover object-top select-none pointer-events-none"
-                            loading={Math.abs(targetIndex - activeSessionIndex) < 8 ? 'eager' : 'lazy'}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
+            <BookshelfView
+              sessionsList={sessionsList}
+              activeSessionIndex={activeSessionIndex}
+              cardRectsRef={cardRectsRef}
+              handleCardClick={handleCardClick}
+              handleCloseBookshelf={handleCloseBookshelf}
+            />
           </motion.div>
         ) : (
           /* ═══════════════════════════════════════════════════════════════════
@@ -1493,306 +1245,46 @@ export default function MyPhotosPage() {
     )}
   </AnimatePresence>
 
-      {/* ─── FLOATING BOTTOM CAPSULE DOCK (APPLE-GRADE iOS DEPTH DOCK) ─── */}
+      {/* Floating bottom dock */}
       {currentSession && (
-        <div
-          className="fixed bottom-4 sm:bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none px-4"
-          style={{ bottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}
-        >
-          <LiquidGlassDock
-            ariaLabel="Navigasi Galeri"
-            surface="dark"
-            onHaptic={(type) => triggerHaptic(type || 'tick')}
-            activeId={
-              isLoggingOut
-                ? 'logout'
-                : isBundling
-                  ? 'download'
-                  : isOverviewMode
-                    ? 'gallery'
-                    : guide.open
-                      ? 'guide'
-                      : 'photos'
-            }
-            items={[
-              {
-                id: 'gallery',
-                domId: 'bottom-nav-bookshelf-btn',
-                label: 'Gallery View',
-                icon: <LayoutGrid className="w-5 h-5 stroke-[1.8]" />,
-                activeIcon: <LayoutGrid className="w-5 h-5 stroke-[1.6] fill-white" />,
-                onSelect: (e) => {
-                  e.stopPropagation()
-                  if (!isOverviewMode) handleOpenBookshelf()
-                },
-              },
-              {
-                id: 'photos',
-                domId: 'bottom-nav-photos-btn',
-                label: 'Photos View',
-                icon: <ImageIcon className="w-5 h-5 stroke-[1.8]" />,
-                activeIcon: <ImageIcon className="w-5 h-5 stroke-[2] fill-white/25" />,
-                onSelect: (e) => {
-                  e.stopPropagation()
-                  if (isOverviewMode) handleCloseBookshelf()
-                },
-              },
-              {
-                id: 'download',
-                domId: 'tour-profile-bundle-btn',
-                label: 'Download',
-                title: isBundling
-                  ? `Menyimpan (${bundleProgress.current}/${bundleProgress.total})...`
-                  : 'Download',
-                disabled: isBundling,
-                icon: isBundling ? (
-                  <SeboothLoader variant="mini" label="Menyiapkan unduhan" className="w-5 h-5 text-orange-400" />
-                ) : (
-                  <Download className="w-5 h-5 stroke-[1.8]" />
-                ),
-                activeIcon: <Download className="w-5 h-5 stroke-[2.4]" />,
-                onSelect: (e) => {
-                  e.stopPropagation()
-                  handleDownloadBundle(e)
-                },
-              },
-              {
-                id: 'guide',
-                domId: 'bottom-nav-guide-btn',
-                label: 'Guide',
-                icon: <HelpCircle className="w-5 h-5 stroke-[1.8]" />,
-                activeIcon: <HelpCircle className="w-5 h-5 stroke-[2.2] fill-white/30" />,
-                onSelect: (e) => {
-                  e.stopPropagation()
-                  handleOpenHelp()
-                },
-              },
-              {
-                id: 'logout',
-                domId: 'bottom-nav-logout-btn',
-                label: 'Log Out',
-                title: 'Keluar / Log Out',
-                tone: 'danger',
-                disabled: isLoggingOut,
-                icon: isLoggingOut ? (
-                  <SeboothLoader variant="mini" className="w-5 h-5 text-rose-400" />
-                ) : (
-                  <LogOut className="w-5 h-5 stroke-[1.8]" />
-                ),
-                activeIcon: <LogOut className="w-5 h-5 stroke-[2.2]" />,
-                onSelect: (e) => {
-                  e.stopPropagation()
-                  handleLogout()
-                },
-              },
-            ]}
-          />
-        </div>
+        <ProfileDock
+          isLoggingOut={isLoggingOut}
+          isBundling={isBundling}
+          isOverviewMode={isOverviewMode}
+          guideOpen={guide.open}
+          bundleProgress={bundleProgress}
+          triggerHaptic={triggerHaptic}
+          handleOpenBookshelf={handleOpenBookshelf}
+          handleCloseBookshelf={handleCloseBookshelf}
+          handleDownloadBundle={handleDownloadBundle}
+          handleOpenHelp={handleOpenHelp}
+          handleLogout={handleLogout}
+        />
       )}
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          MODAL 1: SESSION GRID SELECTOR (TOP 00 00)
-         ═══════════════════════════════════════════════════════════════════ */}
-      {isGridModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4 animate-fade-in">
-          <div className="w-full max-w-[420px] bg-white border-t sm:border border-slate-200 rounded-t-[32px] sm:rounded-[32px] p-5 shadow-2xl flex flex-col max-h-[80vh] text-slate-900 animate-modal-pop">
 
-            {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-800">
-                  <LayoutGrid className="w-4 h-4" />
-                </div>
-                <h3 className="text-base font-bold text-slate-900 font-sans">
-                  Pilih Sesi Foto
-                </h3>
-              </div>
-              <button
-                onClick={() => setIsGridModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
 
-            {/* Session Grid List */}
-            <div className="grid grid-cols-2 gap-3 py-4 overflow-y-auto no-scrollbar flex-1">
-              {sessionsList.map((sess, sIdx) => {
-                const isSelected = activeSessionIndex === sIdx
-                const cover = sess.stripUrl || sess.avatarUrl
-
-                return (
-                  <button
-                    key={sess.id}
-                    onClick={() => {
-                      setActiveSessionIndex(sIdx)
-                      setIsGridModalOpen(false)
-                    }}
-                    className={`group relative rounded-[20px] overflow-hidden p-1.5 transition-all text-left cursor-pointer border ${isSelected
-                      ? 'border-orange-500 bg-orange-50/50 shadow-md ring-2 ring-orange-500/20'
-                      : 'border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-white'
-                      }`}
-                  >
-                    <div className="relative w-full aspect-[3/4] rounded-[14px] overflow-hidden bg-slate-200 mb-2">
-                      <img
-                        src={cover}
-                        alt={sess.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-bold text-white border border-white/20">
-                        {sess.badgeCount} media
-                      </span>
-                    </div>
-
-                    <p className="text-xs font-bold text-slate-900 truncate px-1">
-                      {sess.title}
-                    </p>
-                    <p className="text-[10px] text-slate-500 truncate px-1">
-                      {sess.dateStr}
-                    </p>
-                  </button>
-                )
-              })}
-            </div>
-
-            {/* Bottom Close */}
-            <button
-              onClick={() => setIsGridModalOpen(false)}
-              className="w-full py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold font-sans tracking-wide cursor-pointer transition-colors"
-            >
-              TUTUP
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ═══════════════════════════════════════════════════════════════════
-          MODAL 2: SESSION OPTIONS / MENU (•••)
-         ═══════════════════════════════════════════════════════════════════ */}
+      {/* Session options menu (•••) */}
       {isOptionsModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4 animate-fade-in">
-          <div className="w-full max-w-[420px] bg-white border-t sm:border border-slate-200 rounded-t-[32px] sm:rounded-[32px] p-5 shadow-2xl flex flex-col gap-3 text-slate-900 animate-modal-pop">
-
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h3 className="text-sm font-bold text-slate-900">
-                Opsi Sesi ({currentSession?.title})
-              </h3>
-              <button
-                id="tour-profile-options-close"
-                onClick={() => setIsOptionsModalOpen(false)}
-                aria-label="Tutup menu"
-                className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900 cursor-pointer"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-
-            <button
-              onClick={handleDownload}
-              className="w-full py-3 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-800 flex items-center justify-between text-xs font-semibold cursor-pointer transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Download className="w-4 h-4 text-emerald-600" />
-                <span>Download Foto Ini (HD)</span>
-              </div>
-              <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-            </button>
-
-            <button
-              onClick={() => {
-                handleDownloadBundle()
-                setIsOptionsModalOpen(false)
-              }}
-              className="w-full py-3 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-800 flex items-center justify-between text-xs font-semibold cursor-pointer transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Package className="w-4 h-4 text-orange-500" />
-                <span>Simpan Semua File ke Galeri HP ({activeSessionMediaList.length} File)</span>
-              </div>
-              <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-            </button>
-
-            <button
-              onClick={handleShare}
-              className="w-full py-3 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-800 flex items-center justify-between text-xs font-semibold cursor-pointer transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Share2 className="w-4 h-4 text-sky-500" />
-                <span>Bagikan Link Galeri</span>
-              </div>
-              <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-            </button>
-
-            {/* Super admins only: send this photo to the Visual Archive / an event frame page */}
-            <PublishToSiteOption
-              sessionId={currentSession?.id}
-              sessionTitle={currentSession?.title}
-              media={activeSessionMediaList[currentMediaIndex]}
-            />
-          </div>
-        </div>
+        <SessionOptionsModal
+          currentSession={currentSession}
+          activeSessionMediaList={activeSessionMediaList}
+          currentMediaIndex={currentMediaIndex}
+          setIsOptionsModalOpen={setIsOptionsModalOpen}
+          handleDownload={handleDownload}
+          handleDownloadBundle={handleDownloadBundle}
+          handleShare={handleShare}
+        />
       )}
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          MODAL 3: CLAIM SESSION MODAL (+)
-         ═══════════════════════════════════════════════════════════════════ */}
+      {/* Claim session modal (+) */}
       {isClaimModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4 animate-fade-in">
-          <div className="w-full max-w-[420px] bg-white border-t sm:border border-slate-200 rounded-t-[32px] sm:rounded-[32px] p-5 shadow-2xl flex flex-col gap-4 text-slate-900 animate-modal-pop">
-
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center">
-                  <QrCode className="w-4 h-4" />
-                </div>
-                <h3 className="text-sm font-bold text-slate-900 font-sans">
-                  Klaim Foto Photobooth
-                </h3>
-              </div>
-              <button
-                onClick={() => setIsClaimModalOpen(false)}
-                className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900 cursor-pointer"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Scan QR code di layar kiosk photobooth atau masukkan Session ID di bawah ini untuk menambahkan foto ke galeri kamu:
-            </p>
-
-            <div className="flex flex-col gap-2">
-              <input
-                type="text"
-                value={claimInput}
-                onChange={(e) => setClaimInput(e.target.value)}
-                placeholder="Masukkan Session ID / UUID..."
-                className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white"
-              />
-              <button
-                onClick={() => {
-                  if (claimInput.trim()) {
-                    window.location.href = `/access/${claimInput.trim()}`
-                  }
-                }}
-                className="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
-              >
-                Klaim Foto Sekarang
-              </button>
-            </div>
-
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-center">
-              <Link
-                href="/queue"
-                onClick={() => setIsClaimModalOpen(false)}
-                className="text-xs text-orange-500 hover:text-orange-600 font-semibold"
-              >
-                Lihat Antrean Aktif (Queue) →
-              </Link>
-            </div>
-          </div>
-        </div>
+        <ClaimSessionModal
+          claimInput={claimInput}
+          setClaimInput={setClaimInput}
+          setIsClaimModalOpen={setIsClaimModalOpen}
+          showQueueLink
+        />
       )}
 
 
