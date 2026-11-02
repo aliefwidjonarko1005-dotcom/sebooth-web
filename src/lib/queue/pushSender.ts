@@ -104,6 +104,57 @@ export async function sendPushToUser(userId: string, payload: PushPayload): Prom
 }
 
 /**
+ * Warn the people near the front of the line, once per tier. Called after any queue change.
+ * Reads the ticket owners itself: the public queue status carries no account ids.
+ */
+export async function sendProximityPushNotifications(eventId: string): Promise<void> {
+    const supabase = createServiceClient();
+
+    const [{ data: event }, { data: waitingTickets }] = await Promise.all([
+        supabase.from("queue_events").select("name").eq("id", eventId).single(),
+        // All columns on purpose: the push_*_sent flags only exist once queue-privacy.sql has run
+        supabase
+            .from("queue_tickets")
+            .select("*")
+            .eq("event_id", eventId)
+            .eq("status", "waiting")
+            .order("queue_number", { ascending: true }),
+    ]);
+    if (!event || !waitingTickets) return;
+
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.sebooth.in";
+
+    for (const [index, ticket] of waitingTickets.entries()) {
+        if (!ticket.user_id) continue;
+        const position = index + 1;
+
+        // Send push for "preparing" tier (1-2 positions away)
+        if (position <= 2 && !ticket.push_preparing_sent) {
+            await sendPushToUser(ticket.user_id, {
+                title: "Bersiap-siap! 🟠",
+                body: `Tinggal ${position} sesi lagi sebelum giliranmu di ${event.name}. Segera menuju booth!`,
+                url: `${baseUrl}/queue/${eventId}/ticket/${ticket.id}`,
+                tag: `preparing-${ticket.id}`,
+                vibrate: [200, 100, 200],
+            });
+            await supabase.from("queue_tickets").update({ push_preparing_sent: true }).eq("id", ticket.id);
+        }
+
+        // Send push for "approaching" tier (3-4 positions away)
+        if (position >= 3 && position <= 4 && !ticket.push_approaching_sent) {
+            await sendPushToUser(ticket.user_id, {
+                title: "Antrean Hampir Tiba! 🟡",
+                body: `Masih ${position} sesi lagi di ${event.name}. Jangan jauh-jauh ya!`,
+                url: `${baseUrl}/queue/${eventId}/ticket/${ticket.id}`,
+                tag: `approaching-${ticket.id}`,
+                vibrate: [200],
+            });
+            await supabase.from("queue_tickets").update({ push_approaching_sent: true }).eq("id", ticket.id);
+        }
+    }
+}
+
+/**
  * Send push notifications to multiple users at once.
  */
 export async function sendPushToUsers(

@@ -1,88 +1,41 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Link from "next/link";
-import { Ticket, ArrowRight, Clock, MapPin } from "lucide-react";
-import type { QueueTicket, QueueProximityTier } from "@/types/database";
-import { getProximityTier, getProximityTierLabel, getProximityTierColor } from "@/types/database";
+import { ArrowRight } from "lucide-react";
+import type { UserLiveTicket } from "@/lib/queue/fetchUserActiveTickets";
+import type { QueueTicketStatus } from "@/types/database";
+import { FLOW_HEADING } from "@/components/ui/FlowHero";
 
-interface ActiveQueueCardProps {
-    tickets: QueueTicket[];
-}
+const STATUS_LABEL: Partial<Record<QueueTicketStatus, string>> = {
+    waiting: "Menunggu giliran",
+    called: "Giliranmu, segera ke booth",
+    in_session: "Sedang berfoto",
+};
 
-export default function ActiveQueueCard({ tickets }: ActiveQueueCardProps) {
+/** The numbers someone already holds, so closing the ticket page never costs them their place. */
+export default function ActiveQueueCard({ tickets }: { tickets: UserLiveTicket[] }) {
     if (tickets.length === 0) return null;
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6"
-        >
-            <h3 className="text-white text-xs font-black uppercase tracking-wider mb-3 flex items-center gap-2 marker-font">
-                <Ticket className="w-4 h-4 text-secondary" />
-                Antrean Aktif
-            </h3>
-
-            <div className="space-y-3">
-                {tickets.map((ticket) => {
-                    const event = ticket.queue_events;
-                    // For profile display, estimate position (may not be precise without full queue data)
-                    const tier: QueueProximityTier = getProximityTier(
-                        0, // Position not known here, use status-based
-                        ticket.status
-                    );
-                    const colors = getProximityTierColor(
-                        ticket.status === "called" || ticket.status === "in_session" ? "your_turn"
-                        : "waiting"
-                    );
-                    const label = getProximityTierLabel(
-                        ticket.status === "called" || ticket.status === "in_session" ? "your_turn"
-                        : "waiting"
-                    );
-
-                    return (
+        <section className="mb-12">
+            <h2 className={FLOW_HEADING}>Tiketmu</h2>
+            <ul className="mt-4 space-y-3">
+                {tickets.map((ticket) => (
+                    <li key={ticket.id}>
                         <Link
-                            key={ticket.id}
                             href={`/queue/${ticket.event_id}/ticket/${ticket.id}`}
-                            className="group block"
+                            className="flex min-h-20 items-center gap-4 rounded-lg bg-primary p-4 text-white transition-colors hover:bg-navy-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-[0.99]"
                         >
-                            <div className={`bg-white border-2 border-black p-4 hover:-translate-y-0.5 active:translate-y-0 transition-all hard-shadow-black`}>
-                                <div className="flex items-start justify-between gap-3">
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className={`inline-flex items-center gap-1 ${colors.bg} ${colors.text} text-[10px] font-black uppercase tracking-wider rounded-full px-2.5 py-0.5`}>
-                                                {label}
-                                            </span>
-                                            <span className="text-primary font-black text-sm">
-                                                #{String(ticket.queue_number).padStart(3, "0")}
-                                            </span>
-                                        </div>
-                                        {event && (
-                                            <p className="text-primary/80 text-xs font-bold truncate">
-                                                {event.name}
-                                            </p>
-                                        )}
-                                        {event && (
-                                            <div className="flex items-center gap-3 mt-1.5">
-                                                <span className="flex items-center gap-1 text-primary/50 text-[10px] font-bold">
-                                                    <MapPin className="w-3 h-3" />
-                                                    {event.booth_name}
-                                                </span>
-                                                <span className="flex items-center gap-1 text-primary/50 text-[10px] font-bold">
-                                                    <Clock className="w-3 h-3" />
-                                                    ~{Math.round(event.avg_session_duration_sec / 60)} min/sesi
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <ArrowRight className="w-5 h-5 text-primary group-hover:text-secondary group-hover:translate-x-1 transition-all shrink-0 mt-1" />
-                                </div>
-                            </div>
+                            <span className="text-[2.5rem] leading-none font-extrabold tabular-nums">
+                                {String(ticket.queue_number).padStart(3, "0")}
+                            </span>
+                            <span className="min-w-0 flex-1">
+                                <span className="block text-lg leading-snug font-bold">{ticket.queue_events?.name}</span>
+                                <span className="mt-0.5 block text-[15px] leading-snug text-white/85">{STATUS_LABEL[ticket.status]}</span>
+                            </span>
+                            <ArrowRight className="h-5 w-5 shrink-0" aria-hidden="true" />
                         </Link>
-                    );
-                })}
-            </div>
-        </motion.div>
+                    </li>
+                ))}
+            </ul>
+        </section>
     );
 }

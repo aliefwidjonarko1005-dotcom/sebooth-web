@@ -53,6 +53,29 @@ export interface QueueTicket {
   queue_events?: QueueEvent
 }
 
+/** Tickets that still hold a place in line. */
+export const LIVE_TICKET_STATUSES: QueueTicketStatus[] = ['waiting', 'called', 'in_session']
+
+/**
+ * What anyone watching the queue gets of a ticket: the public API, the SSE stream, the venue screen.
+ * Deliberately no id, account, phone or session: those lead to someone's contact details and photos.
+ */
+export type PublicQueueTicket = Pick<QueueTicket, 'queue_number' | 'display_name' | 'status' | 'called_at' | 'is_checked_in'>
+
+export type PublicWaitingTicket = PublicQueueTicket & { positionFromFront: number; estimatedWaitMs: number }
+
+export interface PublicQueueStatus {
+  event: QueueEvent | null
+  currentTicket: PublicQueueTicket | null
+  waitingTickets: PublicWaitingTicket[]
+  avgDurationSec: number
+  totalWaiting: number
+  totalCompleted: number
+}
+
+/** A ticket as its owner sees it. */
+export type OwnQueueTicket = PublicQueueTicket & Pick<QueueTicket, 'id' | 'event_id' | 'user_id' | 'session_id'>
+
 // ═══════════════════════════════════════
 // 4-TIER PROXIMITY STATUS CATEGORIES
 // ═══════════════════════════════════════
@@ -88,17 +111,15 @@ export function getProximityTierLabel(tier: QueueProximityTier): string {
 /**
  * Get the color config for a proximity tier.
  */
-export function getProximityTierColor(tier: QueueProximityTier): {
-  bg: string; text: string; border: string; ring: string; hex: string;
-} {
+export function getProximityTierColor(tier: QueueProximityTier): { bg: string; text: string } {
   switch (tier) {
     case 'waiting':
-      return { bg: 'bg-primary', text: 'text-white', border: 'border-2 border-black', ring: 'ring-black', hex: '#002366' };
+      return { bg: 'bg-primary', text: 'text-white' };
     case 'approaching':
-      return { bg: 'bg-yellow-400', text: 'text-primary', border: 'border-2 border-black', ring: 'ring-black', hex: '#FACC15' };
+      return { bg: 'bg-yellow-400', text: 'text-blue-dark' };
     case 'preparing':
-      return { bg: 'bg-orange-500', text: 'text-white', border: 'border-2 border-black', ring: 'ring-black', hex: '#F97316' };
+      return { bg: 'bg-orange-500', text: 'text-blue-dark' };
     case 'your_turn':
-      return { bg: 'bg-red-600', text: 'text-white', border: 'border-2 border-black', ring: 'ring-black', hex: '#DC2626' };
+      return { bg: 'bg-red-600', text: 'text-white' };
   }
 }

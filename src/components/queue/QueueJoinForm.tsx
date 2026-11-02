@@ -2,14 +2,15 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { ArrowRight, Ticket, CheckSquare, User, Phone, Mail } from "lucide-react";
+import { Ticket } from "lucide-react";
 import type { QueueEvent } from "@/types/database";
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
 import Guide from "@/components/guide/Guide";
 import GuideLauncher from "@/components/guide/GuideLauncher";
 import { useGuide } from "@/components/guide/useGuide";
 import { QUEUE_JOIN_GUIDE, GUIDE_KEYS } from "@/config/guides";
+import { QueueEventLine } from "./QueueEventLine";
+import { FlowHero, FLOW_BUTTON_ORANGE } from "@/components/ui/FlowHero";
 
 interface QueueUserData {
     id: string;
@@ -29,145 +30,85 @@ export default function QueueJoinForm({ event, user }: QueueJoinFormProps) {
     const [error, setError] = useState("");
     const guide = useGuide(GUIDE_KEYS.queueJoin);
 
+    const accountRows = [
+        { label: "Nama", value: user.fullName },
+        { label: "WhatsApp", value: user.phoneNumber },
+        { label: "Email", value: user.email },
+    ].filter((row) => row.value);
+
     async function handleSubmit() {
         setError("");
 
         startTransition(async () => {
-            const res = await fetch("/api/queue/join", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    eventId: event.id,
-                }),
-            });
-            const data = await res.json();
-            if (!data.success) {
-                setError(data.error || "TERJADI KESALAHAN. SILAKAN COBA LAGI.");
-                return;
+            try {
+                const res = await fetch("/api/queue/join", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        eventId: event.id,
+                    }),
+                });
+                const data = await res.json();
+                if (!data.success) {
+                    setError(data.error || "Terjadi kesalahan. Silakan coba lagi.");
+                    return;
+                }
+                router.push(`/queue/${event.id}/ticket/${data.ticketId}`);
+            } catch {
+                setError("Koneksi terputus. Silakan coba lagi.");
             }
-            router.push(`/queue/${event.id}/ticket/${data.ticketId}`);
         });
     }
 
     return (
-        <div className="min-h-[100svh] bg-gradient-to-br from-gray-200 via-blue-100 to-orange-100 flex flex-col items-center justify-center p-6">
-            <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="w-full max-w-[400px]"
-            >
-                {/* Header Container */}
-                <div className="mb-10 text-center relative">
-                    <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.1, duration: 0.4 }}
-                        className="inline-flex items-center justify-center w-20 h-20 bg-primary text-white mb-6 relative z-10"
-                    >
-                        <Ticket className="w-10 h-10" />
-                    </motion.div>
-                    <h1 className="text-3xl font-black text-primary uppercase tracking-tight relative z-10">
-                        Ambil Antrean
-                    </h1>
-                    <div className="mt-3 text-center relative z-10">
-                        <p className="text-primary text-[0.9rem] font-bold uppercase tracking-wider truncate">
-                            Event: <span className="font-black text-secondary">{event.name}</span>
-                        </p>
-                        <p className="text-primary/70 text-[0.8rem] font-bold uppercase tracking-widest mt-1 truncate">
-                            {event.booth_name}
-                        </p>
-                    </div>
-                </div>
+        <div className="flex min-h-svh flex-col bg-cream-soft">
+            <FlowHero title="Ambil Antrean" action={<GuideLauncher onClick={guide.start} />}>
+                <QueueEventLine name={event.name} booth={event.booth_name} />
+            </FlowHero>
 
-                {/* User Info Card */}
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2, duration: 0.4 }}
-                    className="mb-8"
+            <main className="mx-auto w-full max-w-xl px-5 py-8 text-[17px] leading-relaxed text-blue-dark">
+                <p className="text-xl leading-snug font-bold text-primary">Halo, {user.fullName}</p>
+                <p className="mt-1">Data akunmu ini yang dipakai operator untuk memanggilmu.</p>
+
+                <dl id="guide-join-account" className="mt-5 space-y-3 rounded-lg bg-white p-4">
+                    {accountRows.map((row) => (
+                        <div key={row.label}>
+                            <dt className="text-[15px] leading-snug text-slate-600">{row.label}</dt>
+                            <dd className="leading-snug font-semibold break-words">{row.value}</dd>
+                        </div>
+                    ))}
+                </dl>
+
+                {error && (
+                    <p role="alert" className="mt-5 rounded-lg bg-red-50 p-4 font-medium text-red-700">
+                        {error}
+                    </p>
+                )}
+
+                <button
+                    id="guide-join-submit"
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={isPending}
+                    className={`mt-5 ${FLOW_BUTTON_ORANGE}`}
                 >
-                    {/* Greeting */}
-                    <div className="text-center mb-8">
-                        <div className="inline-flex items-center gap-2 bg-green-100 px-3 py-1.5 border border-green-500 mb-2">
-                            <CheckSquare className="w-4 h-4 text-green-700" />
-                            <span className="text-green-700 text-[0.7rem] font-black uppercase tracking-widest">Akun Terverifikasi</span>
-                        </div>
-                        <p className="text-primary font-black text-2xl mt-4 uppercase tracking-wider">
-                            HALO, {user.fullName}!
-                        </p>
-                        <p className="text-primary/50 text-[0.75rem] font-bold mt-2 uppercase tracking-widest">
-                            DATA AKUNMU DIGUNAKAN UNTUK ANTREAN INI
-                        </p>
-                    </div>
-
-                    {/* User Data Preview */}
-                    <div id="guide-join-account" className="space-y-4 mb-8">
-                        <div className="flex items-center gap-4 border-b border-gray-200 pb-3">
-                            <User className="w-5 h-5 text-primary shrink-0" />
-                            <div className="flex-1 min-w-0">
-                                <p className="text-primary/50 text-[0.7rem] font-black uppercase tracking-widest">NAMA LENGKAP</p>
-                                <p className="text-primary font-bold text-[0.9rem] truncate uppercase tracking-wider">{user.fullName}</p>
-                            </div>
-                        </div>
-                        {user.phoneNumber && (
-                            <div className="flex items-center gap-4 border-b border-gray-200 pb-3">
-                                <Phone className="w-5 h-5 text-primary shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-primary/50 text-[0.7rem] font-black uppercase tracking-widest">WHATSAPP</p>
-                                    <p className="text-primary font-bold text-[0.9rem] truncate uppercase tracking-wider">{user.phoneNumber}</p>
-                                </div>
-                            </div>
-                        )}
-                        <div className="flex items-center gap-4 border-b border-gray-200 pb-3">
-                            <Mail className="w-5 h-5 text-primary shrink-0" />
-                            <div className="flex-1 min-w-0">
-                                <p className="text-primary/50 text-[0.7rem] font-black uppercase tracking-widest">EMAIL</p>
-                                <p className="text-primary font-bold text-[0.9rem] truncate uppercase tracking-wider">{user.email}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Error */}
-                    {error && (
-                        <motion.div
-                            initial={{ opacity: 0, x: -8 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="bg-red-50 border border-red-200 text-red-600 p-3 mb-6 text-center"
-                        >
-                            <p className="text-[0.7rem] font-black uppercase tracking-widest">{error}</p>
-                        </motion.div>
+                    {isPending ? (
+                        <>
+                            <SeboothLoader variant="mini" className="h-5 w-5" /> Memproses
+                        </>
+                    ) : (
+                        <>
+                            <Ticket className="h-5 w-5" aria-hidden="true" /> Ambil Nomor
+                        </>
                     )}
+                </button>
 
-                    {/* Submit */}
-                    <button
-                        id="guide-join-submit"
-                        type="button"
-                        onClick={handleSubmit}
-                        disabled={isPending}
-                        className="w-full bg-secondary text-white font-black text-[0.9rem] uppercase tracking-wider border-4 border-black hard-shadow-black py-4 flex items-center justify-center gap-3 transition-all disabled:opacity-60 disabled:cursor-not-allowed active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
-                    >
-                        {isPending ? (
-                            <><SeboothLoader variant="mini" className="w-5 h-5" /> MEMPROSES...</>
-                        ) : (
-                            <><Ticket className="w-5 h-5" /> AMBIL NOMOR <ArrowRight className="w-5 h-5" /></>
-                        )}
-                    </button>
-                </motion.div>
+                <p className="mt-4 text-[15px] leading-snug text-slate-600">
+                    Nomor antrean tidak bisa dipindahtangankan. Hadir saat dipanggil ya!
+                </p>
+            </main>
 
-                {/* Info note */}
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    className="text-center text-primary/50 text-[0.7rem] font-black uppercase tracking-widest mt-6"
-                >
-                    NOMOR ANTREAN TIDAK BISA DIPINDAHTANGANKAN.<br/>HADIR SAAT DIPANGGIL YA!
-                </motion.p>
-            </motion.div>
-
-            <GuideLauncher onClick={guide.start} variant="brutal" className="fixed bottom-4 right-4 z-40" />
-            <Guide steps={QUEUE_JOIN_GUIDE} open={guide.open} onClose={guide.close} storageKey={GUIDE_KEYS.queueJoin} variant="brutal" />
+            <Guide steps={QUEUE_JOIN_GUIDE} open={guide.open} onClose={guide.close} storageKey={GUIDE_KEYS.queueJoin} />
         </div>
     );
 }

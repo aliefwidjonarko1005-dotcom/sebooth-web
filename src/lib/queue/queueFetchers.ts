@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
-import type { QueueEvent, QueueTicket } from "@/types/database";
+import type { OwnQueueTicket, PublicQueueStatus, PublicQueueTicket, QueueEvent } from "@/types/database";
+import { LIVE_TICKET_STATUSES } from "@/types/database";
+import { createQueueServerClient } from "./queueAuth";
 
 function createQueueClient() {
     return createClient(
@@ -7,6 +9,9 @@ function createQueueClient() {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 }
+
+// What the public anon role may read of a ticket. Keep in step with _harness/sql/queue-privacy.sql
+const PUBLIC_TICKET_COLUMNS = "queue_number, display_name, status, called_at, is_checked_in";
 
 /**
  * Fetch all active queue events.
@@ -36,59 +41,46 @@ export async function fetchQueueEventById(eventId: string): Promise<QueueEvent |
 }
 
 /**
- * Fetch all tickets for an event, ordered by queue_number.
+ * Fetch a single ticket with its private columns. For its owner only: the caller checks user_id.
  */
-export async function fetchQueueTickets(eventId: string): Promise<QueueTicket[]> {
-    const supabase = createQueueClient();
-    const { data } = await supabase
-        .from("queue_tickets")
-        .select("*")
-        .eq("event_id", eventId)
-        .order("queue_number", { ascending: true });
-    return data ?? [];
-}
-
-/**
- * Fetch a single ticket by ID.
- */
-export async function fetchQueueTicketById(ticketId: string): Promise<QueueTicket | null> {
-    const supabase = createQueueClient();
+export async function fetchQueueTicketById(ticketId: string): Promise<OwnQueueTicket | null> {
+    const supabase = await createQueueServerClient();
     const { data, error } = await supabase
         .from("queue_tickets")
-        .select("*, queue_events(*)")
+        .select(`${PUBLIC_TICKET_COLUMNS}, id, event_id, user_id, session_id, queue_events(is_active)`)
         .eq("id", ticketId)
         .single();
     if (error || !data) return null;
 
+    const { queue_events: event, ...ticket } = data as unknown as OwnQueueTicket & { queue_events: { is_active: boolean } | null };
+
     // Force ticket status to cancelled if the parent event is no longer active
     // This mathematically squashes any "ghost" active status if DB bulk updates failed
-    if (data.queue_events && !data.queue_events.is_active) {
-        if (data.status === "waiting" || data.status === "called" || data.status === "in_session") {
-            data.status = "cancelled";
-        }
+    if (event && !event.is_active && LIVE_TICKET_STATUSES.includes(ticket.status)) {
+        ticket.status = "cancelled";
     }
 
-    return data as QueueTicket;
+    return ticket;
 }
 
 /**
- * Compute real-time queue status for an event.
- * Returns: currentNumber, waitingTickets, avgDurationSec, and per-ticket estimated wait.
+ * Compute real-time queue status for an event: who is being served, who is waiting, and the
+ * estimated wait per ticket. Anyone can read this, so it only ever carries public columns.
  */
-export async function fetchQueueStatus(eventId: string) {
+export async function fetchQueueStatus(eventId: string): Promise<PublicQueueStatus> {
     const supabase = createQueueClient();
 
     const [eventRes, ticketsRes, completedRes] = await Promise.all([
         supabase.from("queue_events").select("*").eq("id", eventId).single(),
         supabase
             .from("queue_tickets")
-            .select("*")
+            .select(PUBLIC_TICKET_COLUMNS)
             .eq("event_id", eventId)
-            .in("status", ["waiting", "called", "in_session"])
+            .in("status", LIVE_TICKET_STATUSES)
             .order("queue_number", { ascending: true }),
         supabase
             .from("queue_tickets")
-            .select("called_at, completed_at")
+            .select("called_at, completed_at", { count: "exact" })
             .eq("event_id", eventId)
             .eq("status", "completed")
             .not("called_at", "is", null)
@@ -98,7 +90,7 @@ export async function fetchQueueStatus(eventId: string) {
 
     const event: QueueEvent | null = eventRes.data;
     // Force empty active tickets if event is inactive to prevent ghost tickets
-    const activeTickets: QueueTicket[] = (event && !event.is_active) ? [] : (ticketsRes.data ?? []);
+    const activeTickets: PublicQueueTicket[] = (event && !event.is_active) ? [] : (ticketsRes.data ?? []);
     const completedTickets = completedRes.data ?? [];
 
     // Calculate rolling average session duration
@@ -118,40 +110,30 @@ export async function fetchQueueStatus(eventId: string) {
 
     const inSessionTicket = activeTickets.find((t) => t.status === "in_session");
     const calledTicket = activeTickets.find((t) => t.status === "called");
-    const currentTicket = inSessionTicket || calledTicket;
+    const currentTicket = inSessionTicket || calledTicket || null;
     const waitingTickets = activeTickets.filter((t) => t.status === "waiting");
 
     // Estimate remaining time for the current in-session ticket
     let currentSessionRemainingMs = 0;
-    let currentSessionElapsedSec: number | undefined;
     if (currentTicket?.called_at) {
         const elapsedMs = Date.now() - new Date(currentTicket.called_at).getTime();
-        currentSessionElapsedSec = Math.round(elapsedMs / 1000);
-        const remainingMs = avgDurationSec * 1000 - elapsedMs;
-        currentSessionRemainingMs = Math.max(0, remainingMs);
+        currentSessionRemainingMs = Math.max(0, avgDurationSec * 1000 - elapsedMs);
     }
 
     // Build per-ticket wait estimates with proximity tier
-    const ticketsWithEstimates = waitingTickets.map((ticket, index) => {
-        const positionFromFront = index + 1; // 1-indexed
-        const waitMs = currentSessionRemainingMs + index * avgDurationSec * 1000;
-        return {
-            ...ticket,
-            positionFromFront,
-            estimatedWaitMs: waitMs,
-        };
-    });
+    const ticketsWithEstimates = waitingTickets.map((ticket, index) => ({
+        ...ticket,
+        positionFromFront: index + 1, // 1-indexed
+        estimatedWaitMs: currentSessionRemainingMs + index * avgDurationSec * 1000,
+    }));
 
     return {
         event,
         currentTicket,
         waitingTickets: ticketsWithEstimates,
-        allActiveTickets: activeTickets,
         avgDurationSec,
         totalWaiting: waitingTickets.length,
-        totalCompleted: completedTickets.length,
-        // Enhanced fields for Phase 3C
-        currentSessionName: currentTicket?.display_name || null,
-        currentSessionElapsedSec: currentSessionElapsedSec ?? null,
+        // The rows are capped at 20 for the rolling average; the count is the real total
+        totalCompleted: completedRes.count ?? completedTickets.length,
     };
 }

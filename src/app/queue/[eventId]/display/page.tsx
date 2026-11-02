@@ -23,8 +23,5 @@ export default async function DisplayPage({ params }: Props) {
 
     if (!event) notFound();
 
-    return <QueueDisplayScreen eventId={eventId} initialStatus={{
-        ...initialStatus,
-        currentTicket: initialStatus.currentTicket ?? null,
-    }} />;
+    return <QueueDisplayScreen eventId={eventId} initialStatus={initialStatus} />;
 }

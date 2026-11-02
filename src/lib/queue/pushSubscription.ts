@@ -40,10 +40,10 @@ export function getPushPermission(): NotificationPermission | "unsupported" {
 }
 
 /**
- * Register service worker and subscribe to push notifications.
+ * Register service worker and subscribe the signed-in user to push notifications.
  * Returns the subscription object or null if failed/denied.
  */
-export async function subscribeToPush(userId: string): Promise<PushSubscription | null> {
+export async function subscribeToPush(): Promise<PushSubscription | null> {
     if (!isPushSupported()) {
         console.warn("[Push] Push notifications not supported in this browser");
         return null;
@@ -94,7 +94,6 @@ export async function subscribeToPush(userId: string): Promise<PushSubscription 
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                userId,
                 endpoint: subJson.endpoint,
                 p256dh: subJson.keys?.p256dh,
                 auth: subJson.keys?.auth,

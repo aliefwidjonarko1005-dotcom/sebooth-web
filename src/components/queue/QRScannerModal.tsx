@@ -1,17 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Camera, CheckCircle, AlertCircle, Flashlight, FlashlightOff } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { X, CheckCircle, AlertCircle, Flashlight, FlashlightOff } from "lucide-react";
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
+import { useModalFocus } from "@/lib/useModalFocus";
 
 interface QRScannerModalProps {
     isOpen: boolean;
+    /** Must be stable (useCallback): the modal's focus handling re-runs when it changes. */
     onClose: () => void;
     onScanned: (sessionToken: string) => void;
 }
 
 export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScannerModalProps) {
+    const reduceMotion = useReducedMotion();
+    const panelRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const streamRef = useRef<MediaStream | null>(null);
@@ -22,6 +26,8 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
     const [torchOn, setTorchOn] = useState(false);
     const [torchSupported, setTorchSupported] = useState(false);
     const [scannedResult, setScannedResult] = useState<string | null>(null);
+
+    useModalFocus(isOpen, panelRef, onClose);
 
     const stopCamera = useCallback(() => {
         if (scanIntervalRef.current) {
@@ -142,7 +148,7 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
         }
 
         // Extract session token from URL or raw value
-        // Expected format: https://sebooth.com/api/queue/scan/SESSION_TOKEN
+        // Expected format: https://sebooth.in/api/queue/scan/SESSION_TOKEN
         // or just the token itself
         let token = rawValue;
         try {
@@ -207,120 +213,94 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
 
     if (!isOpen) return null;
 
+    const corner = "absolute h-8 w-8 border-secondary";
+
     return (
-        <AnimatePresence>
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 bg-black flex flex-col"
-            >
-                {/* Top bar */}
-                <div className="flex items-center justify-between p-4 z-10">
-                    <div>
-                        <h2 className="text-white font-black text-sm">Scan QR Booth</h2>
-                        <p className="text-white/50 text-xs">Arahkan kamera ke QR di layar mesin</p>
-                    </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 bg-white/10 rounded-xl text-white hover:bg-white/20 transition-all"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
+        <motion.div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="qr-scanner-title"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-50 flex flex-col bg-blue-dark text-white"
+        >
+            <div className="flex items-start justify-between gap-3 px-4 py-3">
+                <div className="min-w-0 pt-1">
+                    <h2 id="qr-scanner-title" className="font-bayon text-[1.75rem] leading-none uppercase">Scan QR Booth</h2>
+                    <p className="mt-1 text-[15px] leading-snug text-white/85">Arahkan kamera ke QR di layar mesin</p>
                 </div>
+                <button
+                    type="button"
+                    onClick={onClose}
+                    aria-label="Tutup kamera"
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-navy-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                    <X className="h-6 w-6" />
+                </button>
+            </div>
 
-                {/* Camera View */}
-                <div className="flex-1 relative overflow-hidden">
-                    <video
-                        ref={videoRef}
-                        playsInline
-                        muted
-                        className="absolute inset-0 w-full h-full object-cover"
-                    />
-                    <canvas ref={canvasRef} className="hidden" />
+            {/* Camera view: only the area around the frame is dimmed, so the QR itself stays clear */}
+            <div className="relative flex-1 overflow-hidden">
+                <video ref={videoRef} playsInline muted className="absolute inset-0 h-full w-full object-cover" />
+                <canvas ref={canvasRef} className="hidden" />
 
-                    {/* Viewfinder overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        {/* Dark overlay with transparent center */}
-                        <div className="absolute inset-0 bg-black/40" />
-                        <div className="relative w-64 h-64">
-                            {/* Cut-out (transparent center) */}
-                            <div className="absolute inset-0 bg-transparent" style={{
-                                boxShadow: "0 0 0 9999px rgba(0,0,0,0.5)",
-                            }} />
-                            {/* Corner markers */}
-                            <div className="absolute top-0 left-0 w-8 h-8 border-t-3 border-l-3 border-[#D4AF37] rounded-tl-lg" />
-                            <div className="absolute top-0 right-0 w-8 h-8 border-t-3 border-r-3 border-[#D4AF37] rounded-tr-lg" />
-                            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-3 border-l-3 border-[#D4AF37] rounded-bl-lg" />
-                            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-3 border-r-3 border-[#D4AF37] rounded-br-lg" />
-                            {/* Scan line animation */}
-                            {scanning && !scannedResult && (
-                                <motion.div
-                                    className="absolute left-2 right-2 h-0.5 bg-[#D4AF37] shadow-[0_0_8px_#D4AF37]"
-                                    animate={{ top: ["8%", "92%", "8%"] }}
-                                    transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-                                />
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Success overlay */}
-                    {scannedResult && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center"
-                        >
+                <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+                    <div className="relative h-64 w-64 shadow-[0_0_0_9999px_rgba(0,17,58,0.6)]">
+                        <div className={`${corner} top-0 left-0 rounded-tl-lg border-t-4 border-l-4`} />
+                        <div className={`${corner} top-0 right-0 rounded-tr-lg border-t-4 border-r-4`} />
+                        <div className={`${corner} bottom-0 left-0 rounded-bl-lg border-b-4 border-l-4`} />
+                        <div className={`${corner} right-0 bottom-0 rounded-br-lg border-r-4 border-b-4`} />
+                        {scanning && !scannedResult && !reduceMotion && (
                             <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ type: "spring", damping: 10 }}
-                            >
-                                <CheckCircle className="w-20 h-20 text-green-400" />
-                            </motion.div>
-                            <p className="text-white font-black text-xl mt-4">QR Terdeteksi!</p>
-                            <p className="text-white/50 text-sm mt-1">Menghubungkan sesi...</p>
-                            <SeboothLoader variant="mini" className="w-5 h-5 text-[#D4AF37] mt-3" />
-                        </motion.div>
-                    )}
-
-                    {/* Error state */}
-                    {error && (
-                        <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center p-8">
-                            <AlertCircle className="w-16 h-16 text-red-400" />
-                            <p className="text-white font-black text-lg mt-4 text-center">{error}</p>
-                            <button
-                                onClick={startCamera}
-                                className="mt-4 bg-[#D4AF37] text-[#0a1628] font-black text-sm rounded-2xl px-6 py-3"
-                            >
-                                Coba Lagi
-                            </button>
-                        </div>
-                    )}
-                </div>
-
-                {/* Bottom controls */}
-                <div className="flex items-center justify-center gap-4 p-6 bg-gradient-to-t from-black/80 to-transparent">
-                    {torchSupported && (
-                        <button
-                            onClick={toggleTorch}
-                            className={`p-3 rounded-full transition-all ${
-                                torchOn
-                                    ? "bg-[#D4AF37] text-[#0a1628]"
-                                    : "bg-white/10 text-white/50 hover:bg-white/20"
-                            }`}
-                        >
-                            {torchOn ? <Flashlight className="w-5 h-5" /> : <FlashlightOff className="w-5 h-5" />}
-                        </button>
-                    )}
-                    <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
-                        <Camera className="w-4 h-4 text-[#D4AF37]" />
-                        <span className="text-white/60 text-xs font-bold">
-                            {scanning ? "Memindai..." : "Memuat kamera..."}
-                        </span>
+                                className="absolute right-2 left-2 h-0.5 bg-secondary"
+                                animate={{ top: ["8%", "92%", "8%"] }}
+                                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                            />
+                        )}
                     </div>
                 </div>
-            </motion.div>
-        </AnimatePresence>
+
+                {scannedResult && (
+                    <div role="status" className="absolute inset-0 flex flex-col items-center justify-center bg-blue-dark/90 p-8 text-center">
+                        <CheckCircle className="h-16 w-16 text-secondary" aria-hidden="true" />
+                        <p className="mt-4 font-bayon text-[2rem] leading-none uppercase">QR Terdeteksi</p>
+                        <p className="mt-2 text-[17px] leading-snug">Menghubungkan sesi</p>
+                        <SeboothLoader variant="mini" className="mt-3 h-5 w-5 text-white" />
+                    </div>
+                )}
+
+                {error && (
+                    <div role="alert" className="absolute inset-0 flex flex-col items-center justify-center bg-blue-dark/90 p-8 text-center">
+                        <AlertCircle className="h-16 w-16 text-secondary" aria-hidden="true" />
+                        <p className="mt-4 text-[17px] leading-snug font-semibold">{error}</p>
+                        <button
+                            type="button"
+                            onClick={startCamera}
+                            className="mt-5 min-h-14 rounded-full bg-secondary px-8 text-[17px] font-bold text-blue-dark transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-[0.98]"
+                        >
+                            Coba Lagi
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            <div className="flex min-h-20 items-center justify-center gap-4 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+                {torchSupported && (
+                    <button
+                        type="button"
+                        onClick={toggleTorch}
+                        aria-pressed={torchOn}
+                        aria-label={torchOn ? "Matikan senter" : "Nyalakan senter"}
+                        className={`flex h-12 w-12 items-center justify-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+                            torchOn ? "bg-secondary text-blue-dark" : "bg-primary text-white hover:bg-navy-raised"
+                        }`}
+                    >
+                        {torchOn ? <Flashlight className="h-5 w-5" /> : <FlashlightOff className="h-5 w-5" />}
+                    </button>
+                )}
+                <p className="text-[15px] font-medium">{scanning ? "Memindai" : "Memuat kamera"}</p>
+            </div>
+        </motion.div>
     );
 }

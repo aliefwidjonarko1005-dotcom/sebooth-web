@@ -17,19 +17,17 @@ import {
   Power,
 } from "lucide-react";
 import QueueQrCode from "./QueueQrCode";
-import type { QueueEvent, QueueTicket } from "@/types/database";
+import type { PublicQueueStatus, PublicQueueTicket, QueueEvent, QueueTicket } from "@/types/database";
 import QueueStatusBadge from "../queue/QueueStatusBadge";
 import { createQueueEvent, toggleQueueEventActive } from "@/lib/queue/queueActions";
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
-interface QueueStatus {
-    event: QueueEvent | null;
-    currentTicket: QueueTicket | null;
-    waitingTickets: Array<QueueTicket & { positionFromFront: number; estimatedWaitMs: number }>;
-    avgDurationSec: number;
-    totalWaiting: number;
-    totalCompleted: number;
-    allActiveTickets: QueueTicket[];
+/** A ticket with what only operators get: an id to act on and a number to call. */
+type OperatorTicket = PublicQueueTicket & Pick<QueueTicket, "id" | "phone_number">;
+
+interface OperatorQueueStatus extends Omit<PublicQueueStatus, "currentTicket" | "waitingTickets"> {
+    currentTicket: OperatorTicket | null;
+    waitingTickets: OperatorTicket[];
 }
 
 interface QueueOperatorTabProps {
@@ -39,7 +37,7 @@ interface QueueOperatorTabProps {
 export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
     const [events, setEvents] = useState<QueueEvent[]>([]);
     const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-    const [status, setStatus] = useState<QueueStatus | null>(null);
+    const [status, setStatus] = useState<OperatorQueueStatus | null>(null);
     const [loading, setLoading] = useState(false);
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [showCreateForm, setShowCreateForm] = useState(false);
@@ -72,35 +70,37 @@ export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
     // Connect SSE for selected event
     useEffect(() => {
         if (!selectedEventId) return;
+        let isCurrent = true;
+
+        const loadStatus = async () => {
+            try {
+                const res = await fetch(`/api/queue/operator/status?eventId=${selectedEventId}`);
+                if (res.ok && isCurrent) setStatus(await res.json());
+            } catch (err) {
+                console.error(err);
+            }
+        };
 
         // Initial fetch
-        fetch(`/api/queue/${selectedEventId}/status`)
-            .then((r) => r.json())
-            .then((d) => setStatus(d))
-            .catch(console.error);
+        loadStatus();
 
-        // SSE
+        // The public stream carries no ids or phone numbers, so it only says when to fetch again
         if (sseRef.current) sseRef.current.close();
         const es = new EventSource(`/api/queue/stream/${selectedEventId}`);
         sseRef.current = es;
 
-        es.addEventListener("queue_update", (ev) => {
-            try { setStatus(JSON.parse(ev.data)); } catch { /* ignore */ }
-        });
+        es.addEventListener("queue_update", loadStatus);
 
         es.onerror = () => {
             es.close();
             // Polling fallback
             if (!pollingRef.current) {
-                pollingRef.current = setInterval(async () => {
-                    const res = await fetch(`/api/queue/${selectedEventId}/status`);
-                    const d = await res.json();
-                    setStatus(d);
-                }, 10000);
+                pollingRef.current = setInterval(loadStatus, 10000);
             }
         };
 
         return () => {
+            isCurrent = false;
             es.close();
             if (pollingRef.current) {
                 clearInterval(pollingRef.current);
@@ -147,11 +147,6 @@ export default function QueueOperatorTab({ flash }: QueueOperatorTabProps) {
         await loadEvents();
         flash(isActive ? "Event dinonaktifkan" : "Event diaktifkan");
     }
-
-    const allTickets = status ? [
-        ...(status.currentTicket ? [status.currentTicket] : []),
-        ...(status.waitingTickets || []),
-    ] : [];
 
     return (
         <div className="space-y-6">
@@ -383,7 +378,7 @@ function TicketRow({
     actionLoading,
     isCurrent = false,
 }: {
-    ticket: QueueTicket & { positionFromFront?: number; estimatedWaitMs?: number };
+    ticket: OperatorTicket;
     eventId: string;
     actionLoading: string | null;
     onSkip: (id: string) => void;

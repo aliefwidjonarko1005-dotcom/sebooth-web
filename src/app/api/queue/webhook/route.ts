@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
-import { sendPushToUser } from "@/lib/queue/pushSender";
+import { sendPushToUser, sendProximityPushNotifications } from "@/lib/queue/pushSender";
 import { hasValidWebhookSecret, rateLimit } from "@/lib/apiSecurity";
 
 export const dynamic = "force-dynamic";
@@ -200,7 +200,7 @@ export async function POST(req: NextRequest) {
     broadcastQueueUpdate(eventId, freshStatus);
 
     // Send push notifications to users whose proximity tier changed
-    await sendProximityPushNotifications(eventId, freshStatus);
+    await sendProximityPushNotifications(eventId);
 
     return NextResponse.json({
         success: true,
@@ -209,56 +209,4 @@ export async function POST(req: NextRequest) {
         nextTicketNumber,
         autoCalledNext: webhookEvent === "session_completed" && nextTicketNumber !== null,
     });
-}
-
-/**
- * Send push notifications to users whose proximity tier warrants notification.
- * Triggered after any queue state change.
- */
-async function sendProximityPushNotifications(
-    eventId: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    status: any
-) {
-    const { waitingTickets, event } = status;
-    if (!waitingTickets || !event) return;
-
-    const supabase = createServiceClient();
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.sebooth.in";
-
-    for (const ticket of waitingTickets) {
-        if (!ticket.user_id) continue;
-
-        const position = ticket.positionFromFront;
-
-        // Send push for "preparing" tier (1-2 positions away)
-        if (position <= 2 && !ticket.push_preparing_sent) {
-            await sendPushToUser(ticket.user_id, {
-                title: "Bersiap-siap! 🟠",
-                body: `Tinggal ${position} sesi lagi sebelum giliranmu di ${event.name}. Segera menuju booth!`,
-                url: `${baseUrl}/queue/${eventId}/ticket/${ticket.id}`,
-                tag: `preparing-${ticket.id}`,
-                vibrate: [200, 100, 200],
-            });
-
-            await supabase.from("queue_tickets")
-                .update({ push_preparing_sent: true })
-                .eq("id", ticket.id);
-        }
-
-        // Send push for "approaching" tier (3-4 positions away)
-        if (position >= 3 && position <= 4 && !ticket.push_approaching_sent) {
-            await sendPushToUser(ticket.user_id, {
-                title: "Antrean Hampir Tiba! 🟡",
-                body: `Masih ${position} sesi lagi di ${event.name}. Jangan jauh-jauh ya!`,
-                url: `${baseUrl}/queue/${eventId}/ticket/${ticket.id}`,
-                tag: `approaching-${ticket.id}`,
-                vibrate: [200],
-            });
-
-            await supabase.from("queue_tickets")
-                .update({ push_approaching_sent: true })
-                .eq("id", ticket.id);
-        }
-    }
 }

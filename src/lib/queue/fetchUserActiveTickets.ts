@@ -1,54 +1,30 @@
-import { createClient } from "@supabase/supabase-js";
-import type { QueueTicket } from "@/types/database";
+import { LIVE_TICKET_STATUSES, type QueueEvent, type QueueTicket } from "@/types/database";
+import { createQueueServerClient } from "./queueAuth";
 
-function createQueueClient() {
-    return createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-}
+export type UserLiveTicket = Pick<QueueTicket, "id" | "event_id" | "queue_number" | "status"> & {
+    queue_events: Pick<QueueEvent, "name" | "is_active"> | null;
+};
 
 /**
- * Fetch active queue tickets for a specific user.
- * Returns tickets that are currently waiting, called, or in_session.
- * Includes joined event data.
+ * The numbers a person holds right now, optionally in one event, newest first.
+ * Tickets of closed events don't count: they read as cancelled.
  */
-export async function fetchUserActiveTickets(userId: string): Promise<QueueTicket[]> {
-    const supabase = createQueueClient();
+export async function fetchUserActiveTickets(userId: string, eventId?: string): Promise<UserLiveTicket[]> {
+    const supabase = await createQueueServerClient();
 
-    const { data, error } = await supabase
+    let query = supabase
         .from("queue_tickets")
-        .select("*, queue_events(*)")
+        .select("id, event_id, queue_number, status, queue_events(name, is_active)")
         .eq("user_id", userId)
-        .in("status", ["waiting", "called", "in_session"])
+        .in("status", LIVE_TICKET_STATUSES)
         .order("created_at", { ascending: false });
+    if (eventId) query = query.eq("event_id", eventId);
 
+    const { data, error } = await query;
     if (error) {
         console.error("[fetchUserActiveTickets] Error:", error);
         return [];
     }
 
-    return data ?? [];
-}
-
-/**
- * Fetch recent completed tickets for a user (last 10).
- */
-export async function fetchUserRecentTickets(userId: string): Promise<QueueTicket[]> {
-    const supabase = createQueueClient();
-
-    const { data, error } = await supabase
-        .from("queue_tickets")
-        .select("*, queue_events(*)")
-        .eq("user_id", userId)
-        .eq("status", "completed")
-        .order("completed_at", { ascending: false })
-        .limit(10);
-
-    if (error) {
-        console.error("[fetchUserRecentTickets] Error:", error);
-        return [];
-    }
-
-    return data ?? [];
+    return ((data ?? []) as unknown as UserLiveTicket[]).filter((ticket) => ticket.queue_events?.is_active);
 }

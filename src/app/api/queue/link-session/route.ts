@@ -4,6 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
+import { createQueueServerClient } from "@/lib/queue/queueAuth";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
 
 export const dynamic = "force-dynamic";
@@ -114,8 +115,10 @@ export async function POST(req: NextRequest) {
         );
     }
 
+    const ticketsDb = await createQueueServerClient();
+
     // Find user's active ticket for this event
-    const { data: ticket, error: ticketError } = await supabase
+    const { data: ticket, error: ticketError } = await ticketsDb
         .from("queue_tickets")
         .select("id, queue_number, status")
         .eq("event_id", eventId)
@@ -133,7 +136,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Update ticket: mark as in_session
-    const { error: updateTicketError } = await supabase
+    const { error: updateTicketError } = await ticketsDb
         .from("queue_tickets")
         .update({
             status: "in_session",

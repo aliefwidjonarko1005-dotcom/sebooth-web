@@ -5,8 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, RefreshCw } from "lucide-react";
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
 import { POSE_PEOPLE, POSE_VIBES, poseReferenceLinks, type PoseIdea, type PosePeople, type PoseVibe } from "@/config/poseIdeas";
+import { FLOW_BUTTON_ORANGE, FLOW_HEADING } from "@/components/ui/FlowHero";
 
-const PEOPLE_LABEL: Record<PosePeople, string> = { "1": "SENDIRI", "2": "BERDUA", "3-4": "3-4 ORANG", "5+": "5+ ORANG" };
+const PEOPLE_LABEL: Record<PosePeople, string> = { "1": "Sendiri", "2": "Berdua", "3-4": "3-4 orang", "5+": "5+ orang" };
 
 /** While waiting in line: pick group size + vibe, get pose ideas with links to reference photos. */
 export default function PoseIdeasCard() {
@@ -36,90 +37,79 @@ export default function PoseIdeasCard() {
         }
     };
 
-    // Hard offset shadows are the queue pages' brutalist system (AGENTS.md), not decoration
     const chip = (active: boolean) =>
-        `min-h-[44px] px-3.5 border-2 border-black text-[0.75rem] font-black uppercase tracking-wider transition-[transform,box-shadow] duration-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ${
-            active ? "bg-primary text-white shadow-[2px_2px_0px_rgba(0,0,0,1)]" /* taste-skill-ignore */ : "bg-white text-primary shadow-[2px_2px_0px_rgba(0,0,0,1)]"
+        `min-h-11 rounded-full px-4 text-[15px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+            active ? "bg-primary text-white" : "bg-blue-light text-primary hover:bg-slate-200"
         }`;
 
     return (
-        <motion.div
-            id="guide-ticket-pose"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-            className="bg-white border-4 border-black hard-shadow-black p-4"
-        >
-            <p className="text-primary text-[0.8rem] font-black uppercase tracking-widest mb-1 text-center border-b-2 border-black pb-2">
-                BINGUNG MAU POSE APA?
-            </p>
-            <p className="text-primary/80 text-[0.85rem] font-semibold text-center mt-2 mb-4">Pilih dulu, nanti dikasih ide pose plus contoh fotonya.</p>
+        <section id="guide-ticket-pose" className="rounded-2xl bg-white p-5 text-blue-dark">
+            <h2 className={FLOW_HEADING}>Bingung Mau Pose Apa?</h2>
+            <p className="mt-1.5 text-[17px] leading-snug">Pilih dulu, nanti dikasih ide pose plus contoh fotonya.</p>
 
-            <p className="text-primary/80 text-[0.75rem] font-black uppercase tracking-wider mb-2">FOTO BERAPA ORANG?</p>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <p className="mt-4 text-[15px] leading-snug font-bold">Foto berapa orang?</p>
+            <div className="mt-2 flex flex-wrap gap-2">
                 {POSE_PEOPLE.map((p) => (
-                    <button key={p} onClick={() => setPeople(p)} aria-pressed={people === p} className={chip(people === p)}>
+                    <button key={p} type="button" onClick={() => setPeople(p)} aria-pressed={people === p} className={chip(people === p)}>
                         {PEOPLE_LABEL[p]}
                     </button>
                 ))}
             </div>
 
-            <p className="text-primary/80 text-[0.75rem] font-black uppercase tracking-wider mb-2">MAU GAYA APA?</p>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <p className="mt-4 text-[15px] leading-snug font-bold">Mau gaya apa?</p>
+            <div className="mt-2 flex flex-wrap gap-2">
                 {POSE_VIBES.map((v) => (
-                    <button key={v} onClick={() => setVibe(v)} aria-pressed={vibe === v} className={chip(vibe === v)}>
+                    <button key={v} type="button" onClick={() => setVibe(v)} aria-pressed={vibe === v} className={chip(vibe === v)}>
                         {v}
                     </button>
                 ))}
             </div>
 
-            <button
-                onClick={fetchIdeas}
-                disabled={!people || !vibe || loading}
-                className={/* taste-skill-ignore: brutalist system */ "w-full bg-secondary text-white font-black text-[0.85rem] uppercase tracking-wider border-4 border-black py-3 flex items-center justify-center gap-2 shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-[transform,box-shadow] duration-100 disabled:opacity-50 disabled:active:translate-x-0 disabled:active:translate-y-0"}
-            >
+            <button type="button" onClick={fetchIdeas} disabled={!people || !vibe || loading} className={`mt-5 ${FLOW_BUTTON_ORANGE}`}>
                 {loading ? (
-                    <SeboothLoader variant="mini" className="w-5 h-5" />
+                    <SeboothLoader variant="mini" className="h-5 w-5" />
                 ) : ideas ? (
                     <>
-                        <RefreshCw className="w-4 h-4" /> KASIH IDE LAIN
+                        <RefreshCw className="h-5 w-5" aria-hidden="true" /> Kasih Ide Lain
                     </>
                 ) : (
-                    "CARIKAN IDE POSE"
+                    "Carikan Ide Pose"
                 )}
             </button>
 
             {error && (
-                <p className="mt-3 bg-red-200 border-2 border-black px-3 py-2 text-red-700 text-[0.7rem] font-black uppercase tracking-wider">{error}</p>
+                <p role="alert" className="mt-3 rounded-lg bg-red-50 p-3 text-[15px] leading-snug font-medium text-red-700">
+                    {error}
+                </p>
             )}
 
             <div aria-live="polite">
-            <AnimatePresence mode="popLayout">
-                {ideas && !loading && (
-                    <motion.ul key={ideas.map((i) => i.title).join("|")} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mt-4 space-y-3">
-                        {ideas.map((idea, i) => (
-                            <li key={`${idea.title}-${i}`} className="border-2 border-black bg-gray-50 p-3">
-                                <p className="text-primary text-[0.85rem] font-black uppercase tracking-wide">{idea.title}</p>
-                                <p className="text-primary text-[0.9rem] font-medium mt-1 leading-normal">{idea.how}</p>
-                                <div className="flex flex-wrap gap-1.5 mt-2.5">
-                                    {poseReferenceLinks(idea.query).map((l) => (
-                                        <a
-                                            key={l.label}
-                                            href={l.href}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1 min-h-[36px] bg-white border-2 border-black px-2.5 text-[0.7rem] font-black uppercase tracking-wider text-primary hover:bg-yellow-200 transition-colors"
-                                        >
-                                            {l.label} <ExternalLink className="w-3 h-3" />
-                                        </a>
-                                    ))}
-                                </div>
-                            </li>
-                        ))}
-                    </motion.ul>
-                )}
-            </AnimatePresence>
+                <AnimatePresence mode="popLayout">
+                    {ideas && !loading && (
+                        <motion.ul key={ideas.map((i) => i.title).join("|")} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mt-5 space-y-5">
+                            {ideas.map((idea, i) => (
+                                <li key={`${idea.title}-${i}`}>
+                                    <p className="text-[17px] leading-snug font-bold text-primary">{idea.title}</p>
+                                    <p className="mt-1 text-[17px] leading-snug">{idea.how}</p>
+                                    <div className="mt-2.5 flex flex-wrap gap-2">
+                                        {poseReferenceLinks(idea.query).map((l) => (
+                                            <a
+                                                key={l.label}
+                                                href={l.href}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-blue-light px-4 text-[15px] font-semibold text-primary transition-colors hover:bg-slate-200"
+                                            >
+                                                {l.label} <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                                            </a>
+                                        ))}
+                                    </div>
+                                </li>
+                            ))}
+                        </motion.ul>
+                    )}
+                </AnimatePresence>
             </div>
-        </motion.div>
+        </section>
     );
 }

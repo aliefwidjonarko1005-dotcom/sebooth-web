@@ -290,6 +290,24 @@ body {
   .booking-ticket .ticket-perf::after { top: auto; bottom: -36px; }
 }
 
+/* Queue ticket: two parts scooped where they meet, so the screen colour shows through the notches */
+.ticket-top {
+  -webkit-mask:
+    radial-gradient(circle 12px at 0 100%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 12px at 100% 100%, transparent 98%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 12px at 0 100%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 12px at 100% 100%, transparent 98%, #000) right / 51% 100% no-repeat;
+}
+.ticket-bottom {
+  -webkit-mask:
+    radial-gradient(circle 12px at 0 0, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 12px at 100% 0, transparent 98%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 12px at 0 0, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 12px at 100% 0, transparent 98%, #000) right / 51% 100% no-repeat;
+}
+
 /* ─── Custom Card Shadows ─── */
 .hard-shadow-black {
   box-shadow: 6px 6px 0px #000000;

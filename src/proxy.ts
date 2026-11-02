@@ -3,16 +3,20 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 // Routes that require authentication
 const PROTECTED_PATHS = ['/admin']
+// Server Components here read the session but cannot save a refreshed token, which would log people
+// out once the old token is rejected as reused. So the token is refreshed here, before they render.
+const SESSION_PATHS = ['/queue']
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // ── Skip auth check entirely for public routes ──
-  // Only run Supabase getUser() for protected paths to reduce latency
+  // Only run Supabase for the paths that need a session to reduce latency
   const isProtected = PROTECTED_PATHS.some(p => pathname.startsWith(p))
+  const needsSession = SESSION_PATHS.some(p => pathname.startsWith(p))
   // preview=1 skips auth for local UI screenshots only, never in production
   const isDevPreview = process.env.NODE_ENV === 'development' && request.nextUrl.searchParams.get('preview') === '1'
-  if (!isProtected || isDevPreview) {
+  if ((!isProtected && !needsSession) || isDevPreview) {
     return NextResponse.next()
   }
 
@@ -68,6 +72,12 @@ export async function proxy(request: NextRequest) {
       },
     }
   )
+
+  // Refreshes an expired token and, unlike getUser, makes no network call otherwise
+  if (!isProtected) {
+    await supabase.auth.getSession()
+    return response
+  }
 
   const { data: { user } } = await supabase.auth.getUser()
 

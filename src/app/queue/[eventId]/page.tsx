@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 import { fetchQueueEventById } from "@/lib/queue/queueFetchers";
+import { fetchUserActiveTickets } from "@/lib/queue/fetchUserActiveTickets";
+import { getQueueUser } from "@/lib/queue/queueAuth";
 import QueueJoinForm from "@/components/queue/QueueJoinForm";
 import QueueAuthGate from "@/components/queue/QueueAuthGate";
 
@@ -22,31 +22,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export const dynamic = "force-dynamic";
 
-async function getAuthUser() {
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() { return cookieStore.getAll(); },
-                setAll(cookiesToSet: { name: string; value: string; options: Record<string, unknown> }[]) {
-                    try {
-                        cookiesToSet.forEach(({ name, value, options }) => {
-                            cookieStore.set(name, value, options);
-                        });
-                    } catch {
-                        // Server Components cannot set cookies.
-                        // This is safe to ignore — middleware handles token refresh.
-                    }
-                },
-            },
-        }
-    );
-    const { data: { user } } = await supabase.auth.getUser();
-    return user;
-}
-
 export default async function QueueEventPage({ params }: Props) {
     const { eventId } = await params;
     const event = await fetchQueueEventById(eventId);
@@ -55,11 +30,17 @@ export default async function QueueEventPage({ params }: Props) {
         notFound();
     }
 
-    const user = await getAuthUser();
+    const user = await getQueueUser();
 
     // If not logged in, show auth gate (login/register choice)
     if (!user) {
         return <QueueAuthGate event={event} />;
+    }
+
+    // Someone already holding a number here goes back to it instead of being offered another
+    const [heldTicket] = await fetchUserActiveTickets(user.id, eventId);
+    if (heldTicket) {
+        redirect(`/queue/${eventId}/ticket/${heldTicket.id}`);
     }
 
     // User is authenticated — pass user data to join form

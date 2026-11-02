@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "@/lib/apiSecurity";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { createQueueServerClient } from "@/lib/queue/queueAuth";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
 import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
 
@@ -23,14 +24,14 @@ async function getAuthUser() {
             },
         }
     );
-    return { supabase, user: (await supabase.auth.getUser()).data.user };
+    return (await supabase.auth.getUser()).data.user;
 }
 
 export async function POST(req: NextRequest) {
     const limited = rateLimit(req, "queue-check-in", 20, 60_000);
     if (limited) return limited;
 
-    const { supabase, user } = await getAuthUser();
+    const user = await getAuthUser();
     if (!user) {
         return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
@@ -40,6 +41,8 @@ export async function POST(req: NextRequest) {
     if (!ticketId || !eventId) {
         return NextResponse.json({ success: false, error: "Missing parameters" }, { status: 400 });
     }
+
+    const supabase = await createQueueServerClient();
 
     // Verify the ticket belongs to the user
     const { data: ticket, error: fetchError } = await supabase

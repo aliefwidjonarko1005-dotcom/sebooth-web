@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { fetchActiveQueueEvents } from "@/lib/queue/queueFetchers";
-import { Ticket, Clock, Users, ArrowRight, QrCode } from "lucide-react";
+import { fetchUserActiveTickets } from "@/lib/queue/fetchUserActiveTickets";
+import { getQueueUser } from "@/lib/queue/queueAuth";
+import ActiveQueueCard from "@/components/queue/ActiveQueueCard";
+import { FlowHero, FLOW_HEADING } from "@/components/ui/FlowHero";
 
 export const metadata: Metadata = {
     title: { absolute: "Antrean Photobooth | Sebooth" },
@@ -10,86 +14,64 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+const STEPS = [
+    "Pilih event di atas, lalu masuk atau daftar akun.",
+    "Ambil nomor antrean dari HP.",
+    "Pantau posisi dan perkiraan waktunya di halaman tiket.",
+    "Saat dipanggil, check-in dan scan QR di layar booth.",
+    "Foto otomatis masuk ke akunmu.",
+];
+
 export default async function QueueLandingPage() {
-    const events = await fetchActiveQueueEvents();
+    const [events, user] = await Promise.all([fetchActiveQueueEvents(), getQueueUser()]);
+    const heldTickets = user ? await fetchUserActiveTickets(user.id) : [];
 
     return (
-        <div className="min-h-screen bg-fluid-gradient flex flex-col items-center justify-center p-6">
-            <div className="relative w-full max-w-[400px] space-y-8">
-                {/* Header */}
-                <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-primary text-white mb-6">
-                        <Ticket className="w-10 h-10" />
-                    </div>
-                    <h1 className="text-3xl font-black text-primary uppercase tracking-tight">
-                        Sistem Antrean
-                    </h1>
-                    <p className="text-primary/60 mt-2 text-sm font-bold uppercase tracking-wider">
-                        Pilih event untuk mengambil nomor antrean
-                    </p>
-                </div>
+        <div className="min-h-svh bg-cream-soft">
+            <FlowHero title="Antrean Photobooth">
+                <p className="mt-3 text-xl leading-snug">
+                    Ambil nomor dari HP, lalu tunggu di mana saja sampai giliranmu dekat.
+                </p>
+            </FlowHero>
 
-                {/* Events List */}
+            <main className="mx-auto max-w-xl px-5 py-10 text-[17px] leading-relaxed text-blue-dark">
+                <ActiveQueueCard tickets={heldTickets} />
+
+                <h2 className={FLOW_HEADING}>Pilih Event</h2>
+
                 {events.length === 0 ? (
-                    <div className="bg-white border-4 border-black hard-shadow-black p-8 text-center">
-                        <QrCode className="w-12 h-12 text-primary/20 mx-auto mb-3" />
-                        <p className="text-primary font-bold text-sm uppercase">Belum ada event antrean aktif saat ini.</p>
-                        <p className="text-primary/50 text-xs mt-1 font-bold uppercase">Silakan hubungi staff Sebooth.</p>
+                    <div className="mt-4 rounded-lg bg-white p-5">
+                        <p className="font-bold">Belum ada antrean yang dibuka.</p>
+                        <p className="mt-1">Antrean dibuka saat acara berlangsung. Kalau kamu sedang di lokasi, tanya staff Sebooth di booth.</p>
                     </div>
                 ) : (
-                    <div className="space-y-4">
+                    <ul className="mt-4 space-y-3">
                         {events.map((event) => (
-                            <Link
-                                key={event.id}
-                                href={`/queue/${event.id}`}
-                                className="group block bg-white border-4 border-black hard-shadow-black p-5 transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_rgba(0,0,0,1)]"
-                            >
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h2 className="text-primary font-black text-base uppercase tracking-wider group-hover:text-secondary transition-colors">
-                                            {event.name}
-                                        </h2>
-                                        <div className="flex items-center gap-4 mt-2">
-                                            <span className="flex items-center gap-1 text-primary/50 text-xs font-bold uppercase">
-                                                <Clock className="w-3.5 h-3.5" />
-                                                ~{Math.round(event.avg_session_duration_sec / 60)} min/sesi
-                                            </span>
-                                            <span className="flex items-center gap-1 text-primary/50 text-xs font-bold uppercase">
-                                                <Users className="w-3.5 h-3.5" />
-                                                {event.booth_name}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <ArrowRight className="w-5 h-5 text-primary/30 group-hover:text-secondary group-hover:translate-x-1 transition-all" />
-                                </div>
-                            </Link>
+                            <li key={event.id}>
+                                <Link
+                                    href={`/queue/${event.id}`}
+                                    className="flex min-h-20 items-center justify-between gap-4 rounded-lg bg-white p-4 transition-colors hover:bg-blue-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-[0.99]"
+                                >
+                                    <span className="min-w-0">
+                                        <span className="block text-lg leading-snug font-bold text-primary">{event.name}</span>
+                                        <span className="mt-0.5 block text-[15px] leading-snug text-slate-600">
+                                            {event.booth_name} · ±{Math.round(event.avg_session_duration_sec / 60)} menit per sesi
+                                        </span>
+                                    </span>
+                                    <ArrowRight className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                                </Link>
+                            </li>
                         ))}
-                    </div>
+                    </ul>
                 )}
 
-                {/* How it works */}
-                <div className="bg-white border-4 border-black hard-shadow-black p-5">
-                    <p className="text-primary text-xs font-black uppercase tracking-widest mb-4 border-b-2 border-black pb-2">Cara Kerja</p>
-                    <div className="space-y-3">
-                        {[
-                            { step: "01", text: "Pilih event di atas dan login/daftar akun" },
-                            { step: "02", text: "Ambil nomor antrean digital otomatis" },
-                            { step: "03", text: "Pantau posisi dan estimasi waktu secara live" },
-                            { step: "04", text: "Scan QR di booth saat dipanggil" },
-                            { step: "05", text: "Foto otomatis masuk ke akunmu" },
-                        ].map((item) => (
-                            <div key={item.step} className="flex items-start gap-3">
-                                <span className="text-secondary font-black text-sm shrink-0">{item.step}</span>
-                                <p className="text-primary/70 text-xs font-bold uppercase tracking-wider">{item.text}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <p className="text-center text-primary/30 text-xs font-bold uppercase tracking-widest">
-                    Powered by Sebooth Queue System
-                </p>
-            </div>
+                <h2 className={`${FLOW_HEADING} mt-12`}>Cara Kerjanya</h2>
+                <ol className="mt-4 list-decimal space-y-2 pl-6 marker:font-bold marker:text-primary">
+                    {STEPS.map((step) => (
+                        <li key={step}>{step}</li>
+                    ))}
+                </ol>
+            </main>
         </div>
     );
 }

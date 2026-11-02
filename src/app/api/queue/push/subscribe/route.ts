@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "@/lib/apiSecurity";
+import { getQueueUser } from "@/lib/queue/queueAuth";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
@@ -13,18 +14,24 @@ function createServiceClient() {
 
 /**
  * POST /api/queue/push/subscribe
- * Save a push subscription for a user.
- * Body: { userId, endpoint, p256dh, auth }
+ * Save a push subscription for the signed-in user, so nobody can receive someone else's notifications.
+ * Body: { endpoint, p256dh, auth }
  */
 export async function POST(req: NextRequest) {
     const limited = rateLimit(req, "push-subscribe", 10, 60_000);
     if (limited) return limited;
 
-    const body = await req.json();
-    const { userId, endpoint, p256dh, auth } = body;
+    const user = await getQueueUser();
+    if (!user) {
+        return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = user.id;
 
-    if (!userId || !endpoint || !p256dh || !auth) {
-        console.error("[Push Subscribe] Missing fields:", { userId: !!userId, endpoint: !!endpoint, p256dh: !!p256dh, auth: !!auth });
+    const body = await req.json();
+    const { endpoint, p256dh, auth } = body;
+
+    if (!endpoint || !p256dh || !auth) {
+        console.error("[Push Subscribe] Missing fields:", { endpoint: !!endpoint, p256dh: !!p256dh, auth: !!auth });
         return NextResponse.json(
             { success: false, error: "Missing required fields" },
             { status: 400 }
