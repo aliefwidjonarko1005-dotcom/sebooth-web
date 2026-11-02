@@ -9,9 +9,9 @@
 - **Client Auth Calls**: Use `supabase.auth.getSession()` for lightweight local checks instead of triggering repeated `supabase.auth.getUser()` network round-trips.
 
 ## 3. Design System Integrity
-- **Global Typography**: Poppins font mapped globally across `--font-poppins`, `--font-headline`, `--font-marker`, and `--font-sebooth`.
+- **Global Typography**: Bayon for display headings (one weight only, never `font-black`), Hanken Grotesk for everything else. Numbers use Hanken: Bayon's "1" reads as "I".
 - **Softfile QR Claim (`/access/[id]`)**: Strictly follow the Editorial Anti-Slop design system (`/design-taste-frontend`): zero emojis, clean high-contrast actions, structured card hierarchy, calm badges.
-- **Profile & Queue UI**: Maintain Graphic Brutalism (`hard-shadow-black`, solid contrast, crisp borders).
+- **Profile & Queue UI**: Same language as the public pages: navy, orange, Bayon headings, Hanken 15px+, targets 44px+, no hard shadows, glass or gradients. Keep the ticket's solid colour per proximity tier (`getProximityTierColor`), since the guide tells people to read it, and keep the `tour-*`, `bottom-nav-*` and `guide-*` ids the guide targets.
 - **Homepage Slide Deck**: 100svh viewport locking with discrete gesture transitions (`translate3d`), no Lenis smooth-scroll interference on `/`.
 
 ## 4. Technical SEO Standards (DomainRank Compliance)
@@ -27,4 +27,10 @@
 ## 6. Zero Redirect Policy on Claim Session Page (`/access/[id]`)
 - **Strict Invariant — Stay on Page**: Pengguna yang membuka atau mengklaim sesi di `/access/[id]` WAJIB TETAP berada di `/access/[id]`.
 - **Dilarang Redirect ke My Photos (`/profile`)**: Tidak boleh ada auto-redirect, timer redirect, atau redirect otomatis setelah klaim sesi berhasil. Pengguna harus tetap di halaman klaim agar dapat langsung mengunduh softfile.
+
+## 7. Queue Privacy
+- **Public means venue-screen data only**: `fetchQueueStatus`, the SSE stream, `/api/queue/[eventId]/status` and the venue screen carry `PUBLIC_TICKET_COLUMNS` and nothing else. A ticket id or session id leads to someone's ticket and photos, so they are private too. The client finds its own ticket by `queue_number`.
+- **Private columns and all ticket writes** go through `createQueueServerClient` (`src/lib/queue/queueAuth.ts`), after an owner or admin check in the route. Never read `queue_tickets` with `select("*")` as the anon role: the rules in `_harness/sql/queue-privacy.sql` refuse it.
+- **Keep three lists in step** when a public column changes: `PUBLIC_TICKET_COLUMNS` in `queueFetchers.ts`, the `grant select` in `queue-privacy.sql`, and `scripts/verify_queue_privacy.mjs`.
+- **Testing**: never write to the real database. The queue's server code can run against a local stand-in for Supabase by starting `next dev` with `NEXT_PUBLIC_SUPABASE_URL` pointed at it.
 

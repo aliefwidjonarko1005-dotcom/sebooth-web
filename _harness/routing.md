@@ -18,13 +18,14 @@ Before executing tasks, classify the user request and load only the relevant fil
 - **Image Optimizer & Fallback**: `src/app/api/image/route.ts`
 - **Download Proxy**: `src/app/api/download/route.ts`
 - **Server Actions**: `src/app/actions.ts` (`claimSession`)
+- **Login & Register**: `src/app/login/page.tsx`, `src/app/register/page.tsx`, `src/components/auth/AuthForm.tsx`, `src/lib/safeRedirect.ts`
 - **Post-Download Funnel (rating → Google Review → Instagram)**: `src/components/features/review/` (`ReviewSheet`, `ReviewFunnel`, `ExperienceDial`), state in `src/lib/reviewFunnel.ts`
 - **Storage Status Strip**: `src/components/features/ClaimStatusStrip.tsx`
 - **Social Links (IG handle, Google Review URL, WhatsApp)**: `src/config/social.ts`
 
 ## 3. Digital Queue System (Auth-Gated)
 - **Public Queue Flow**: `src/app/queue/[eventId]/page.tsx`
-- **Live Ticket Display**: `src/app/queue/[eventId]/ticket/[ticketId]/page.tsx`
+- **Live Ticket Display**: `src/app/queue/[eventId]/ticket/[ticketId]/page.tsx`, `src/components/queue/QueueTicketDisplay.tsx` (shared page top: `src/components/ui/FlowHero.tsx`)
 - **Queue Actions & State**: `src/lib/queue/queueActions.ts`, `src/lib/queue/pushSender.ts`, `src/lib/queue/pushSubscription.ts`
 - **TV Monitor Display**: `src/app/queue/[eventId]/display/page.tsx`
 - **SSE Stream**: `src/app/api/queue/stream/[eventId]/route.ts`
