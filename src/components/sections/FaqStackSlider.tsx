@@ -201,16 +201,16 @@ export function FaqStackSlider({ isActive = true }: FaqStackSliderProps) {
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}
-          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black font-bayon uppercase tracking-normal sm:tracking-wide text-blue-dark leading-tight drop-shadow-xs"
+          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-bayon uppercase tracking-normal sm:tracking-wide text-blue-dark leading-tight drop-shadow-xs"
         >
-          FREQUENTLY ASK QUESTION
+          FREQUENTLY ASKED QUESTIONS
         </motion.h2>
 
         <motion.p
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2, delay: 0.05 }}
-          className="text-[11px] xs:text-xs sm:text-sm md:text-base text-slate-600 font-semibold max-w-xl mx-auto mt-0.5 sm:mt-1 leading-snug"
+          className="text-sm md:text-base text-blue-dark max-w-xl mx-auto mt-1 leading-snug"
         >
           Belum menemukan jawaban? Yuk, ngobrol langsung dengan tim kami!
         </motion.p>
@@ -278,7 +278,7 @@ export function FaqStackSlider({ isActive = true }: FaqStackSliderProps) {
                           setActiveFolderIdx(i);
                           setExpandedRowId(null);
                         }}
-                        className={`h-9 sm:h-11 w-1/3 pointer-events-auto flex items-center justify-center font-black font-bayon uppercase text-[12.5px] xs:text-[14.5px] sm:text-base md:text-lg lg:text-xl xl:text-2xl tracking-normal sm:tracking-wide transition-all duration-200 cursor-pointer px-0.5 xs:px-1 ${
+                        className={`h-9 sm:h-11 w-1/3 pointer-events-auto flex items-center justify-center font-bayon uppercase text-[15px] sm:text-base md:text-lg lg:text-xl xl:text-2xl tracking-normal sm:tracking-wide transition-all duration-200 cursor-pointer px-0.5 xs:px-1 ${
                           isCurrentFolderTab
                             ? "text-white opacity-100 drop-shadow-md"
                             : "text-white/80 hover:text-white opacity-0"
@@ -319,7 +319,7 @@ export function FaqStackSlider({ isActive = true }: FaqStackSliderProps) {
                         >
                           {/* Direct Question Header Row */}
                           <div className="flex items-center justify-between gap-3 p-3 xs:p-3.5 sm:p-4">
-                            <h4 className="text-[13px] xs:text-[14px] sm:text-[15.5px] md:text-base font-bold leading-snug text-white break-words flex-1 text-left">
+                            <h4 className="text-[15px] md:text-base font-bold leading-snug text-white break-words flex-1 text-left">
                               {row.question}
                             </h4>
 
@@ -339,7 +339,7 @@ export function FaqStackSlider({ isActive = true }: FaqStackSliderProps) {
                             }`}
                           >
                             <div className="overflow-hidden">
-                              <div className="px-3 xs:px-3.5 sm:px-4 pb-3 sm:pb-3.5 pt-0 text-xs xs:text-[13px] sm:text-sm md:text-[14.5px] font-medium leading-relaxed text-slate-200 border-t border-white/10 mx-1.5 xs:mx-2 mt-0.5 text-left">
+                              <div className="px-3 sm:px-4 pb-3 sm:pb-3.5 text-[15px] md:text-base leading-relaxed text-white">
                                 <p className="pt-2">{row.answer}</p>
                               </div>
                             </div>

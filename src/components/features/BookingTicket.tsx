@@ -134,7 +134,7 @@ export function BookingTicket({ pkg, onClose }: BookingTicketProps) {
           >
             Kirim ke WhatsApp
           </a>
-          <p className="text-xs leading-snug text-white/70">
+          <p className="text-[13px] leading-snug text-white/80">
             Harga menyesuaikan tanggal, durasi, dan lokasi.
           </p>
         </div>

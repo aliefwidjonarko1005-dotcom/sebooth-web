@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { LANDING_SLIDES, LandingSlide } from "@/config/landingSlides";
+import type { ArticleCardData } from "@/components/artikel/ArticleCards";
 import { SlideItem } from "./SlideItem";
 import { SlideNavigationDots } from "./SlideNavigationDots";
 import { ChevronDown } from "lucide-react";
@@ -10,10 +11,12 @@ import { GUIDE_KEYS } from "@/config/guides";
 
 interface SlideDeckLandingProps {
   slides?: LandingSlide[];
+  latestArticles: ArticleCardData[];
 }
 
 export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
   slides = LANDING_SLIDES,
+  latestArticles,
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   // One-time animated swipe cue for first-time visitors; retired after the first slide change
@@ -179,6 +182,7 @@ export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
                   index={index}
                   isActive={activeIndex === index}
                   isFirst={index === 0}
+                  latestArticles={latestArticles}
                 />
               )}
             </div>
@@ -198,7 +202,7 @@ export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
         <button
           onClick={nextSlide}
           aria-label="Scroll ke slide berikutnya"
-          className={`fixed bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1 text-white hover:text-white transition-opacity duration-300 group cursor-pointer focus:outline-none ${
+          className={`fixed bottom-1.5 sm:bottom-4 left-1/2 p-1.5 -translate-x-1/2 z-30 flex flex-col items-center gap-1 text-white hover:text-white transition-opacity duration-300 group cursor-pointer rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
             activeIndex === 0 ? "flex" : "flex md:hidden"
           }`}
         >
@@ -207,13 +211,8 @@ export const SlideDeckLanding: React.FC<SlideDeckLandingProps> = ({
               <GuideGesture kind="swipe-y" size={44} />
             </span>
           )}
-          {activeIndex === 0 && (
-            <span className="text-[9.5px] xs:text-xs sm:text-sm font-extrabold tracking-[0.2em] uppercase text-[#F59E0B] group-hover:text-secondary transition-colors drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] filter">
-              SCROLL UNTUK GANTI SLIDE
-            </span>
-          )}
-          <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/25 flex items-center justify-center group-hover:border-secondary group-hover:bg-secondary/30 transition-all shadow-lg">
-            <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-white drop-shadow-md" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-dark transition-colors group-hover:bg-secondary sm:h-10 sm:w-10">
+            <ChevronDown className="h-5 w-5 text-white" aria-hidden="true" />
           </div>
         </button>
       )}

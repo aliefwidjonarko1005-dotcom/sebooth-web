@@ -7,10 +7,6 @@ import { BookingTicket } from "@/components/features/BookingTicket";
 import {
   ChevronLeft,
   ChevronRight,
-  Sparkles,
-  Heart,
-  Music,
-  Smile,
 } from "lucide-react";
 import { DetailedPackage, PackageType } from "./pricing/pricingPackages";
 import { DesktopPricingStage } from "./pricing/DesktopPricingStage";
@@ -204,31 +200,6 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
         />
       )}
 
-      {/* Ambient Glow */}
-      <div className="absolute inset-0 bg-radial from-white/12 via-transparent to-transparent pointer-events-none z-0" />
-
-      {/* ── BACKGROUND VECTOR DOODLES ── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-20">
-        <div className="absolute top-[8%] left-[23%] text-white">
-          <Music className="w-6 h-6 stroke-[2.5]" />
-        </div>
-        <div className="absolute top-[12%] left-[27%] text-white">
-          <Music className="w-5 h-5 stroke-[2.5]" />
-        </div>
-        <div className="absolute top-[7%] left-[41%] text-white">
-          <Music className="w-5 h-5 stroke-[2.5]" />
-        </div>
-        <div className="absolute top-[15%] left-[5%] w-10 h-10 rounded-2xl bg-white/15 flex items-center justify-center text-white">
-          <Heart className="w-5 h-5 fill-white text-white" />
-        </div>
-        <div className="absolute top-[17%] right-[6%] w-11 h-11 rounded-2xl bg-white/15 flex items-center justify-center text-white">
-          <Smile className="w-6 h-6 stroke-[2.5]" />
-        </div>
-        <div className="absolute top-[36%] left-[8%] text-white">
-          <Sparkles className="w-5 h-5" />
-        </div>
-      </div>
-
       {/* ── MAIN STAGE CONTAINER ── */}
       <div className="relative z-10 w-full max-w-6xl mx-auto flex-1 flex items-center justify-center px-1 sm:px-4 my-auto overflow-visible md:overflow-hidden">
         {/* ═══════════════════════════════════════════════════════════════════
@@ -269,18 +240,18 @@ export function PricingSlider({ isActive = true }: PricingSliderProps) {
           <button
             onClick={() => handleMobileSlideChange(leftBtnConfig.target, "left")}
             aria-label="Previous Package Card"
-            className={`md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-50 w-8 xs:w-9 sm:w-10 h-16 xs:h-18 sm:h-20 rounded-r-full ${leftBtnConfig.colorClass} border-y-2 border-r-2 ${leftBtnConfig.borderClass} shadow-[0_6px_20px_rgba(0,0,0,0.45)] flex items-center justify-start pl-0.5 xs:pl-1 text-white active:scale-90 transition-all cursor-pointer animate-pulse`}
+            className={`md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-50 w-9 sm:w-10 h-20 rounded-r-full ${leftBtnConfig.colorClass} flex items-center justify-start pl-1 text-white active:scale-95 transition-transform cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white`}
           >
-            <ChevronLeft className="w-5 h-5 xs:w-6 xs:h-6 stroke-[3.5] drop-shadow-md" />
+            <ChevronLeft className="h-6 w-6" aria-hidden="true" />
           </button>
 
           {/* Right Semi-Circle (Flush Right Screen Boundary - Vertically Centered) */}
           <button
             onClick={() => handleMobileSlideChange(rightBtnConfig.target, "right")}
             aria-label="Next Package Card"
-            className={`md:hidden absolute right-0 top-1/2 -translate-y-1/2 z-50 w-8 xs:w-9 sm:w-10 h-16 xs:h-18 sm:h-20 rounded-l-full ${rightBtnConfig.colorClass} border-y-2 border-l-2 ${rightBtnConfig.borderClass} shadow-[0_6px_20px_rgba(0,0,0,0.45)] flex items-center justify-end pr-0.5 xs:pr-1 text-white active:scale-90 transition-all cursor-pointer animate-pulse`}
+            className={`md:hidden absolute right-0 top-1/2 -translate-y-1/2 z-50 w-9 sm:w-10 h-20 rounded-l-full ${rightBtnConfig.colorClass} flex items-center justify-end pr-1 text-white active:scale-95 transition-transform cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white`}
           >
-            <ChevronRight className="w-5 h-5 xs:w-6 xs:h-6 stroke-[3.5] drop-shadow-md" />
+            <ChevronRight className="h-6 w-6" aria-hidden="true" />
           </button>
         </>
       )}

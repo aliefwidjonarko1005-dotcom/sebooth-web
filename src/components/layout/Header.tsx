@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { whatsappUrl } from "@/config/social";
+import { useModalFocus } from "@/lib/useModalFocus";
 
 const mobileNavItems = [
   { name: "HOME", href: "/#hero" },
@@ -25,38 +27,19 @@ const desktopNavItems = [
   { name: "AKTIVITAS", href: "/#activities" },
   { name: "PRICING", href: "/#pricing" },
   { name: "FAQ", href: "/#faq" },
+  { name: "MY PHOTOS", href: "/profile" },
 ];
 
+const BOOKING_MESSAGE = "Halo Sebooth, saya ingin booking photobooth untuk acara saya!";
+
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const pathname = usePathname();
   const [activeItem, setActiveItem] = useState("");
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  // Lock body scroll when mobile side drawer is open
-  useEffect(() => {
-    if (isMobileDrawerOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMobileDrawerOpen]);
+  const reduceMotion = useReducedMotion();
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const closeDrawer = useCallback(() => setIsMobileDrawerOpen(false), []);
+  useModalFocus(isMobileDrawerOpen, drawerRef, closeDrawer);
 
   const handleNavClick = (href: string, name: string) => {
     setActiveItem(name);
@@ -80,197 +63,151 @@ export function Header() {
   return (
     <>
       {/* ═══════════════════════════════════════════════════════════════════
-          MOBILE ONLY: TOP-LEFT FLOATING HAMBURGER BUTTON (STRIP 3)
-          Leaves 100% of slide titles completely unobstructed & visible!
+          MOBILE ONLY: CORNER TAB WITH MENU BUTTON AND WORDMARK
+          Stays in the corner so slide titles remain unobstructed and visible.
          ═══════════════════════════════════════════════════════════════════ */}
-      <div className="fixed top-3.5 left-3.5 z-50 md:hidden flex items-center gap-2">
+      <div className="fixed top-0 left-0 z-50 flex items-center rounded-br-2xl bg-blue-dark pt-[env(safe-area-inset-top)] pr-4 md:hidden">
         <button
           onClick={() => setIsMobileDrawerOpen(true)}
           aria-label="Buka Menu Navigasi"
-          className="w-11 h-11 rounded-full bg-black/65 backdrop-blur-xl border border-white/25 flex items-center justify-center text-white shadow-[0_8px_24px_rgba(0,0,0,0.5)] active:scale-95 hover:bg-black/85 transition-all cursor-pointer group"
+          aria-haspopup="dialog"
+          aria-expanded={isMobileDrawerOpen}
+          className="flex h-14 w-14 cursor-pointer items-center justify-center text-white transition-colors hover:text-secondary focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white active:scale-95"
         >
-          <Menu className="w-5 h-5 text-white group-hover:text-secondary transition-colors" />
+          <Menu className="h-6 w-6" aria-hidden="true" />
         </button>
 
-        {/* Small Brand Pill Next to Hamburger */}
         <Link
           href="/"
           aria-label="Sebooth, ke beranda"
-          className="px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-lg border border-white/15 flex items-center shadow-md"
+          className="flex h-14 items-center focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
         >
-          <Image src="/images/logo/sebooth-white.svg" alt="Sebooth Photobooth" width={62} height={26} unoptimized priority className="h-auto w-auto" style={{ height: 26 }} />
+          <Image src="/images/logo/sebooth-white.svg" alt="Sebooth Photobooth" width={72} height={30} unoptimized priority className="h-auto w-auto" style={{ height: 30 }} />
         </Link>
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          MOBILE ONLY: ULTRA-FAST GLASSMORPHISM SIDE-DRAWER
+          MOBILE ONLY: SIDE DRAWER
          ═══════════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {isMobileDrawerOpen && (
           <div className="fixed inset-0 z-[9998] md:hidden">
-            {/* Smooth Backdrop */}
+            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
+              transition={{ duration: reduceMotion ? 0 : 0.18 }}
               onClick={() => setIsMobileDrawerOpen(false)}
-              className="absolute inset-0 bg-black/65 backdrop-blur-sm"
+              className="absolute inset-0 bg-blue-dark/70"
             />
 
-            {/* Left Slide-out Drawer (Hardware Accelerated Glassmorphism) */}
+            {/* Left slide-out drawer */}
             <motion.div
+              ref={drawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menu navigasi"
               initial={{ x: "-100%" }}
               animate={{ x: "0%" }}
               exit={{ x: "-100%" }}
-              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
               style={{ willChange: "transform" }}
-              className="relative w-[78vw] max-w-[290px] h-full bg-black/85 backdrop-blur-2xl border-r border-white/20 shadow-[20px_0_60px_rgba(0,0,0,0.85)] p-5 flex flex-col justify-between text-white overflow-y-auto [transform:translate3d(0,0,0)]"
+              className="relative flex h-full w-[82vw] max-w-[320px] flex-col justify-between overflow-y-auto bg-primary px-5 pt-[env(safe-area-inset-top)] pb-[calc(1.5rem+env(safe-area-inset-bottom))] text-white"
             >
-              {/* Drawer Top: Brand & Close Button */}
               <div>
-                <div className="flex items-center justify-between pb-3.5 border-b border-white/15 mb-3">
+                {/* Drawer top: brand and close button */}
+                <div className="flex h-14 items-center justify-between">
                   <Link
                     href="/"
                     onClick={() => setIsMobileDrawerOpen(false)}
                     aria-label="Sebooth, ke beranda"
-                    className="flex items-center"
+                    className="flex items-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   >
-                    <Image src="/images/logo/sebooth-white.svg" alt="Sebooth Photobooth" width={76} height={32} unoptimized priority className="h-auto w-auto" style={{ height: 32 }} />
+                    <Image src="/images/logo/sebooth-white.svg" alt="Sebooth Photobooth" width={72} height={30} unoptimized priority className="h-auto w-auto" style={{ height: 30 }} />
                   </Link>
 
                   <button
                     onClick={() => setIsMobileDrawerOpen(false)}
                     aria-label="Tutup Menu"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all active:scale-90"
+                    className="-mr-3 flex h-12 w-12 cursor-pointer items-center justify-center text-white transition-colors hover:text-secondary focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white active:scale-95"
                   >
-                    <X className="w-5 h-5" />
+                    <X className="h-6 w-6" aria-hidden="true" />
                   </button>
                 </div>
 
-                {/* Minimalist Glassmorphism Navigation Items List (No Icons / No Subtitles) */}
-                <nav className="flex flex-col gap-1.5 py-1">
-                  {mobileNavItems.map((item) => {
-                    const isActive = activeItem === item.name;
-
-                    return (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        onClick={() => handleNavClick(item.href, item.name)}
-                        className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-150 border text-left ${
-                          isActive
-                            ? "bg-white/20 border-white/35 text-white font-black shadow-md backdrop-blur-md"
-                            : "bg-white/5 hover:bg-white/10 border-white/10 hover:border-white/20 text-white/80 hover:text-white"
-                        }`}
-                      >
-                        <span className="text-base xs:text-lg font-bayon uppercase tracking-wider">
-                          {item.name}
-                        </span>
-                        {isActive && (
-                          <span className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_var(--color-secondary)]" />
-                        )}
-                      </Link>
-                    );
-                  })}
+                {/* Navigation list */}
+                <nav aria-label="Navigasi utama" className="mt-4 flex flex-col">
+                  {mobileNavItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => handleNavClick(item.href, item.name)}
+                      className={`flex min-h-12 items-center font-bayon text-[2rem] leading-none uppercase transition-colors hover:text-secondary focus-visible:outline-2 focus-visible:outline-white ${
+                        activeItem === item.name ? "text-secondary" : "text-white"
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
                 </nav>
               </div>
 
-              {/* Drawer Bottom: WhatsApp Booking Glass CTA */}
-              <div className="pt-3 mt-2 border-t border-white/15">
-                <a
-                  href="https://wa.me/6285713899441?text=Halo%20Sebooth,%20saya%20ingin%20booking%20photobooth%20untuk%20acara%20saya!"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsMobileDrawerOpen(false)}
-                  className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30 text-white font-black font-bayon uppercase tracking-wider text-sm xs:text-base flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm"
-                >
-                  <span>BOOKING VIA WHATSAPP</span>
-                </a>
-              </div>
+              {/* Drawer bottom: WhatsApp booking */}
+              <a
+                href={whatsappUrl(BOOKING_MESSAGE)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMobileDrawerOpen(false)}
+                className="mt-6 flex min-h-14 items-center justify-center rounded-full bg-secondary px-6 text-[17px] font-bold text-blue-dark transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:scale-[0.98]"
+              >
+                Booking via WhatsApp
+              </a>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          DESKTOP ONLY: FLOATING CENTER PILL HEADER (>= md screens)
+          DESKTOP ONLY: PLAIN TOP BAR (>= md screens)
+          64px tall: every slide already reserves at least 80px at the top.
          ═══════════════════════════════════════════════════════════════════ */}
-      <header
-        className={`hidden md:block fixed top-5 left-1/2 -translate-x-1/2 w-[calc(100%-2.5rem)] max-w-5xl z-50 rounded-full border border-white/20 shadow-2xl transition-all duration-300 ${
-          isScrolled
-            ? "py-2.5 bg-black/60 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
-            : "py-3.5 bg-black/40 backdrop-blur-xl shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
-        }`}
-      >
-        {/* Dynamic Glass Shine Keyframe Animation Overlay */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-full pointer-events-none z-[-1]">
-          <div className="absolute top-0 -left-[150%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-20 animate-shimmer" />
-        </div>
-
-        <div className="w-full px-7 flex items-center justify-between relative z-10">
-          {/* Brand Text Logo with Vibrant Accent */}
+      <header className="fixed inset-x-0 top-0 z-50 hidden bg-blue-dark px-10 text-white md:block">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between">
           <Link
             href="/"
             onClick={() => setActiveItem("")}
             aria-label="Sebooth, ke beranda"
-            className="flex items-center hover:opacity-90 transition-opacity"
+            className="flex items-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
             <Image src="/images/logo/sebooth-white.svg" alt="Sebooth Photobooth" width={86} height={36} unoptimized priority className="h-auto w-auto" style={{ height: 36 }} />
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="flex gap-1.5 items-center">
-            {desktopNavItems.map((item) => {
-              const isActive = activeItem === item.name;
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => handleNavClick(item.href, item.name)}
-                  className={`font-extrabold text-[0.82rem] uppercase tracking-wider px-4 py-2 rounded-full transition-all duration-200 ${
-                    isActive
-                      ? "bg-[#FF4500] text-white shadow-[0_0_16px_rgba(255,69,0,0.6)] scale-105"
-                      : "text-white/85 hover:text-white hover:bg-white/15"
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              );
-            })}
-
-
-            {/* Vertical Divider */}
-            <div className="h-4 w-[1px] bg-white/25 mx-2" />
-
-            {/* My Photos Link */}
-            <Link
-              href="/profile"
-              onClick={() => setActiveItem("MY PHOTOS")}
-              className={`font-black text-[0.82rem] uppercase tracking-wider px-4 py-2 rounded-full transition-all duration-200 ${
-                activeItem === "MY PHOTOS"
-                  ? "bg-[#FF4500] text-white shadow-[0_0_16px_rgba(255,69,0,0.6)] scale-105"
-                  : "text-[#D4AF37] hover:text-white hover:bg-white/15"
-              }`}
-            >
-              MY PHOTOS
-            </Link>
+          <nav aria-label="Navigasi utama" className="flex items-center gap-4 lg:gap-7">
+            {desktopNavItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={() => handleNavClick(item.href, item.name)}
+                className={`font-bayon text-base uppercase transition-colors hover:text-secondary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white lg:text-lg ${
+                  activeItem === item.name ? "text-secondary" : "text-white"
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
           </nav>
 
-          {/* Desktop CTA */}
-          <div className="flex items-center gap-3">
-            <a
-              href="https://wa.me/6285713899441?text=Halo%20Sebooth,%20saya%20ingin%20booking%20photobooth!"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center font-black text-[0.82rem] uppercase tracking-wider px-5 py-2 rounded-full bg-[#FF4500] text-white hover:bg-[#e03d00] hover:scale-105 active:scale-95 transition-all shadow-[0_4px_16px_rgba(255,69,0,0.4)] border border-white/20"
-            >
-              <span>BOOK NOW</span>
-            </a>
-          </div>
+          <a
+            href={whatsappUrl(BOOKING_MESSAGE)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center rounded-full bg-secondary px-5 font-bayon text-base text-blue-dark uppercase transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:scale-[0.98] lg:text-lg"
+          >
+            Book Now
+          </a>
         </div>
       </header>
     </>
   );
 }
-

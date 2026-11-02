@@ -1,14 +1,39 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { MessageCircle } from "lucide-react";
+import { whatsappUrl } from "@/config/social";
 
 interface AboutContentProps {
     content: Record<string, string>;
 }
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+// Sebooth's own print stands in for the hero picture until the CMS supplies one
+const HERO_PRINT = {
+    src: "/images/gallery/hd/strip_225fd0b3.webp",
+    alt: "Cetakan photostrip Sebooth berbingkai acara FISIP, dua strip dalam satu lembar",
+};
+
+const STEP_PHOTOS = [
+    {
+        src: "/images/products/mini_studio_booth.webp",
+        alt: "Mini studio Sebooth dengan kamera dan lampu di sebuah acara kampus",
+    },
+    {
+        src: "/images/gallery/hd/photo_69650726_4.webp",
+        alt: "Rombongan tamu berjaket kuning berpose di depan kamera Sebooth",
+    },
+    {
+        src: "/images/products/vending_machine_booth.webp",
+        alt: "Mesin photobooth Sebooth di Lapangan Widya Puraya",
+    },
+];
+
 export function AboutContent({ content }: AboutContentProps) {
-    const heroLabel = content["hero_label"] || "OUR STORY";
+    const reduceMotion = useReducedMotion();
     const heroTitle1 = content["hero_title_1"] || "Membangun";
     const heroTitle2 = content["hero_title_2"] || "Kenangan.";
     const heroParagraph1 =
@@ -17,14 +42,15 @@ export function AboutContent({ content }: AboutContentProps) {
     const heroParagraph2 =
         content["hero_paragraph_2"] ||
         "Bermula dari garasi kecil di Semarang, kami menggabungkan presisi teknik dengan seni fotografi. Kami percaya bahwa photobooth bukan sekadar mesin, melainkan jembatan interaksi antar manusia.";
+    const heroImage = content["hero_image"]
+        ? { src: content["hero_image"], alt: "Sebooth di sebuah acara" }
+        : HERO_PRINT;
 
-    const visionLabel = content["vision_label"] || "MIMPI BESAR";
     const visionTitle = content["vision_title"] || "Our Vision";
     const visionText =
         content["vision_text"] ||
         "Menjadi standar emas dalam industri event experience di Indonesia, di mana teknologi dan keramahtamahan berpadu untuk menciptakan kebahagiaan yang nyata. Kami ingin Sebooth hadir di setiap kota, menjadi bagian dari jutaan senyuman.";
 
-    const missionLabel = content["mission_label"] || "LANGKAH KECIL";
     const missionTitle = content["mission_title"] || "Our Mission";
 
     const step1Title = content["step1_title"] || "Technical Excellence";
@@ -41,177 +67,174 @@ export function AboutContent({ content }: AboutContentProps) {
         "Tumbuh bersama mitra lokal melalui sistem kemitraan yang adil dan transparan.";
 
     const footerQuote1 =
-        content["footer_quote_1"] || "EVERY PICTURE TELLS A STORY.";
+        content["footer_quote_1"] || "Every picture tells a story.";
     const footerQuote2 =
         content["footer_quote_2"] || "Let us help you write yours.";
 
     const steps = [
-        {
-            num: "01",
-            title: step1Title,
-            desc: step1Desc,
-            shadow: "hard-shadow-black",
-        },
-        {
-            num: "02",
-            title: step2Title,
-            desc: step2Desc,
-            shadow: "hard-shadow-blue",
-        },
-        {
-            num: "03",
-            title: step3Title,
-            desc: step3Desc,
-            shadow: "hard-shadow-orange",
-        },
+        { title: step1Title, desc: step1Desc, photo: STEP_PHOTOS[0] },
+        { title: step2Title, desc: step2Desc, photo: STEP_PHOTOS[1] },
+        { title: step3Title, desc: step3Desc, photo: STEP_PHOTOS[2] },
     ];
 
+    // The hero only slides (its H1 must be readable on first paint); later parts rise in once
+    const slide = (delay = 0) =>
+        reduceMotion
+            ? {}
+            : {
+                  initial: { y: 24 },
+                  animate: { y: 0 },
+                  transition: { duration: 0.8, delay, ease: EASE },
+              };
+    const rise = (delay = 0) =>
+        reduceMotion
+            ? {}
+            : {
+                  initial: { opacity: 0, y: 24 },
+                  whileInView: { opacity: 1, y: 0 },
+                  viewport: { once: true, margin: "0px 0px -10% 0px" },
+                  transition: { duration: 0.6, delay, ease: EASE },
+              };
+
     return (
-        <div className="min-h-screen bg-transparent paper-texture">
-            {/* Hero Narrative */}
-            <section className="px-6 md:px-20 py-24 md:py-32 bg-primary relative overflow-hidden">
-                <div className="grid md:grid-cols-2 gap-12 items-center">
-                    <motion.div
-                        initial={{ y: 30 }}
-                        animate={{ y: 0 }}
-                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                        className="max-w-5xl z-10 relative"
+        <div className="min-h-svh">
+            {/* Hero: the story beside a real Sebooth print */}
+            <section className="bg-primary px-5 pt-28 pb-20 text-white md:px-10 md:pt-40 md:pb-32">
+                {/* Last row takes the slack so the print's height doesn't pry the text apart */}
+                <div className="mx-auto grid max-w-6xl gap-y-8 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:grid-rows-[auto_auto_1fr] md:gap-x-16">
+                    <motion.h1
+                        {...slide()}
+                        className="font-bayon text-[4rem] leading-[0.9] uppercase md:text-[clamp(4rem,10vw,7.5rem)]"
                     >
-                        <p className="text-lg font-bold uppercase text-white/60 mb-4">
-                            [ {heroLabel} ]
-                        </p>
-                        <h1 className="text-5xl md:text-8xl font-black text-white mb-12 tracking-tighter leading-[0.9] uppercase">
-                            <span className="text-white text-5xl md:text-8xl font-black tracking-tighter leading-[0.9] uppercase">
-                                {heroTitle1}
-                            </span>
-                            <br />
-                            <span className="text-secondary scribble-underline italic marker-font normal-case text-5xl md:text-8xl" style={{ textShadow: "none" }}>
-                                {heroTitle2}
-                            </span>
-                        </h1>
-                        <div className="space-y-8 text-xl md:text-2xl text-white font-bold uppercase leading-relaxed max-w-3xl">
-                            <p className="text-xl md:text-2xl text-white font-bold uppercase leading-relaxed">
-                                {heroParagraph1}
-                            </p>
-                            <p className="text-xl md:text-2xl text-white font-bold uppercase leading-relaxed">
-                                {heroParagraph2}
-                            </p>
-                        </div>
-                    </motion.div>
-
-                    {/* Hero Image */}
+                        {heroTitle1} {heroTitle2}
+                    </motion.h1>
+                    <motion.p
+                        {...slide(0.08)}
+                        className="max-w-[34ch] text-xl leading-snug font-medium md:col-start-1 lg:text-[1.75rem]"
+                    >
+                        {heroParagraph1}
+                    </motion.p>
                     <motion.div
-                        initial={{ scale: 1.04 }}
+                        initial={reduceMotion ? false : { scale: 1.04 }}
                         animate={{ scale: 1 }}
-                        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                        className="relative h-[400px] md:h-[500px] w-full border-4 border-white/20 overflow-hidden flex items-center justify-center bg-slate-900"
+                        transition={{ duration: 1.2, ease: EASE }}
+                        className="relative aspect-[2/3] w-full overflow-hidden md:col-start-2 md:row-span-3 md:row-start-1 md:self-start"
                     >
-                        {content["hero_image"] ? (
+                        <Image
+                            src={heroImage.src}
+                            alt={heroImage.alt}
+                            fill
+                            priority
+                            sizes="(min-width: 768px) 40vw, 100vw"
+                            className="object-cover"
+                        />
+                    </motion.div>
+                    <motion.p
+                        {...slide(0.16)}
+                        className="max-w-[52ch] text-[17px] leading-relaxed md:col-start-1 md:text-lg"
+                    >
+                        {heroParagraph2}
+                    </motion.p>
+                </div>
+            </section>
+
+            {/* Vision: one statement */}
+            <section className="px-5 py-24 md:px-10 md:py-40">
+                <div className="mx-auto grid max-w-6xl gap-y-6 md:grid-cols-12 md:gap-x-8">
+                    <motion.h2
+                        {...rise()}
+                        className="font-bayon text-5xl leading-[0.95] text-primary uppercase md:col-span-4 md:text-7xl"
+                    >
+                        {visionTitle}
+                    </motion.h2>
+                    <motion.p
+                        {...rise(0.08)}
+                        className="text-xl leading-snug font-medium text-blue-dark md:col-span-8 lg:text-[1.75rem] lg:leading-[1.3]"
+                    >
+                        {visionText}
+                    </motion.p>
+                    {content["vision_image"] && (
+                        <motion.div
+                            {...rise(0.16)}
+                            className="relative aspect-[16/9] overflow-hidden md:col-span-8 md:col-start-5"
+                        >
                             <Image
-                                src={content["hero_image"]}
-                                alt="About Sebooth Hero"
+                                src={content["vision_image"]}
+                                alt="Visi Sebooth"
                                 fill
-                                className="w-full h-full object-cover"
+                                sizes="(min-width: 768px) 60vw, 100vw"
+                                className="object-cover"
                             />
-                        ) : (
-                            <div className="relative w-full h-full flex items-center justify-center bg-white/5">
-                                <span className="text-white/40 font-black uppercase text-sm">Sebooth Photo Booth</span>
-                            </div>
-                        )}
-                    </motion.div>
-                </div>
-
-                {/* Background Watermark */}
-                <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none select-none">
-                    <span className="text-[20rem] font-black text-white leading-none">
-                        AB.
-                    </span>
+                        </motion.div>
+                    )}
                 </div>
             </section>
 
-            {/* Vision & Mission */}
-            <section className="py-24 px-6 md:px-20 bg-transparent paper-texture">
-                <div className="grid md:grid-cols-2 gap-12">
-                    {/* Left: Vision */}
-                    <motion.div
-                        initial={{ y: 20 }}
-                        whileInView={{ y: 0 }}
-                        viewport={{ once: true }}
-                        className="bg-primary p-12 border-2 border-black hard-shadow-orange"
+            {/* Mission: three commitments, each beside a picture of where it shows */}
+            <section className="bg-white px-5 py-24 md:px-10 md:py-40">
+                <div className="mx-auto max-w-6xl">
+                    <motion.h2
+                        {...rise()}
+                        className="font-bayon text-5xl leading-[0.95] text-primary uppercase md:text-7xl"
                     >
-                        <p className="text-secondary font-black uppercase text-sm mb-4 border-b-2 border-white/20 pb-4">
-                            {visionLabel}
-                        </p>
-                        <h2 className="text-3xl md:text-4xl font-black uppercase text-white mb-8 tracking-tighter">
-                            {visionTitle}
-                        </h2>
-                        <p className="text-lg text-white font-bold uppercase leading-relaxed">
-                            {visionText}
-                        </p>
-
-                        {/* Vision Image */}
-                        {content["vision_image"] && (
-                            <div className="mt-8 h-[200px] border-2 border-white/20 overflow-hidden relative">
-                                <Image
-                                    src={content["vision_image"]}
-                                    alt="Vision Image"
-                                    fill
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                        )}
-                    </motion.div>
-
-                    {/* Right: Steps */}
-                    <motion.div
-                        initial={{ y: 20 }}
-                        whileInView={{ y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2 }}
-                    >
-                        <p className="text-primary font-black uppercase text-sm mb-4">
-                            {missionLabel}
-                        </p>
-                        <h2 className="text-3xl md:text-4xl font-black uppercase text-text-dark mb-8 tracking-tighter">
-                            {missionTitle}
-                        </h2>
-                        <ul className="space-y-0">
-                            {steps.map((step) => (
-                                <div
-                                    key={step.num}
-                                    className={`flex gap-6 p-6 border-2 border-black mb-4 bg-white ${step.shadow}`}
-                                >
-                                    <span className="text-secondary font-black text-3xl">
-                                        {step.num}
-                                    </span>
-                                    <div>
-                                        <h3 className="text-xl font-black uppercase text-text-dark mb-2">
-                                            {step.title}
-                                        </h3>
-                                        <p className="text-text-dark font-bold uppercase text-sm">
-                                            {step.desc}
-                                        </p>
-                                    </div>
+                        {missionTitle}
+                    </motion.h2>
+                    <ul className="mt-12 space-y-12 md:mt-20 md:space-y-16">
+                        {steps.map((step, i) => (
+                            <motion.li
+                                key={step.title}
+                                {...rise(i * 0.08)}
+                                className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-start gap-5 md:grid-cols-12 md:gap-8"
+                            >
+                                <div className="relative aspect-[4/5] overflow-hidden rounded-lg md:col-span-2">
+                                    <Image
+                                        src={step.photo.src}
+                                        alt={step.photo.alt}
+                                        fill
+                                        sizes="(min-width: 768px) 180px, 88px"
+                                        className="object-cover"
+                                    />
                                 </div>
-                            ))}
-                        </ul>
-                    </motion.div>
+                                <div className="md:col-span-10 md:grid md:grid-cols-10 md:gap-8">
+                                    <h3 className="font-bayon text-[1.75rem] leading-none text-primary uppercase md:col-span-4 md:text-[2.5rem]">
+                                        {step.title}
+                                    </h3>
+                                    <p className="mt-2 text-[17px] leading-relaxed text-blue-dark md:col-span-6 md:mt-0 md:text-lg">
+                                        {step.desc}
+                                    </p>
+                                </div>
+                            </motion.li>
+                        ))}
+                    </ul>
                 </div>
             </section>
 
-            {/* Footer Quote */}
-            <section className="py-32 px-6 md:px-20 bg-primary text-center relative overflow-hidden">
-                <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tighter leading-tight max-w-4xl mx-auto">
-                    &quot;
-                    <span className="text-white text-3xl md:text-5xl font-black uppercase tracking-tighter">
+            {/* Close: the line the page ends on, and the booking it leads to */}
+            <section className="bg-secondary px-5 py-24 md:px-10 md:py-36">
+                <div className="mx-auto max-w-6xl">
+                    <motion.h2
+                        {...rise()}
+                        className="max-w-[16ch] font-bayon text-5xl leading-[0.95] text-blue-dark uppercase md:text-7xl"
+                    >
                         {footerQuote1}
-                    </span>
-                    <br />
-                    <span className="text-secondary marker-font normal-case text-4xl md:text-6xl" style={{ textShadow: "none" }}>
+                    </motion.h2>
+                    <motion.p
+                        {...rise(0.08)}
+                        className="mt-5 text-xl font-medium text-blue-dark md:text-[1.75rem]"
+                    >
                         {footerQuote2}
-                    </span>
-                    &quot;
-                </h2>
+                    </motion.p>
+                    <motion.a
+                        {...rise(0.16)}
+                        href={whatsappUrl("Halo Sebooth, saya ingin booking photobooth untuk acara saya!")}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-10 inline-flex min-h-14 items-center gap-3 rounded-full bg-blue-dark px-7 text-[17px] font-bold text-white transition-colors hover:bg-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-dark active:scale-[0.98] md:text-lg"
+                    >
+                        <MessageCircle className="h-5 w-5" aria-hidden="true" />
+                        Booking via WhatsApp
+                    </motion.a>
+                </div>
             </section>
         </div>
     );

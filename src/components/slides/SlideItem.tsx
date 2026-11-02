@@ -6,7 +6,8 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
 import { LandingSlide, SlideCta } from "@/config/landingSlides";
-import { ArrowUpRight, MessageCircle, Sparkles } from "lucide-react";
+import type { ArticleCardData } from "@/components/artikel/ArticleCards";
+import { ArrowUpRight, MessageCircle } from "lucide-react";
 
 // Code-split heavy interactive slide components so their JS and data catalogs only load when active
 const Product = dynamic(() => import("@/components/sections/Product").then((mod) => mod.Product), {
@@ -36,6 +37,7 @@ interface SlideItemProps {
   index: number;
   isActive: boolean;
   isFirst: boolean;
+  latestArticles: ArticleCardData[];
 }
 
 export const SlideItem: React.FC<SlideItemProps> = ({
@@ -43,6 +45,7 @@ export const SlideItem: React.FC<SlideItemProps> = ({
   index,
   isActive,
   isFirst,
+  latestArticles,
 }) => {
   const [desktopError, setDesktopError] = useState(false);
   const [mobileError, setMobileError] = useState(false);
@@ -60,32 +63,20 @@ export const SlideItem: React.FC<SlideItemProps> = ({
 
   const renderCtaButton = (cta: SlideCta, idx: number) => {
     const isWa = cta.variant === "whatsapp";
-    const isGold = cta.variant === "gold";
 
     const baseStyles =
-      "inline-flex items-center gap-2.5 px-6 py-3.5 text-sm md:text-base font-bold uppercase tracking-wider rounded-xl transition-all duration-300 transform active:scale-95 shadow-2xl hover:-translate-y-1";
+      "inline-flex min-h-14 items-center gap-2.5 rounded-full px-7 font-bayon text-xl uppercase transition-colors active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white";
 
-    let colorStyles =
-      "bg-primary text-white hover:bg-primary-dark border border-white/20";
-
+    let colorStyles = "bg-secondary text-blue-dark hover:bg-white";
     if (isWa) {
-      colorStyles =
-        "bg-[#25D366] text-black hover:bg-[#20bd5a] border-2 border-black font-extrabold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]";
-    } else if (isGold) {
-      colorStyles =
-        "bg-[#D4AF37] text-black hover:bg-[#bfa030] border-2 border-black font-extrabold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]";
+      colorStyles = "bg-[#25D366] text-blue-dark hover:bg-white";
     } else if (cta.variant === "secondary") {
-      colorStyles =
-        "bg-white/95 backdrop-blur-md text-black hover:bg-white border-2 border-black font-extrabold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]";
-    } else {
-      colorStyles =
-        "bg-[#FF4500] text-white hover:bg-[#e03d00] border-2 border-black font-extrabold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]";
+      colorStyles = "bg-white text-blue-dark hover:bg-secondary";
     }
 
     const content = (
       <>
         {isWa && <MessageCircle className="w-5 h-5 fill-current" />}
-        {isGold && <Sparkles className="w-5 h-5" />}
         <span>{cta.text}</span>
         <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
       </>
@@ -192,7 +183,7 @@ export const SlideItem: React.FC<SlideItemProps> = ({
         </div>
       ) : slide.id === "activities" || slide.id === "articles" ? (
         <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
-          <ActivitiesSlider />
+          <ActivitiesSlider articles={latestArticles} />
         </div>
       ) : slide.id === "pricing" ? (
         <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
