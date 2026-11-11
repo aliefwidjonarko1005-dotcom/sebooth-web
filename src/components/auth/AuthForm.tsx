@@ -19,6 +19,7 @@ const AUTH_ERRORS: Record<string, string> = {
   user_already_exists: 'Email ini sudah terdaftar. Masuk saja lewat tautan di bawah.',
   email_exists: 'Email ini sudah terdaftar. Masuk saja lewat tautan di bawah.',
   weak_password: 'Password terlalu pendek. Pakai minimal 6 karakter.',
+  same_password: 'Password baru harus beda dari password lama.',
   email_address_invalid: 'Format email belum benar. Cek lagi penulisannya.',
   over_request_rate_limit: 'Terlalu banyak percobaan. Tunggu sebentar, lalu coba lagi.',
   over_email_send_rate_limit: 'Terlalu banyak percobaan. Tunggu sebentar, lalu coba lagi.',

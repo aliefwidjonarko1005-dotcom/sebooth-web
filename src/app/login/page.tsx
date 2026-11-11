@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { afterAuthPath, safeRedirectPath } from '@/lib/safeRedirect'
-import { whatsappUrl } from '@/config/social'
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
 import { FLOW_BUTTON_ORANGE } from '@/components/ui/FlowHero'
 import {
@@ -95,14 +94,7 @@ function LoginContent() {
         </p>
         <p>
           Lupa password?{' '}
-          <a
-            href={whatsappUrl('Halo Sebooth, saya lupa password akun Sebooth saya.')}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={AUTH_LINK}
-          >
-            Chat Sebooth
-          </a>
+          <Link href="/forgot-password" className={AUTH_LINK}>Buat password baru</Link>
         </p>
       </div>
     </AuthShell>

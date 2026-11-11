@@ -18,7 +18,7 @@ Before executing tasks, classify the user request and load only the relevant fil
 - **Image Optimizer & Fallback**: `src/app/api/image/route.ts`
 - **Download Proxy**: `src/app/api/download/route.ts`
 - **Server Actions**: `src/app/actions.ts` (`claimSession`)
-- **Login & Register**: `src/app/login/page.tsx`, `src/app/register/page.tsx`, `src/components/auth/AuthForm.tsx`, `src/lib/safeRedirect.ts`
+- **Login & Register**: `src/app/login/page.tsx`, `src/app/register/page.tsx`, `src/app/forgot-password/page.tsx` + `src/app/reset-password/page.tsx` (Supabase email link, PKCE), `src/components/auth/AuthForm.tsx`, `src/lib/safeRedirect.ts`
 - **Post-Download Funnel (rating → Google Review → Instagram)**: `src/components/features/review/` (`ReviewSheet`, `ReviewFunnel`, `ExperienceDial`), state in `src/lib/reviewFunnel.ts`
 - **Storage Status Strip**: `src/components/features/ClaimStatusStrip.tsx`
 - **Social Links (IG handle, Google Review URL, WhatsApp)**: `src/config/social.ts`
