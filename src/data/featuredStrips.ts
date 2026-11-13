@@ -1,5 +1,6 @@
 // Frame designs Sebooth has printed, one per design: a strip from a real session, picked from the
-// booth's media and saved under neutral names, so no session id reaches the page. Newest first.
+// booth's media and copied under neutral names, so no session id reaches the page. Newest first.
+// The images live in the media bucket (featured-frames/), not in git: guests are in them.
 
 export interface FeaturedStrip {
     id: string;
@@ -740,5 +741,5 @@ export const FEATURED_STRIPS: FeaturedStrip[] = [
 ];
 
 export function featuredStripSrc(id: string, size: "thumb" | "full"): string {
-    return `/images/featured-frames/${size}/${id}.webp`;
+    return `https://storage.googleapis.com/sebooth-media-konser/featured-frames/${size}/${id}.webp`;
 }
