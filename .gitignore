@@ -55,3 +55,6 @@ picture_stocks
 # playwright
 /test-results/
 /playwright-report/
+
+# Customer strips for /frames/featured: kept local, never pushed (guest faces)
+/public/images/featured-frames/

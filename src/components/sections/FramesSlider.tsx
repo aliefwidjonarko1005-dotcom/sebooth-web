@@ -2,12 +2,13 @@
 
 import React, { useCallback, useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { frameImage } from '@/data/frameEvents'
 import { whatsappUrl } from '@/config/social'
 import { useModalFocus } from '@/lib/useModalFocus'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 export interface FrameCardItem {
   id: string
@@ -581,6 +582,14 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
         <p className="text-[15px] sm:text-lg text-white max-w-sm sm:max-w-2xl mt-2 sm:mt-3 leading-snug text-center">
           Ratusan pilihan template photostrip beresolusi tinggi. Klik kartu mana saja untuk melihat preview frame pilihanmu!
         </p>
+
+        <Link
+          href="/frames/featured"
+          className="mt-3 sm:mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 text-[15px] sm:text-base font-bold text-primary transition-colors hover:bg-secondary hover:text-white active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+        >
+          All Featured Frame
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </Link>
       </div>
 
       {/* ── CONTINUOUS INFINITE SLIDING MARQUEE TRACK (ZERO MASK-IMAGE FOR ULTRA 60FPS) ── */}
