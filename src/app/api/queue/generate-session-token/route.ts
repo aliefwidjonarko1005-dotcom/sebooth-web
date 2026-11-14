@@ -1,7 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { hasValidWebhookSecret, rateLimit } from "@/lib/apiSecurity";
+import { NextRequest } from "next/server";
+import { rateLimit } from "@/lib/apiSecurity";
+import { kioskAuth } from "@/lib/boothGuard";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 /**
  * POST /api/queue/generate-session-token
@@ -24,19 +26,13 @@ export async function POST(req: NextRequest) {
     const limited = rateLimit(req, "kiosk-session-token", 120, 60_000);
     if (limited) return limited;
 
-    // Fails closed: without QUEUE_WEBHOOK_SECRET configured, nobody can call this
-    if (!hasValidWebhookSecret(req)) {
-        return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    }
-
-    const body = await req.json();
-    const { session_id: sessionId, event_id: eventId } = body;
+    // Fails closed: the shared QUEUE_WEBHOOK_SECRET, or a request signed by an approved booth (Booth Guard)
+    const auth = await kioskAuth(req, "/api/queue/generate-session-token");
+    if (auth instanceof Response) return auth;
+    const { session_id: sessionId, event_id: eventId } = auth.body;
 
     if (!sessionId || !eventId) {
-        return NextResponse.json(
-            { success: false, error: "Missing required fields: session_id, event_id" },
-            { status: 400 }
-        );
+        return auth.respond({ success: false, error: "Missing required fields: session_id, event_id" }, 400);
     }
 
     const timestamp = Date.now();
@@ -46,7 +42,7 @@ export async function POST(req: NextRequest) {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sebooth.com";
     const qrUrl = `${baseUrl}/api/queue/scan/${token}`;
 
-    return NextResponse.json({
+    return auth.respond({
         success: true,
         token,
         qrUrl,

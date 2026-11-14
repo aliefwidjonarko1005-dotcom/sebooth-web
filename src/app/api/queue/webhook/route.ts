@@ -3,7 +3,10 @@ import { createClient } from "@supabase/supabase-js";
 import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
 import { sendPushToUser, sendProximityPushNotifications } from "@/lib/queue/pushSender";
-import { hasValidWebhookSecret, rateLimit } from "@/lib/apiSecurity";
+import { rateLimit } from "@/lib/apiSecurity";
+import { kioskAuth } from "@/lib/boothGuard";
+
+export const runtime = "nodejs";
 
 export const dynamic = "force-dynamic";
 
@@ -30,12 +33,15 @@ export async function POST(req: NextRequest) {
     const limited = rateLimit(req, "queue-webhook", 120, 60_000);
     if (limited) return limited;
 
-    // Fails closed: without QUEUE_WEBHOOK_SECRET configured, nobody can call this
-    if (!hasValidWebhookSecret(req)) {
-        return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    }
+    // Fails closed: the shared QUEUE_WEBHOOK_SECRET, or a request signed by an approved booth (Booth Guard)
+    const auth = await kioskAuth(req, "/api/queue/webhook");
+    if (auth instanceof Response) return auth;
+    const res = await handleWebhook(auth.body);
+    return auth.respond(await res.json(), res.status);
+}
 
-    const body = await req.json();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function handleWebhook(body: Record<string, any>): Promise<NextResponse> {
     const { event: webhookEvent, event_id: eventId, ticket_number: ticketNumber, session_id: sessionId } = body;
 
     if (!webhookEvent || !eventId || !ticketNumber) {

@@ -14,9 +14,10 @@ import AnalyticsInsightsTab from '@/components/admin/AnalyticsInsightsTab'
 import UserClaimsMonitorTab from '@/components/admin/UserClaimsMonitorTab'
 import SessionLookupTab from '@/components/admin/SessionLookupTab'
 import QueueOperatorTab from '@/components/admin/QueueOperatorTab'
+import BoothGuardTab from '@/components/admin/BoothGuardTab'
 import { SeboothLoader } from "@/components/ui/SeboothLoader";
 
-type TabKey = 'insights' | 'user_claims' | 'session_lookup' | 'queue' | 'admins'
+type TabKey = 'insights' | 'user_claims' | 'session_lookup' | 'queue' | 'booths' | 'admins'
 
 interface AdminItem { 
   id: string
@@ -60,6 +61,8 @@ export default function AdminPage() {
       if (status.isAdmin) {
         setIsAdmin(true)
         setIsSuper(status.isSuper)
+        // Push notifications from Booth Guard link to /admin?tab=booths
+        if (new URLSearchParams(window.location.search).get('tab') === 'booths') setTab('booths')
         if (status.isSuper) {
           loadAdmins()
         }
@@ -130,6 +133,7 @@ export default function AdminPage() {
     { key: 'user_claims', label: 'Monitor Klaim User', icon: <Users className="w-4 h-4" /> },
     { key: 'session_lookup', label: 'Cek Sesi', icon: <Search className="w-4 h-4" /> },
     { key: 'queue', label: 'Operator Antrean', icon: <Ticket className="w-4 h-4" /> },
+    { key: 'booths', label: 'Booth Guard', icon: <ShieldCheck className="w-4 h-4" /> },
     ...(isSuper ? [{ key: 'admins' as const, label: 'Kelola Admin', icon: <ShieldCheck className="w-4 h-4" /> }] : []),
   ]
 
@@ -227,6 +231,11 @@ export default function AdminPage() {
         {/* ═══════════════════ QUEUE OPERATOR TAB ═══════════════════ */}
         {tab === 'queue' && (
           <QueueOperatorTab flash={flash} />
+        )}
+
+        {/* ═══════════════════ BOOTH GUARD TAB ═══════════════════ */}
+        {tab === 'booths' && (
+          <BoothGuardTab isSuper={isSuper} flash={flash} />
         )}
 
         {/* ═══════════════════ ADMINS TAB ═══════════════════ */}
