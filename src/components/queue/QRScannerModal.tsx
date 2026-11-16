@@ -20,7 +20,9 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const scanIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-    const jsQRModuleRef = useRef<any>(null);
+    const jsQRModuleRef = useRef<typeof import('jsqr').default | null>(null);
+    // Latest onScanned, without restarting the camera each time the parent re-renders
+    const onScannedRef = useRef(onScanned);
     const [error, setError] = useState<string | null>(null);
     const [scanning, setScanning] = useState(false);
     const [torchOn, setTorchOn] = useState(false);
@@ -28,6 +30,10 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
     const [scannedResult, setScannedResult] = useState<string | null>(null);
 
     useModalFocus(isOpen, panelRef, onClose);
+
+    useEffect(() => {
+        onScannedRef.current = onScanned;
+    }, [onScanned]);
 
     const stopCamera = useCallback(() => {
         if (scanIntervalRef.current) {
@@ -41,53 +47,49 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
         setScanning(false);
     }, []);
 
-    const startCamera = useCallback(async () => {
-        setError(null);
-        setScannedResult(null);
+    const handleScanResult = useCallback((rawValue: string) => {
+        // Stop scanning. A second in-flight frame, or one that finishes after the
+        // scanner closed, finds the interval already cleared and is ignored.
+        if (!scanIntervalRef.current) return;
+        clearInterval(scanIntervalRef.current);
+        scanIntervalRef.current = null;
 
-        // Pre-load jsQR dynamically if not already cached and native detector is not available
-        if (!jsQRModuleRef.current && !("BarcodeDetector" in window)) {
-            try {
-                const { default: jsQR } = await import("jsqr");
-                jsQRModuleRef.current = jsQR;
-            } catch (e) {
-                console.error("[QR Scanner] Failed to pre-load jsQR:", e);
-            }
-        }
-
+        // Extract session token from URL or raw value
+        // Expected format: https://sebooth.in/api/queue/scan/SESSION_TOKEN
+        // or just the token itself
+        let token = rawValue;
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: "environment",
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 },
-                },
-            });
-
-            streamRef.current = stream;
-
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-                await videoRef.current.play();
+            const url = new URL(rawValue);
+            const pathParts = url.pathname.split("/");
+            const scanIndex = pathParts.indexOf("scan");
+            if (scanIndex !== -1 && pathParts[scanIndex + 1]) {
+                token = pathParts[scanIndex + 1];
             }
-
-            // Check torch support
-            const track = stream.getVideoTracks()[0];
-            const capabilities = track.getCapabilities?.();
-            if (capabilities && "torch" in capabilities) {
-                setTorchSupported(true);
-            }
-
-            setScanning(true);
-
-            // Start scanning loop
-            scanIntervalRef.current = setInterval(() => {
-                scanFrame();
-            }, 250); // Scan 4x per second
-        } catch (err) {
-            console.error("[QR Scanner] Camera error:", err);
-            setError("Tidak bisa mengakses kamera. Pastikan izin kamera diaktifkan.");
+        } catch {
+            // Not a URL, use raw value as token
         }
+
+        setScannedResult(token);
+
+        // Play success sound
+        try {
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.setValueAtTime(800, ctx.currentTime);
+            osc.frequency.setValueAtTime(1200, ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.3);
+        } catch { /* ignore */ }
+
+        // Notify parent
+        setTimeout(() => {
+            onScannedRef.current(token);
+        }, 800);
     }, []);
 
     // Scan a single frame for QR codes
@@ -138,52 +140,62 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
         } catch {
             // jsQR not available — will retry on next frame
         }
-    }, []);
+    }, [handleScanResult]);
 
-    const handleScanResult = useCallback((rawValue: string) => {
-        // Stop scanning
-        if (scanIntervalRef.current) {
-            clearInterval(scanIntervalRef.current);
-            scanIntervalRef.current = null;
-        }
+    const startCamera = useCallback(async (isCancelled: () => boolean) => {
+        setError(null);
+        setScannedResult(null);
 
-        // Extract session token from URL or raw value
-        // Expected format: https://sebooth.in/api/queue/scan/SESSION_TOKEN
-        // or just the token itself
-        let token = rawValue;
-        try {
-            const url = new URL(rawValue);
-            const pathParts = url.pathname.split("/");
-            const scanIndex = pathParts.indexOf("scan");
-            if (scanIndex !== -1 && pathParts[scanIndex + 1]) {
-                token = pathParts[scanIndex + 1];
+        // Pre-load jsQR dynamically if not already cached and native detector is not available
+        if (!jsQRModuleRef.current && !("BarcodeDetector" in window)) {
+            try {
+                const { default: jsQR } = await import("jsqr");
+                jsQRModuleRef.current = jsQR;
+            } catch (e) {
+                console.error("[QR Scanner] Failed to pre-load jsQR:", e);
             }
-        } catch {
-            // Not a URL, use raw value as token
         }
 
-        setScannedResult(token);
-
-        // Play success sound
         try {
-            const ctx = new AudioContext();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.frequency.setValueAtTime(800, ctx.currentTime);
-            osc.frequency.setValueAtTime(1200, ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.2, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-            osc.start(ctx.currentTime);
-            osc.stop(ctx.currentTime + 0.3);
-        } catch { /* ignore */ }
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: "environment",
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                },
+            });
 
-        // Notify parent
-        setTimeout(() => {
-            onScanned(token);
-        }, 800);
-    }, [onScanned]);
+            // Closed while the permission prompt was open: release the camera at once
+            if (isCancelled()) {
+                stream.getTracks().forEach((t) => t.stop());
+                return;
+            }
+            streamRef.current = stream;
+
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+                await videoRef.current.play();
+            }
+
+            // Check torch support
+            const track = stream.getVideoTracks()[0];
+            const capabilities = track.getCapabilities?.();
+            if (capabilities && "torch" in capabilities) {
+                setTorchSupported(true);
+            }
+
+            if (isCancelled()) return;
+            setScanning(true);
+
+            // Start scanning loop
+            scanIntervalRef.current = setInterval(() => {
+                scanFrame();
+            }, 250); // Scan 4x per second
+        } catch (err) {
+            console.error("[QR Scanner] Camera error:", err);
+            setError("Tidak bisa mengakses kamera. Pastikan izin kamera diaktifkan.");
+        }
+    }, [scanFrame]);
 
     const toggleTorch = useCallback(async () => {
         if (!streamRef.current) return;
@@ -201,14 +213,18 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
     }, [torchOn]);
 
     useEffect(() => {
-        if (isOpen) {
-            startCamera();
-        } else {
+        if (!isOpen) {
             stopCamera();
             setScannedResult(null);
             setError(null);
+            return;
         }
-        return () => stopCamera();
+        let cancelled = false;
+        startCamera(() => cancelled);
+        return () => {
+            cancelled = true;
+            stopCamera();
+        };
     }, [isOpen, startCamera, stopCamera]);
 
     if (!isOpen) return null;
@@ -276,7 +292,7 @@ export default function QRScannerModal({ isOpen, onClose, onScanned }: QRScanner
                         <p className="mt-4 text-[17px] leading-snug font-semibold">{error}</p>
                         <button
                             type="button"
-                            onClick={startCamera}
+                            onClick={() => startCamera(() => false)}
                             className="mt-5 min-h-14 rounded-full bg-secondary px-8 text-[17px] font-bold text-blue-dark transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-[0.98]"
                         >
                             Coba Lagi

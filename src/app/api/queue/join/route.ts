@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { joinQueue } from "@/lib/queue/queueActions";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
-import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
+import { broadcastQueueUpdate } from "@/lib/queue/broadcast";
 
 export const dynamic = "force-dynamic";
 

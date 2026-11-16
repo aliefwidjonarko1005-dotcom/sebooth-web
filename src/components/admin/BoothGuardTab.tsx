@@ -43,6 +43,11 @@ const ACTION_LABEL: Record<BoothAction, string> = {
   set_config: 'Ubah config', restart: 'Restart', update: 'Update',
 }
 
+function newCommand(deviceId: string, action: BoothAction, params: Record<string, unknown>): BoothCommand {
+  const now = Date.now()
+  return { v: 1, id: crypto.randomUUID(), deviceId, action, params, issuedAt: now, expiresAt: now + COMMAND_TTL_MS }
+}
+
 async function challengeFor(cmd: BoothCommand): Promise<string> {
   const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonicalJSON(cmd)))
   let s = ''
@@ -77,18 +82,19 @@ export default function BoothGuardTab({ isSuper, flash }: { isSuper: boolean; fl
   const [configText, setConfigText] = useState('{\n  \n}')
   const [pin, setPin] = useState('')
   const [recoveryText, setRecoveryText] = useState('')
+  const [now, setNow] = useState(0)
 
   const load = useCallback(async () => {
     const res = await fetch('/api/admin/booths', { cache: 'no-store' })
     const json = await res.json().catch(() => null)
     if (!json?.success) setError(json?.error || 'Gagal memuat booth')
-    else { setError(''); setData(json) }
+    else { setError(''); setData(json); setNow(Date.now()) }
   }, [])
 
   useEffect(() => {
-    load()
+    const first = setTimeout(load, 0)
     const t = setInterval(load, 15_000)
-    return () => clearInterval(t)
+    return () => { clearTimeout(first); clearInterval(t) }
   }, [load])
 
   const post = async (url: string, body: unknown) => {
@@ -103,8 +109,7 @@ export default function BoothGuardTab({ isSuper, flash }: { isSuper: boolean; fl
     if ((action === 'revoke' || action === 'lock') && !confirm(`${ACTION_LABEL[action]} ${device.label || device.hostname || device.id}?`)) return
     setBusy(device.id + action)
     try {
-      const now = Date.now()
-      const command: BoothCommand = { v: 1, id: crypto.randomUUID(), deviceId: device.id, action, params, issuedAt: now, expiresAt: now + COMMAND_TTL_MS }
+      const command = newCommand(device.id, action, params)
       const res = await startAuthentication({
         optionsJSON: {
           challenge: await challengeFor(command),
@@ -192,7 +197,7 @@ export default function BoothGuardTab({ isSuper, flash }: { isSuper: boolean; fl
       <div className="space-y-3">
         {data?.devices.length === 0 && <p className="text-sm text-[#1A1A1A]/50">Belum ada booth yang mendaftar.</p>}
         {data?.devices.map(d => {
-          const online = !!d.last_seen && Date.now() - new Date(d.last_seen).getTime() < 90_000
+          const online = !!d.last_seen && now - new Date(d.last_seen).getTime() < 90_000
           const st = d.last_status || {}
           const pending = data.pendingCommands.filter(c => c.device_id === d.id)
           const can = (a: BoothAction) =>

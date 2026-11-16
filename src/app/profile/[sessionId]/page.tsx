@@ -81,7 +81,6 @@ export default function SessionDetailPage() {
   const [totalStrips, setTotalStrips] = useState(0)
   const [generatedStripsMap, setGeneratedStripsMap] = useState<Record<number, string>>({})
   const [isGenerating, setIsGenerating] = useState(false)
-  const [stripImgError, setStripImgError] = useState(false)
   const [liveIdx, setLiveIdx] = useState(0)
   const [copiedNotification, setCopiedNotification] = useState(false)
 
@@ -90,10 +89,6 @@ export default function SessionDetailPage() {
   useEffect(() => {
     generatedStripsRef.current = generatedStripsMap
   }, [generatedStripsMap])
-
-  useEffect(() => {
-    setStripImgError(false)
-  }, [frameIdx])
 
   const revokeAllStrips = useCallback(() => {
     Object.values(generatedStripsRef.current).forEach((url) => {
@@ -154,7 +149,7 @@ export default function SessionDetailPage() {
     const sorted = getSortedMedia()
     return sorted.find(
       (m: MediaItem) =>
-        (m as any).type === 'strip' ||
+        m.type === 'strip' ||
         (m.metadata as Record<string, unknown>)?.is_strip ||
         m.url?.toLowerCase().includes('strip') ||
         m.url?.toLowerCase().includes('photostrip')
@@ -198,7 +193,7 @@ export default function SessionDetailPage() {
     return sorted.filter((m: MediaItem) => {
       const isVideoExt = !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
       const isImageExt = !!m.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i)
-      const isNotSpecialType = m.type !== 'live' && m.type !== 'video' && m.type !== 'gif' && (m as any).type !== 'strip'
+      const isNotSpecialType = m.type !== 'live' && m.type !== 'video' && m.type !== 'gif' && m.type !== 'strip'
       const isImg = isImageExt || isNotSpecialType
       const isStrip = strip && m.id === strip.id
       const isGif = gif && m.id === gif.id

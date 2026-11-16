@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { getAdminUser } from "@/lib/apiSecurity";
-import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
+import { broadcastQueueUpdate } from "@/lib/queue/broadcast";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
 import { sendPushToUser, sendProximityPushNotifications } from "@/lib/queue/pushSender";
 import {
-    operatorCallNext,
     operatorSkipTicket,
     operatorCompleteTicket,
     operatorResetTicket,
 } from "@/lib/queue/queueActions";
+import { callNextTicket } from "@/lib/queue/callNext";
+import { createQueueServerClient } from "@/lib/queue/queueAuth";
+import { kioskAuth } from "@/lib/boothGuard";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 function createServiceClient() {
     return createClient(
@@ -20,18 +23,27 @@ function createServiceClient() {
     );
 }
 
+const PATH = "/api/queue/operator/action";
+
 /**
  * POST /api/queue/operator/action
  * Body: { action: "call_next" | "skip" | "complete" | "reset", eventId?, ticketId?, sessionId? }
+ * Admins (web dashboard) may run every action. A kiosk may only run call_next: its QueueDisplay calls
+ * it when the called customer does not show up. Kiosks authenticate with the shared webhook secret or,
+ * with Booth Guard, a request signed by an approved booth (answered with a server-signed response).
  */
 export async function POST(req: NextRequest) {
-    // Operator actions use the service role, so only admins may run them
-    const admin = await getAdminUser();
-    if (!admin) {
-        return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
-    }
+    if (await getAdminUser()) return handle(await req.json());
 
-    const body = await req.json();
+    const auth = await kioskAuth(req, PATH);
+    if (auth instanceof Response) return auth;
+    if (auth.body.action !== "call_next") return auth.respond({ success: false, error: "Forbidden" }, 403);
+    const res = await handle(auth.body);
+    return auth.respond(await res.json(), res.status);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function handle(body: Record<string, any>): Promise<NextResponse> {
     const { action, eventId, ticketId, sessionId } = body;
 
     let result: { success: boolean; error?: string; [key: string]: unknown };
@@ -39,7 +51,7 @@ export async function POST(req: NextRequest) {
     switch (action) {
         case "call_next":
             if (!eventId) return NextResponse.json({ error: "eventId required" }, { status: 400 });
-            result = await operatorCallNext(eventId);
+            result = await callNextTicket(await createQueueServerClient(), eventId);
 
             // Send push notification to the called user
             if (result.success && result.calledTicketId) {

@@ -8,7 +8,8 @@ export const runtime = "nodejs";
 
 const PATH = "/api/booth/email";
 const BUCKET = process.env.GCS_BUCKET_NAME || "sebooth-media-konser";
-const SITES = [process.env.NEXT_PUBLIC_SITE_URL || "", "https://www.sebooth.in", "https://sebooth.in"]
+// sebooth-web.vercel.app: booths may still use it as cloudPortalUrl for their QR/gallery links
+const SITES = [process.env.NEXT_PUBLIC_SITE_URL || "", "https://www.sebooth.in", "https://sebooth.in", "https://sebooth-web.vercel.app"]
   .filter(Boolean)
   .map((s) => s.replace(/\/$/, "") + "/");
 const EMAIL = /^[^\s@<>"']{1,64}@[^\s@<>"']{1,190}\.[A-Za-z]{2,}$/;

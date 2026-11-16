@@ -24,7 +24,7 @@ function getStripFromSession(session: SessionData): MediaItem | null {
   const sorted = getSortedMediaFromSession(session)
   return sorted.find(
     (m) =>
-      (m as any).type === 'strip' ||
+      m.type === 'strip' ||
       (m.metadata as Record<string, unknown>)?.is_strip ||
       m.url?.toLowerCase().includes('strip') ||
       m.url?.toLowerCase().includes('photostrip')

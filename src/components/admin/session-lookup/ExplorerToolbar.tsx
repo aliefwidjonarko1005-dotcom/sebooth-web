@@ -112,7 +112,7 @@ export function ExplorerToolbar({ listLoading, viewMode, setViewMode, filterSear
           <div className="relative">
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as any)}
+              onChange={(e) => setStatusFilter(e.target.value as 'all' | 'claimed' | 'unclaimed')}
               className="w-full pl-8 pr-3 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer"
             >
               <option value="all">Semua Status Klaim</option>
@@ -127,7 +127,7 @@ export function ExplorerToolbar({ listLoading, viewMode, setViewMode, filterSear
         <div className="lg:col-span-2">
           <select
             value={policyFilter}
-            onChange={(e) => setPolicyFilter(e.target.value as any)}
+            onChange={(e) => setPolicyFilter(e.target.value as 'all' | 'legacy' | 'new')}
             className="w-full px-3 py-2.5 rounded-xl bg-[#F9F9F9] border border-[#1A1A1A]/15 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer"
           >
             <option value="all">Semua Kebijakan</option>

@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { useModalFocus } from '@/lib/useModalFocus'
+import { useIsClient } from '@/lib/useIsClient'
 import { ArrowRight, MessageCircle, X } from 'lucide-react'
 
 export interface ProductItem {
@@ -85,14 +86,10 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
   const [activeIdx, setActiveIdx] = useState(0)
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null)
   const [isHovered, setIsHovered] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const mounted = useIsClient()
   const detailRef = useRef<HTMLDivElement>(null)
   const closeDetail = useCallback(() => setSelectedProduct(null), [])
   useModalFocus(selectedProduct !== null, detailRef, closeDetail)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // Touch Swipe Handling
   const touchStartX = useRef<number | null>(null)
@@ -177,7 +174,7 @@ export function Product({ initialData = {}, isActive = true }: ProductProps) {
               let translateZ = -Math.abs(diff) * 110
               let scale = isActive ? 1 : Math.max(0.78, 1 - Math.abs(diff) * 0.15)
               let opacity = isActive ? 1 : Math.max(0.35, 1 - Math.abs(diff) * 0.3)
-              let zIndex = 30 - Math.abs(diff) * 10
+              const zIndex = 30 - Math.abs(diff) * 10
 
               // On mobile screens (< 640px), calculate hardware-composited 2D transforms
               if (typeof window !== 'undefined' && window.innerWidth < 640) {

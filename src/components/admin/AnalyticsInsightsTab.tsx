@@ -42,10 +42,6 @@ export default function AnalyticsInsightsTab({
   const [isDemo, setIsDemo] = useState(false)
   const [activeChartTab, setActiveChartTab] = useState<'sessions' | 'claimed'>('sessions')
 
-  useEffect(() => {
-    fetchInsights()
-  }, [])
-
   async function fetchInsights() {
     setLoading(true)
     setError(null)
@@ -60,13 +56,17 @@ export default function AnalyticsInsightsTab({
         setData(json.data)
         setIsDemo(Boolean(json.isDemo))
       }
-    } catch (err: any) {
-      setError(err.message || 'Terjadi kesalahan jaringan.')
+    } catch (err: unknown) {
+      setError((err as Error)?.message || 'Terjadi kesalahan jaringan.')
     } finally {
       setLoading(false)
       setRefreshing(false)
     }
   }
+
+  useEffect(() => {
+    fetchInsights()
+  }, [])
 
   function handleRefresh() {
     setRefreshing(true)

@@ -10,14 +10,16 @@ export const runtime = 'nodejs'
 
 // ── Dynamic Sharp Loader with Graceful Fallback ──
 // Prevents module crashes on environments where platform-specific native binaries are missing
-let sharpModule: any = null
+type Sharp = typeof import('sharp').default
+let sharpModule: Sharp | null = null
 let sharpChecked = false
 
 async function getSharp() {
   if (sharpChecked) return sharpModule
   try {
     const mod = await import('sharp')
-    sharpModule = mod.default || mod
+    // ESM default export; the fallback covers a CommonJS build where the module itself is the function
+    sharpModule = mod.default ?? (mod as unknown as Sharp)
   } catch (e) {
     console.warn('[api/image] Sharp native module unavailable, using direct streaming fallback:', e)
     sharpModule = null

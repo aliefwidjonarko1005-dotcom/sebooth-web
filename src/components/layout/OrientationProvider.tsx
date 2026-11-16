@@ -15,6 +15,21 @@ const OrientationContext = createContext<OrientationContextType | undefined>(und
 export function OrientationProvider({ children }: { children: React.ReactNode }) {
   const [orientation, setOrientationState] = useState<Orientation>("landscape");
 
+  const setOrientation = (val: Orientation) => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      document.documentElement.removeAttribute("data-orientation");
+      setOrientationState("landscape");
+      return;
+    }
+
+    setOrientationState(val);
+    localStorage.setItem("sebooth-orientation", val);
+    
+    // Apply dataset attribute to HTML tag for Tailwind selectors
+    document.documentElement.dataset.orientation = val;
+  };
+
   useEffect(() => {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     if (isMobile) {
@@ -35,21 +50,6 @@ export function OrientationProvider({ children }: { children: React.ReactNode })
       }
     }
   }, []);
-
-  const setOrientation = (val: Orientation) => {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if (isMobile) {
-      document.documentElement.removeAttribute("data-orientation");
-      setOrientationState("landscape");
-      return;
-    }
-
-    setOrientationState(val);
-    localStorage.setItem("sebooth-orientation", val);
-    
-    // Apply dataset attribute to HTML tag for Tailwind selectors
-    document.documentElement.dataset.orientation = val;
-  };
 
   const toggleOrientation = () => {
     setOrientation(orientation === "landscape" ? "portrait" : "landscape");

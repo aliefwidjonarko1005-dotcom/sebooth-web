@@ -1,3 +1,5 @@
+import type { MediaItem } from '@/types/database'
+
 export interface SessionMediaItem {
   id: string
   url: string
@@ -20,7 +22,7 @@ export interface UserSessionDisplayItem {
   likes: string
   price: string
   media: SessionMediaItem[]
-  rawMedia?: any[]
+  rawMedia?: MediaItem[]
   attendees: string[]
 }
 

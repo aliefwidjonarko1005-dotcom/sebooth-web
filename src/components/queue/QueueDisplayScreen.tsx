@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { PublicQueueStatus } from "@/types/database";
 
@@ -33,24 +33,31 @@ export default function QueueDisplayScreen({ eventId, initialStatus }: QueueDisp
         prevCurrentRef.current = currentNum;
     }, [status.currentTicket?.queue_number]);
 
-    // SSE connection
-    const connectSSE = useCallback(() => {
-        if (sseRef.current) sseRef.current.close();
-        const es = new EventSource(`/api/queue/stream/${eventId}`);
-        sseRef.current = es;
-        es.addEventListener("queue_update", (ev) => {
-            try { setStatus(JSON.parse(ev.data)); } catch { /* ignore */ }
-        });
-        es.onerror = () => {
-            es.close();
-            setTimeout(connectSSE, 5000);
+    // SSE connection: reconnect 5 s after an error, and stop for good on unmount
+    // (a pending reconnect used to open a new EventSource after the screen was gone)
+    useEffect(() => {
+        let closed = false;
+        let retry: ReturnType<typeof setTimeout> | undefined;
+        const connect = () => {
+            if (closed) return;
+            sseRef.current?.close();
+            const es = new EventSource(`/api/queue/stream/${eventId}`);
+            sseRef.current = es;
+            es.addEventListener("queue_update", (ev) => {
+                try { setStatus(JSON.parse(ev.data)); } catch { /* ignore */ }
+            });
+            es.onerror = () => {
+                es.close();
+                retry = setTimeout(connect, 5000);
+            };
+        };
+        connect();
+        return () => {
+            closed = true;
+            clearTimeout(retry);
+            sseRef.current?.close();
         };
     }, [eventId]);
-
-    useEffect(() => {
-        connectSSE();
-        return () => sseRef.current?.close();
-    }, [connectSSE]);
 
     const current = status.currentTicket;
     const isCalled = current?.status === "called";

@@ -77,7 +77,7 @@ export default function MyPhotosPage() {
   const initAudioCtx = () => {
     if (typeof window === 'undefined') return null
     if (!audioCtxRef.current) {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext
+      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
       if (AudioContextClass) {
         audioCtxRef.current = new AudioContextClass()
       }
@@ -346,7 +346,7 @@ export default function MyPhotosPage() {
       const rawMediaList = s.media || []
 
       // Identify dedicated photostrip only (exclude videos and GIFs)
-      const stripMedia = rawMediaList.find((m: any) => {
+      const stripMedia = rawMediaList.find((m) => {
         const isVideo = m.type === 'video' || m.type === 'live' || !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
         return !isVideo && (m.type === 'strip' || m.url?.toLowerCase().includes('strip'))
       }) || rawMediaList[0]
@@ -399,7 +399,7 @@ export default function MyPhotosPage() {
   // Non-active sessions and Bookshelf overview do NOT process any candid, GIF, or video!
   const activeSessionMediaList: SessionMediaItem[] = useMemo(() => {
     if (!currentSession) return []
-    const rawList = (currentSession as any).rawMedia || []
+    const rawList = currentSession.rawMedia || []
     if (rawList.length === 0) {
       return currentSession.media || [
         {
@@ -414,7 +414,7 @@ export default function MyPhotosPage() {
 
     const isMobileDevice = isMobile || (typeof window !== 'undefined' ? window.innerWidth < 768 : false)
 
-    return rawList.map((m: any, mIdx: number) => {
+    return rawList.map((m, mIdx: number) => {
       const isVideo = m.type === 'video' || m.type === 'live' || !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
       const isStrip = !isVideo && (m.type === 'strip' || m.url?.toLowerCase().includes('strip'))
       const isGif = !isVideo && (m.type === 'gif' || m.url?.toLowerCase().includes('gif'))
@@ -804,7 +804,7 @@ export default function MyPhotosPage() {
         const fileName = `Sebooth_${sessionSlug}_${labelSlug}.${ext}`
 
         // Fetch file blob with proxy fallback
-        let res = await fetch(targetUrl).catch(() => null)
+        const res = await fetch(targetUrl).catch(() => null)
         let blob: Blob | null = null
         if (res && res.ok) {
           blob = await res.blob()
@@ -835,8 +835,8 @@ export default function MyPhotosPage() {
           sharedViaSystem = true
           setBundleNotification(`Berhasil menyimpan ${downloadedFiles.length} file ke Galeri!`)
           setTimeout(() => setBundleNotification(null), 4000)
-        } catch (shareErr: any) {
-          if (shareErr.name !== 'AbortError') {
+        } catch (shareErr: unknown) {
+          if ((shareErr as Error)?.name !== 'AbortError') {
             console.warn('Share API fallback to sequential download:', shareErr)
           } else {
             sharedViaSystem = true
@@ -1156,7 +1156,7 @@ export default function MyPhotosPage() {
                               style={{
                                 pointerEvents: isFront ? 'auto' : 'none',
                                 transform: isFront ? 'translate3d(0,0,0) scale(1) rotate(0deg)' : undefined,
-                                transition: isFront && touchFeedbackRef.current === 'dragging'
+                                transition: isFront && touchFeedback === 'dragging'
                                   ? 'none'
                                   : 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease-out'
                               }}

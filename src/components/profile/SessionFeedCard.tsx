@@ -27,7 +27,7 @@ function getStripFromSession(session: SessionData): MediaItem | null {
   const sorted = getSortedMediaFromSession(session)
   return sorted.find(
     (m) =>
-      (m as any).type === 'strip' ||
+      m.type === 'strip' ||
       (m.metadata as Record<string, unknown>)?.is_strip ||
       m.url?.toLowerCase().includes('strip') ||
       m.url?.toLowerCase().includes('photostrip')
@@ -60,7 +60,7 @@ function getPhotosFromSession(session: SessionData): MediaItem[] {
   return sorted.filter((m) => {
     const isImageExt = !!m.url?.match(/\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i)
     const isVideoExt = !!m.url?.match(/\.(mp4|webm|mov)(\?.*)?$/i)
-    const isNotSpecialType = m.type !== 'live' && m.type !== 'video' && m.type !== 'gif' && (m as any).type !== 'strip'
+    const isNotSpecialType = m.type !== 'live' && m.type !== 'video' && m.type !== 'gif' && m.type !== 'strip'
     
     const isImg = isImageExt || isNotSpecialType
     const isStrip = strip && m.id === strip.id

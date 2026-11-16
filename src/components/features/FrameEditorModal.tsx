@@ -32,14 +32,6 @@ export function FrameEditorModal({ isOpen, onClose, rawPhotos }: FrameEditorModa
     const activeFrame = FRAMES[currentFrameIdx];
 
     useEffect(() => {
-        if (!isOpen) {
-            setPreviewUrl(null);
-            return;
-        }
-        renderComposite();
-    }, [isOpen, currentFrameIdx, rawPhotos]);
-
-    useEffect(() => {
         return () => {
             if (previewUrl && previewUrl.startsWith("blob:")) {
                 URL.revokeObjectURL(previewUrl);
@@ -148,6 +140,14 @@ export function FrameEditorModal({ isOpen, onClose, rawPhotos }: FrameEditorModa
             setIsRendering(false);
         }
     };
+
+    useEffect(() => {
+        if (!isOpen) {
+            setPreviewUrl(null);
+            return;
+        }
+        renderComposite();
+    }, [isOpen, currentFrameIdx, rawPhotos]);
 
     const downloadComposite = () => {
         if (!previewUrl) return;

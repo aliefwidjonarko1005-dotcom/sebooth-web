@@ -3,7 +3,7 @@ import { rateLimit } from "@/lib/apiSecurity";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
-import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
+import { broadcastQueueUpdate } from "@/lib/queue/broadcast";
 import { createQueueServerClient } from "@/lib/queue/queueAuth";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
 

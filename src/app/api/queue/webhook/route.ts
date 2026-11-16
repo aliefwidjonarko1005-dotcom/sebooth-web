@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
+import { broadcastQueueUpdate } from "@/lib/queue/broadcast";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
 import { sendPushToUser, sendProximityPushNotifications } from "@/lib/queue/pushSender";
 import { rateLimit } from "@/lib/apiSecurity";

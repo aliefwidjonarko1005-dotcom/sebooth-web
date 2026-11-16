@@ -63,10 +63,13 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
     return () => clearTimeout(handler)
   }, [filterSearch])
 
-  // Reset to page 1 on filter/sort change
-  useEffect(() => {
+  // Reset to page 1 on filter/sort change, during render: an effect let the list fetch the old page first
+  const filterKey = [debouncedFilterSearch, statusFilter, policyFilter, sortBy, pageSize].join('|')
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey)
+  if (filterKey !== prevFilterKey) {
+    setPrevFilterKey(filterKey)
     setCurrentPage(1)
-  }, [debouncedFilterSearch, statusFilter, policyFilter, sortBy, pageSize])
+  }
 
   // Fetch list whenever query params change
   useEffect(() => {
@@ -129,8 +132,8 @@ export default function SessionLookupTab({ initialSessionId }: SessionLookupTabP
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
         }, 100)
       }
-    } catch (err: any) {
-      setError(err.message || 'Gagal menghubungi server.')
+    } catch (err: unknown) {
+      setError((err as Error)?.message || 'Gagal menghubungi server.')
     } finally {
       setLoading(false)
     }

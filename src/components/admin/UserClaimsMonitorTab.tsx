@@ -103,8 +103,8 @@ export default function UserClaimsMonitorTab({ onInspectSession }: UserClaimsMon
         setUsers(data.users || [])
         setSummary(data.summary || null)
       }
-    } catch (err: any) {
-      setError(err.message || 'Terjadi kesalahan jaringan.')
+    } catch (err: unknown) {
+      setError((err as Error)?.message || 'Terjadi kesalahan jaringan.')
     } finally {
       setLoading(false)
       setRefreshing(false)

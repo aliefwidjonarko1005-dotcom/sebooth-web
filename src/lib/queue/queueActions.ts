@@ -131,59 +131,11 @@ export async function cancelQueueTicket(
 // OPERATOR ACTIONS (admin only)
 // ══════════════════════════════════════════════════════
 
-export async function operatorCallNext(
-    eventId: string
-): Promise<{ success: boolean; calledTicketId?: string; calledNumber?: number; error?: string }> {
-    const authClient = await createAuthClient();
-    const { data: { user } } = await authClient.auth.getUser();
-    if (!user) return { success: false, error: "Unauthorized" };
-    const supabase = await createQueueServerClient();
-
-    // First, expire any previously "called" ticket that wasn't acted on
-    await supabase
-        .from("queue_tickets")
-        .update({ status: "expired" })
-        .eq("event_id", eventId)
-        .eq("status", "called");
-
-    // Get the next waiting ticket
-    const { data: nextTicket } = await supabase
-        .from("queue_tickets")
-        .select("id, queue_number, is_checked_in")
-        .eq("event_id", eventId)
-        .eq("status", "waiting")
-        .order("queue_number", { ascending: true })
-        .limit(1)
-        .maybeSingle();
-
-    if (!nextTicket) {
-        return { success: false, error: "Tidak ada antrean yang menunggu." };
-    }
-
-    // Determine expiration time based on check-in status
-    const timeoutMins = nextTicket.is_checked_in ? 5 : 1;
-    const expiresAt = new Date(Date.now() + timeoutMins * 60 * 1000).toISOString();
-
-    const { error } = await supabase
-        .from("queue_tickets")
-        .update({
-            status: "called",
-            called_at: new Date().toISOString(),
-            expires_at: expiresAt,
-        })
-        .eq("id", nextTicket.id);
-
-    if (error) return { success: false, error: "Gagal memanggil antrean berikutnya." };
-
-    return { success: true, calledTicketId: nextTicket.id, calledNumber: nextTicket.queue_number };
-}
-
 export async function operatorSkipTicket(
     ticketId: string
 ): Promise<{ success: boolean; error?: string }> {
-    const authClient = await createAuthClient();
-    const { data: { user } } = await authClient.auth.getUser();
-    if (!user) return { success: false, error: "Unauthorized" };
+    // Admins only: a logged-in customer must never move other people's tickets
+    if (!(await getAdminUser())) return { success: false, error: "Unauthorized — hanya admin." };
     const supabase = await createQueueServerClient();
 
     const { error } = await supabase
@@ -199,9 +151,8 @@ export async function operatorCompleteTicket(
     ticketId: string,
     sessionId?: string
 ): Promise<{ success: boolean; error?: string }> {
-    const authClient = await createAuthClient();
-    const { data: { user } } = await authClient.auth.getUser();
-    if (!user) return { success: false, error: "Unauthorized" };
+    // Admins only: a logged-in customer must never move other people's tickets
+    if (!(await getAdminUser())) return { success: false, error: "Unauthorized — hanya admin." };
     const supabase = await createQueueServerClient();
 
     const { error } = await supabase
@@ -220,9 +171,8 @@ export async function operatorCompleteTicket(
 export async function operatorResetTicket(
     ticketId: string
 ): Promise<{ success: boolean; error?: string }> {
-    const authClient = await createAuthClient();
-    const { data: { user } } = await authClient.auth.getUser();
-    if (!user) return { success: false, error: "Unauthorized" };
+    // Admins only: a logged-in customer must never move other people's tickets
+    if (!(await getAdminUser())) return { success: false, error: "Unauthorized — hanya admin." };
     const supabase = await createQueueServerClient();
 
     const { error } = await supabase
@@ -304,7 +254,7 @@ export async function toggleQueueEventActive(
     // Broadcast the update so all active clients and photobooths receive the wipe
     try {
         const { fetchQueueStatus: getFreshStatus } = await import("@/lib/queue/queueFetchers");
-        const { broadcastQueueUpdate } = await import("@/app/api/queue/stream/[eventId]/route");
+        const { broadcastQueueUpdate } = await import("@/lib/queue/broadcast");
         const freshStatus = await getFreshStatus(eventId);
         broadcastQueueUpdate(eventId, freshStatus);
     } catch (e) {

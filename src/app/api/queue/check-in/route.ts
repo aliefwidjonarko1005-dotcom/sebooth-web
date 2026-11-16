@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { createQueueServerClient } from "@/lib/queue/queueAuth";
 import { fetchQueueStatus } from "@/lib/queue/queueFetchers";
-import { broadcastQueueUpdate } from "@/app/api/queue/stream/[eventId]/route";
+import { broadcastQueueUpdate } from "@/lib/queue/broadcast";
 
 export const dynamic = "force-dynamic";
 
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Update is_checked_in
-    const updates: any = { is_checked_in: true };
+    const updates: { is_checked_in: boolean; expires_at?: string } = { is_checked_in: true };
 
     // If already called, checking in extends the expiration time back to 5 minutes
     if (ticket.status === "called") {

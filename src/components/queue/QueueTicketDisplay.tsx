@@ -109,6 +109,12 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
     const [showQRScanner, setShowQRScanner] = useState(false);
     const [scanStatus, setScanStatus] = useState<'idle' | 'linking' | 'success' | 'error'>('idle');
     const [scanError, setScanError] = useState('');
+    // "Now" for elapsed-time labels: state ticking every 30 s, so render stays pure
+    const [now, setNow] = useState(() => Date.now());
+    useEffect(() => {
+        const t = setInterval(() => setNow(Date.now()), 30_000);
+        return () => clearInterval(t);
+    }, []);
     const guide = useGuide(GUIDE_KEYS.queueTicket, { enabled: !showQRScanner });
     const sseRef = useRef<EventSource | null>(null);
     const retryCount = useRef(0);
@@ -145,7 +151,7 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
     const sessionMinutes = Math.round(status.avgDurationSec / 60);
 
     const currentSessionMinutes = status.currentTicket?.called_at
-        ? Math.floor((Date.now() - new Date(status.currentTicket.called_at).getTime()) / 60_000)
+        ? Math.floor((now - new Date(status.currentTicket.called_at).getTime()) / 60_000)
         : undefined;
 
     useEffect(() => {
@@ -220,58 +226,63 @@ export default function QueueTicketDisplay({ ticket, initialStatus, eventId }: Q
         }
     }, [proximityTier, soundEnabled]);
 
-    const connectSSE = useCallback(() => {
-        if (sseRef.current) {
-            sseRef.current.close();
-        }
-
-        const es = new EventSource(`/api/queue/stream/${eventId}`);
-        sseRef.current = es;
-
-        es.addEventListener("queue_update", (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                setStatus(data);
-                setSseConnected(true);
-                retryCount.current = 0;
-                if (pollingRef.current) {
-                    clearInterval(pollingRef.current);
-                    pollingRef.current = null;
-                }
-            } catch { /* ignore */ }
-        });
-
-        es.onerror = () => {
-            setSseConnected(false);
-            es.close();
-            retryCount.current += 1;
-
-            if (retryCount.current >= 3) {
-                startPolling();
-            } else {
-                setTimeout(connectSSE, 3000);
-            }
-        };
-    }, [eventId]);
-
-    const startPolling = useCallback(() => {
-        if (pollingRef.current) return;
-        pollingRef.current = setInterval(async () => {
-            try {
-                const res = await fetch(`/api/queue/${eventId}/status`);
-                const data = await res.json();
-                setStatus(data);
-            } catch { /* ignore */ }
-        }, 10000);
-    }, [eventId]);
-
+    // Live updates over SSE; after 3 failed attempts fall back to polling every 10 s.
+    // Everything stops on unmount (a pending reconnect used to reopen the stream afterwards).
     useEffect(() => {
-        connectSSE();
+        let closed = false;
+        let retry: ReturnType<typeof setTimeout> | undefined;
+
+        const startPolling = () => {
+            if (pollingRef.current) return;
+            pollingRef.current = setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/queue/${eventId}/status`);
+                    const data = await res.json();
+                    setStatus(data);
+                } catch { /* ignore */ }
+            }, 10000);
+        };
+
+        const connect = () => {
+            if (closed) return;
+            sseRef.current?.close();
+            const es = new EventSource(`/api/queue/stream/${eventId}`);
+            sseRef.current = es;
+
+            es.addEventListener("queue_update", (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    setStatus(data);
+                    setSseConnected(true);
+                    retryCount.current = 0;
+                    if (pollingRef.current) {
+                        clearInterval(pollingRef.current);
+                        pollingRef.current = null;
+                    }
+                } catch { /* ignore */ }
+            });
+
+            es.onerror = () => {
+                setSseConnected(false);
+                es.close();
+                retryCount.current += 1;
+                if (retryCount.current >= 3) {
+                    startPolling();
+                } else {
+                    retry = setTimeout(connect, 3000);
+                }
+            };
+        };
+
+        connect();
         return () => {
+            closed = true;
+            clearTimeout(retry);
             sseRef.current?.close();
             if (pollingRef.current) clearInterval(pollingRef.current);
+            pollingRef.current = null;
         };
-    }, [connectSSE]);
+    }, [eventId]);
 
     // The live lists only hold active tickets. Once this one leaves them, ask the server how it ended.
     const leftLiveQueue = !inLine && !myCurrentData && ["waiting", "called", "in_session"].includes(ticket.status);

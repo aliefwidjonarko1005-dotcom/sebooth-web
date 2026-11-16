@@ -1,5 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 
+// Row shape of the media fallback query (media joined with its session name)
+// to-one join: PostgREST returns an object, the untyped client infers an array
+type SessionName = { event_name?: string | null };
+type FallbackMediaRow = { id: string; url: string; type: string | null; sessions?: SessionName | SessionName[] | null };
+
 /**
  * Creates a Supabase client for use in Server Components.
  * This is separate from the browser client (which uses @supabase/ssr for auth cookies).
@@ -85,12 +90,12 @@ export async function fetchGalleryImages(
 
         if (mediaRows && mediaRows.length > 0) {
             items = mediaRows
-                .filter((m: any) => m.url)
-                .map((m: any, i: number) => ({
+                .filter((m: FallbackMediaRow) => m.url)
+                .map((m: FallbackMediaRow, i: number) => ({
                     id: i + 1,
                     name: `session_media_${m.id}`,
                     url: m.url,
-                    event: m.sessions?.event_name || "Sebooth Event",
+                    event: (Array.isArray(m.sessions) ? m.sessions[0]?.event_name : m.sessions?.event_name) || "Sebooth Event",
                     type: m.type === "gif" ? "Private" : "Wedding",
                     mediaType: isVideoFile(m.url) ? ("video" as const) : ("image" as const),
                 }));

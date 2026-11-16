@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { frameImage } from '@/data/frameEvents'
 import { whatsappUrl } from '@/config/social'
 import { useModalFocus } from '@/lib/useModalFocus'
+import { useIsClient } from '@/lib/useIsClient'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, ChevronLeft, ChevronRight, X } from 'lucide-react'
@@ -526,14 +527,10 @@ export function FramesSlider({ initialData = {}, isActive = true }: FramesSlider
   const [activeIdx, setActiveIdx] = useState(0)
   const [selectedFrame, setSelectedFrame] = useState<FrameCardItem | null>(null)
   const [isHovered, setIsHovered] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const mounted = useIsClient()
   const frameDialogRef = useRef<HTMLDivElement>(null)
   const closeFrame = useCallback(() => setSelectedFrame(null), [])
   useModalFocus(selectedFrame !== null, frameDialogRef, closeFrame)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const count = FRAME_ITEMS.length
   const touchStartX = useRef<number | null>(null)

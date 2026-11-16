@@ -28,8 +28,8 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
 
     let isDestroyed = false
     let updateTicker: ((time: number) => void) | null = null
-    let lenisInstance: any = null
-    let gsapInstance: any = null
+    let lenisInstance: import('lenis').default | null = null
+    let gsapInstance: typeof import('gsap').default | null = null
 
     Promise.all([
       import('lenis'),

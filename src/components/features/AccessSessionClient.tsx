@@ -159,15 +159,6 @@ export default function AccessSessionClient({ session: initialSession, sessionId
     checkUser()
   }, [supabase, session])
 
-  // 2. Auto-claim when user is logged in and session is unclaimed
-  useEffect(() => {
-    if (user && session && !session.is_claimed && !claimAttempted.current && !isClaiming) {
-      claimAttempted.current = true
-      handleClaim()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, session])
-
   // Show temporary toast notification
   const showToast = (msg: string, duration = 3500) => {
     setToastMessage(msg)
@@ -245,6 +236,15 @@ export default function AccessSessionClient({ session: initialSession, sessionId
       setIsClaiming(false)
     }
   }
+
+  // 2. Auto-claim when user is logged in and session is unclaimed
+  useEffect(() => {
+    if (user && session && !session.is_claimed && !claimAttempted.current && !isClaiming) {
+      claimAttempted.current = true
+      handleClaim()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, session])
 
   // 5. Share link
   const handleShare = () => {

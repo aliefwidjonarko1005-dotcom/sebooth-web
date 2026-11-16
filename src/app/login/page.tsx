@@ -43,7 +43,7 @@ function LoginContent() {
       if (authError) throw authError
 
       // Stays in the loading state until the next page opens
-      window.location.href = afterAuthPath(claimId, redirectTo)
+      window.location.assign(afterAuthPath(claimId, redirectTo))
     } catch (err: unknown) {
       setError(authErrorMessage(err, 'Gagal masuk. Periksa koneksi internetmu, lalu coba lagi.'))
       setLoading(false)
