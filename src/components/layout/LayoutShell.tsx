@@ -16,7 +16,8 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
         <>
             {!isExcluded && !isAccess && <Header />}
             <main>{children}</main>
-            {!isExcluded && !isAccess && <FloatingCTA />}
+            {/* /kenali-sebooth carries its own WhatsApp actions; the bubble would sit on its hero text */}
+            {!isExcluded && !isAccess && pathname !== "/kenali-sebooth" && <FloatingCTA />}
         </>
     );
 }
